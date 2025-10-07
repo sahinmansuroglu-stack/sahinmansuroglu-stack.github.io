@@ -1,0 +1,2315 @@
+<!-- Chosen Palette: Kotlin Official (Dark Theme) - Slate background with Purple, Blue, and Orange accents. -->
+<!-- Application Structure Plan: A two-column layout SPA. The left column is a fixed navigation sidebar listing all topics. Clicking a topic dynamically shows its content in the right main area. This structure provides intuitive, direct access to specific information, which is ideal for educational documentation, enhancing user experience by allowing them to focus on one topic at a time without scrolling through a long document. -->
+<!-- Visualization & Content Choices: Report Info (Kotlin educational text) -> Goal (Inform/Educate) -> Presentation (Styled HTML for text, lists, and code blocks) -> Interaction (Clickable side navigation to show/hide content sections) -> Justification (This is the standard and most effective way to present navigable documentation, offering clarity and ease of use.) -> Library/Method (Vanilla JS for navigation logic, Tailwind CSS for styling). -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotlin Etkileşimli Dokümantasyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .menu-link.active {
+            background-color: #334155; /* Slate-700 */
+        }
+        /* PrismJS temasının kenar yuvarlaklığını projenin geneliyle uyumlu hale getiriyoruz. */
+        pre[class*="language-"] {
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .exercise-block {
+            background-color: #1e293b; /* Slate-800 */
+            border-left: 4px solid #f97316; /* Orange-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .solution-block {
+            background-color: #1a2434; /* Slightly lighter than exercise */
+            border-left: 4px solid #3b82f6; /* Blue-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-1/4 bg-slate-800 p-6 md:sticky top-0 md:h-screen overflow-y-auto">
+            <h1 class="text-2xl font-bold text-white mb-6 pb-4 border-b border-slate-700">Kotlin Dokümantasyonu 🚀</h1>
+            <nav>
+                <ul id="menu-list" class="space-y-2">
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="giris">Giriş</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="hello-world">Hello World</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="degiskenler">Değişkenler ve Veri Tipleri</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="interpolation">String Interpolation</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="operatorler">Operatörler</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="if-else">Koşul İfadeleri (If-Else)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="if-else-expression">If-Else İfadesi</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="range">Range (Aralıklar)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="when">When İfadesi</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="donguler">Döngüler</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="collections">Collection'lar</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="fonksiyonlar">Fonksiyonlar</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="null-safety">Null Güvenliği</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="siniflar">Sınıflar ve Nesneler</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="constructor-init">Constructor ve init</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="validation">Argüman Doğrulama</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="try-catch">İstisna Yönetimi</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="tostring-equals">toString ve equals</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="data-class">Data Class</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="inheritance">Kalıtım</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="override">Metot Geçersiz Kılma</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="abstract">Soyut Sınıflar</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="interface">Interface'ler</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="object-companion">Object ve Companion Object</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="w-full md:w-3/4 p-6 md:p-10 overflow-y-auto">
+            <div id="content-area">
+                
+                <div id="giris" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Giriş - Neler Öğreneceksiniz?</h2>
+                    <p class="mb-4">Merhaba, Kotlin öğrenme yolculuğunuza hoş geldiniz! 🌟 Bu doküman, sıfırdan başlayarak Kotlin'in temel ve ileri seviye özelliklerini keşfetmeniz için özenle hazırlandı. Her konu, anlaşılır açıklamalar ve en az 5 adet açıklayıcı örnekle desteklendi.</p>
+                    <p>En önemlisi, artık her bölümün sonunda kendinizi test etmeniz için "Sıra Sende!" adında bir alıştırma kısmı var. Haydi başlayalım ve Kotlin'in gücünü keşfedelim!</p>
+                </div>
+
+                <div id="hello-world" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Hello World - İlk Kotlin Programımız</h2>
+                    <p class="mb-4">Her programlama dilinde olduğu gibi, Kotlin'e "Hello World" yazarak başlıyoruz. Bu basit program, bir Kotlin uygulamasının ana giriş noktası olan `main` fonksiyonunu ve konsola çıktı veren `println` fonksiyonunu tanıtır.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Temel Hello World programı
+fun main() {
+    println("Hello World!")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Türkçe mesaj ile
+fun main() {
+    println("Merhaba Dünya!")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Farklı bir fonksiyondan çağırma
+fun main() {
+    selamla()
+}
+
+fun selamla() {
+    println("Program başladı.")
+    println("Hoş geldiniz!")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Argüman alan main fonksiyonu
+fun main(args: Array&lt;String&gt;) {
+    println("Program başladı. Argüman sayısı: ${args.size}")
+    if (args.isNotEmpty()) {
+        println("İlk argüman: ${args[0]}")
+    }
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Farklı satırlarda çıktı
+fun main() {
+    print("Merhaba ")
+    print("Dünya")
+    println("!") // imleci bir alt satıra atar
+}</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧠</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Konsola "Sınav başladı!" yazdıran bir program yazın.</li>
+                            <li>`main` fonksiyonu içinden çağrılan `sinavMesaji` adlı bir fonksiyon oluşturun ve bu fonksiyon "Başarılar dileriz!" mesajını yazdırsın.</li>
+                            <li>`main` fonksiyonuna argüman olarak "Ali" ismini vererek, konsola "Merhaba Ali!" yazdıran bir program yazın.</li>
+                            <li>Konsola sırasıyla "Kotlin", "Öğreniyorum" ve "!" kelimelerini farklı `print` fonksiyonlarıyla, ama aynı satırda yazdırın.</li>
+                            <li>Yukarıdaki örnekleri kullanarak, "Adım [Ad], Soyadım [Soyad]" şeklinde bir çıktı veren program yazın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Konsola "Sınav başladı!" yazdıran bir program
+fun main() {
+    println("Sınav başladı!")
+}
+
+// 2. main fonksiyonu içinden çağrılan sinavMesaji fonksiyonu
+fun main() {
+    sinavMesaji()
+}
+fun sinavMesaji() {
+    println("Başarılar dileriz!")
+}
+
+// 3. Argüman alan main fonksiyonu
+fun main(args: Array&lt;String&gt;) {
+    if (args.isNotEmpty()) {
+        println("Merhaba, ${args[0]}!")
+    }
+}
+// Konsoldan çalıştırma: kotlin DosyaAdi.kt Ali
+
+// 4. Aynı satırda çıktı
+fun main() {
+    print("Kotlin ")
+    print("Öğreniyorum")
+    print("!")
+}
+
+// 5. Ad ve Soyad çıktısı
+fun main() {
+    val ad = "Ahmet"
+    val soyad = "Yılmaz"
+    println("Adım $ad, Soyadım $soyad")
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="degiskenler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Kotlin Değişkenleri ve Veri Tipleri</h2>
+                    <p class="mb-2">Kotlin'de iki anahtar kelime ile değişken tanımlarız: `val` (değiştirilemez) ve `var` (değiştirilebilir).</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Değiştirilemeyen (immutable) değişken - val
+val isim = "Ahmet"
+// isim = "Mehmet" // Hata verir: val değişkeni yeniden atanamaz
+println(isim)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Değiştirilebilen (mutable) değişken - var
+var yas = 30
+println("Yaşım: $yas")
+yas = 31 // Değerini değiştirebiliriz
+println("Yeni yaşım: $yas")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Tip belirtimi
+val pi: Double = 3.14159
+var mesaj: String = "Kotlin Öğreniyorum"
+println("$mesaj, Pi sayısı: $pi")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Boş bir değişken tanımlama (null değil)
+var sayi: Int = 10
+sayi = 20
+println(sayi)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Farklı tiplerde değişkenler
+val isActive: Boolean = true
+val harf: Char = 'K'
+println("Aktif mi: $isActive, Baş harf: $harf")</code></pre>
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-blue-400">Daha Fazla Kotlin Veri Tipi</h3>
+                    <p class="mb-4">Kotlin, temel veri tiplerini nesne (object) olarak ele alır. Bu, her bir tipin kendine ait metotları ve özellikleri olduğu anlamına gelir.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Long veri tipi
+val buyukSayi: Long = 10000000000L // L harfi, Long olduğunu belirtir
+println("Büyük Sayı: $buyukSayi")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Float veri tipi
+val sicaklik: Float = 25.5f // f harfi, Float olduğunu belirtir
+println("Sıcaklık: $sicaklik")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Byte ve Short veri tipleri
+val kucukSayi1: Byte = 127 // Byte, -128'den 127'ye kadar değer alır
+val kucukSayi2: Short = 32767 // Short, -32,768'den 32,767'ye kadar değer alır
+println("Byte değeri: $kucukSayi1, Short değeri: $kucukSayi2")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Char ve String
+val ilkHarf: Char = 'A'
+val metin: String = "Kotlin'e Hoş Geldiniz!"
+println("İlk harf: $ilkHarf, Metin: $metin")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Boolean tipi
+val isRaining: Boolean = false
+val isSunny: Boolean = true
+println("Yağmur yağıyor mu? $isRaining")
+println("Hava güneşli mi? $isSunny")</code></pre>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ✍️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Değeri 1200 olan bir `val` değişkeni oluşturun.</li>
+                            <li>Adı `stok` olan ve değeri 50 olan bir `var` değişkeni oluşturun, sonra bu değeri 45 olarak değiştirip her iki değeri de yazdırın.</li>
+                            <li>Bir Boolean (Boolean) değişkeni tanımlayın ve ismini `isLoggedIn` koyun, değerini `false` olarak atayın.</li>
+                            <li>Bir karakter (Char) değişkeni oluşturun ve değerini 'E' olarak atayın.</li>
+                            <li>Double tipinde, `val` anahtar kelimesini kullanarak `katsayi` adında bir değişken tanımlayın ve değerini 2.71828 olarak belirleyin.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. val değişkeni
+val deger = 1200
+println(deger)
+
+// 2. var değişkeni
+var stok = 50
+println("Stok: $stok")
+stok = 45
+println("Yeni stok: $stok")
+
+// 3. Boolean değişkeni
+val isLoggedIn: Boolean = false
+println("Giriş yapıldı mı: $isLoggedIn")
+
+// 4. Char değişkeni
+val harf: Char = 'E'
+println("Karakter: $harf")
+
+// 5. Double tipinde val değişkeni
+val katsayi: Double = 2.71828
+println("Katsayı: $katsayi")</code></pre>
+                    </div>
+                    <div class="exercise-block mt-4">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Ek Alıştırmalar 🔢</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Değeri 9999999999 olan bir `Long` değişkeni tanımlayın ve yazdırın.</li>
+                            <li>Değeri 1.618 olan bir `Float` değişkeni tanımlayın ve yazdırın.</li>
+                            <li>Bir `Byte` değişkeni oluşturun ve alabileceği en büyük değeri atayın.</li>
+                            <li>Boolean tipinde `isCompleted` adında bir değişken oluşturun, `true` değerini atayın ve `isCompleted` değilse (yani `!isCompleted`) "Henüz tamamlanmadı." yazdırın.</li>
+                            <li>`Char` tipinde bir değişken tanımlayıp '?' karakterini atayın ve bir `String` değişkeniyle birleştirerek "Soru: ?" çıktısını elde edin.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Long veri tipi
+val buyukSayi: Long = 9999999999L
+println(buyukSayi)
+
+// 2. Float veri tipi
+val floatSayi: Float = 1.618f
+println(floatSayi)
+
+// 3. Byte değişkeni
+val maxByte: Byte = 127
+println(maxByte)
+
+// 4. Boolean kontrolü
+val isCompleted: Boolean = true
+if (!isCompleted) {
+    println("Henüz tamamlanmadı.")
+} else {
+    println("Tamamlandı.")
+}
+
+// 5. Char ve String birleştirme
+val soruIsareti: Char = '?'
+val soruMetni = "Soru: " + soruIsareti
+println(soruMetni)</code></pre>
+                    </div>
+                </div>
+
+                <div id="interpolation" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">String Interpolation</h2>
+                    <p class="mb-4">Değişkenleri veya ifadeleri bir metin dizesi içine kolayca gömmemizi sağlar. `$degisken` veya `${ifade}` şeklinde kullanılır.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Temel değişken gömme
+val isim = "Ali"
+val yas = 25
+println("Merhaba, ben $isim ve $yas yaşındayım.")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Matematiksel işlem gömme
+val fiyat = 150
+val kdv = 0.18
+val toplamFiyat = fiyat + (fiyat * kdv)
+println("Ürünün toplam fiyatı: ${fiyat * (1 + kdv)}")
+println("Yuvarlanmış toplam fiyat: ${"%.2f".format(toplamFiyat)}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Metot çağrısı gömme
+val mesaj = "Kotlin harika!"
+println("Mesajın uzunluğu: ${mesaj.length}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Koşullu ifade gömme
+val saat = 14
+val selam = if (saat < 12) "Günaydın" else "İyi günler"
+println("Şu an ${saat} ve ${selam.lowercase()}!")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Çoklu değişken kullanımı
+val ad = "Zeynep"
+val soyad = "Yılmaz"
+val tamAd = "$ad $soyad"
+println("Tam Adım: $tamAd")</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 💡</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`urunAdi` ve `urunFiyati` değişkenlerini kullanarak, "Ayakkabı fiyatı 250.0 TL'dir." çıktısını elde edin.</li>
+                            <li>`genislik` ve `uzunluk` değişkenleriyle bir dikdörtgenin alanını hesaplayıp, "Dikdörtgenin alanı [alan] birim karedir." şeklinde yazdırın.</li>
+                            <li>`metin` adında bir string değişkeni oluşturun ve ters çevirip, "Ters metin: [ters_metin]" şeklinde yazdırın.</li>
+                            <li>`siparisSayisi` adlı bir değişken 10'dan büyükse "Hızlı Teslimat" değilse "Normal Teslimat" yazdıran bir ifadeyi bir string içine gömün.</li>
+                            <li>`kitapAdi` ve `yazarAdi` değişkenlerini tek bir stringde birleştirin ve "Kitap: [KitapAdı], Yazar: [YazarAdı]" çıktısını verin.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Ürün fiyatı çıktısı
+val urunAdi = "Ayakkabı"
+val urunFiyati = 250.0
+println("$urunAdi fiyatı ${urunFiyati} TL'dir.")
+
+// 2. Dikdörtgenin alanı
+val genislik = 5
+val uzunluk = 8
+println("Dikdörtgenin alanı ${genislik * uzunluk} birim karedir.")
+
+// 3. Ters metin
+val metin = "Merhaba"
+println("Ters metin: ${metin.reversed()}")
+
+// 4. Koşullu ifade
+val siparisSayisi = 12
+val durum = if (siparisSayisi > 10) "Hızlı Teslimat" else "Normal Teslimat"
+println("Sipariş durumu: $durum")
+
+// 5. Kitap bilgileri
+val kitapAdi = "Uçurtma Avcısı"
+val yazarAdi = "Khaled Hosseini"
+println("Kitap: $kitapAdi, Yazar: $yazarAdi")</code></pre>
+                    </div>
+                </div>
+                
+                 <div id="operatorler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Kotlin Operatörleri</h2>
+                    <p class="mb-4">Operatörler, değerler üzerinde işlem yapmak için kullanılan sembollerdir.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Aritmetik operatörler
+val a = 10
+val b = 5
+println("Toplama: ${a + b}")
+println("Çıkarma: ${a - b}")
+println("Çarpma: ${a * b}")
+println("Bölme: ${a / b.toDouble()}")
+println("Mod: ${a % b}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Atama operatörleri
+var x = 10
+x += 5 // x = x + 5
+println("x yeni değeri: $x")
+x *= 2 // x = x * 2
+println("x'in son değeri: $x")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Karşılaştırma operatörleri
+val c = 10
+val d = 20
+println("c == d? ${c == d}")
+println("c != d? ${c != d}")
+println("d > c? ${d > c}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Mantıksal operatörler
+val isTrue = true
+val isFalse = false
+println("isTrue && isFalse? ${isTrue && isFalse}")
+println("isTrue || isFalse? ${isTrue || isFalse}")
+println("!isTrue? ${!isTrue}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Birden fazla operatör kullanımı
+val e = 5
+val f = 10
+val g = 15
+val sonuc = (e < f) && (g > f)
+println("Sonuç: $sonuc")</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ⚙️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`sayi1` ve `sayi2` değişkenlerini tanımlayın (değerleri siz belirleyin) ve `sayi1`'in `sayi2`'den küçük veya eşit olup olmadığını kontrol edin.</li>
+                            <li>`krediSkoru` değişkeni 700'den büyükse VE `gelir` değişkeni 5000'den büyükse true döndüren bir mantıksal ifade yazın.</li>
+                            <li>`sayi` değişkenini 5'e bölün ve kalanı bir başka değişkene atayarak yazdırın.</li>
+                            <li>`toplam` adında bir `var` değişkeni oluşturun, başlangıç değeri 0 olsun. Bu değişkene sırasıyla 10, 5 ve 20 ekleyerek son değerini yazdırın.</li>
+                            <li>İki değişkenin birbirine eşit OLMADIĞINI kontrol eden bir karşılaştırma ifadesi yazın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Karşılaştırma
+val sayi1 = 15
+val sayi2 = 20
+println("Sayı1, Sayı2'den küçük veya eşit mi? ${sayi1 <= sayi2}")
+
+// 2. Mantıksal ifade
+val krediSkoru = 750
+val gelir = 6000
+val uygun = krediSkoru > 700 && gelir > 5000
+println("Kredi uygun mu? $uygun")
+
+// 3. Mod operatörü
+val sayi = 17
+val kalan = sayi % 5
+println("5'e bölümünden kalan: $kalan")
+
+// 4. Atama operatörleri
+var toplam = 0
+toplam += 10
+toplam += 5
+toplam += 20
+println("Toplamın son değeri: $toplam")
+
+// 5. Eşit olmama durumu
+val x = 10
+val y = 15
+println("x, y'ye eşit değil mi? ${x != y}")</code></pre>
+                    </div>
+                </div>
+
+                <div id="if-else" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Koşul İfadeleri (If-Else)</h2>
+                    <p class="mb-4">`if`, `else if` ve `else` ifadeleri, belirli koşullara bağlı olarak kodun farklı bölümlerini çalıştırmak için kullanılır.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Basit if-else
+val yas = 17
+if (yas >= 18) {
+    println("Ehliyet alabilirsiniz.")
+} else {
+    println("Ehliyet için yaşınız yetersiz.")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: if-else if-else zinciri
+val not = 85
+if (not >= 90) {
+    println("Notunuz A")
+} else if (not >= 80) {
+    println("Notunuz B")
+} else if (not >= 70) {
+    println("Notunuz C")
+} else {
+    println("Notunuz D")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: String karşılaştırması
+val kullaniciAdi = "admin"
+if (kullaniciAdi == "admin") {
+    println("Yönetici girişi başarılı.")
+} else {
+    println("Kullanıcı adı yanlış.")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Birden fazla koşul
+val saat = 22
+val isWeekend = true
+if (saat > 20 && isWeekend) {
+    println("Film izleme zamanı.")
+} else {
+    println("Ders çalışma zamanı.")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: if'in bir blok olarak kullanımı
+val puan = 65
+if (puan > 50) println("Geçtiniz!") else println("Kaldınız.")</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🎯</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`sayi` adında bir değişken tanımlayın. Eğer bu sayı 0'dan büyükse "Pozitif", 0'dan küçükse "Negatif" ve 0'a eşitse "Sıfır" yazdıran bir kod yazın.</li>
+                            <li>`kullaniciSifre` değişkeni "12345"e eşitse "Giriş başarılı.", aksi takdirde "Hatalı şifre." yazdırın.</li>
+                            <li>`sicaklik` değişkeni 15'in altındaysa "Hava soğuk", 25'in üzerindeyse "Hava sıcak" ve aralıktaysa "Hava ılık" yazdırın.</li>
+                            <li>`isLoggedin` değişkeni `true` ise VE `isAdmin` değişkeni `true` ise "Yönetici paneli" yazdırın, aksi takdirde "Normal kullanıcı paneli" yazdırın.</li>
+                            <li>Bir öğrencinin notu 50'den büyük veya eşitse "Geçti", değilse "Kaldı" yazdıran basit bir if-else ifadesi yazın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Sayı pozitif, negatif veya sıfır
+val sayi = -5
+if (sayi > 0) {
+    println("Pozitif")
+} else if (sayi < 0) {
+    println("Negatif")
+} else {
+    println("Sıfır")
+}
+
+// 2. Şifre kontrolü
+val kullaniciSifre = "12345"
+if (kullaniciSifre == "12345") {
+    println("Giriş başarılı.")
+} else {
+    println("Hatalı şifre.")
+}
+
+// 3. Sıcaklık kontrolü
+val sicaklik = 20
+if (sicaklik < 15) {
+    println("Hava soğuk")
+} else if (sicaklik > 25) {
+    println("Hava sıcak")
+} else {
+    println("Hava ılık")
+}
+
+// 4. Çoklu koşul kontrolü
+val isLoggedin = true
+val isAdmin = false
+if (isLoggedin && isAdmin) {
+    println("Yönetici paneli")
+} else {
+    println("Normal kullanıcı paneli")
+}
+
+// 5. Öğrenci notu
+val ogrenciNotu = 75
+if (ogrenciNotu >= 50) {
+    println("Geçti")
+} else {
+    println("Kaldı")
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div id="if-else-expression" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">If-Else İfadesi</h2>
+                    <p class="mb-4">Kotlin'de `if-else` bir değer döndüren ifade olarak kullanılabilir. Bu, kodu daha kısa ve okunaklı hale getirir.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: if-else ifadesi
+val yas = 20
+val durum = if (yas >= 18) "Reşit" else "Reşit değil"
+println("Durum: $durum")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Farklı blok boyutları
+val sicaklik = 15
+val havaDurumu = if (sicaklik > 25) {
+    "Sıcak"
+} else if (sicaklik > 15) {
+    "Ilık"
+} else {
+    "Soğuk"
+}
+println("Hava durumu: $havaDurumu")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: "Find the weather condition" - Hava durumu tespiti
+val sicaklik2 = 28
+val yagmurYagiyor = true
+val hava = if (sicaklik2 > 25 && !yagmurYagiyor) {
+    "Hava sıcak ve açık"
+} else if (yagmurYagiyor) {
+    "Yağmurlu ve serin"
+} else {
+    "Bulutlu ve ılık"
+}
+println("Durum: $hava")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Bir fonksiyonun dönüş değerinde if-else ifadesi
+fun enBuyukSayi(a: Int, b: Int): Int {
+    return if (a > b) a else b
+}
+println("En büyük sayı: ${enBuyukSayi(10, 5)}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Değer ataması
+val isim = "Canan"
+val tebrikMesaji = "Merhaba ${if (isim.length > 5) "Sayın ${isim}" else isim}"
+println(tebrikMesaji)</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧠</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`sinavNotu` değişkeni 50'den büyükse "Geçtiniz!" değilse "Kaldınız!" değerini `sonuc` adlı değişkene atayın.</li>
+                            <li>`siparisSayisi` adlı bir değişkeni kontrol ederek, 100'den büyükse 0.20, 50'den büyükse 0.10, aksi takdirde 0.0 değerini `indirimOrani` değişkenine atayın.</li>
+                            <li>`saat` değişkenini kontrol ederek, "Sabah", "Öğle" veya "Akşam" değerlerinden birini döndüren bir if-else ifadesi yazın ve sonucu bir değişkene atayın.</li>
+                            <li>Bir fonksiyon yazın. Bu fonksiyon, parametre olarak aldığı sayının tek mi çift mi olduğunu belirten bir string değer döndürsün.</li>
+                            <li>`kullaniciYetki` değişkeni "admin" ise `isAdmin` değişkenine `true` değerini atayan, aksi halde `false` değerini atayan bir if-else ifadesi yazın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Sınav notu
+val sinavNotu = 60
+val sonuc = if (sinavNotu > 50) "Geçtiniz!" else "Kaldınız!"
+println(sonuc)
+
+// 2. İndirim oranı
+val siparisSayisi = 75
+val indirimOrani = if (siparisSayisi > 100) 0.20 else if (siparisSayisi > 50) 0.10 else 0.0
+println("İndirim oranı: $indirimOrani")
+
+// 3. Günün saati
+val saat = 19
+val gunBolumu = if (saat < 12) "Sabah" else if (saat < 18) "Öğle" else "Akşam"
+println("Günün şu anki bölümü: $gunBolumu")
+
+// 4. Tek mi çift mi fonksiyonu
+fun tekMiCiftMi(sayi: Int): String {
+    return if (sayi % 2 == 0) "Çift" else "Tek"
+}
+println("5 bir ${tekMiCiftMi(5)} sayıdır.")
+
+// 5. Yetki kontrolü
+val kullaniciYetki = "admin"
+val isAdmin = if (kullaniciYetki == "admin") true else false
+println("Kullanıcı admin mi? $isAdmin")</code></pre>
+                    </div>
+                </div>
+
+                <div id="range" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Range (Aralıklar)</h2>
+                    <p class="mb-4">Kotlin'de `..` operatörü ile kapalı aralıklar (`[x, y]`), `until` ile ise açık aralıklar (`[x, y)`) oluşturulabilir. Bu, döngülerde veya koşul ifadelerinde çok kullanışlıdır.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Sayı aralığı ile for döngüsü
+for (i in 1..5) { // 1'den 5'e (5 dahil)
+    println(i)
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Harf aralığı ile for döngüsü
+for (char in 'a'..'c') {
+    println(char)
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Tersten sayma
+for (i in 5 downTo 1) { // 5'ten 1'e (1 dahil)
+    println(i)
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Belirli adımlarla
+for (i in 1..10 step 2) { // 1, 3, 5, 7, 9
+    println(i)
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: until kullanımı (son değer dahil değil)
+for (i in 1 until 5) { // 1, 2, 3, 4
+    println(i)
+}</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🔍</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>10'dan 1'e kadar olan sayıları tersten ve birer birer azalarak yazdırın.</li>
+                            <li>20 ile 30 arasındaki çift sayıları `step` kullanarak yazdırın.</li>
+                            <li>'A' ile 'F' arasındaki harfleri `for` döngüsüyle ekrana yazdırın.</li>
+                            <li>`until` kullanarak 1'den 10'a kadar olan sayıları (10 hariç) yazdırın.</li>
+                            <li>Bir kullanıcının girdiği yaşın 18 ile 65 aralığında olup olmadığını kontrol eden bir `if` ifadesi yazın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Tersten sayma
+for (i in 10 downTo 1) {
+    println(i)
+}
+
+// 2. Çift sayılar
+for (i in 20..30 step 2) {
+    println(i)
+}
+
+// 3. Harf aralığı
+for (char in 'A'..'F') {
+    println(char)
+}
+
+// 4. until kullanımı
+for (i in 1 until 10) {
+    println(i)
+}
+
+// 5. Yaş aralığı
+val yas = 25
+if (yas in 18..65) {
+    println("Yaş uygun.")
+} else {
+    println("Yaş uygun değil.")
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="when" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">When İfadesi</h2>
+                     <p class="mb-4">`when` ifadesi, bir değerin olası tüm durumlarını kontrol etmek için kullanılır ve çoklu `if-else-if` zincirine göre daha okunaklı ve güçlü bir alternatiftir.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: Basit when ifadesi
+val not = 3
+when (not) {
+    1 -> println("Çok Kötü")
+    2 -> println("Kötü")
+    3 -> println("Orta")
+    4 -> println("İyi")
+    5 -> println("Çok İyi")
+    else -> println("Geçersiz not")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Virgül ile birden fazla koşul
+val char = 'a'
+when (char) {
+    'a', 'e', 'i', 'o', 'u' -> println("Sesli harf")
+    else -> println("Sessiz harf")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Bir ifade olarak when
+val sayi = 10
+val sonuc = when {
+    sayi % 2 == 0 -> "Çift Sayı"
+    else -> "Tek Sayı"
+}
+println(sonuc)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Aralık (`range`) kontrolü
+val yas = 15
+when (yas) {
+    in 0..10 -> println("Çocuk")
+    in 11..18 -> println("Genç")
+    else -> println("Yetişkin")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Farklı tipte koşullar
+val obj: Any = "Merhaba" // Any, her türlü tipi temsil eder
+when (obj) {
+    1 -> println("Bir rakam")
+    "Merhaba" -> println("Bir string")
+    is Long -> println("Long tipi bir sayı")
+    !is String -> println("String değil")
+    else -> println("Bilinmeyen tip")
+}</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧩</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`haftaninGunu` değişkenini (ör. 1) kontrol ederek günün adını (Pazartesi, Salı vb.) yazdırın.</li>
+                            <li>`meslek` değişkeni "Doktor", "Mühendis" veya "Öğretmen" ise "Önemli bir meslek" yazdıran bir `when` ifadesi yazın.</li>
+                            <li>`harf` değişkeni sesli harf mi yoksa sessiz harf mi olduğunu kontrol ederek uygun mesajı yazdırın.</li>
+                            <li>`siparisDurumu` değişkeni (ör. "Hazırlanıyor", "Kargoda", "Teslim Edildi") kontrol edilerek kullanıcıya uygun mesajı döndüren bir ifade yazın.</li>
+                            <li>`puan` değişkeni 90-100 aralığındaysa 'A', 80-89 aralığındaysa 'B' ve 0-79 aralığındaysa 'C' yazdıran bir `when` ifadesi oluşturun.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Haftanın günü
+val haftaninGunu = 3
+when (haftaninGunu) {
+    1 -> println("Pazartesi")
+    2 -> println("Salı")
+    3 -> println("Çarşamba")
+    4 -> println("Perşembe")
+    5 -> println("Cuma")
+    else -> println("Hafta sonu")
+}
+
+// 2. Meslek kontrolü
+val meslek = "Doktor"
+when (meslek) {
+    "Doktor", "Mühendis", "Öğretmen" -> println("Önemli bir meslek")
+}
+
+// 3. Sesli veya sessiz harf
+val harf = 'b'
+when (harf) {
+    'a', 'e', 'i', 'o', 'u' -> println("Sesli harf")
+    else -> println("Sessiz harf")
+}
+
+// 4. Sipariş durumu
+val siparisDurumu = "Kargoda"
+val mesaj = when (siparisDurumu) {
+    "Hazırlanıyor" -> "Siparişiniz hazırlanıyor."
+    "Kargoda" -> "Siparişiniz kargoya verildi."
+    "Teslim Edildi" -> "Siparişiniz teslim edildi."
+    else -> "Bilinmeyen durum."
+}
+println(mesaj)
+
+// 5. Puan kontrolü
+val puan = 88
+when (puan) {
+    in 90..100 -> println("A")
+    in 80..89 -> println("B")
+    else -> println("C")
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="donguler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Döngüler (For, While, Do-While)</h2>
+                     <p class="mb-4">Döngüler, bir kod bloğunu belirli sayıda veya bir koşul doğru olduğu sürece tekrarlamak için kullanılır.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: For döngüsü (listede gezinme)
+val meyveler = listOf("elma", "armut", "kiraz")
+for (meyve in meyveler) {
+    println(meyve)
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: While döngüsü
+var sayac = 0
+while (sayac < 5) {
+    println("Sayac: $sayac")
+    sayac++
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Do-while döngüsü
+var i = 0
+do {
+    println("Do-while ile i: $i")
+    i++
+} while (i < 3)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: İndeks ile for döngüsü
+val liste = listOf("a", "b", "c")
+for (index in liste.indices) {
+    println("İndeks $index, Değer ${liste[index]}")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Break ve Continue
+for (num in 1..10) {
+    if (num == 5) {
+        continue // 5'i atla
+    }
+    if (num == 8) {
+        break // 8'de döngüyü sonlandır
+    }
+    println(num)
+}</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🔁</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`sehirler` adlı bir liste oluşturun ("İstanbul", "Ankara", "İzmir") ve bir `for` döngüsüyle her şehri yazdırın.</li>
+                            <li>1'den 100'e kadar olan sayıların toplamını bir `while` döngüsü kullanarak bulun.</li>
+                            <li>Kullanıcıdan "evet" yazmasını isteyen, yanlış yazdığı sürece "Tekrar deneyin." yazdıran bir `do-while` döngüsü oluşturun.</li>
+                            <li>`for` döngüsüyle 1'den 20'ye kadar olan sayılardan tek olanları atlayarak çift olanları yazdırın.</li>
+                            <li>1'den 10'a kadar olan sayılar içinde 7'ye ulaştığında döngüyü sonlandıran bir `for` döngüsü yazın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Şehirleri yazdırma
+val sehirler = listOf("İstanbul", "Ankara", "İzmir")
+for (sehir in sehirler) {
+    println(sehir)
+}
+
+// 2. 1'den 100'e kadar toplam
+var toplam = 0
+var sayi = 1
+while (sayi <= 100) {
+    toplam += sayi
+    sayi++
+}
+println("Toplam: $toplam")
+
+// 3. Do-while döngüsü
+var input: String
+do {
+    println("Lütfen 'evet' yazın:")
+    input = readln()
+} while (input != "evet")
+println("Doğru!")
+
+// 4. Tek sayıları atlama
+for (i in 1..20) {
+    if (i % 2 != 0) {
+        continue
+    }
+    println(i)
+}
+
+// 5. 7'de döngüyü sonlandırma
+for (i in 1..10) {
+    if (i == 7) {
+        break
+    }
+    println(i)
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="collections" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Collection'lar (List, Map)</h2>
+                     <p class="mb-4">Kotlin, `List` ve `Map` gibi koleksiyon türleri için zengin bir API sunar. Koleksiyonlar değiştirilebilir (mutable) veya değiştirilemez (immutable) olabilir.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: Immutable liste oluşturma
+val sayilar = listOf(1, 2, 3, 4, 5)
+println(sayilar)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Listeye erişim
+val ilkEleman = sayilar[0]
+val sonEleman = sayilar.last()
+println("İlk eleman: $ilkEleman, Son eleman: $sonEleman")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Mutable liste oluşturma
+val meyveListesi = mutableListOf("elma", "muz")
+println("Başlangıç listesi: $meyveListesi")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Eleman ekleme
+meyveListesi.add("portakal")
+meyveListesi.add(0, "çilek")
+println("Yeni liste: $meyveListesi")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Map oluşturma ve döngü
+val ogrenciNotlari = mutableMapOf("Ahmet" to 90, "Zeynep" to 85)
+for ((isim, not) in ogrenciNotlari) {
+    println("$isim, notu: $not")
+}</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 📋</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>String tipinde `kitaplar` adlı 4 elemanlı bir liste oluşturun.</li>
+                             <li>Oluşturduğunuz listenin ilk ve son elemanını farklı değişkenlere atayarak yazdırın.</li>
+                             <li>Listenin boyutunu ve "Kotlin" kelimesini içerip içermediğini kontrol edip yazdırın.</li>
+                             <li>Listenin tüm elemanlarını bir `for` döngüsüyle yazdırın.</li>
+                             <li>Double tipinde boş bir liste oluşturun.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Immutable liste oluşturma
+val kitaplar = listOf("Nutuk", "Sefiller", "Suç ve Ceza", "Kotlin Kitabı")
+println(kitaplar)
+
+// 2. İlk ve son eleman
+val ilkKitap = kitaplar.first()
+val sonKitap = kitaplar.last()
+println("İlk kitap: $ilkKitap, Son kitap: $sonKitap")
+
+// 3. Boyut ve eleman kontrolü
+println("Liste boyutu: ${kitaplar.size}")
+println("Liste Kotlin içeriyor mu: ${kitaplar.contains("Kotlin")}")
+
+// 4. For döngüsü ile yazdırma
+for (kitap in kitaplar) {
+    println(kitap)
+}
+
+// 5. Boş liste
+val bosListe: List<Double> = emptyList()
+println("Boş liste: $bosListe")</code></pre>
+                    </div>
+                    <div class="exercise-block mt-4">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Ek Alıştırmalar 🗺️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`urunFiyatlari` adında, 3 farklı ürün ve fiyatını içeren bir Map oluşturun.</li>
+                            <li>Oluşturduğunuz Map'e yeni bir ürün ve fiyat ekleyin.</li>
+                            <li>"Bilgisayar" adlı ürünün fiyatını 12000 olarak güncelleyin.</li>
+                            <li>Bir ürünü Map'ten silin.</li>
+                            <li>Map'in tüm anahtarlarını (`keys`) bir `for` döngüsüyle yazdırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Immutable Map
+val urunFiyatlari = mapOf("Telefon" to 15000, "Tablet" to 8000, "Kulaklık" to 1500)
+println(urunFiyatlari)
+
+// 2. Yeni ürün ekleme
+val mutableUrunFiyatlari = urunFiyatlari.toMutableMap()
+mutableUrunFiyatlari["Mouse"] = 500
+println(mutableUrunFiyatlari)
+
+// 3. Ürün fiyatı güncelleme
+mutableUrunFiyatlari["Bilgisayar"] = 12000
+println(mutableUrunFiyatlari)
+
+// 4. Ürün silme
+mutableUrunFiyatlari.remove("Kulaklık")
+println(mutableUrunFiyatlari)
+
+// 5. Anahtarları yazdırma
+for (urun in mutableUrunFiyatlari.keys) {
+    println(urun)
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="fonksiyonlar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Fonksiyonlar ve Lambda İfadeleri</h2>
+                    <p class="mb-4">Fonksiyonlar, `fun` anahtar kelimesi ile tanımlanır. Opsiyonel parametreler ve isimsiz fonksiyonlar (lambda) gibi güçlü özelliklere sahiptir.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: İki sayıyı toplayan fonksiyon
+fun topla(a: Int, b: Int): Int {
+    return a + b
+}
+val sonuc = topla(10, 20)
+println("Toplam: $sonuc")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Tek parametre alan ve bir şey döndürmeyen fonksiyon
+fun selamVer(isim: String) {
+    println("Merhaba, $isim!")
+}
+selamVer("Mert")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Fonksiyonun tek satır olması durumunda
+fun carpma(x: Int, y: Int) = x * y
+println("Çarpım: ${carpma(5, 4)}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: String'i tersine çeviren fonksiyon
+fun tersCevir(metin: String): String {
+    return metin.reversed()
+}
+println("Ters metin: ${tersCevir("kotlin")}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Çoklu parametre ve farklı tipler
+fun bilgiGoster(isim: String, yas: Int, aktif: Boolean) {
+    println("İsim: $isim, Yaş: $yas, Aktif mi: $aktif")
+}
+bilgiGoster("Ali", 30, true)</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ➡️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`cevreHesapla` adında, bir dairenin çevresini hesaplayan bir fonksiyon yazın. Parametre olarak dairenin yarıçapını alsın ve sonucu Double olarak döndürsün.</li>
+                            <li>İki String parametresi alıp bu string'leri birleştiren ve sonucu döndüren bir fonksiyon yazın.</li>
+                            <li>Bir sayının karesini hesaplayan, tek satırlık bir fonksiyon yazın.</li>
+                            <li>`ortalamaHesapla` adında, üç Double parametresi alıp ortalamasını bulan ve döndüren bir fonksiyon yazın.</li>
+                            <li>`isimYazdir` adında, parametre olarak aldığı String'i büyük harfe çevirip yazdıran bir fonksiyon yazın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Çevre hesaplama
+fun cevreHesapla(yaricap: Double): Double {
+    return 2 * 3.14 * yaricap
+}
+
+// 2. String birleştirme
+fun stringBirlestir(s1: String, s2: String): String {
+    return s1 + s2
+}
+
+// 3. Kare hesaplama (tek satır)
+fun kareHesapla(sayi: Int) = sayi * sayi
+
+// 4. Ortalama hesaplama
+fun ortalamaHesapla(n1: Double, n2: Double, n3: Double): Double {
+    return (n1 + n2 + n3) / 3
+}
+
+// 5. İsmi büyük harfe çevirme
+fun isimYazdir(isim: String) {
+    println(isim.uppercase())
+}</code></pre>
+                    </div>
+                    <div class="exercise-block mt-4">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Ek Alıştırmalar 💡</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`tekMi` adında, bir sayının tek mi çift mi olduğunu kontrol eden bir lambda ifadesi yazın.</li>
+                            <li>`stringBirlestir` adında, iki string parametresi alıp bu string'leri birleştiren bir lambda yazın.</li>
+                            <li>Parametresiz bir lambda oluşturun ve çağırıldığında "Günaydın!" yazdırsın.</li>
+                            <li>Bir Double tipinde parametre alan ve bu sayıyı 2 ile çarpan bir lambda oluşturun ve `it` anahtar kelimesini kullanın.</li>
+                            <li>Bir String parametresi alıp, stringin ilk harfini döndüren bir lambda ifadesi yazın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Tek mi çift mi
+val tekMi = { sayi: Int -> sayi % 2 != 0 }
+println("5 tek bir sayı mı? ${tekMi(5)}")
+
+// 2. String birleştirme
+val birlestir = { s1: String, s2: String -> s1 + s2 }
+println(birlestir("Merhaba ", "Kotlin"))
+
+// 3. Parametresiz lambda
+val selam = { println("Günaydın!") }
+selam()
+
+// 4. it ile çarpma
+val carp = { sayi: Double -> sayi * 2 }
+println(carp(5.5))
+
+// 5. İlk harf
+val ilkHarf = { metin: String -> metin[0] }
+println(ilkHarf("Kotlin"))</code></pre>
+                    </div>
+                </div>
+
+                <div id="null-safety" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Null Güvenliği</h2>
+                    <p class="mb-4">Kotlin, `NullPointerException` hatalarını önlemek için tasarlanmıştır. Değişkenler varsayılan olarak null olamaz. Null olabilmesi için tipin sonuna `?` eklenmelidir.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Null-geçebilir değişken
+var isim: String? = "Ahmet"
+isim = null
+println(isim)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Güvenli çağrı operatörü
+var metin: String? = "Kotlin"
+val uzunluk = metin?.length
+println("Uzunluk: $uzunluk") // 6
+metin = null
+val yeniUzunluk = metin?.length
+println("Yeni uzunluk: $yeniUzunluk") // null</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Elvis operatörü
+var soyad: String? = null
+val adSoyad = soyad ?: "Soyadı Yok"
+println("Soyad: $adSoyad")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: !! operatörü
+var sehir: String? = "Ankara"
+val sehirUzunluk = sehir!!.length // sehir'in null olmadığına eminiz
+println("Şehir uzunluğu: $sehirUzunluk")
+sehir = null
+// val hata = sehir!!.length // Hata fırlatır!</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Let fonksiyonu ile null kontrolü
+var yas: Int? = 25
+yas?.let {
+    println("Yaş değeri $it")
+}
+yas = null
+yas?.let {
+    println("Bu satır çalışmaz")
+}</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🛡️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`telefonNumarasi` adında, `String?` tipinde bir değişken oluşturun. Bir `if` ifadesi kullanarak null olup olmadığını kontrol edin.</li>
+                            <li>`kullaniciMesaji` adında `String?` tipinde bir değişken tanımlayın, null değeri verin ve uzunluğunu güvenli çağrı (`?.`) kullanarak yazdırın.</li>
+                            <li>`kullaniciAdi` adında `String?` tipinde bir değişken oluşturun. `null` ise "Misafir" değerini atayan bir Elvis operatörü (`?:`) ifadesi yazın.</li>
+                            <li>`oyuncuPuani` adında `Int?` bir değişken tanımlayın. Eğer `null` değilse, değerini 10 artırın.</li>
+                            <li>`islemSonucu` adlı `Double?` bir değişken tanımlayın. `!!` operatörü ile uzunluğunu yazdırın ve bu işlemin neden riskli olduğunu açıklayan bir yorum ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Null kontrolü
+var telefonNumarasi: String? = null
+if (telefonNumarasi == null) {
+    println("Telefon numarası atanmamış.")
+}
+
+// 2. Güvenli çağrı
+var kullaniciMesaji: String? = null
+println("Mesaj uzunluğu: ${kullaniciMesaji?.length}")
+
+// 3. Elvis operatörü
+var kullaniciAdi: String? = null
+val ad = kullaniciAdi ?: "Misafir"
+println("Kullanıcı adı: $ad")
+
+// 4. Değer artırma
+var oyuncuPuani: Int? = 100
+oyuncuPuani = oyuncuPuani?.plus(10)
+println("Yeni puan: $oyuncuPuani")
+
+// 5. !! operatörü
+var islemSonucu: Double? = 5.0
+val uzunluk = islemSonucu!!.toString().length // Çok riskli, çünkü null olsaydı hata fırlatır.
+println("Uzunluk: $uzunluk")</code></pre>
+                    </div>
+                </div>
+
+                <div id="siniflar" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Sınıflar ve Nesneler</h2>
+                     <p class="mb-4">Sınıf, bir nesnenin planıdır. Nesne ise bu plandan oluşturulan somut bir örnektir.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: Temel sınıf tanımı
+class Araba {
+    var marka: String = ""
+    var renk: String = ""
+}
+val araba1 = Araba()
+araba1.marka = "Toyota"
+araba1.renk = "Beyaz"
+println("Araba markası: ${araba1.marka}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Fonksiyonlu sınıf
+class Kullanici {
+    var ad: String = ""
+    fun bilgileriYazdir() {
+        println("Kullanıcı Adı: $ad")
+    }
+}
+val kullanici1 = Kullanici()
+kullanici1.ad = "Emre"
+kullanici1.bilgileriYazdir()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Değerleri doğrudan atama
+class Urun(val ad: String, var fiyat: Double)
+val urun1 = Urun("Bilgisayar", 15000.0)
+println("Ürün Adı: ${urun1.ad}, Fiyatı: ${urun1.fiyat}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Sınıf içinde fonksiyon tanımlama
+class HesapMakinesi {
+    fun topla(a: Int, b: Int) = a + b
+    fun cikar(a: Int, b: Int) = a - b
+}
+val hesapMakinesi = HesapMakinesi()
+println("Toplam: ${hesapMakinesi.topla(10, 5)}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Basit bir sınıf örneği
+class Ogrenci(val ad: String, val soyad: String)
+val ogrenci1 = Ogrenci("Elif", "Demir")
+println("Öğrenci: ${ogrenci1.ad} ${ogrenci1.soyad}")</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🏗️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Ev` adında, `odaSayisi` ve `metrekare` özelliklerine sahip bir sınıf oluşturun ve bir nesnesini tanımlayın.</li>
+                             <li>`Arac` adında, `marka`, `model` ve `hizlan` fonksiyonuna sahip bir sınıf oluşturun. `hizlan` fonksiyonu, "Araç [marka] hızlanıyor." çıktısını versin.</li>
+                             <li>`Kitap` adında, `baslik`, `yazar` ve `yayinYili` özelliklerine sahip bir sınıf oluşturun. Nesne oluştururken bu değerleri kurucu (constructor) üzerinden atayın.</li>
+                             <li>`Kedi` adında, `ad` ve `yas` özelliklerine sahip bir sınıf oluşturun ve bu sınıfın bir nesnesini tanımlayın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Ev sınıfı
+class Ev(val odaSayisi: Int, val metrekare: Int)
+val ev1 = Ev(3, 120)
+println("Ev: ${ev1.odaSayisi} oda, ${ev1.metrekare} m²")
+
+// 2. Araç sınıfı
+class Arac(val marka: String, val model: String) {
+    fun hizlan() {
+        println("Araç $marka hızlanıyor.")
+    }
+}
+val arac1 = Arac("BMW", "X5")
+arac1.hizlan()
+
+// 3. Kitap sınıfı
+class Kitap(val baslik: String, val yazar: String, val yayinYili: Int)
+val kitap = Kitap("Nutuk", "Mustafa Kemal Atatürk", 1927)
+println("Kitap: ${kitap.baslik}")
+
+// 4. Kedi sınıfı
+class Kedi(val ad: String, val yas: Int)
+val kedi1 = Kedi("Tekir", 2)
+println("Kedi: ${kedi1.ad}, Yaş: ${kedi1.yas}")</code></pre>
+                    </div>
+                </div>
+                
+                <div id="constructor-init" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Birincil Kurucu (Primary Constructor) ve init Bloğu</h2>
+                    <p class="mb-4">Birincil kurucu, sınıf başlığının hemen arkasında yer alır. `init` bloğu ise bir nesne oluşturulduğunda çalışan kod bloğudur.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Basit primary constructor
+class Personel(val ad: String, var soyad: String)
+val personel1 = Personel("Canan", "Öztürk")
+println("Personel: ${personel1.ad} ${personel1.soyad}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: init bloğu ile başlangıç işlemleri
+class EvcilHayvan(val tur: String) {
+    init {
+        println("Yeni bir $tur nesnesi oluşturuldu.")
+    }
+}
+val kedi = EvcilHayvan("Kedi") // "Yeni bir Kedi nesnesi oluşturuldu."</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Primary constructor parametreleri ve init bloğu
+class Kitap(val baslik: String, val yazar: String, var sayfaSayisi: Int) {
+    init {
+        println("Kitap '$baslik' ($sayfaSayisi sayfa) oluşturuldu.")
+    }
+}
+val kitap = Kitap("Nutuk", "Mustafa Kemal Atatürk", 600)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Constructor parametrelerini init bloğunda kullanma
+class Dikdortgen(en: Double, boy: Double) {
+    init {
+        val alan = en * boy
+        println("Dikdörtgenin alanı: $alan")
+    }
+}
+Dikdortgen(5.0, 10.0)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Birden fazla init bloğu (sırasıyla çalışır)
+class Kasiyer(val isim: String) {
+    init {
+        println("Kasiyer kaydı başladı.")
+    }
+    init {
+        println("İsim: $isim")
+    }
+}
+val kasiyer = Kasiyer("Deniz")</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧱</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`Ogrenci` adında, `ad` ve `numara` parametreleri alan bir sınıf oluşturun. `init` bloğunda "Yeni öğrenci kaydı oluşturuldu." yazdırın.</li>
+                             <li>`Film` adında, `baslik` ve `yonetmen` özelliklerine sahip bir sınıf oluşturun. `init` bloğunda "Başlık: [baslik], Yönetmen: [yonetmen]" şeklinde yazdırın.</li>
+                             <li>`Araba` sınıfına `marka` ve `modelYili` parametreleri verin. `init` bloğunda `modelYili`'nin 2000'den büyük olup olmadığını kontrol edin ve uygun mesajı yazdırın.</li>
+                             <li>`Siparis` adında, `musteriAdi` ve `urunSayisi` parametreleri alan bir sınıf oluşturun. `init` bloğunda toplam sipariş tutarını hesaplayıp yazdırın (ör. `urunSayisi * 10`).</li>
+                             <li>`Musteri` sınıfını `id` parametresiyle oluşturun ve `init` bloğunda `id`'nin 1000'den küçük olup olmadığını kontrol edin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Öğrenci sınıfı
+class Ogrenci(val ad: String, val numara: Int) {
+    init {
+        println("Yeni öğrenci kaydı oluşturuldu.")
+    }
+}
+
+// 2. Film sınıfı
+class Film(val baslik: String, val yonetmen: String) {
+    init {
+        println("Başlık: $baslik, Yönetmen: $yonetmen")
+    }
+}
+
+// 3. Araba sınıfı
+class Araba(val marka: String, val modelYili: Int) {
+    init {
+        if (modelYili > 2000) {
+            println("Bu araba 2000 yılı sonrası üretilmiştir.")
+        }
+    }
+}
+
+// 4. Sipariş sınıfı
+class Siparis(val musteriAdi: String, val urunSayisi: Int) {
+    init {
+        val toplamTutar = urunSayisi * 10
+        println("Toplam sipariş tutarı: $toplamTutar TL")
+    }
+}
+
+// 5. Müşteri sınıfı
+class Musteri(val id: Int) {
+    init {
+        if (id < 1000) {
+            println("ID geçerli.")
+        } else {
+            println("ID 1000'den büyük.")
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div id="validation" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Birincil Kurucu Argümanını Doğrulama</h2>
+                    <p class="mb-4">`init` bloğu, kurucu parametrelerinin geçerliliğini kontrol etmek için idealdir. `require()` fonksiyonu, koşul doğru değilse `IllegalArgumentException` fırlatır.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Yaş doğrulama
+class Uye(val ad: String, val yas: Int) {
+    init {
+        require(yas >= 18) { "Yaş 18 veya daha büyük olmalıdır." }
+    }
+}
+val uye1 = Uye("Merve", 25) // Başarılı
+// val uye2 = Uye("Buse", 16) // Hata fırlatır</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Pozitif fiyat doğrulama
+class Yemek(val ad: String, val fiyat: Double) {
+    init {
+        require(fiyat > 0) { "Fiyat sıfırdan büyük olmalıdır." }
+    }
+}
+val yemek1 = Yemek("Pizza", 45.0)
+// val yemek2 = Yemek("Salata", -10.0) // Hata fırlatır</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Boş metin kontrolü
+class BlogYazisi(val baslik: String) {
+    init {
+        require(baslik.isNotBlank()) { "Başlık boş olamaz." }
+    }
+}
+val yazi1 = BlogYazisi("Kotlin Null Safety")
+// val yazi2 = BlogYazisi(" ") // Hata fırlatır</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Aralıklı değer doğrulama
+class Puan(val deger: Int) {
+    init {
+        require(deger in 1..100) { "Puan 1 ile 100 arasında olmalıdır." }
+    }
+}
+val puan1 = Puan(85)
+// val puan2 = Puan(150) // Hata fırlatır</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: E-posta doğrulama
+class Eposta(val adres: String) {
+    init {
+        require(adres.contains("@") && adres.contains(".")) {
+            "Geçerli bir e-posta adresi değil."
+        }
+    }
+}
+val eposta1 = Eposta("test@example.com")
+// val eposta2 = Eposta("gecersizadres") // Hata fırlatır</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🔒</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`BankaHesabi` sınıfı için `bakiye` parametresinin 0 veya daha büyük olduğunu doğrulayın.</li>
+                             <li>`Telefon` sınıfı için `marka` parametresinin "Samsung", "Apple" veya "Xiaomi"den biri olduğunu doğrulayın.</li>
+                             <li>`OyunSkoru` sınıfında `skor` parametresinin 0 ile 1000 arasında olduğunu doğrulayın.</li>
+                             <li>`Parola` sınıfında `sifre` parametresinin en az 8 karakter uzunluğunda olduğunu doğrulayın.</li>
+                             <li>`Kitap` sınıfında `sayfaSayisi` parametresinin 10'dan büyük olduğunu doğrulayan bir kod yazın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. BankaHesabi sınıfı
+class BankaHesabi(val bakiye: Double) {
+    init {
+        require(bakiye >= 0) { "Bakiye negatif olamaz." }
+    }
+}
+
+// 2. Telefon sınıfı
+class Telefon(val marka: String) {
+    init {
+        require(marka == "Samsung" || marka == "Apple" || marka == "Xiaomi") {
+            "Marka sadece Samsung, Apple veya Xiaomi olabilir."
+        }
+    }
+}
+
+// 3. OyunSkoru sınıfı
+class OyunSkoru(val skor: Int) {
+    init {
+        require(skor in 0..1000) { "Skor 0 ile 1000 arasında olmalıdır." }
+    }
+}
+
+// 4. Parola sınıfı
+class Parola(val sifre: String) {
+    init {
+        require(sifre.length >= 8) { "Şifre en az 8 karakter uzunluğunda olmalıdır." }
+    }
+}
+
+// 5. Kitap sınıfı
+class Kitap(val sayfaSayisi: Int) {
+    init {
+        require(sayfaSayisi > 10) { "Kitap en az 11 sayfa olmalıdır." }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="try-catch" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">try-catch ile İstisna Yönetimi</h2>
+                     <p class="mb-4">`try-catch` blokları, programınızın çökmesine neden olabilecek hataları (istisnaları) yakalamak ve yönetmek için kullanılır.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: Sayı formatı hatası
+try {
+    val sayi = "abc".toInt()
+} catch (e: NumberFormatException) {
+    println("Hata: Geçersiz sayı formatı.")
+} finally {
+    println("İşlem tamamlandı.")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Bölme işlemi hatası (0'a bölme)
+fun bolme(a: Int, b: Int): Double {
+    return try {
+        (a / b).toDouble()
+    } catch (e: ArithmeticException) {
+        println("Hata: Sıfıra bölme hatası.")
+        0.0
+    }
+}
+println("Sonuç: ${bolme(10, 2)}")
+println("Sonuç: ${bolme(10, 0)}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Birden fazla catch bloğu
+try {
+    val arr = arrayOf(1, 2)
+    println(arr[5])
+} catch (e: ArrayIndexOutOfBoundsException) {
+    println("Hata: Dizi sınırları dışında bir indekse erişim.")
+} catch (e: Exception) {
+    println("Genel bir hata oluştu.")
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Dosya okuma hatası simülasyonu
+fun dosyaOku() {
+    try {
+        throw Exception("Dosya bulunamadı hatası!")
+    } catch (e: Exception) {
+        println("Hata yakalandı: ${e.message}")
+    }
+}
+dosyaOku()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: try-catch bir ifade olarak
+val sayiStr = "123"
+val sayi = try {
+    sayiStr.toInt()
+} catch (e: NumberFormatException) {
+    0 // Hata durumunda 0 döndür
+}
+println("Sonuç: $sayi")</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ⚠️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>Kullanıcıdan bir metin girmesini isteyin. Eğer girilen metin bir sayıya çevrilemiyorsa, "Geçersiz giriş. Lütfen bir sayı girin." hatası verin.</li>
+                             <li>`bolme` fonksiyonunda ikinci parametre 0 ise `ArithmeticException` fırlatın ve `try-catch` ile bu hatayı yakalayın.</li>
+                             <li>`metinler` adlı bir string listesi oluşturun ve 5. indeksteki elemana erişmeye çalışın. `IndexOutOfBoundsException` hatasını yakalayın.</li>
+                             <li>İç içe `try-catch` blokları kullanarak bir dosya okuma işlemi simüle edin. Dış blokta "Dosya okuma işlemi başladı.", iç blokta "Dosya okunamadı" gibi mesajlar yazdırın.</li>
+                             <li>`try-catch`'i bir ifade olarak kullanarak, bir string'i `Int`'e çevirmeye çalışın. Eğer başarılı olursa sayıyı, başarısız olursa -1'i `sonuc` adlı değişkene atayın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Sayı çevirme hatası
+try {
+    print("Bir sayı girin: ")
+    val sayi = readln().toInt()
+    println("Girilen sayı: $sayi")
+} catch (e: NumberFormatException) {
+    println("Geçersiz giriş. Lütfen bir sayı girin.")
+}
+
+// 2. Sıfıra bölme hatası
+fun bolmeIslemi(a: Int, b: Int) {
+    try {
+        if (b == 0) {
+            throw ArithmeticException("Sıfıra bölme yapılamaz.")
+        }
+        println("Sonuç: ${a / b}")
+    } catch (e: ArithmeticException) {
+        println("Hata: ${e.message}")
+    }
+}
+bolmeIslemi(10, 0)
+
+// 3. Dizi sınırları hatası
+val metinler = listOf("A", "B", "C")
+try {
+    println(metinler[5])
+} catch (e: IndexOutOfBoundsException) {
+    println("Hata: Dizi sınırları dışında bir indekse erişim.")
+}
+
+// 4. İç içe try-catch
+fun dosyaOkuSimulasyon() {
+    try {
+        println("Dosya okuma işlemi başladı.")
+        try {
+            throw Exception("Dosya okunamadı.")
+        } catch (e: Exception) {
+            println("İç blokta hata: ${e.message}")
+        }
+    } catch (e: Exception) {
+        println("Dış blokta hata: ${e.message}")
+    }
+}
+dosyaOkuSimulasyon()
+
+// 5. try-catch ifade olarak
+val stringSayi = "42"
+val sonuc = try {
+    stringSayi.toInt()
+} catch (e: NumberFormatException) {
+    -1
+}
+println("Sonuç değeri: $sonuc")</code></pre>
+                    </div>
+                </div>
+
+                <div id="tostring-equals" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">toString ve equals Metotları</h2>
+                    <p class="mb-4">Her Kotlin nesnesinin bir `toString()` ve `equals()` metodu vardır. Bunları geçersiz kılarak nesnenin daha anlamlı bir string temsilini ve içerik karşılaştırmasını sağlayabiliriz.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: toString olmadan
+class Kisi(val ad: String, val yas: Int)
+val kisi1 = Kisi("Ali", 30)
+println(kisi1) // Varsayılan çıktı: sınıf adı@hashcode</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: toString() metodu
+class Araba(val marka: String, val model: String) {
+    override fun toString(): String {
+        return "Marka: $marka, Model: $model"
+    }
+}
+val araba1 = Araba("Honda", "Civic")
+println(araba1)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: equals() metodunu geçersiz kılma
+class NoktaCustom(val x: Int, val y: Int) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is NoktaCustom) return false
+        return x == other.x && y == other.y
+    }
+}
+val noktaA = NoktaCustom(1, 2)
+val noktaB = NoktaCustom(1, 2)
+println(noktaA == noktaB) // true</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: equals() ve hashCode()
+class Cember(val yariCap: Double) {
+    override fun equals(other: Any?): Boolean {
+        return other is Cember && other.yariCap == this.yariCap
+    }
+    override fun hashCode(): Int {
+        return yariCap.hashCode()
+    }
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: String'ler için equals
+val str1 = "Kotlin"
+val str2 = "Kotlin"
+println(str1 == str2) // true</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ⚖️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Film` adında `baslik` ve `yonetmen` özelliklerine sahip bir sınıf oluşturun ve bu sınıfın nesneleri için anlamlı bir `toString` çıktısı verin.</li>
+                            <li>`Hesap` adında `hesapNo` ve `bakiye` özelliklerine sahip bir sınıf oluşturun. Nesnelerinizi yazdırdığınızda "Hesap No: [hesapNo], Bakiye: [bakiye]" şeklinde bir çıktı elde edin.</li>
+                            <li>`Kitap` sınıfını `baslik` ve `yazar` özellikleriyle tanımlayın. Bir `toString` metodu yazın ve içine yazar adının uzunluğunu da ekleyin.</li>
+                            <li>`Adres` sınıfını `sehir`, `mahalle` ve `sokak` özellikleriyle oluşturun. `toString` metodunda bu bilgileri birleştirerek bir çıktı verin.</li>
+                            <li>`Arac` sınıfını `marka` ve `model` özellikleriyle oluşturun. `toString` metodunu `val arac1 = Arac("Ford", "Focus")` çıktısı `Arac(marka=Ford, model=Focus)` olacak şekilde düzenleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Film toString
+class Film(val baslik: String, val yonetmen: String) {
+    override fun toString(): String {
+        return "Film: '$baslik' - Yönetmen: $yonetmen"
+    }
+}
+val film = Film("Inception", "Christopher Nolan")
+println(film)
+
+// 2. Hesap toString
+class Hesap(val hesapNo: String, val bakiye: Double) {
+    override fun toString(): String {
+        return "Hesap No: $hesapNo, Bakiye: $bakiye"
+    }
+}
+val hesap = Hesap("TR12345", 5000.50)
+println(hesap)
+
+// 3. Kitap toString
+class Kitap(val baslik: String, val yazar: String) {
+    override fun toString(): String {
+        return "Kitap: $baslik, Yazar: $yazar (Uzunluk: ${yazar.length})"
+    }
+}
+val kitap = Kitap("Nutuk", "Mustafa Kemal Atatürk")
+println(kitap)
+
+// 4. Adres toString
+class Adres(val sehir: String, val mahalle: String, val sokak: String) {
+    override fun toString(): String {
+        return "$sokak Sok., $mahalle Mahallesi, $sehir"
+    }
+}
+val adres = Adres("Ankara", "Çankaya", "Atatürk")
+println(adres)
+
+// 5. Araç toString
+class Arac(val marka: String, val model: String) {
+    override fun toString(): String {
+        return "Arac(marka=$marka, model=$model)"
+    }
+}
+val arac = Arac("Ford", "Focus")
+println(arac)</code></pre>
+                    </div>
+                </div>
+
+                <div id="data-class" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Data Class</h2>
+                     <p class="mb-4">`data class`, veri tutmak için tasarlanmıştır. Derleyici otomatik olarak `equals()`, `hashCode()`, `toString()`, `copy()` ve `componentN()` gibi faydalı metotları oluşturur.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: Basit bir data class
+data class User(val name: String, val age: Int)
+
+val user1 = User("Ali", 25)
+val user2 = user1.copy(age = 26) // Kopyalama
+
+println(user1) // User(name=Ali, age=25)
+println(user1 == User("Ali", 25)) // true
+println(user2) // User(name=Ali, age=26)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: copy() metodu
+val user3 = user1.copy()
+val user4 = user1.copy(age = 26)
+println("user3 == user1? ${user3 == user1}")
+println("user4: $user4")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Destructuring (ayrıştırma)
+val (name, age) = user1
+println("İsim: $name, Yaş: $age")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Data class listesi
+val users = listOf(
+    User("Ayşe", 30),
+    User("Can", 22)
+)
+println("Kullanıcılar: $users")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Data class içinde null değerler
+data class Product(val id: Int, val name: String, val price: Double?)
+val product1 = Product(101, "Telefon", 15000.0)
+val product2 = Product(102, "Şarj Aleti", null)
+println(product1)
+println(product2)</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 📊</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Gorev` adında `id`, `baslik` ve `tamamlandiMi` (Boolean) özelliklerine sahip bir data class oluşturun.</li>
+                            <li>İki farklı `Gorev` nesnesi oluşturun. İkisinin de `id` ve `baslik` özellikleri aynı, `tamamlandiMi` özellikleri farklı olsun.</li>
+                            <li>İlk oluşturduğunuz görevi `copy()` metodunu kullanarak yeni bir göreve kopyalayın ve `tamamlandiMi` özelliğini değiştirin.</li>
+                            <li>`destructuring` kullanarak bir `Gorev` nesnesinin `baslik` ve `tamamlandiMi` özelliklerini ayrı değişkenlere atayın.</li>
+                            <li>`data class`'ın `toString` çıktısının neden faydalı olduğunu kendi kelimelerinizle açıklayın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Görev data class'ı
+data class Gorev(val id: Int, val baslik: String, val tamamlandiMi: Boolean)
+
+// 2. İki farklı nesne
+val gorev1 = Gorev(1, "Rapor Yaz", false)
+val gorev2 = Gorev(1, "Rapor Yaz", true)
+println("Görevler eşit mi? ${gorev1 == gorev2}")
+
+// 3. copy() ile kopyalama
+val gorev3 = gorev1.copy(tamamlandiMi = true)
+println("Yeni görev: $gorev3")
+
+// 4. Destructuring
+val (gorevBaslik, tamamlandi) = gorev1
+println("Başlık: $gorevBaslik, Tamamlandı mı: $tamamlandi")
+
+// 5. toString çıktısının faydası
+// Data class'lar, toString'i otomatik olarak oluşturduğu için nesnenin içeriğini
+// doğrudan okuyabileceğimiz bir formatta görmemizi sağlar. Bu, hata ayıklama
+// sırasında oldukça kullanışlıdır.
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="inheritance" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Kalıtım (Inheritance)</h2>
+                    <p class="mb-4">Kalıtım, bir sınıftan başka bir sınıf oluşturma mekanizmasıdır. Alt sınıf (child class), üst sınıftan (parent class) özellik ve metotları miras alır. Varsayılan olarak, Kotlin sınıfları `final`'dır, yani miras alınamaz. Miras alınabilmesi için `open` anahtar kelimesiyle belirtilmelidir.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Temel kalıtım
+open class Vasıta(val tekerlekSayisi: Int) {
+    fun hareketEt() {
+        println("Vasıta hareket ediyor.")
+    }
+}
+class Bisiklet(tekerlekSayisi: Int) : Vasıta(tekerlekSayisi)
+val bisiklet = Bisiklet(2)
+println("Bisikletin tekerlek sayısı: ${bisiklet.tekerlekSayisi}")
+bisiklet.hareketEt()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Fonksiyon ve özellik miras alma
+open class Hayvan {
+    open fun sesCikar() { // override edilebilmesi için open olmalı
+        println("Hayvan bir ses çıkarıyor.")
+    }
+}
+class Kopek : Hayvan() {
+    override fun sesCikar() { // metodu geçersiz kıldık
+        println("Hav hav!")
+    }
+}
+val kopek = Kopek()
+kopek.sesCikar()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: İki seviyeli kalıtım
+open class Sekil
+open class Kare : Sekil()
+class Dikdortgen : Kare()
+val dikdortgen = Dikdortgen()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Kurucu parametrelerini geçirme
+open class Kisi(val ad: String, val yas: Int)
+class Calisan(ad: String, yas: Int, val pozisyon: String) : Kisi(ad, yas)
+val calisan = Calisan("Ayşe", 30, "Mühendis")
+println("${calisan.ad} adlı çalışanın pozisyonu: ${calisan.pozisyon}")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Farklı seviyelerden erişim
+open class A {
+    fun mesajA() = println("A sınıfı")
+}
+open class B : A() {
+    fun mesajB() = println("B sınıfı")
+}
+class C : B() {
+    fun mesajC() {
+        mesajA()
+        mesajB()
+        println("C sınıfı")
+    }
+}
+val c = C()
+c.mesajC()</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 👨‍👩‍👧‍👦</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`Personel` adında, `ad` ve `soyad` özelliklerine sahip `open` bir sınıf oluşturun. Bu sınıftan miras alan `Mudur` sınıfını oluşturun ve `departman` özelliğini ekleyin.</li>
+                             <li>`Cihaz` adında `ac()` metoduna sahip bir `open` sınıf yazın. Bu sınıftan miras alan `Telefon` sınıfı oluşturun ve `ac()` metodunu geçersiz kılın.</li>
+                             <li>`Hayvan -> Memeli -> Kedi` şeklinde bir kalıtım hiyerarşisi oluşturun.</li>
+                             <li>`Bina` sınıfı `katSayisi` parametresi alsın. Bu sınıftan miras alan `Okul` sınıfı oluşturun ve `katSayisi` ile birlikte `ogrenciSayisi` parametresi ekleyin.</li>
+                             <li>`Arac` ve `Otomobil` sınıflarını miras alma ilişkisiyle oluşturun. `Otomobil` sınıfı, `Arac` sınıfındaki `hizlan` metoduna erişebilsin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Personel ve Müdür sınıfları
+open class Personel(val ad: String, val soyad: String)
+class Mudur(ad: String, soyad: String, val departman: String) : Personel(ad, soyad)
+
+// 2. Cihaz ve Telefon sınıfları
+open class Cihaz {
+    open fun ac() {
+        println("Cihaz açılıyor.")
+    }
+}
+class Telefon : Cihaz() {
+    override fun ac() {
+        println("Telefon açılıyor.")
+    }
+}
+
+// 3. Hayvan hiyerarşisi
+open class Hayvan
+open class Memeli : Hayvan()
+class Kedi : Memeli()
+
+// 4. Bina ve Okul sınıfları
+open class Bina(val katSayisi: Int)
+class Okul(katSayisi: Int, val ogrenciSayisi: Int) : Bina(katSayisi)
+
+// 5. Araç ve Otomobil sınıfları
+open class Arac {
+    fun hizlan() {
+        println("Araç hızlanıyor.")
+    }
+}
+class Otomobil : Arac()
+val otomobil = Otomobil()
+otomobil.hizlan()</code></pre>
+                    </div>
+                </div>
+
+                <div id="override" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Metot Geçersiz Kılma (Method Overriding)</h2>
+                     <p class="mb-4">Alt sınıfta, üst sınıftan miras alınan bir metodun davranışını `override` anahtar kelimesi ile değiştirmeye denir.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: Temel metot geçersiz kılma
+open class Egitim {
+    open fun dersVer() {
+        println("Genel ders veriliyor.")
+    }
+}
+class OnlineEgitim : Egitim() {
+    override fun dersVer() {
+        println("Online ders veriliyor.")
+    }
+}
+val onlineEgitim = OnlineEgitim()
+onlineEgitim.dersVer()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Parametreli metot geçersiz kılma
+open class Arac {
+    open fun hizlan(hiz: Int) {
+        println("Araç $hiz km/s hıza ulaştı.")
+    }
+}
+class SporAraba : Arac() {
+    override fun hizlan(hiz: Int) {
+        println("Spor araba $hiz km/s hıza çok hızlı bir şekilde ulaştı!")
+    }
+}
+val sporAraba = SporAraba()
+sporAraba.hizlan(150)</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: super anahtar kelimesi ile üst sınıf metoduna erişim
+open class Parent {
+    open fun mesaj() {
+        println("Parent sınıfından mesaj.")
+    }
+}
+class Child : Parent() {
+    override fun mesaj() {
+        super.mesaj() // Üst sınıfın metodunu çağırır
+        println("Child sınıfından mesaj.")
+    }
+}
+val child = Child()
+child.mesaj()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: İki farklı sınıfın aynı metodu override etmesi
+open class Cihaz {
+    open fun ac() {
+        println("Cihaz açılıyor.")
+    }
+}
+class Bilgisayar : Cihaz() {
+    override fun ac() {
+        println("Bilgisayar açılıyor.")
+    }
+}
+class Televizyon : Cihaz() {
+    override fun ac() {
+        println("Televizyon açılıyor.")
+    }
+}
+val bilgisayar = Bilgisayar()
+val tv = Televizyon()
+bilgisayar.ac()
+tv.ac()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Metot ve özellik override etme
+open class Sekil {
+    open val renk = "Beyaz"
+    open fun ciz() {
+        println("$renk renkli bir şekil çiziliyor.")
+    }
+}
+class Daire : Sekil() {
+    override val renk = "Mavi"
+    override fun ciz() {
+        println("$renk renkli bir daire çiziliyor.")
+    }
+}
+val daire = Daire()
+daire.ciz()</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🔀</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`Hayvan` sınıfına `sesCikar()` metodunu ekleyin. `Kus` sınıfı bu metodu geçersiz kılıp "Cik cik!" çıktısını versin.</li>
+                             <li>`TemelHesaplayici` sınıfına `toplama(a, b)` metodunu ekleyin. Bu sınıftan miras alan `GelistirilmisHesaplayici` sınıfı bu metodu geçersiz kılsın ve `a + b` işleminin sonucunun bir logunu tutsun.</li>
+                             <li>`parent` sınıfının bir metodu `parentMethod()` ve `child` sınıfının `childMethod()` metodu olsun. `childMethod` içinden `parentMethod`'u çağırın.</li>
+                             <li>`Cizilebilir` sınıfını `ciz()` metoduyla tanımlayın. `Ucgen` ve `Kare` sınıfları bu metodu geçersiz kılsın ve kendi şekillerinin çizildiğini yazdırsın.</li>
+                             <li>`open` sınıf olan `Banka`'ya `faizHesapla()` metodunu ekleyin. `KatilimBankasi` sınıfı bu metodu geçersiz kılarak kendi faiz oranını (`faizOrani` özelliği) kullanarak bir hesaplama yapsın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Hayvan ve Kuş sınıfları
+open class Hayvan {
+    open fun sesCikar() { }
+}
+class Kus : Hayvan() {
+    override fun sesCikar() {
+        println("Cik cik!")
+    }
+}
+val kus = Kus()
+kus.sesCikar()
+
+// 2. Temel ve Geliştirilmiş Hesaplayıcı
+open class TemelHesaplayici {
+    open fun toplama(a: Int, b: Int): Int {
+        return a + b
+    }
+}
+class GelistirilmisHesaplayici : TemelHesaplayici() {
+    override fun toplama(a: Int, b: Int): Int {
+        val sonuc = super.toplama(a, b)
+        println("Log: Toplama işlemi sonucu: $sonuc")
+        return sonuc
+    }
+}
+val hesap = GelistirilmisHesaplayici()
+hesap.toplama(5, 3)
+
+// 3. Parent ve Child metotları
+open class Parent {
+    open fun parentMethod() {
+        println("Parent metodu.")
+    }
+}
+class Child : Parent() {
+    fun childMethod() {
+        super.parentMethod()
+        println("Child metodu.")
+    }
+}
+val c = Child()
+c.childMethod()
+
+// 4. Çizilebilir arayüzü
+open class Cizilebilir {
+    open fun ciz() {}
+}
+class Ucgen : Cizilebilir() {
+    override fun ciz() {
+        println("Üçgen çiziliyor.")
+    }
+}
+class Kare : Cizilebilir() {
+    override fun ciz() {
+        println("Kare çiziliyor.")
+    }
+}
+
+// 5. Banka ve Katılım Bankası
+open class Banka {
+    open fun faizHesapla(anaPara: Double): Double {
+        return anaPara * 0.10
+    }
+}
+class KatilimBankasi(val faizOrani: Double) : Banka() {
+    override fun faizHesapla(anaPara: Double): Double {
+        return anaPara * faizOrani
+    }
+}
+val katilimBankasi = KatilimBankasi(0.05)
+println("Faiz: ${katilimBankasi.faizHesapla(1000.0)}")</code></pre>
+                    </div>
+                </div>
+
+                <div id="abstract" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Soyut (Abstract) Sınıf ve Metot</h2>
+                     <p class="mb-4">Soyut sınıflar, nesnesi oluşturulamayan sınıflardır ve `abstract` anahtar kelimesiyle tanımlanır. Genellikle ortak davranışlar için bir temel sınıf olarak hizmet eder.</p>
+                     <pre><code class="language-kotlin">// Örnek 1: Soyut sınıf ve metot
+abstract class Varlık(val ad: String) {
+    abstract fun selamla()
+}
+class Insan(ad: String) : Varlık(ad) {
+    override fun selamla() {
+        println("Merhaba, ben bir insanım. Adım $ad.")
+    }
+}
+val insan = Insan("Ahmet")
+insan.selamla()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Soyut ve normal metotlar
+abstract class Calisan(val ad: String) {
+    abstract fun isYap()
+    fun molaVer() {
+        println("$ad mola veriyor.")
+    }
+}
+class Programci(ad: String) : Calisan(ad) {
+    override fun isYap() {
+        println("$ad kod yazıyor.")
+    }
+}
+val programci = Programci("Mehmet")
+programci.isYap()
+programci.molaVer()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Soyut özellik
+abstract class Kitap {
+    abstract val sayfaSayisi: Int
+}
+class Roman(override val sayfaSayisi: Int) : Kitap()
+val roman = Roman(450)
+println("Roman ${roman.sayfaSayisi} sayfa.")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Soyut sınıf hiyerarşisi
+abstract class Ucak {
+    abstract fun kalkisYap()
+    abstract fun inisYap()
+}
+class YolcuUcagi : Ucak() {
+    override fun kalkisYap() {
+        println("Yolcu uçağı kalkış yaptı.")
+    }
+    override fun inisYap() {
+        println("Yolcu uçağı iniş yaptı.")
+    }
+}
+val yolcuUcagi = YolcuUcagi()
+yolcuUcagi.kalkisYap()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Soyut sınıfın nesne olarak kullanılamaması
+// val soyutNesne = Varlık("Test") // Hata!</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧠</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Bina` adında, `adres` özelliğine sahip bir `abstract` sınıf oluşturun ve `bilgiYazdir()` adında soyut bir metot ekleyin.</li>
+                            <li>`Ev` sınıfını `Bina` sınıfından türetin ve `bilgiYazdir()` metodunu geçersiz kılarak kendi bilgilerini yazdırsın.</li>
+                            <li>`SoyutHayvan` sınıfı oluşturun ve `yemekYe()` adında soyut bir metot, `uyu()` adında ise normal bir metot tanımlayın.</li>
+                            <li>`Kedi` sınıfı `SoyutHayvan`'dan miras alsın ve soyut metotları uygulayarak kendi özelliklerini eklesin.</li>
+                            <li>`Hesaplayici` adında, `topla()` ve `cikar()` adında soyut metotlara sahip bir `abstract` sınıf oluşturun.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1 ve 2. Bina ve Ev sınıfları
+abstract class Bina(val adres: String) {
+    abstract fun bilgiYazdir()
+}
+class Ev(adres: String) : Bina(adres) {
+    override fun bilgiYazdir() {
+        println("Ev adresi: $adres")
+    }
+}
+val ev = Ev("123 Sokak")
+ev.bilgiYazdir()
+
+// 3 ve 4. SoyutHayvan ve Kedi sınıfları
+abstract class SoyutHayvan {
+    abstract fun yemekYe()
+    fun uyu() {
+        println("Hayvan uyuyor.")
+    }
+}
+class Kedi : SoyutHayvan() {
+    override fun yemekYe() {
+        println("Kedi mama yiyor.")
+    }
+}
+val kedi = Kedi()
+kedi.yemekYe()
+kedi.uyu()
+
+// 5. Hesaplayıcı sınıfı
+abstract class Hesaplayici {
+    abstract fun topla(a: Int, b: Int): Int
+    abstract fun cikar(a: Int, b: Int): Int
+}
+// Bu sınıfın nesnesi oluşturulamaz, ancak alt sınıfları metotlarını implement edebilir.</code></pre>
+                    </div>
+                </div>
+
+                <div id="interface" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Arayüz (Interface)</h2>
+                    <p class="mb-4">`Interface`, bir sınıfın sahip olması gereken davranışları tanımlar. Bir sınıf birden fazla `interface`'i uygulayabilir.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Temel interface
+interface HareketEdebilir {
+    fun ilerle()
+}
+class Araba : HareketEdebilir {
+    override fun ilerle() {
+        println("Araba hareket ediyor.")
+    }
+}
+val araba = Araba()
+araba.ilerle()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 2: Birden fazla interface
+interface Hizlanabilir {
+    fun hizlan(hiz: Int)
+}
+interface Durabilir {
+    fun dur()
+}
+class Bisiklet : Hizlanabilir, Durabilir {
+    override fun hizlan(hiz: Int) {
+        println("Bisiklet $hiz km/s hıza ulaştı.")
+    }
+    override fun dur() {
+        println("Bisiklet durdu.")
+    }
+}
+val bisiklet = Bisiklet()
+bisiklet.hizlan(20)
+bisiklet.dur()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Interface'te varsayılan metot
+interface SesCikaran {
+    fun sesCikar()
+    fun uyu() {
+        println("Nesne uyuyor.")
+    }
+}
+class Kedi : SesCikaran {
+    override fun sesCikar() {
+        println("Miyav!")
+    }
+}
+val kedi = Kedi()
+kedi.sesCikar()
+kedi.uyu()</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: Interface'te özellikler
+interface Verimli {
+    val verim: Int
+}
+class Ampul(override val verim: Int) : Verimli
+val ampul = Ampul(95)
+println("Ampulün verimi: ${ampul.verim}%")</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: Farklı sınıfların aynı interface'i uygulaması
+interface HayvanOzelligi {
+    fun yuru()
+}
+class At : HayvanOzelligi {
+    override fun yuru() {
+        println("At yürüyor.")
+    }
+}
+class Kus : HayvanOzelligi {
+    override fun yuru() {
+        println("Kuş yürümek yerine uçmayı tercih eder.")
+    }
+}
+val at = At()
+val kus = Kus()
+at.yuru()
+kus.yuru()</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🤝</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Oynanabilir` adında, `oyna()` ve `dur()` metotlarına sahip bir interface tanımlayın.</li>
+                            <li>`MuzikCalar` sınıfı `Oynanabilir` interface'ini uygulasın ve her iki metodu da geçersiz kılsın.</li>
+                            <li>`AyarYapilabilir` adında, `ayariDegistir()` metoduna sahip ve `varsayilanDeger` özelliğini içeren bir interface oluşturun.</li>
+                            <li>`Telefon` ve `Tablet` sınıfları `AyarYapilabilir` interface'ini uygulasın.</li>
+                            <li>`Ekran` sınıfı, `Acilabilir` (açma) ve `Kapanabilir` (kapama) adında iki farklı interface'i uygulasın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Oynanabilir arayüzü
+interface Oynanabilir {
+    fun oyna()
+    fun dur()
+}
+
+// 2. MüzikÇalar sınıfı
+class MuzikCalar : Oynanabilir {
+    override fun oyna() {
+        println("Müzik çalıyor.")
+    }
+    override fun dur() {
+        println("Müzik durdu.")
+    }
+}
+
+// 3. AyarYapilabilir arayüzü
+interface AyarYapilabilir {
+    val varsayilanDeger: Int
+    fun ayariDegistir()
+}
+
+// 4. Telefon ve Tablet sınıfları
+class Telefon : AyarYapilabilir {
+    override val varsayilanDeger = 50
+    override fun ayariDegistir() {
+        println("Telefon ayarları değiştiriliyor.")
+    }
+}
+class Tablet : AyarYapilabilir {
+    override val varsayilanDeger = 70
+    override fun ayariDegistir() {
+        println("Tablet ayarları değiştiriliyor.")
+    }
+}
+
+// 5. Ekran sınıfı
+interface Acilabilir { fun ac() }
+interface Kapanabilir { fun kapa() }
+class Ekran : Acilabilir, Kapanabilir {
+    override fun ac() { println("Ekran açıldı.") }
+    override fun kapa() { println("Ekran kapandı.") }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="object-companion" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Object ve Companion Object</h2>
+                    <p class="mb-2"><strong>object:</strong> Singleton (tekil) deseni uygulamak için kullanılır. Bu sınıfın sadece bir örneği oluşturulur.</p>
+                    <p class="mb-4"><strong>companion object:</strong> Bir sınıfın kendisine ait, nesne örneklerine bağlı olmayan (statik gibi) üyelere erişmek için kullanılır.</p>
+                    <pre><code class="language-kotlin">// Örnek 1: Singleton object
+object DatabaseDriver {
+    fun connect() {
+        println("Veritabanına bağlandı.")
+    }
+}
+
+// Örnek 2: Companion object
+class Matematik {
+    companion object {
+        const val PI = 3.14159
+        fun daireAlanHesapla(yaricap: Double) = PI * yaricap * yaricap
+    }
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 3: Nesne olarak anonim sınıf (Object expression)
+val anonimListener = object {
+    fun onButtonClick() {
+        println("Butona tıklandı!")
+    }
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 4: companion object'e isim verme
+class Fabrika {
+    companion object Uretim {
+        fun yeniUrunUret() = println("Yeni bir ürün üretiliyor.")
+    }
+}</code></pre>
+                    <pre><code class="language-kotlin">// Örnek 5: object ve interface
+interface BilgiGetir {
+    fun bilgi()
+}
+object UygulamaAyarlari : BilgiGetir {
+    val tema = "Açık"
+    override fun bilgi() {
+        println("Uygulama ayarları: Tema '$tema'")
+    }
+}</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧑‍🤝‍🧑</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Logger` adında, `log(mesaj)` fonksiyonuna sahip tekil bir `object` oluşturun.</li>
+                             <li>`YardimciFonksiyonlar` adında, `stringBuyukHarfeCevir(metin)` fonksiyonuna sahip bir `companion object` yazın.</li>
+                             <li>`StatikVeri` adında bir sınıf oluşturun ve içinde `kullaniciSayisi` adında bir `companion object` özelliği tanımlayın.</li>
+                             <li>`Button` sınıfı için, tıklama olayı dinleyicisini bir `object expression` (anonim sınıf) olarak uygulayın.</li>
+                             <li>`Fabrika` sınıfına, birincil kurucu almayan ve `uret()` metoduna sahip bir `companion object` ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-kotlin">// 1. Logger object
+object Logger {
+    fun log(mesaj: String) {
+        println("LOG: $mesaj")
+    }
+}
+Logger.log("Uygulama başlatıldı.")
+
+// 2. Yardımcı Fonksiyonlar
+class YardimciFonksiyonlar {
+    companion object {
+        fun stringBuyukHarfeCevir(metin: String): String {
+            return metin.uppercase()
+        }
+    }
+}
+println(YardimciFonksiyonlar.stringBuyukHarfeCevir("kotlin"))
+
+// 3. Statik veri
+class StatikVeri {
+    companion object {
+        var kullaniciSayisi = 0
+    }
+}
+StatikVeri.kullaniciSayisi++
+println("Kullanıcı sayısı: ${StatikVeri.kullaniciSayisi}")
+
+// 4. Object expression
+class Button {
+    fun setOnClickListener(listener: Any) {
+        // Bu listener'ı kullanmak için buraya kod ekleyebiliriz
+    }
+}
+val myButton = Button()
+myButton.setOnClickListener(object {
+    fun onClick() {
+        println("Butona tıklandı!")
+    }
+})
+
+// 5. Fabrika companion object
+class Fabrika {
+    companion object {
+        fun uret() {
+            println("Yeni bir ürün üretiliyor.")
+        }
+    }
+}
+Fabrika.uret()</code></pre>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuLinks = document.querySelectorAll('.menu-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            function showSection(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                menuLinks.forEach(link => {
+                    link.classList.remove('active', 'text-orange-400', 'text-blue-400', 'text-purple-400');
+                });
+
+                const targetSection = document.getElementById(targetId);
+                const activeLink = document.querySelector(`.menu-link[data-target="${targetId}"]`);
+                
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    const colorClasses = ['text-orange-400', 'text-blue-400', 'text-purple-400'];
+                    const color = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+                    activeLink.classList.add(color);
+                }
+            }
+
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const targetId = this.dataset.target;
+                    showSection(targetId);
+                });
+            });
+
+            showSection('giris');
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
+
