@@ -1,0 +1,841 @@
+<!-- Chosen Palette: Modern Web (Dark Theme) - Slate background with Blue, Green, and Orange accents for different elements. -->
+<!-- Application Structure Plan: A two-column layout SPA. The left column is a fixed navigation sidebar listing all topics. Clicking a topic dynamically shows its content in the right main area. This structure provides intuitive, direct access to specific information, which is ideal for educational documentation, enhancing user experience by allowing them to focus on one topic at a time without scrolling through a long document. -->
+<!-- Visualization & Content Choices: Report Info (HTML educational text) -> Goal (Inform/Educate) -> Presentation (Styled HTML for text, lists, and code blocks) -> Interaction (Clickable side navigation to show/hide content sections) -> Justification (This is the standard and most effective way to present navigable documentation, offering clarity and ease of use.) -> Library/Method (Vanilla JS for navigation logic, Tailwind CSS for styling). -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Etkileşimli Dokümantasyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .menu-link.active {
+            background-color: #334155; /* Slate-700 */
+        }
+        pre[class*="language-"] {
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        code {
+            background-color: #2b3648;
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 3px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: inherit;
+        }
+        .exercise-block {
+            background-color: #1e293b; /* Slate-800 */
+            border-left: 4px solid #f97316; /* Orange-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .solution-block {
+            background-color: #1a2434;
+            border-left: 4px solid #3b82f6; /* Blue-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid #475569;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #334155;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-1/4 bg-slate-800 p-6 md:sticky top-0 md:h-screen overflow-y-auto">
+            <h1 class="text-2xl font-bold text-white mb-6 pb-4 border-b border-slate-700">HTML Dokümantasyonu 🚀</h1>
+            <nav>
+                <ul id="menu-list" class="space-y-2">
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="giris">Giriş</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="temel-yapi">Temel HTML Yapısı</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="basliklar">Başlıklar (<code>&lt;h1&gt;</code>-<code>&lt;h6&gt;</code>)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="paragraflar">Paragraflar ve Metin Biçimlendirme</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="baglantilar">Bağlantılar (<code>&lt;a&gt;</code>)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="gorseller">Görseller (<code>&lt;img&gt;</code>)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="listeler">Listeler (<code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="tablolar">Tablolar (<code>&lt;table&gt;</code>)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="formlar">Formlar (<code>&lt;form&gt;</code>)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="inputlar">Girdi Elemanları (<code>&lt;input&gt;</code>)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="semantik">Semantik HTML</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="div-span">Div ve Span</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="yorumlar">Yorum Satırları</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="multimedya">Multimedya (<code>&lt;audio&gt;</code>, <code>&lt;video&gt;</code>)</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="w-full md:w-3/4 p-6 md:p-10 overflow-y-auto">
+            <div id="content-area">
+                
+                <div id="giris" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Giriş - HTML Öğrenmeye Başlayın</h2>
+                    <p class="mb-4">HTML (HyperText Markup Language), web sayfalarının iskeletini oluşturmak için kullanılan standart bir işaretleme dilidir. Bu doküman, HTML'i sıfırdan öğrenmeniz için tasarlandı. Adım adım ilerleyerek, modern web geliştirmenin temelini sağlam bir şekilde atacaksınız.</p>
+                    <p>Her bölümde, konuyu pekiştirmeniz için bolca örnek ve "Sıra Sende!" alıştırmaları bulacaksınız. Hazırsanız, web'in yapı taşlarını öğrenmeye başlayalım!</p>
+                </div>
+
+                <div id="temel-yapi" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Temel HTML Yapısı</h2>
+                    <p class="mb-4">Her HTML belgesi belirli temel etiketlerden oluşur. Bu yapı, tarayıcıya sayfanın bir HTML belgesi olduğunu ve nasıl yorumlanması gerektiğini söyler.</p>
+                    <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="tr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Sayfa Başlığı&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Sayfa içeriği buraya gelecek --&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    <ul class="list-disc list-inside space-y-2 mt-4">
+                        <li><code>&lt;!DOCTYPE html&gt;</code>: Belgenin HTML5 olduğunu tanımlar.</li>
+                        <li><code>&lt;html&gt;</code>: HTML sayfasının kök elemanıdır. <code>lang</code> özelliği sayfanın dilini belirtir.</li>
+                        <li><code>&lt;head&gt;</code>: Sayfa hakkında meta bilgileri (başlık, karakter seti, stiller, scriptler) içerir. Tarayıcıda görünmez.</li>
+                        <li><code>&lt;title&gt;</code>: Tarayıcı sekmesinde görünen sayfa başlığını belirtir.</li>
+                        <li><code>&lt;body&gt;</code>: Başlıklar, paragraflar, resimler, linkler gibi sayfanın görünen tüm içeriğini barındırır.</li>
+                    </ul>
+
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧠</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>"İlk Web Sayfam" başlığına sahip temel bir HTML yapısı oluşturun.</li>
+                            <li>Oluşturduğunuz yapının <code>&lt;body&gt;</code> etiketleri arasına "Merhaba Dünya!" metnini ekleyin.</li>
+                            <li><code>&lt;html&gt;</code> etiketinin dil özelliğini Türkçe (<code>tr</code>) olarak ayarlayın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang="tr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;İlk Web Sayfam&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    Merhaba Dünya!
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    </div>
+                </div>
+
+                <div id="basliklar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Başlıklar (<code>&lt;h1&gt;</code>-<code>&lt;h6&gt;</code>)</h2>
+                    <p class="mb-2">Başlık etiketleri, bir belgedeki başlıkları ve alt başlıkları tanımlamak için kullanılır. <code>&lt;h1&gt;</code> en önemli başlığı, <code>&lt;h6&gt;</code> ise en az önemli başlığı temsil eder. Sayfa başına sadece bir adet <code>&lt;h1&gt;</code> kullanılması SEO için en iyi pratiktir.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: En önemli başlık --&gt;
+&lt;h1&gt;Bu bir Ana Başlıktır&lt;/h1&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Alt başlık --&gt;
+&lt;h2&gt;Bu bir Alt Başlıktır&lt;/h2&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Tüm başlık seviyeleri --&gt;
+&lt;h1&gt;Başlık 1&lt;/h1&gt;
+&lt;h2&gt;Başlık 2&lt;/h2&gt;
+&lt;h3&gt;Başlık 3&lt;/h3&gt;
+&lt;h4&gt;Başlık 4&lt;/h4&gt;
+&lt;h5&gt;Başlık 5&lt;/h5&gt;
+&lt;h6&gt;Başlık 6&lt;/h6&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Arama motorları için başlıkların önemi --&gt;
+&lt;h1&gt;Web Geliştirme Temelleri&lt;/h1&gt;
+&lt;p&gt;Web geliştirme hakkında genel bilgiler.&lt;/p&gt;
+&lt;h2&gt;HTML'e Giriş&lt;/h2&gt;
+&lt;p&gt;HTML, web sayfalarının iskeletidir.&lt;/p&gt;
+</code></pre>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ✍️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>"Blog Yazım" adında bir ana başlık (<code>&lt;h1&gt;</code>) oluşturun.</li>
+                            <li>Bu ana başlığın altına "Giriş" ve "Gelişme" adında iki adet alt başlık (<code>&lt;h2&gt;</code>) ekleyin.</li>
+                            <li>"Gelişme" başlığının altına "Alt Konu 1" adında bir <code>&lt;h3&gt;</code> başlığı ekleyin.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;h1&gt;Blog Yazım&lt;/h1&gt;
+&lt;h2&gt;Giriş&lt;/h2&gt;
+&lt;p&gt;Bu bölümde konuya giriş yapılacaktır.&lt;/p&gt;
+&lt;h2&gt;Gelişme&lt;/h2&gt;
+&lt;h3&gt;Alt Konu 1&lt;/h3&gt;
+&lt;p&gt;Bu alt konuyla ilgili detaylar...&lt;/p&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="paragraflar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Paragraflar ve Metin Biçimlendirme</h2>
+                    <p class="mb-4"><code>&lt;p&gt;</code> etiketi paragrafları tanımlar. Metin içinde vurgu yapmak için çeşitli biçimlendirme etiketleri kullanılır.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Basit bir paragraf --&gt;
+&lt;p&gt;Bu bir paragraftır. Paragraflar metin bloklarını gruplamak için kullanılır.&lt;/p&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Kalın (b) ve italik (i) metin (Sadece görsel amaçlı) --&gt;
+&lt;p&gt;Bu &lt;b&gt;kalın&lt;/b&gt; bir metindir. Bu ise &lt;i&gt;italik&lt;/i&gt; bir metindir.&lt;/p&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Güçlü (strong) ve vurgulu (em) metin (Anlamsal olarak daha doğru) --&gt;
+&lt;p&gt;Bu &lt;strong&gt;güçlü bir vurgu&lt;/strong&gt; içerir. Bu ise &lt;em&gt;vurgulanmış&lt;/em&gt; bir metindir.&lt;/p&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Altı çizili (u) ve üstü çizili (s) metin --&gt;
+&lt;p&gt;Bu &lt;u&gt;altı çizili&lt;/u&gt; bir kelimedir. Bu ise &lt;s&gt;yanlış&lt;/s&gt; bir bilgidir.&lt;/p&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 5: Satır sonu (br) ve yatay çizgi (hr) --&gt;
+&lt;p&gt;İlk satır.&lt;br&gt;Bu ikinci satır.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;Yatay çizginin altındaki paragraf.&lt;/p&gt;
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 💡</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>İki cümleden oluşan bir paragraf yazın.</li>
+                            <li>Yazdığınız paragraftaki bir kelimeyi <code>&lt;strong&gt;</code> ile anlamsal olarak vurgulayın.</li>
+                            <li>Başka bir paragraf oluşturun ve içindeki bir kelimeyi <code>&lt;em&gt;</code> ile anlamsal olarak italik yapın.</li>
+                            <li>İki paragraf arasına yatay bir çizgi (<code>&lt;hr&gt;</code>) ekleyin.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;p&gt;HTML, web sayfalarının temel yapı taşıdır. Öğrenmesi &lt;strong&gt;oldukça&lt;/strong&gt; kolaydır.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;CSS ise bu yapıya &lt;em&gt;stil&lt;/em&gt; vermek için kullanılır.&lt;/p&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="baglantilar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Bağlantılar (<code>&lt;a&gt;</code>)</h2>
+                    <p class="mb-4"><code>&lt;a&gt;</code> (anchor) etiketi, bir sayfadan diğerine veya aynı sayfa içindeki bir bölüme gitmek için bağlantılar (linkler) oluşturur. <code>href</code> özelliği gidilecek URL'yi belirtir.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Dış bir web sitesine bağlantı --&gt;
+&lt;a href="https://www.google.com"&gt;Google'a Git&lt;/a&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Bağlantıyı yeni sekmede açma (güvenlik için rel="noopener noreferrer" eklenmeli) --&gt;
+&lt;a href="https://www.google.com" target="_blank" rel="noopener noreferrer"&gt;Google'ı Yeni Sekmede Aç&lt;/a&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Kendi projenizdeki başka bir sayfaya bağlantı --&gt;
+&lt;a href="/hakkimizda.html"&gt;Hakkımızda Sayfası&lt;/a&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Sayfa içi bir bölüme bağlantı --&gt;
+&lt;a href="#bolum2"&gt;Bölüm 2'ye Git&lt;/a&gt;
+&lt;!-- ... sayfa içeriği ... --&gt;
+&lt;h2 id="bolum2"&gt;Bölüm 2&lt;/h2&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 5: E-posta gönderme bağlantısı --&gt;
+&lt;a href="mailto:info@example.com"&gt;Bize E-posta Gönderin&lt;/a&gt;
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🔗</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Wikipedia anasayfasına giden bir bağlantı oluşturun.</li>
+                            <li>Oluşturduğunuz bu bağlantının yeni bir sekmede açılmasını sağlayın.</li>
+                            <li>"iletisim.html" adında bir sayfaya yönlendiren bir bağlantı oluşturun.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;!-- 1. ve 2. Alıştırma --&gt;
+&lt;a href="https://www.wikipedia.org" target="_blank" rel="noopener noreferrer"&gt;Wikipedia'yı ziyaret et&lt;/a&gt;
+
+&lt;!-- 3. Alıştırma --&gt;
+&lt;a href="iletisim.html"&gt;İletişim için tıklayın&lt;/a&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="gorseller" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Görseller (<code>&lt;img&gt;</code>)</h2>
+                    <p class="mb-4"><code>&lt;img&gt;</code> etiketi, bir web sayfasına görsel eklemek için kullanılır. Kapanış etiketi yoktur. <code>src</code> özelliği görselin yolunu, <code>alt</code> özelliği ise görsel yüklenemezse veya ekran okuyucular için alternatif metni belirtir. <code>alt</code> özelliği erişilebilirlik ve SEO için zorunludur.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Temel görsel ekleme --&gt;
+&lt;img src="resim.jpg" alt="Açıklayıcı ve anlamlı bir metin"&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Genişlik ve yükseklik belirtme (CSS ile yapmak daha iyidir) --&gt;
+&lt;img src="logo.png" alt="Şirket Logosu" width="150" height="100"&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Harici bir URL'den görsel ekleme --&gt;
+&lt;img src="https://placehold.co/600x400" alt="600x400 boyutunda yer tutucu görsel"&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Bir klasör içindeki görseli kullanma --&gt;
+&lt;img src="/images/manzara.jpg" alt="Gün batımında dağ manzarası"&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 5: Görseli bir bağlantı yapma --&gt;
+&lt;a href="anasayfa.html"&gt;
+    &lt;img src="anasayfa-butonu.png" alt="Anasayfaya Dön"&gt;
+&lt;/a&gt;
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🖼️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><code>kedi.jpg</code> adında bir dosyayı sayfaya ekleyin ve alternatif metin olarak "Beyaz bir kedi" yazın.</li>
+                            <li>Eklediğiniz görselin genişliğini 300, yüksekliğini 200 piksel olarak ayarlayın.</li>
+                            <li>Bir placeholder servisinden (ör: `https://placehold.co/400x200`) bir görseli sayfanıza ekleyin.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;!-- 1. ve 2. Alıştırma --&gt;
+&lt;img src="kedi.jpg" alt="Beyaz bir kedi" width="300" height="200"&gt;
+
+&lt;!-- 3. Alıştırma --&gt;
+&lt;img src="https://placehold.co/400x200" alt="400x200 Yer Tutucu Görsel"&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="listeler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Listeler (<code>&lt;ul&gt;</code>, <code>&lt;ol&gt;</code>)</h2>
+                     <p class="mb-4">HTML'de sıralı (<code>&lt;ol&gt;</code> - ordered list) ve sırasız (<code>&lt;ul&gt;</code> - unordered list) listeler oluşturulabilir. Her liste elemanı <code>&lt;li&gt;</code> (list item) etiketi içine yazılır.</p>
+                     <pre><code class="language-html">&lt;!-- Örnek 1: Sırasız liste (madde işaretli) --&gt;
+&lt;ul&gt;
+    &lt;li&gt;Elma&lt;/li&gt;
+    &lt;li&gt;Armut&lt;/li&gt;
+    &lt;li&gt;Kiraz&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Sıralı liste (numaralı) --&gt;
+&lt;ol&gt;
+    &lt;li&gt;Birinci adım&lt;/li&gt;
+    &lt;li&gt;İkinci adım&lt;/li&gt;
+    &lt;li&gt;Üçüncü adım&lt;/li&gt;
+&lt;/ol&gt;</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: İç içe listeler --&gt;
+&lt;ul&gt;
+    &lt;li&gt;Meyveler
+        &lt;ol&gt;
+            &lt;li&gt;Elma&lt;/li&gt;
+            &lt;li&gt;Portakal&lt;/li&gt;
+        &lt;/ol&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Sebzeler&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Açıklama listesi (dl, dt, dd) --&gt;
+&lt;dl&gt;
+  &lt;dt&gt;HTML&lt;/dt&gt;
+  &lt;dd&gt;Hiper Metin İşaretleme Dili.&lt;/dd&gt;
+  &lt;dt&gt;CSS&lt;/dt&gt;
+  &lt;dd&gt;Basamaklı Stil Sayfaları.&lt;/dd&gt;
+&lt;/dl&gt;
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 📋</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>"Alışveriş Listesi" başlığı altında, 3 maddelik bir sırasız liste oluşturun.</li>
+                             <li>"Yapılacaklar" başlığı altında, 2 maddelik bir sıralı liste oluşturun.</li>
+                             <li>Sırasız listenin bir maddesinin içine 2 maddelik yeni bir sıralı liste ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;h3&gt;Alışveriş Listesi&lt;/h3&gt;
+&lt;ul&gt;
+    &lt;li&gt;Ekmek&lt;/li&gt;
+    &lt;li&gt;Süt
+        &lt;ol&gt;
+            &lt;li&gt;Tam yağlı&lt;/li&gt;
+            &lt;li&gt;Yarım yağlı&lt;/li&gt;
+        &lt;/ol&gt;
+    &lt;/li&gt;
+    &lt;li&gt;Yumurta&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Yapılacaklar&lt;/h3&gt;
+&lt;ol&gt;
+    &lt;li&gt;Ders çalış&lt;/li&gt;
+    &lt;li&gt;Spor yap&lt;/li&gt;
+&lt;/ol&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="tablolar" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Tablolar (<code>&lt;table&gt;</code>)</h2>
+                     <p class="mb-4"><code>&lt;table&gt;</code> etiketi, verileri satır ve sütunlar halinde sunmak için kullanılır. Temel etiketleri: <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code> (satır), <code>&lt;th&gt;</code> (başlık hücresi), ve <code>&lt;td&gt;</code> (veri hücresi). Not: Tablo kenarlıkları gibi görsel stiller CSS ile verilmelidir.</p>
+                     <pre><code class="language-html">&lt;!-- Örnek 1: Basit bir tablo --&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Ad&lt;/th&gt;
+        &lt;th&gt;Soyad&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;Ahmet&lt;/td&gt;
+        &lt;td&gt;Yılmaz&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Başlık, gövde ve altbilgi ile tablo --&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;&lt;th&gt;Ürün&lt;/th&gt;&lt;th&gt;Fiyat&lt;/th&gt;&lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;&lt;td&gt;Kitap&lt;/td&gt;&lt;td&gt;50 TL&lt;/td&gt;&lt;/tr&gt;
+        &lt;tr&gt;&lt;td&gt;Kalem&lt;/td&gt;&lt;td&gt;10 TL&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tfoot&gt;
+        &lt;tr&gt;&lt;td&gt;Toplam&lt;/td&gt;&lt;td&gt;60 TL&lt;/td&gt;&lt;/tr&gt;
+    &lt;/tfoot&gt;
+&lt;/table&gt;</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Hücre birleştirme (colspan - sütun birleştirme) --&gt;
+&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th colspan="2"&gt;İletişim Bilgileri&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Telefon&lt;/td&gt;
+            &lt;td&gt;555-1234&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Hücre birleştirme (rowspan - satır birleştirme) --&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;th&gt;Ad:&lt;/th&gt;
+        &lt;td&gt;Ayşe&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;th rowspan="2"&gt;Telefon:&lt;/th&gt;
+        &lt;td&gt;555-1111 (Ev)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td&gt;555-2222 (İş)&lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ▦</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>2 sütunlu ("Öğrenci Adı", "Notu") ve 2 veri satırlı bir tablo oluşturun.</li>
+                            <li>Oluşturduğunuz tabloya <code>&lt;thead&gt;</code> ve <code>&lt;tbody&gt;</code> etiketlerini ekleyin.</li>
+                            <li>Tablonun en altına, "Ortalama" ve "88.5" verilerini içeren bir <code>&lt;tfoot&gt;</code> bölümü ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;table&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Öğrenci Adı&lt;/th&gt;
+            &lt;th&gt;Notu&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Elif Kaya&lt;/td&gt;
+            &lt;td&gt;85&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Can Demir&lt;/td&gt;
+            &lt;td&gt;92&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+    &lt;tfoot&gt;
+        &lt;tr&gt;
+            &lt;td&gt;Ortalama&lt;/td&gt;
+            &lt;td&gt;88.5&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tfoot&gt;
+&lt;/table&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="formlar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Formlar (<code>&lt;form&gt;</code>)</h2>
+                    <p class="mb-4"><code>&lt;form&gt;</code> etiketi, kullanıcıdan veri toplamak için kullanılır. Formlar, metin kutuları, onay kutuları, radyo düğmeleri, gönder butonları gibi çeşitli girdi elemanları içerebilir. <code>label</code> etiketinin <code>for</code> özelliği ile input'un <code>id</code>'sinin eşleşmesi erişilebilirlik için önemlidir.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Temel form yapısı --&gt;
+&lt;form action="/kayit-ol" method="post"&gt;
+  &lt;!-- Form elemanları buraya gelir --&gt;
+&lt;/form&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Etiket ve metin kutusu --&gt;
+&lt;form&gt;
+  &lt;label for="ad"&gt;Adınız:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="text" id="ad" name="kullanici_ad"&gt;&lt;br&gt;
+  &lt;label for="soyad"&gt;Soyadınız:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="text" id="soyad" name="kullanici_soyad"&gt;
+&lt;/form&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Gönder butonu --&gt;
+&lt;form action="/gonder"&gt;
+  &lt;label for="kullanici_adi"&gt;Kullanıcı Adı:&lt;/label&gt;
+  &lt;input type="text" id="kullanici_adi" name="kullanici_adi"&gt;
+  &lt;button type="submit"&gt;Gönder&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: GET ve POST metotları --&gt;
+&lt;!-- GET: Verileri URL'de gönderir (arama formları için). Güvenli değildir. --&gt;
+&lt;form action="/arama" method="get"&gt;&lt;/form&gt;
+
+&lt;!-- POST: Verileri HTTP isteği gövdesinde gönderir (hassas veriler, giriş formları için). --&gt;
+&lt;form action="/login" method="post"&gt;&lt;/form&gt;
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🗳️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Verileri "/iletisim" adresine POST metodu ile gönderecek bir form oluşturun.</li>
+                            <li>Formun içine <code>name="email"</code> olan bir metin giriş alanı ve bunun için "E-posta:" yazan bir <code>&lt;label&gt;</code> ekleyin.</li>
+                            <li>Formun sonuna "Kaydet" yazan bir gönder butonu (<code>&lt;button&gt;</code>) ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;form action="/iletisim" method="post"&gt;
+    &lt;label for="email_adresi"&gt;E-posta:&lt;/label&gt;&lt;br&gt;
+    &lt;input type="text" id="email_adresi" name="email"&gt;&lt;br&gt;&lt;br&gt;
+    &lt;button type="submit"&gt;Kaydet&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="inputlar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Girdi Elemanları (<code>&lt;input&gt;</code>)</h2>
+                    <p class="mb-4"><code>&lt;input&gt;</code> etiketi, formlarda en çok kullanılan elemandır. <code>type</code> özelliği sayesinde farklı türlerde veri girişi sağlayabilir.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Parola ve E-posta alanları --&gt;
+&lt;label for="email"&gt;E-posta:&lt;/label&gt;
+&lt;input type="email" id="email" name="email" placeholder="ornek@eposta.com" required&gt;&lt;br&gt;
+&lt;label for="sifre"&gt;Şifre:&lt;/label&gt;
+&lt;input type="password" id="sifre" name="sifre" minlength="8" required&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Radyo düğmeleri (sadece biri seçilebilir) --&gt;
+&lt;p&gt;Cinsiyet:&lt;/p&gt;
+&lt;input type="radio" id="erkek" name="cinsiyet" value="erkek"&gt;
+&lt;label for="erkek"&gt;Erkek&lt;/label&gt;&lt;br&gt;
+&lt;input type="radio" id="kadin" name="cinsiyet" value="kadin"&gt;
+&lt;label for="kadin"&gt;Kadın&lt;/label&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Onay kutuları (birden fazlası seçilebilir) --&gt;
+&lt;p&gt;İlgi Alanları:&lt;/p&gt;
+&lt;input type="checkbox" id="muzik" name="ilgi" value="muzik"&gt;
+&lt;label for="muzik"&gt;Müzik&lt;/label&gt;&lt;br&gt;
+&lt;input type="checkbox" id="spor" name="ilgi" value="spor"&gt;
+&lt;label for="spor"&gt;Spor&lt;/label&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Açılır liste (select) ve metin alanı (textarea) --&gt;
+&lt;label for="sehir"&gt;Şehir:&lt;/label&gt;
+&lt;select id="sehir" name="sehir"&gt;
+  &lt;option value="ist"&gt;İstanbul&lt;/option&gt;
+  &lt;option value="ank" selected&gt;Ankara&lt;/option&gt; &lt;!-- selected: varsayılan olarak seçili --&gt;
+&lt;/select&gt;&lt;br&gt;
+&lt;label for="mesaj"&gt;Mesajınız:&lt;/label&gt;
+&lt;textarea id="mesaj" name="mesaj" rows="4"&gt;&lt;/textarea&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 5: Sayı, tarih ve dosya seçimi --&gt;
+&lt;label for="yas"&gt;Yaş:&lt;/label&gt;
+&lt;input type="number" id="yas" name="yas" min="18" max="99"&gt;&lt;br&gt;
+&lt;label for="dogumgunu"&gt;Doğum Günü:&lt;/label&gt;
+&lt;input type="date" id="dogumgunu" name="dogumgunu"&gt;&lt;br&gt;
+&lt;label for="profilresmi"&gt;Profil Resmi:&lt;/label&gt;
+&lt;input type="file" id="profilresmi" name="profilresmi" accept="image/png, image/jpeg"&gt;
+</code></pre>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ⌨️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>"Kullanıcı Sözleşmesini okudum, kabul ediyorum." metni ve yanında bir onay kutusu (<code>checkbox</code>) oluşturun.</li>
+                            <li>"Evet" ve "Hayır" seçeneklerine sahip iki adet radyo düğmesi (<code>radio</code>) oluşturun. <code>name</code> özelliklerinin aynı olduğundan emin olun.</li>
+                            <li>3 farklı şehir içeren bir açılır liste (<code>select</code>) oluşturun.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;!-- 1. Alıştırma --&gt;
+&lt;input type="checkbox" id="sozlesme" name="sozlesme" required&gt;
+&lt;label for="sozlesme"&gt;Kullanıcı Sözleşmesini okudum, kabul ediyorum.&lt;/label&gt;
+&lt;br&gt;&lt;br&gt;
+
+&lt;!-- 2. Alıştırma --&gt;
+&lt;input type="radio" id="evet" name="onay" value="evet"&gt;
+&lt;label for="evet"&gt;Evet&lt;/label&gt;
+&lt;input type="radio" id="hayir" name="onay" value="hayir" checked&gt; &lt;!-- checked: varsayılan seçili --&gt;
+&lt;label for="hayir"&gt;Hayır&lt;/label&gt;
+&lt;br&gt;&lt;br&gt;
+
+&lt;!-- 3. Alıştırma --&gt;
+&lt;label for="sehir-secim"&gt;Şehrinizi Seçin:&lt;/label&gt;
+&lt;select id="sehir-secim" name="sehir"&gt;
+  &lt;option value="izmir"&gt;İzmir&lt;/option&gt;
+  &lt;option value="bursa"&gt;Bursa&lt;/option&gt;
+  &lt;option value="antalya"&gt;Antalya&lt;/option&gt;
+&lt;/select&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="semantik" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Semantik HTML</h2>
+                    <p class="mb-4">Semantik etiketler, içeriğin anlamını hem tarayıcıya hem de geliştiriciye açıkça anlatır. <code>&lt;div&gt;</code> yerine bu etiketleri kullanmak, okunabilirlik, SEO (Arama Motoru Optimizasyonu) ve erişilebilirlik için çok önemlidir.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Tipik bir sayfa düzeni --&gt;
+&lt;header&gt;
+  &lt;h1&gt;Web Sitem&lt;/h1&gt;
+  &lt;nav&gt;
+    &lt;a href="/"&gt;Anasayfa&lt;/a&gt;
+    &lt;a href="/hakkimizda"&gt;Hakkımızda&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Makale Başlığı&lt;/h2&gt;
+    &lt;p&gt;Makale içeriği...&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;
+
+&lt;aside&gt;
+  &lt;h3&gt;İlgili Linkler&lt;/h3&gt;
+  &lt;!-- Kenar çubuğu içeriği --&gt;
+&lt;/aside&gt;
+
+&lt;footer&gt;
+  &lt;p&gt;Telif Hakkı © 2025&lt;/p&gt;
+&lt;/footer&gt;
+</code></pre>
+                    <ul class="list-disc list-inside space-y-2 mt-4">
+                        <li><code>&lt;header&gt;</code>: Sayfanın veya bir bölümün başlık içeriği (logo, navigasyon vb.).</li>
+                        <li><code>&lt;nav&gt;</code>: Ana navigasyon bağlantılarını içeren bölüm.</li>
+                        <li><code>&lt;main&gt;</code>: Sayfanın ana ve benzersiz içeriği. Sayfa başına sadece bir tane olmalıdır.</li>
+                        <li><code>&lt;article&gt;</code>: Kendi başına anlamlı, bağımsız içerik (blog yazısı, haber, forum gönderisi).</li>
+                        <li><code>&lt;section&gt;</code>: Belgenin tematik bir bölümü (örneğin, "Hizmetlerimiz", "Ekibimiz").</li>
+                        <li><code>&lt;aside&gt;</code>: Ana içerikle dolaylı olarak ilgili içerik (kenar çubuğu, reklamlar).</li>
+                        <li><code>&lt;footer&gt;</code>: Sayfanın veya bir bölümün alt bilgisi (telif hakkı, iletişim bilgileri).</li>
+                    </ul>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🏛️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Bir sayfa yapısı oluşturun. En üstte bir <code>&lt;header&gt;</code>, ortada bir <code>&lt;main&gt;</code> ve en altta bir <code>&lt;footer&gt;</code> olsun.</li>
+                            <li><code>&lt;header&gt;</code> içine bir <code>&lt;h1&gt;</code> başlığı ve bir <code>&lt;nav&gt;</code> menüsü koyun.</li>
+                             <li><code>&lt;footer&gt;</code> içine telif hakkı bilgisi içeren bir paragraf ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;header&gt;
+    &lt;h1&gt;Benim Blogum&lt;/h1&gt;
+    &lt;nav&gt;
+        &lt;a href="/anasayfa"&gt;Anasayfa&lt;/a&gt; |
+        &lt;a href="/blog"&gt;Blog&lt;/a&gt;
+    &lt;/nav&gt;
+&lt;/header&gt;
+
+&lt;main&gt;
+    &lt;p&gt;Ana sayfa içeriği buraya gelecek.&lt;/p&gt;
+&lt;/main&gt;
+
+&lt;footer&gt;
+    &lt;p&gt;© 2025 Tüm hakları saklıdır.&lt;/p&gt;
+&lt;/footer&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="div-span" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Div ve Span</h2>
+                    <p class="mb-4"><code>&lt;div&gt;</code> ve <code>&lt;span&gt;</code>, anlamsal bir değeri olmayan genel amaçlı etiketlerdir. Genellikle CSS ile stil vermek veya JavaScript ile manipüle etmek için diğer semantik etiketler uygun olmadığında kullanılırlar.</p>
+                     <ul class="list-disc list-inside space-y-2 mt-4">
+                        <li><code>&lt;div&gt;</code>: Bir blok seviyesi (block-level) kapsayıcıdır. Kendi satırını kaplar ve genellikle sayfa düzeninde büyük bölümleri gruplamak için kullanılır.</li>
+                        <li><code>&lt;span&gt;</code>: Bir satır içi (inline-level) kapsayıcıdır. Metnin küçük bir parçasını, örneğin tek bir kelimeyi, stil vermek amacıyla gruplamak için kullanılır.</li>
+                    </ul>
+                     <pre><code class="language-html">&lt;!-- Örnek 1: Div ile sayfa bölümlerini gruplama --&gt;
+&lt;div class="container"&gt;
+  &lt;div class="header"&gt;...&lt;/div&gt;
+  &lt;div class="content"&gt;...&lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+                     <pre><code class="language-html">&lt;!-- Örnek 2: Span ile metin içinde bir kelimeyi biçimlendirme --&gt;
+&lt;p&gt;Bu &lt;span style="color:red;"&gt;önemli&lt;/span&gt; bir uyarıdır.&lt;/p&gt;
+</code></pre>
+                     <pre><code class="language-html">&lt;!-- Örnek 3: Div blok seviyesi olduğundan yeni satırda başlar --&gt;
+&lt;div style="background-color: lightblue;"&gt;Bu bir div.&lt;/div&gt;
+&lt;div style="background-color: lightgreen;"&gt;Bu da başka bir div.&lt;/div&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Span satır içi olduğundan aynı satırda devam eder --&gt;
+&lt;p&gt;
+  Bu cümlenin bir kısmı &lt;span style="background-color: yellow;"&gt;sarı&lt;/span&gt;, 
+  diğer kısmı ise &lt;span style="background-color: pink;"&gt;pembe&lt;/span&gt; arka plana sahip.
+&lt;/p&gt;
+</code></pre>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 📦</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Bir başlık ve bir paragrafı bir <code>&lt;div&gt;</code> içine alın ve bu div'e <code>class="card"</code> özelliğini verin.</li>
+                            <li>Bir paragraf yazın ve içindeki bir kelimeyi <code>&lt;span&gt;</code> içine alarak rengini mavi yapın (inline <code>style</code> özelliği ile).</li>
+                            <li>İki farklı <code>&lt;div&gt;</code> oluşturun ve arka plan renklerini farklı yaparak blok seviyesi eleman olduklarını gözlemleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;div class="card"&gt;
+    &lt;h2&gt;Kart Başlığı&lt;/h2&gt;
+    &lt;p&gt;Bu kartın içeriğidir.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Lütfen &lt;span style="color:blue;"&gt;dikkatli&lt;/span&gt; okuyunuz.&lt;/p&gt;
+
+&lt;div style="background-color: teal; color: white; padding: 10px;"&gt;İlk Kutu&lt;/div&gt;
+&lt;div style="background-color: orange; color: white; padding: 10px;"&gt;İkinci Kutu&lt;/div&gt;
+</code></pre>
+                    </div>
+                </div>
+
+                 <div id="yorumlar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Yorum Satırları</h2>
+                    <p class="mb-4">Yorum satırları, tarayıcı tarafından görüntülenmeyen notlardır. Kodu açıklamak, hatırlatıcılar bırakmak veya geçici olarak kod parçalarını devre dışı bırakmak için kullanılır.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Tek satırlı yorum --&gt;
+&lt;p&gt;Bu paragraf görünür.&lt;/p&gt; &lt;!-- Bu bir yorumdur ve görünmez --&gt;
+</code></pre>
+                     <pre><code class="language-html">&lt;!-- Örnek 2: Çok satırlı yorum --&gt;
+&lt;!--
+  Bu bölüm,
+  sayfanın ana içeriğini
+  barındırır.
+--&gt;
+&lt;main&gt; ... &lt;/main&gt;
+</code></pre>
+                     <pre><code class="language-html">&lt;!-- Örnek 3: Kodu geçici olarak devre dışı bırakma --&gt;
+&lt;p&gt;Bu ilk paragraf.&lt;/p&gt;
+&lt;!-- &lt;p&gt;Bu paragraf geçici olarak gizlendi.&lt;/p&gt; --&gt;
+&lt;p&gt;Bu üçüncü paragraf.&lt;/p&gt;
+</code></pre>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 📝</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Bir paragrafın üstüne, o paragrafın ne hakkında olduğunu açıklayan bir yorum satırı ekleyin.</li>
+                            <li>Yazdığınız bir <code>&lt;h2&gt;</code> başlığını yorum satırı içine alarak görünmez yapın.</li>
+                            <li>Kodunuzun bir bölümüne "YAPILACAK: Buraya bir resim eklenecek." şeklinde bir hatırlatıcı yorum bırakın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;!-- Aşağıdaki paragraf iletişim bilgilerini içerir. --&gt;
+&lt;p&gt;Bize info@example.com adresinden ulaşabilirsiniz.&lt;/p&gt;
+
+&lt;!-- &lt;h2&gt;Bu başlık artık görünmeyecek&lt;/h2&gt; --&gt;
+
+&lt;!-- YAPILACAK: Buraya bir resim eklenecek. --&gt;
+</code></pre>
+                    </div>
+                </div>
+                
+                <div id="multimedya" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Multimedya (<code>&lt;audio&gt;</code>, <code>&lt;video&gt;</code>)</h2>
+                    <p class="mb-4">HTML5, <code>&lt;audio&gt;</code> ve <code>&lt;video&gt;</code> etiketleriyle harici eklentilere ihtiyaç duymadan ses ve video oynatmayı destekler. <code>controls</code> özelliği, oynat/durdur gibi kontrol butonlarını ekler.</p>
+                    <pre><code class="language-html">&lt;!-- Örnek 1: Temel video oynatıcı --&gt;
+&lt;video src="film.mp4" width="400" controls&gt;
+  Tarayıcınız video etiketini desteklemiyor.
+&lt;/video&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 2: Temel ses oynatıcı --&gt;
+&lt;audio src="muzik.mp3" controls&gt;
+  Tarayıcınız ses etiketini desteklemiyor.
+&lt;/audio&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 3: Farklı formatlar için source etiketi (tarayıcı uyumluluğu için) --&gt;
+&lt;video width="400" controls&gt;
+  &lt;source src="film.mp4" type="video/mp4"&gt;
+  &lt;source src="film.webm" type="video/webm"&gt;
+  Tarayıcınız video etiketini desteklemiyor.
+&lt;/video&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 4: Otomatik oynatma (autoplay), sessiz (muted) ve döngü (loop) --&gt;
+&lt;!-- Not: Çoğu tarayıcı, kullanıcı etkileşimi olmadan sesli otomatik oynatmayı engeller. Bu yüzden 'muted' gereklidir. --&gt;
+&lt;video src="arka-plan.mp4" width="400" autoplay muted loop&gt;
+&lt;/video&gt;
+</code></pre>
+                    <pre><code class="language-html">&lt;!-- Örnek 5: Video için başlangıç resmi (poster) --&gt;
+&lt;video src="egitim.mp4" width="400" controls poster="baslangic-resmi.jpg"&gt;
+&lt;/video&gt;
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🎬</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><code>tanitim.mp4</code> adında bir videoyu, kontrol butonları görünecek şekilde sayfanıza ekleyin.</li>
+                            <li><code>melodi.mp3</code> adında bir ses dosyasını, kontrol butonları görünecek şekilde ekleyin.</li>
+                            <li>Eklediğiniz videoya, <code>poster.jpg</code> adında bir başlangıç resmi ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-html">&lt;!-- 1. ve 3. Alıştırma --&gt;
+&lt;video src="tanitim.mp4" controls width="500" poster="poster.jpg"&gt;
+   Videonuz yüklenemedi.
+&lt;/video&gt;
+
+&lt;!-- 2. Alıştırma --&gt;
+&lt;audio src="melodi.mp3" controls&gt;
+   Ses dosyası yüklenemedi.
+&lt;/audio&gt;
+</code></pre>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuLinks = document.querySelectorAll('.menu-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            function showSection(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                menuLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                const targetSection = document.getElementById(targetId);
+                const activeLink = document.querySelector(`.menu-link[data-target="${targetId}"]`);
+                
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const targetId = this.dataset.target;
+                    showSection(targetId);
+                });
+            });
+
+            // İlk olarak giriş bölümünü göster
+            showSection('giris');
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

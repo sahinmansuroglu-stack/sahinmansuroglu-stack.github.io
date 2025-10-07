@@ -1,0 +1,1251 @@
+<!-- Chosen Palette: Modern Web (Dark Theme) - Slate background with accents of Teal, Sky Blue, and Amber for different elements. -->
+<!-- Application Structure Plan: A two-column layout SPA. The left column is a fixed navigation sidebar listing all topics. Clicking a topic dynamically shows its content in the right main area. This structure provides intuitive, direct access to specific information, which is ideal for educational documentation, enhancing user experience by allowing them to focus on one topic at a time without scrolling through a long document. -->
+<!-- Visualization & Content Choices: Report Info (CSS educational text) -> Goal (Inform/Educate) -> Presentation (Styled HTML for text, lists, and code blocks) -> Interaction (Clickable side navigation to show/hide content sections) -> Justification (This is the standard and most effective way to present navigable documentation, offering clarity and ease of use.) -> Library/Method (Vanilla JS for navigation logic, Tailwind CSS for styling). -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Etkileşimli Dokümantasyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .menu-link.active {
+            background-color: #334155; /* Slate-700 */
+        }
+        pre[class*="language-"] {
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        /* Inline code styling */
+        :not(pre) > code {
+            background-color: #334155; /* Slate-700 */
+            color: #e2e8f0; /* Slate-200 */
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            border-radius: 6px;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: inherit;
+        }
+        .exercise-block {
+            background-color: #1e293b; /* Slate-800 */
+            border-left: 4px solid #f59e0b; /* Amber-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .solution-block {
+            background-color: #0f172a; /* Slate-900 */
+            border: 1px solid #334155; /* Slate-700 */
+            border-left-width: 4px;
+            border-left-color: #0ea5e9; /* Sky-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .demo-box {
+            border: 2px dashed #475569; /* Slate-600 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+        .html-context {
+            background-color: rgba(15, 23, 42, 0.5);
+            border: 1px solid #334155;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .html-context h4 {
+            font-weight: 600;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-1/4 bg-slate-800 p-6 md:sticky top-0 md:h-screen overflow-y-auto">
+            <h1 class="text-2xl font-bold text-white mb-6 pb-4 border-b border-slate-700">CSS Dokümantasyonu 🎨</h1>
+            <nav>
+                <ul id="menu-list" class="space-y-2">
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="giris">Giriş</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="css-ekleme">CSS Nasıl Eklenir?</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="seciciler">Seçiciler</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="renkler">Renkler</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="arka-plan">Arka Plan</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="kutu-modeli">Kutu Modeli (Box Model)</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="metin-bicimlendirme">Metin Biçimlendirme</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="display">Display Özelliği</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="flexbox">Flexbox</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="grid">Grid</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="position">Position Özelliği</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="sozde-siniflar">Sözde Sınıflar</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="gecisler">Geçişler (Transitions)</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="w-full md:w-3/4 p-6 md:p-10 overflow-y-auto">
+            <div id="content-area">
+                
+                <div id="giris" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Giriş - CSS ile Sayfaları Güzelleştirin</h2>
+                    <p class="mb-4">CSS (Cascading Style Sheets), HTML ile oluşturduğumuz web sayfası iskeletini görsel olarak biçimlendirmemizi sağlayan bir stil dilidir. Renkler, yazı tipleri, yerleşim düzeni ve daha birçok görsel özelliği CSS ile kontrol ederiz.</p>
+                    <p>Bu doküman, HTML bilginizi bir üst seviyeye taşıyarak web sayfalarınıza nasıl profesyonel bir görünüm kazandıracağınızı öğretecek. Hazırsanız, web tasarımının renkli dünyasına dalalım!</p>
+                </div>
+
+                <div id="css-ekleme" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">CSS Nasıl Eklenir?</h2>
+                    <p class="mb-4">HTML belgenize CSS eklemenin üç yolu vardır:</p>
+                    <h3 class="text-2xl font-semibold mt-6 mb-2 text-sky-400">1. Harici Stil Sayfası (External CSS)</h3>
+                    <p>En yaygın ve tavsiye edilen yöntemdir. CSS kodlarınızı ayrı bir <code>.css</code> dosyasına yazarsınız ve <code>&lt;link&gt;</code> etiketiyle HTML sayfanıza bağlarsınız. Bu yöntem, kod tekrarını önler ve yönetimi kolaylaştırır.</p>
+                    <pre><code class="language-html">&lt;!-- index.html dosyasının &lt;head&gt; bölümünde --&gt;
+&lt;link rel="stylesheet" href="stilim.css"&gt;</code></pre>
+                     <pre><code class="language-css">/* stilim.css dosyası */
+body {
+  background-color: #f0f0f0;
+}
+h1 {
+  color: navy;
+}</code></pre>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-2 text-sky-400">2. Dahili Stil Sayfası (Internal CSS)</h3>
+                    <p>CSS kodlarınızı HTML belgesinin <code>&lt;head&gt;</code> bölümü içine, <code>&lt;style&gt;</code> etiketleri arasına yazarsınız. Bu yöntem sadece tek bir sayfa için özel stiller tanımlamak istediğinizde kullanışlıdır.</p>
+                     <pre><code class="language-html">&lt;!-- index.html dosyasının &lt;head&gt; bölümünde --&gt;
+&lt;style&gt;
+  body {
+    background-color: lightblue;
+  }
+  h1 {
+    color: white;
+    text-align: center;
+  }
+&lt;/style&gt;</code></pre>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-2 text-sky-400">3. Satır İçi Stiller (Inline CSS)</h3>
+                    <p>Stilleri doğrudan ilgili HTML etiketinin içine <code>style</code> özelliği ile eklersiniz. Bu yöntem, sadece tek bir elemana özel, küçük bir stil değişikliği yapmak için kullanılır. Genellikle tavsiye edilmez çünkü yönetimi zordur.</p>
+                     <pre><code class="language-html">&lt;h1 style="color: blue; text-align: right;"&gt;Bu Mavi Bir Başlık&lt;/h1&gt;
+&lt;p style="font-size: 20px;"&gt;Bu paragrafın yazı boyutu büyük.&lt;/p&gt;</code></pre>
+                    
+                    <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Satır içi stil ile <code>&lt;h2&gt;</code> rengini değiştirme:</strong></p>
+                                <pre><code class="language-html">&lt;h2 style="color: teal;"&gt;Bu bir alt başlık.&lt;/h2&gt;</code></pre>
+                            </li>
+                            <li><p><strong>Dahili stil ile <code>&lt;body&gt;</code> yazı boyutunu ayarlama:</strong></p>
+                                <pre><code class="language-html">&lt;head&gt;
+    &lt;style&gt;
+        body { font-size: 18px; }
+    &lt;/style&gt;
+&lt;/head&gt;</code></pre>
+                            </li>
+                             <li><p><strong><code>theme.css</code> adında bir harici stil sayfası bağlama:</strong></p>
+                                <pre><code class="language-html">&lt;head&gt;
+    &lt;link rel="stylesheet" href="theme.css"&gt;
+&lt;/head&gt;</code></pre>
+                            </li>
+                            <li><p><strong>Satır içi stil ile birden fazla özellik uygulama:</strong></p>
+                                <pre><code class="language-html">&lt;div style="background-color: #333; color: white; padding: 10px;"&gt;Koyu Tema Kutu&lt;/div&gt;</code></pre>
+                            </li>
+                             <li><p><strong>Dahili stil ile liste işaretlerini kaldırma:</strong></p>
+                                <pre><code class="language-html">&lt;head&gt;
+    &lt;style&gt;
+        ul { list-style-type: none; }
+    &lt;/style&gt;
+&lt;/head&gt;</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 🧠</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Alıştırma&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Başlık&lt;/h1&gt;
+    &lt;p&gt;Bu bir paragraftır.&lt;/p&gt;
+    &lt;span&gt;Bu bir span etiketidir.&lt;/span&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>&lt;h1&gt;</code> başlığının rengini satır içi (inline) CSS kullanarak kırmızı yapın.</li>
+                            <li>Dahili (internal) CSS kullanarak tüm <code>&lt;p&gt;</code> etiketlerinin yazı rengini yeşil yapın.</li>
+                            <li>Harici (external) bir CSS dosyası oluşturup <code>&lt;body&gt;</code>'nin arka plan rengini <code>#333</code> (koyu gri) olarak ayarlayın ve bunu HTML dosyanıza bağlayın.</li>
+                            <li><code>&lt;span&gt;</code> etiketine satır içi stil ekleyerek yazı tipini kalın (<code>font-weight: bold;</code>) yapın.</li>
+                            <li>Dahili CSS kullanarak tüm <code>&lt;h1&gt;</code> etiketlerini ortalayın (<code>text-align: center;</code>).</li>
+                            <li>Harici CSS dosyanızda, sayfanın varsayılan metin rengini <code>white</code> olarak ayarlayın.</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 🧠</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu HTML yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;div class="kart"&gt;
+  &lt;h3&gt;Kart Başlığı&lt;/h3&gt;
+  &lt;p&gt;Bu bir kart içeriğidir.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li>Dahili stil kullanarak <code>.kart</code> sınıfına sahip `div`'e <code>1px solid gray</code> değerinde bir kenarlık (border) ekleyin.</li>
+                            <li><code>&lt;h3&gt;</code> başlığının rengini satır içi stil ile <code>skyblue</code> yapın.</li>
+                            <li>Tüm bu yeni stilleri (kenarlık ve başlık rengi) harici CSS dosyanıza taşıyın.</li>
+                            <li>Satır içi stil kullanarak paragrafın yazı boyutunu <code>14px</code> yapın.</li>
+                            <li>Dahili stil ile <code>.kart</code>'a <code>20px</code> `padding` verin.</li>
+                            <li>Harici CSS dosyanızda tüm <code>div</code>'lerin varsayılan dış boşluğunu (margin) `10px` yapın.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="seciciler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Seçiciler (Selectors)</h2>
+                    <p class="mb-4">Seçiciler, stil uygulamak istediğiniz HTML elemanlarını hedeflemenizi sağlayan kurallardır.</p>
+                    <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;div class="container"&gt;
+    &lt;h1&gt;Ana Başlık&lt;/h1&gt;
+    &lt;p&gt;Bu normal bir paragraf.&lt;/p&gt;
+    &lt;p id="giris"&gt;Bu ID'si olan bir paragraf.&lt;/p&gt;
+    &lt;div class="uyari"&gt;Bu bir uyarı mesajıdır.&lt;/div&gt;
+    &lt;a href="https://google.com" target="_blank"&gt;Google&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <pre><code class="language-css">/* Etiket Seçici: Tüm &lt;p&gt; etiketlerini hedefler */
+p { color: gray; }
+
+/* ID Seçici: id="giris" olan tek bir elemanı hedefler */
+#giris { border: 1px solid blue; }
+
+/* Sınıf Seçici: class="uyari" olan tüm elemanları hedefler */
+.uyari { color: red; font-weight: bold; }
+
+/* Nitelik Seçici: href niteliği "https://google.com" olan tüm &lt;a&gt; etiketlerini hedefler */
+a[href="https://google.com"] { text-decoration: none; }
+
+/* Evrensel Seçici: Sayfadaki tüm elemanları hedefler (dikkatli kullanılmalı) */
+* { box-sizing: border-box; }
+
+/* Gruplama Seçicisi: Birden fazla seçiciyi aynı anda hedefler */
+h1, h2, h3 { font-family: Arial, sans-serif; }
+</code></pre>
+                     <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Soy Seçici (Descendant Selector):</strong> Bir <code>&lt;div&gt;</code> içindeki tüm <code>&lt;p&gt;</code>'leri seçer.</p>
+                                <pre><code class="language-css">div p { font-style: italic; }</code></pre>
+                            </li>
+                            <li><p><strong>Çocuk Seçici (Child Selector):</strong> Bir <code>&lt;ul&gt;</code>'nin doğrudan altındaki <code>&lt;li&gt;</code>'leri seçer.</p>
+                                <pre><code class="language-css">ul > li { list-style-type: square; }</code></pre>
+                            </li>
+                             <li><p><strong>Bitişik Kardeş Seçici (Adjacent Sibling Selector):</strong> Bir <code>&lt;h2&gt;</code>'den hemen sonra gelen <code>&lt;p&gt;</code>'yi seçer.</p>
+                                <pre><code class="language-css">h2 + p { margin-top: 0; }</code></pre>
+                            </li>
+                            <li><p><strong>Genel Kardeş Seçici (General Sibling Selector):</strong> Bir <code>&lt;h2&gt;</code>'den sonra gelen tüm <code>&lt;p&gt;</code> kardeşlerini seçer.</p>
+                                <pre><code class="language-css">h2 ~ p { color: purple; }</code></pre>
+                            </li>
+                             <li><p><strong>Birden Fazla Sınıf Seçici:</strong> Hem <code>.kart</code> hem de <code>.one-cikan</code> sınıfına sahip elemanları seçer.</p>
+                                <pre><code class="language-css">.kart.one-cikan { border: 2px solid gold; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) ✍️</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                         <pre><code class="language-html">&lt;div class="container"&gt;
+    &lt;h2&gt;Alt Başlık 1&lt;/h2&gt;
+    &lt;p&gt;Paragraf 1&lt;/p&gt;
+    &lt;img id="logo" src="logo.png" alt="logo"&gt;
+    &lt;h2&gt;Alt Başlık 2&lt;/h2&gt;
+    &lt;a href="sayfa.html" target="_blank"&gt;Yeni Sayfa&lt;/a&gt;
+    &lt;button class="buton"&gt;Tıkla&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li>Tüm <code>&lt;h2&gt;</code> başlıklarının altını çizin (<code>text-decoration: underline;</code>).</li>
+                            <li><code>id="logo"</code> olan bir elemanın genişliğini 100 piksel yapın (<code>width: 100px;</code>).</li>
+                            <li><code>class="buton"</code> olan tüm elemanların arka plan rengini turuncu yapın (<code>background-color: orange;</code>).</li>
+                            <li><code>target="_blank"</code> niteliğine sahip tüm linklere (<code>&lt;a&gt;</code>) kesikli bir kenarlık verin (<code>border: 1px dashed white;</code>).</li>
+                            <li><code>class="container"</code> olan div'in doğrudan altındaki tüm <code>&lt;p&gt;</code> etiketlerinin rengini <code>lightblue</code> yapın.</li>
+                             <li>Tüm <code>&lt;h1&gt;</code>, <code>&lt;h2&gt;</code>, ve <code>&lt;h3&gt;</code> etiketlerinin alt dış boşluğunu <code>10px</code> yapın (<code>margin-bottom: 10px;</code>).</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) ✍️</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu HTML yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;nav&gt;
+  &lt;ul&gt;
+    &lt;li&gt;&lt;a href="#anasayfa"&gt;Ana Sayfa&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href="#hakkimizda"&gt;Hakkımızda&lt;/a&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;section&gt;
+    &lt;p&gt;Bu ilk paragraf.&lt;/p&gt;
+    &lt;h2&gt;Bir Başlık&lt;/h2&gt;
+    &lt;p&gt;Bu ikinci paragraf.&lt;/p&gt;
+    &lt;p&gt;Bu üçüncü paragraf.&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>nav</code> elemanının içindeki tüm linklerin (<code>&lt;a&gt;</code>) altındaki çizgiyi kaldırın. (Soy seçici)</li>
+                            <li><code>&lt;ul&gt;</code> elemanının doğrudan altındaki <code>&lt;li&gt;</code> elemanlarına alttan 1px'lik kesikli bir kenarlık ekleyin. (Çocuk seçici)</li>
+                            <li><code>&lt;h2&gt;</code> başlığından hemen sonra gelen <code>&lt;p&gt;</code> elemanının yazı tipini kalın yapın. (Bitişik kardeş seçici)</li>
+                            <li><code>&lt;h2&gt;</code> başlığından sonra gelen tüm <code>&lt;p&gt;</code> kardeşlerinin rengini <code>silver</code> yapın. (Genel kardeş seçici)</li>
+                            <li><code>href</code> niteliği <code>#anasayfa</code> olan linkin rengini <code>tomato</code> yapın. (Nitelik seçici)</li>
+                            <li><code>nav</code> ve <code>section</code> etiketlerine aynı anda 10px'lik bir <code>padding</code> verin. (Gruplama seçici)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="renkler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Renkler</h2>
+                    <p class="mb-4">CSS'te renkleri belirtmenin birkaç yolu vardır.</p>
+                    <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;h1&gt;Başlık 1&lt;/h1&gt;
+&lt;h2&gt;Başlık 2&lt;/h2&gt;
+&lt;div class="overlay"&gt;
+    &lt;p class="vurgu"&gt;Bu bir paragraf.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <pre><code class="language-css">/* İsimlendirilmiş Renkler */
+h1 { color: tomato; }
+
+/* HEX Kodları */
+h2 { color: #FF6347; } /* tomato ile aynı renk */
+
+/* RGBA (Red, Green, Blue, Alpha - şeffaflık) */
+.overlay { background-color: rgba(0, 0, 0, 0.5); } /* %50 şeffaf siyah */
+
+/* HSL (Hue, Saturation, Lightness) */
+.vurgu { color: hsl(240, 100%, 50%); } /* parlak mavi */
+</code></pre>
+                    <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>İsimlendirilmiş renk ile kenarlık rengi:</strong></p>
+                                <pre><code class="language-css">div { border: 2px solid dodgerblue; }</code></pre>
+                            </li>
+                            <li><p><strong>Kısa HEX kodu ile metin rengi:</strong></p>
+                                <pre><code class="language-css">p { color: #f0c; } /* #ff00cc ile aynı */</code></pre>
+                            </li>
+                             <li><p><strong>HSL ile arka plan rengi:</strong></p>
+                                <pre><code class="language-css">.section { background-color: hsl(120, 60%, 70%); } /* açık yeşil */</code></pre>
+                            </li>
+                            <li><p><strong>HSLA ile yarı şeffaf metin rengi:</strong></p>
+                                <pre><code class="language-css">.sub-text { color: hsla(0, 0%, 100%, 0.75); } /* %75 şeffaf beyaz */</code></pre>
+                            </li>
+                             <li><p><strong>`currentColor` anahtar kelimesi:</strong> Kenarlık rengini metin rengiyle aynı yapar.</p>
+                                <pre><code class="language-css">button { color: green; border: 1px solid currentColor; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 🎨</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;p&gt;Bu paragrafın rengi değişecek.&lt;/p&gt;
+&lt;h2&gt;Bu başlığın rengi değişecek.&lt;/h2&gt;
+&lt;div id="kutu1"&gt;Arka plan rengi değişecek.&lt;/div&gt;
+&lt;div id="kutu2"&gt;Şeffaf arka plan rengi olacak.&lt;/div&gt;
+&lt;button&gt;Buton&lt;/button&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li>Paragrafın rengini HEX kodu kullanarak <code>#8A2BE2</code> (blueviolet) yapın.</li>
+                            <li><code>id="kutu1"</code> olan <code>&lt;div&gt;</code> elemanının arka plan rengini RGB kullanarak <code>rgb(60, 179, 113)</code> (mediumseagreen) yapın.</li>
+                            <li><code>id="kutu2"</code> olan <code>&lt;div&gt;</code> elemanının arka plan rengini RGBA kullanarak %70 şeffaf bir kırmızı yapın.</li>
+                            <li><code>&lt;h2&gt;</code> başlığının rengini isimlendirilmiş renk olarak <code>gold</code> yapın.</li>
+                            <li>Bir <code>&lt;div&gt;</code> elemanına HSL kullanarak <code>hsl(120, 70%, 80%)</code> değerinde bir arka plan rengi verin.</li>
+                            <li><code>&lt;button&gt;</code> elemanının kenarlık rengini, %25 şeffaf siyah yapmak için RGBA kullanın.</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 🎨</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu HTML yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;div class="kutu-a" style="height:50px; width:50px; margin:5px;"&gt;&lt;/div&gt;
+&lt;div class="kutu-b" style="height:50px; width:50px; margin:5px;"&gt;&lt;/div&gt;
+&lt;div class="kutu-c" style="height:50px; width:50px; margin:5px;"&gt;&lt;/div&gt;
+&lt;div class="kutu-d" style="height:50px; width:50px; margin:5px;"&gt;&lt;/div&gt;
+&lt;p class="metin"&gt;Bu bir metindir.&lt;/p&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.kutu-a</code>'nın arka planını HEX kodu <code>#4682B4</code> (steelblue) yapın.</li>
+                            <li><code>.kutu-b</code>'nin arka planını RGB <code>rgb(218, 112, 214)</code> (orchid) yapın.</li>
+                            <li><code>.kutu-c</code>'nin arka planını HSL <code>hsl(25, 80%, 50%)</code> (bir tür turuncu) yapın.</li>
+                            <li><code>.kutu-d</code>'nin arka planını RGBA ile %40 şeffaf yeşil yapın.</li>
+                            <li><code>.metin</code> paragrafının rengini isimlendirilmiş renk olarak <code>wheat</code> yapın.</li>
+                            <li><code>.kutu-a</code>'ya kısa HEX kodu <code>#0f0</code> kullanarak 2px'lik bir kenarlık verin.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="arka-plan" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Arka Plan (Background)</h2>
+                    <p class="mb-4">Elemanların arka planını renklendirebilir veya görsel ekleyebilirsiniz.</p>
+                     <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;div class="kutu"&gt;Bu kutunun arka planı stillendirilecek.&lt;/div&gt;</code></pre>
+                    </div>
+                    <pre><code class="language-css">.kutu {
+  /* Arka plan rengi */
+  background-color: #f5f5f5;
+
+  /* Arka plan görseli */
+  background-image: url('desen.png');
+
+  /* Görselin tekrarlanma durumu */
+  background-repeat: no-repeat; /* repeat, repeat-x, repeat-y */
+
+  /* Görselin konumu */
+  background-position: center top; /* x y ekseni */
+
+  /* Görselin boyutu */
+  background-size: cover; /* contain, 100px 50px */
+  
+  /* Tüm arka plan özelliklerini tek seferde yazma (kısa yol) */
+  background: #f5f5f5 url('desen.png') no-repeat center top / cover;
+}
+</code></pre>
+                    <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Doğrusal Gradyan (Linear Gradient) Arka Plan:</strong></p>
+                                <pre><code class="language-css">div { background-image: linear-gradient(to right, red, blue); }</code></pre>
+                            </li>
+                            <li><p><strong>Sabitlenmiş Arka Plan Görseli:</strong> Sayfa kaysa bile görsel sabit kalır.</p>
+                                <pre><code class="language-css">body {
+  background-image: url('manzara.jpg');
+  background-attachment: fixed;
+}</code></pre>
+                            </li>
+                             <li><p><strong>Birden Fazla Arka Plan Görseli:</strong></p>
+                                <pre><code class="language-css">div {
+  background-image: url('logo.png'), url('desen.gif');
+  background-repeat: no-repeat, repeat;
+  background-position: center, top left;
+}</code></pre>
+                            </li>
+                            <li><p><strong>`background-size: contain`:</strong> Görselin tamamı görünecek şekilde kutuya sığdırılır.</p>
+                                <pre><code class="language-css">div {
+  background-image: url('resim.jpg');
+  background-repeat: no-repeat;
+  background-size: contain;
+}</code></pre>
+                            </li>
+                             <li><p><strong>Yedek Renk (Fallback Color):</strong> Görsel yüklenemezse arka plan rengi görünür.</p>
+                                <pre><code class="language-css">div { background: lightblue url('bulunamayan-resim.jpg'); }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 🏞️</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;div id="resimli-kutu" style="height: 300px; border: 1px solid white;"&gt;&lt;/div&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>id="resimli-kutu"</code> olan <code>&lt;div&gt;</code> elemanının arka planına <code>'arkaplan.jpg'</code> adında bir görsel ekleyin.</li>
+                            <li>Görselin yatayda (x ekseninde) tekrar etmesini sağlayın (<code>background-repeat: repeat-x;</code>).</li>
+                            <li>Görselin konumunu sağ alt köşe olarak ayarlayın (<code>background-position: right bottom;</code>).</li>
+                            <li>Görselin kutuya tam sığacak şekilde, en-boy oranını koruyarak boyutlanmasını sağlayın (<code>background-size: contain;</code>).</li>
+                             <li>Maviden mora doğru giden dikey bir doğrusal gradyan arka planı oluşturun.</li>
+                             <li>Arka plan görselinin sayfa ile birlikte kaymamasını, sabit kalmasını sağlayın (<code>background-attachment: fixed;</code>).</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 🏞️</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu HTML yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;section class="hero" style="height: 400px; color: white;"&gt;
+  &lt;h1&gt;Hoş Geldiniz&lt;/h1&gt;
+&lt;/section&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                             <li><code>.hero</code> bölümüne <code>background</code> kısa yolu ile hem <code>#222</code> arka plan rengini hem de <code>'hero.jpg'</code> görselini ekleyin.</li>
+                             <li>Görselin tekrar etmemesini (<code>no-repeat</code>) ve yatayda/dikeyde ortalanmasını (<code>center center</code>) sağlayın.</li>
+                             <li>Görselin tüm <code>section</code> alanını kaplaması için <code>background-size: cover;</code> özelliğini ekleyin.</li>
+                             <li>Kırmızı, sarı ve mavi renklerinden oluşan 45 derecelik bir doğrusal gradyan arka planı oluşturun.</li>
+                             <li><code>.hero</code> bölümüne ikinci bir arka plan görseli olarak sağ üstte konumlandırılmış, tekrar etmeyen bir <code>'logo.png'</code> ekleyin.</li>
+                             <li>Tüm arka plan özelliklerini tek bir <code>background</code> kısa yolu ile yazın.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="kutu-modeli" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Kutu Modeli (Box Model)</h2>
+                    <p class="mb-4">Web'deki her eleman, bir kutu olarak düşünülebilir. Kutu modeli, bu kutuların içeriğini, dolgusunu, kenarlığını ve dış boşluğunu tanımlar.</p>
+                    <div class="demo-box bg-slate-800 text-center">
+                        <div class="bg-sky-900/50 p-4 border-4 border-sky-500 m-6">
+                            <div class="bg-teal-500/80 p-6">İçerik (Content)</div>
+                            <div class="text-sky-400 mt-2">Padding</div>
+                        </div>
+                        <div class="text-slate-400">Margin & Border</div>
+                    </div>
+                    <pre><code class="language-css">.kutu {
+  width: 300px;
+  height: 200px;
+
+  /* İçerik ile kenarlık arasındaki boşluk */
+  padding: 20px; /* Dört taraf da 20px */
+  
+  /* Kenarlık */
+  border: 5px solid red;
+  
+  /* Elemanın dışındaki boşluk */
+  margin: 30px;
+
+  /* Bu özellik, padding ve border'ı genişliğe dahil eder, hayat kurtarır! */
+  box-sizing: border-box;
+}
+</code></pre>
+                     <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Her taraf için farklı `padding`:</strong></p>
+                                <pre><code class="language-css">/* üst, sağ, alt, sol */
+div { padding: 10px 20px 30px 40px; }</code></pre>
+                            </li>
+                            <li><p><strong>Yatayda ortalamak için `margin`:</strong></p>
+                                <pre><code class="language-css">.ortala {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}</code></pre>
+                            </li>
+                             <li><p><strong>Noktalı kenarlık stili (`dotted`):</strong></p>
+                                <pre><code class="language-css">.kutu { border: 2px dotted green; }</code></pre>
+                            </li>
+                            <li><p><strong>Sadece üst ve alt kenarlığı ayarlama:</strong></p>
+                                <pre><code class="language-css">.kutu {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}</code></pre>
+                            </li>
+                             <li><p><strong>Kenar yuvarlaklığı (`border-radius`):</strong></p>
+                                <pre><code class="language-css">.yuvarlak-kose { border-radius: 15px; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 📦</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;div class="alistirma-kutusu"&gt;Bu bir kutu.&lt;/div&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>class="alistirma-kutusu"</code> olan div'in genişliğini 200px, yüksekliğini 100px yapın.</li>
+                            <li>Bu div'e 10px'lik bir <code>padding</code> verin.</li>
+                            <li>Div'e 2px kalınlığında, düz (<code>solid</code>) ve siyah bir <code>border</code> ekleyin.</li>
+                            <li>Div'in üst dış boşluğunu (<code>margin-top</code>) 15px yapın.</li>
+                            <li>Tek bir <code>padding</code> özelliği ile üst/alt 10px, sağ/sol 20px iç boşluk verin.</li>
+                            <li>Kutuyu yatayda ortalamak için <code>margin</code> özelliğini kullanın.</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 📦</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu HTML yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;button class="buton"&gt;Gönder&lt;/button&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                             <li>Butona <code>15px</code> dikey ve <code>30px</code> yatay <code>padding</code> verin.</li>
+                             <li>Butonun sadece sol tarafına <code>5px</code> kalınlığında, <code>solid</code> ve <code>tomato</code> renginde bir <code>border</code> ekleyin.</li>
+                             <li>Butonun alt dış boşluğunu (<code>margin-bottom</code>) <code>20px</code> yapın.</li>
+                             <li>Butonun köşelerini <code>8px</code> yuvarlaklaştırın (<code>border-radius</code>).</li>
+                             <li>Butonun toplam genişliğinin <code>padding</code> ve <code>border</code>'dan etkilenmemesi için <code>box-sizing: border-box;</code> özelliğini ekleyin.</li>
+                             <li>Butona <code>max-width: 200px;</code> özelliği ekleyin.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="metin-bicimlendirme" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Metin Biçimlendirme</h2>
+                    <p class="mb-4">Metinlerin görünümünü kontrol etmek için birçok CSS özelliği vardır.</p>
+                     <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;div class="metin-blogu"&gt;
+    &lt;h1&gt;Makale Başlığı&lt;/h1&gt;
+    &lt;p&gt;Bu, makalenin içeriğidir.&lt;/p&gt;
+    &lt;a href="#"&gt;Devamını Oku&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <pre><code class="language-css">.metin-blogu {
+  font-family: 'Helvetica', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.metin-blogu h1 {
+  font-size: 32px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.metin-blogu a {
+  text-decoration: underline;
+  color: blue;
+}
+</code></pre>
+                     <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Metni büyük harfe çevirme (`text-transform`):</strong></p>
+                                <pre><code class="language-css">h1 { text-transform: uppercase; }</code></pre>
+                            </li>
+                            <li><p><strong>Metin gölgesi ekleme (`text-shadow`):</strong></p>
+                                <pre><code class="language-css">.baslik { text-shadow: 2px 2px 5px gray; }</code></pre>
+                            </li>
+                             <li><p><strong>Kelime aralığını artırma (`word-spacing`):</strong></p>
+                                <pre><code class="language-css">p { word-spacing: 10px; }</code></pre>
+                            </li>
+                            <li><p><strong>Paragraf girintisi (`text-indent`):</strong></p>
+                                <pre><code class="language-css">p { text-indent: 50px; }</code></pre>
+                            </li>
+                             <li><p><strong>İtalik yazı stili (`font-style`):</strong></p>
+                                <pre><code class="language-css">.vurgu { font-style: italic; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 📝</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;h1&gt;Hoş Geldiniz&lt;/h1&gt;
+&lt;p&gt;Bu bir deneme paragrafıdır.&lt;/p&gt;
+&lt;span&gt;Bu metin BÜYÜK harf olmalı.&lt;/span&gt;
+&lt;a href="#"&gt;Daha Fazla Bilgi&lt;/a&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li>Sayfadaki tüm paragrafların (<code>&lt;p&gt;</code>) yazı tipini <code>Verdana</code> yapın.</li>
+                            <li><code>&lt;h1&gt;</code> başlığının yazı boyutunu <code>36px</code> ve metin hizalamasını ortalı (<code>center</code>) yapın.</li>
+                            <li>Linkin (<code>&lt;a&gt;</code>) altındaki çizgiyi kaldırın (<code>text-decoration: none;</code>).</li>
+                            <li>Paragrafın harf aralığını (<code>letter-spacing</code>) <code>2px</code> olarak ayarlayın.</li>
+                             <li><code>&lt;span&gt;</code> etiketindeki metni <code>text-transform: uppercase;</code> kullanarak büyük harfe çevirin.</li>
+                             <li><code>&lt;h1&gt;</code> başlığına hafif bir metin gölgesi ekleyin (<code>text-shadow: 1px 1px 3px black;</code>).</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 📝</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu alıntı metnini stilize edin:</p>
+                        <pre><code class="language-html">&lt;blockquote&gt;
+  Bu bir alıntı metnidir. Okunabilirliği artırmak için satır yüksekliğini ayarlamak önemlidir.
+&lt;/blockquote&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                             <li><code>&lt;blockquote&gt;</code> elemanının yazı tipini (<code>font-family</code>) <code>Georgia</code> yapın.</li>
+                             <li>Metnin yazı stilini italik (<code>font-style: italic;</code>) olarak ayarlayın.</li>
+                             <li>Satır yüksekliğini (<code>line-height</code>) <code>1.8</code> yaparak satırlar arasındaki boşluğu artırın.</li>
+                             <li>Yazı kalınlığını (<code>font-weight</code>) <code>300</code> (light) yapın.</li>
+                             <li>Kelime aralığını (<code>word-spacing</code>) <code>4px</code> olarak ayarlayın.</li>
+                             <li>Metni her iki yana yaslayın (<code>text-align: justify;</code>).</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div id="display" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Display Özelliği</h2>
+                    <p class="mb-4"><code>display</code> özelliği, bir elemanın nasıl davranacağını ve görüneceğini belirler. En temel değerleri <code>block</code> ve <code>inline</code>'dır.</p>
+                    <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;div&gt;Bu bir div (block).&lt;/div&gt;
+&lt;span&gt;Bu bir span (inline).&lt;/span&gt;
+&lt;a href="#" class="buton"&gt;Buton (inline-block)&lt;/a&gt;
+&lt;p class="gizli"&gt;Bu paragraf görünmeyecek.&lt;/p&gt;</code></pre>
+                    </div>
+                     <pre><code class="language-css">/* block: Tüm satırı kaplar, genişlik ve yükseklik alabilir. */
+div { display: block; background-color: #274046; margin-bottom: 5px; }
+
+/* inline: Sadece içeriği kadar yer kaplar, genişlik/yükseklik almaz. */
+span { display: inline; background-color: #533342; }
+
+/* inline-block: inline gibi davranır ama genişlik/yükseklik alabilir. */
+.buton {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: skyblue;
+}
+
+/* none: Elemanı tamamen gizler ve sayfa düzeninden kaldırır. */
+.gizli { display: none; }
+</code></pre>
+                      <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Yatay menü oluşturma:</strong> <code>&lt;li&gt;</code> elemanları normalde <code>block</code>'tur. <code>inline-block</code> ile yan yana dizilebilirler.</p>
+                                <pre><code class="language-css">nav ul li { display: inline-block; margin-right: 15px; }</code></pre>
+                            </li>
+                            <li><p><strong>`visibility: hidden` vs `display: none`:</strong> `visibility: hidden` elemanı gizler ama kapladığı alan boş kalır. `display: none` ise elemanı tamamen kaldırır.</p>
+                                <pre><code class="language-css">.yer-kapla { visibility: hidden; }
+.yok-ol { display: none; }</code></pre>
+                            </li>
+                             <li><p><strong>Bir <code>&lt;div&gt;</code>'i liste elemanı gibi gösterme:</strong></p>
+                                <pre><code class="language-css">div.liste-elemani { display: list-item; margin-left: 20px; }</code></pre>
+                            </li>
+                            <li><p><strong>`inline` elemana `padding` etkisi:</strong> Dikey <code>padding</code>, diğer satırların üzerine taşabilir.</p>
+                                <pre><code class="language-css">span { display: inline; padding: 20px; background: orange; }</code></pre>
+                            </li>
+                             <li><p><strong>Tablo düzeni oluşturma:</strong> `display` ile elemanlara tablo özellikleri verilebilir.</p>
+                                <pre><code class="language-css">.tablo { display: table; }
+.satir { display: table-row; }
+.hucre { display: table-cell; border: 1px solid white; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 🧱</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;span class="blok-yap"&gt;Beni blok yap.&lt;/span&gt;
+&lt;ul&gt;
+  &lt;li&gt;Ana Sayfa&lt;/li&gt;&lt;li&gt;Hakkımızda&lt;/li&gt;&lt;li&gt;İletişim&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class="gosterilmesin"&gt;Beni gizle.&lt;/div&gt;
+&lt;div class="yer-tutsun"&gt;Beni gizle ama yerimi koru.&lt;/div&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>class="blok-yap"</code> olan <code>&lt;span&gt;</code> elemanına <code>display: block;</code> vererek bir alt satıra geçmesini sağlayın.</li>
+                             <li><code>&lt;ul&gt;</code> içindeki <code>&lt;li&gt;</code> elemanlarını <code>display: inline-block;</code> ile yan yana dizerek bir menü oluşturun.</li>
+                            <li><code>class="gosterilmesin"</code> olan elemanı <code>display: none;</code> ile tamamen gizleyin.</li>
+                            <li><code>&lt;a&gt;</code> etiketine <code>display: inline-block;</code> vererek, ona <code>padding</code> ve <code>background-color</code> uygulayın.</li>
+                            <li><code>class="yer-tutsun"</code> olan elemanı <code>visibility: hidden;</code> ile gizleyin. <code>display: none</code> ile arasındaki farkı gözlemleyin.</li>
+                            <li>Üç <code>&lt;span&gt;</code> elemanını bir <code>&lt;div&gt;</code> içine koyun ve span'ları <code>display: block;</code> ile alt alta sıralayın.</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 🧱</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu HTML yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;div class="tablo-kapsayici"&gt;
+  &lt;div class="satir"&gt;
+    &lt;div class="hucre"&gt;Hücre 1.1&lt;/div&gt;
+    &lt;div class="hucre"&gt;Hücre 1.2&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="satir"&gt;
+    &lt;div class="hucre"&gt;Hücre 2.1&lt;/div&gt;
+    &lt;div class="hucre"&gt;Hücre 2.2&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                             <li><code>.tablo-kapsayici</code>'ya <code>display: table;</code> verin.</li>
+                             <li><code>.satir</code> sınıflı elemanlara <code>display: table-row;</code> verin.</li>
+                             <li><code>.hucre</code> sınıflı elemanlara <code>display: table-cell;</code> verin.</li>
+                             <li>Hücrelere <code>1px solid white</code> kenarlık ve <code>10px</code> `padding` ekleyin.</li>
+                             <li>Bir `img` etiketini <code>display: block;</code> ve `margin: auto;` kullanarak yatayda ortalayın.</li>
+                             <li>Bir paragraf içindeki <code>&lt;strong&gt;</code> etiketini <code>display: inline-block;</code> yaparak ve <code>transform</code> uygulayarak üzerine gelindiğinde hafifçe büyütün.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="flexbox" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Flexbox</h2>
+                    <p class="mb-4">Flexbox, kutuları bir satır veya sütun içinde hizalamak, sıralamak ve dağıtmak için kullanılan güçlü bir yerleşim modelidir. Modern ve esnek tasarımlar için vazgeçilmezdir.</p>
+                     <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;div class="kapsayici"&gt;
+  &lt;div class="kutu kutu1"&gt;1&lt;/div&gt;
+  &lt;div class="kutu kutu2"&gt;2&lt;/div&gt;
+  &lt;div class="kutu"&gt;3&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                    <pre><code class="language-css">/* Kapsayıcı Eleman (Flex Container) */
+.kapsayici {
+  display: flex;
+  justify-content: center; /* Yatay eksende ortala */
+  align-items: center;    /* Dikey eksende ortala */
+  flex-wrap: wrap;        /* Elemanlar sığmazsa alt satıra indir */
+  height: 200px;
+  background-color: #1e293b;
+}
+
+/* İç Elemanlar (Flex Items) */
+.kutu { background-color: #0ea5e9; margin: 5px; padding: 20px; color: white; }
+.kutu1 { flex-grow: 1; } /* Boş alanı doldurmak için 1 oranında büyür */
+.kutu2 { flex-grow: 2; } /* Boş alanı doldurmak için 2 oranında büyür */
+</code></pre>
+                    <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Elemanları ters sırada dizme (`flex-direction`):</strong></p>
+                                <pre><code class="language-css">.kapsayici { display: flex; flex-direction: row-reverse; }</code></pre>
+                            </li>
+                            <li><p><strong>Tek bir elemanı farklı hizalama (`align-self`):</strong></p>
+                                <pre><code class="language-css">.kapsayici { display: flex; align-items: center; }
+.farkli-eleman { align-self: flex-end; } /* Kapsayıcının sonuna hizalanır */</code></pre>
+                            </li>
+                             <li><p><strong>Elemanların sırasını değiştirme (`order`):</strong></p>
+                                <pre><code class="language-css">.eleman1 { order: 2; }
+.eleman2 { order: 1; }</code></pre>
+                            </li>
+                            <li><p><strong>Esneklik (`flex` shorthand):</strong> `flex-grow`, `flex-shrink`, `flex-basis` özelliklerini bir arada tanımlar.</p>
+                                <pre><code class="language-css">.kutu { flex: 1 1 100px; } /* Büyüyebilir, küçülebilir, başlangıç boyutu 100px */</code></pre>
+                            </li>
+                             <li><p><strong>Dikeyde ortalanmış ve yatayda aralıklı menü:</strong></p>
+                                <pre><code class="language-css">nav {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 📐</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;div class="flex-kapsayici"&gt;
+  &lt;div class="item-a"&gt;A&lt;/div&gt;
+  &lt;div class="item-b"&gt;B&lt;/div&gt;
+  &lt;div class="item-c"&gt;C&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.flex-kapsayici</code>'ya <code>display: flex;</code> verin.</li>
+                            <li>Bu elemanları yatayda (<code>justify-content</code>) aralarında eşit boşluk olacak şekilde (<code>space-between</code>) hizalayın.</li>
+                            <li>Elemanları dikeyde (<code>align-items</code>) ortalayın (<code>center</code>).</li>
+                            <li>Kapsayıcının yönünü (<code>flex-direction</code>) dikey (<code>column</code>) olarak değiştirin.</li>
+                            <li>Ortadaki elemanın (<code>.item-b</code>) diğerlerine göre 2 kat daha fazla büyümesini sağlayın (<code>flex-grow: 2;</code>).</li>
+                             <li>Elemanların görsel sırasını <code>order</code> özelliği ile C, A, B olacak şekilde değiştirin.</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 📐</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu kart yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;div class="kart-icerigi"&gt;
+  &lt;div class="baslik"&gt;Başlık&lt;/div&gt;
+  &lt;div class="govde"&gt;İçerik burada...&lt;/div&gt;
+  &lt;div class="alt-bilgi"&gt;Alt Bilgi&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                             <li><code>.kart-icerigi</code>'ne <code>display: flex;</code> ve <code>flex-direction: column;</code> verin.</li>
+                             <li>Kartın yüksekliğini <code>300px</code> olarak ayarlayın.</li>
+                             <li><code>.govde</code> elemanının mevcut boşluğu dolduracak şekilde büyümesini sağlayın (<code>flex-grow: 1;</code>).</li>
+                             <li><code>.baslik</code> ve <code>.alt-bilgi</code>'nin küçülmemesini sağlayın (<code>flex-shrink: 0;</code>).</li>
+                             <li>Tüm elemanları yatayda ortalamak için <code>align-items: center;</code> kullanın.</li>
+                             <li><code>.alt-bilgi</code>'nin tek başına dikeyde en sona yaslanmasını sağlayın (<code>align-self: flex-end;</code>).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="grid" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Grid</h2>
+                    <p class="mb-4">CSS Grid, hem satır hem de sütunları aynı anda kontrol edebildiğiniz iki boyutlu bir yerleşim sistemidir. Karmaşık sayfa düzenleri için Flexbox'tan daha güçlü olabilir.</p>
+                     <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;div class="grid-kapsayici"&gt;
+  &lt;div class="kutu header"&gt;Header&lt;/div&gt;
+  &lt;div class="kutu sidebar"&gt;Sidebar&lt;/div&gt;
+  &lt;div class="kutu main"&gt;Main Content&lt;/div&gt;
+  &lt;div class="kutu footer"&gt;Footer&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                     <pre><code class="language-css">/* Kapsayıcı Eleman (Grid Container) */
+.grid-kapsayici {
+  display: grid;
+  grid-template-columns: 1fr 3fr; /* 1'e 3 oranında 2 sütun */
+  gap: 10px;
+}
+.kutu { background-color: #1e293b; padding: 20px; border-radius: 5px; }
+
+/* İç Elemanlar (Grid Items) */
+.header { grid-column: 1 / 3; } /* 1. sütunda başla, 3.den önce bitir (2 sütun kapla) */
+.footer { grid-column: 1 / 3; }
+</code></pre>
+                     <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>`grid-template-areas` ile sayfa düzeni:</strong></p>
+                                <pre><code class="language-css">.kapsayici {
+  display: grid;
+  grid-template-areas:
+    "baslik baslik"
+    "menu ana-icerik"
+    "alt-bilgi alt-bilgi";
+}
+.header { grid-area: baslik; }
+.sidebar { grid-area: menu; }
+/* ... ve diğerleri */</code></pre>
+                            </li>
+                            <li><p><strong>`span` ile satır birleştirme:</strong> Bir elemanın birden fazla satır kaplamasını sağlar.</p>
+                                <pre><code class="language-css">.uzun-eleman { grid-row: span 2; }</code></pre>
+                            </li>
+                             <li><p><strong>`minmax()` ile esnek sütunlar:</strong> Sütun genişliğinin minimum ve maksimum değerlerini belirler.</p>
+                                <pre><code class="language-css">.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }</code></pre>
+                            </li>
+                            <li><p><strong>Grid elemanlarını hizalama:</strong></p>
+                                <pre><code class="language-css">.kapsayici {
+  display: grid;
+  justify-items: center; /* Yatayda ortala */
+  align-items: center;   /* Dikeyde ortala */
+}</code></pre>
+                            </li>
+                             <li><p><strong>İsimlendirilmiş grid çizgileri:</strong></p>
+                                <pre><code class="language-css">.grid {
+  display: grid;
+  grid-template-columns: [sol-basla] 1fr [sol-bitis sag-basla] 1fr [sag-bitis];
+}
+.eleman { grid-column: sol-basla / sag-bitis; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                     <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) ▦</h3>
+                         <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;div class="grid-alistirma"&gt;
+  &lt;div class="item1"&gt;1&lt;/div&gt;
+  &lt;div&gt;2&lt;/div&gt;
+  &lt;div&gt;3&lt;/div&gt;
+  &lt;div&gt;4&lt;/div&gt;
+  &lt;div class="item5"&gt;5&lt;/div&gt;
+  &lt;div&gt;6&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.grid-alistirma</code>'ya <code>display: grid;</code> verin.</li>
+                            <li>Bu grid'i 3 eşit sütuna bölün (<code>grid-template-columns: repeat(3, 1fr);</code>).</li>
+                            <li>Grid elemanları arasına 15px'lik bir boşluk (<code>gap</code>) ekleyin.</li>
+                            <li>İlk elemanın (<code>.item1</code>) 2 sütun kaplamasını sağlayın (<code>grid-column: span 2;</code>).</li>
+                            <li>Grid'i 2 satırdan oluşacak şekilde tanımlayın (<code>grid-template-rows: 100px 100px;</code>).</li>
+                            <li>Beşinci elemanın (<code>.item5</code>) ikinci satırda başlamasını sağlayın (<code>grid-row-start: 2;</code>).</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) ▦</h3>
+                         <p class="text-slate-400 mb-4">Şimdi de bu galeri yapısını stilize edin:</p>
+                        <pre><code class="language-html">&lt;div class="galeri"&gt;
+  &lt;div class="g-item"&gt;A&lt;/div&gt;
+  &lt;div class="g-item"&gt;B&lt;/div&gt;
+  &lt;div class="g-item"&gt;C&lt;/div&gt;
+  &lt;div class="g-item"&gt;D&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.galeri</code>'ye <code>display: grid;</code> verin.</li>
+                            <li>Otomatik olarak sığan ve minimum <code>150px</code> genişliğinde olan esnek sütunlar oluşturun (<code>grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));</code>).</li>
+                            <li>Satır ve sütun boşluklarını <code>1rem</code> yapın (<code>gap: 1rem;</code>).</li>
+                            <li>Grid elemanlarının içeriğini hem dikeyde hem yatayda ortalamak için kapsayıcıya <code>place-items: center;</code> verin.</li>
+                            <li>Sadece sütunlar arasındaki boşluğu <code>20px</code> yapın (<code>column-gap: 20px;</code>).</li>
+                            <li>Tüm satırların yüksekliğini otomatik olarak içeriğe göre ayarlayın (<code>grid-auto-rows: min-content;</code>).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                 <div id="position" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Position Özelliği</h2>
+                    <p class="mb-4"><code>position</code> özelliği, bir elemanın sayfa üzerindeki konumlandırma yöntemini belirler. <code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code> özellikleri ile kullanılır.</p>
+                     <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;div class="kapsayici"&gt;
+  &lt;div class="kutu relative"&gt;Relative&lt;/div&gt;
+  &lt;div class="kutu absolute"&gt;Absolute&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="kutu fixed"&gt;Fixed&lt;/div&gt;
+&lt;header class="sticky"&gt;Sticky Header&lt;/header&gt;
+</code></pre>
+                    </div>
+                     <pre><code class="language-css">.kapsayici { position: relative; height: 150px; border: 2px dashed gray; }
+
+/* relative: Normal konumuna göre 20px aşağı kaydırılır. */
+.relative { position: relative; top: 20px; }
+  
+/* absolute: Kapsayıcı'nın sağ üst köşesine konumlanır. */
+.absolute { position: absolute; top: 0; right: 0; }
+  
+/* fixed: Tarayıcı penceresinin sağ alt köşesine sabitlenir. */
+.fixed { position: fixed; bottom: 10px; right: 10px; }
+
+/* sticky: Sayfa kaydırıldığında üstte yapışık kalır. */
+.sticky { position: sticky; top: 0; background-color: #334155; padding: 10px;}
+</code></pre>
+                      <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>`absolute` ile ortalama:</strong> Bir elemanı hem dikey hem yatayda ortalamak için kullanılır.</p>
+                                <pre><code class="language-css">.kapsayici { position: relative; }
+.ortalanmis {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}</code></pre>
+                            </li>
+                            <li><p><strong>`z-index` ile katman sırası:</strong> `position` değeri olan elemanların üst üste gelme sırasını belirler. Yüksek değer en üstte olur.</p>
+                                <pre><code class="language-css">.arkada { position: absolute; z-index: 1; }
+.onde { position: absolute; z-index: 2; }</code></pre>
+                            </li>
+                             <li><p><strong>Overlay (Kaplama) efekti:</strong> Sayfanın üzerine yarı şeffaf bir katman eklemek.</p>
+                                <pre><code class="language-css">.overlay {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 10;
+}</code></pre>
+                            </li>
+                            <li><p><strong>`static` (varsayılan) vs `relative`:</strong> `static` elemanlar `top/left` gibi özelliklerden etkilenmez. `relative` ise normal akışta kalır ama kaydırılabilir.</p>
+                                <pre><code class="language-css">.static { position: static; top: 50px; } /* çalışmaz */
+.relative { position: relative; top: 50px; } /* çalışır */</code></pre>
+                            </li>
+                             <li><p><strong>`sticky` kenar çubuğu:</strong></p>
+                                <pre><code class="language-css">.sidebar { position: sticky; top: 20px; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                      <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 📌</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;div id="goreceli"&gt;Ben relative'im.&lt;/div&gt;
+&lt;div id="sabit"&gt;Ben fixed'im.&lt;/div&gt;
+&lt;div id="kapsayici" style="position: relative; height: 100px; border: 1px solid;"&gt;
+  &lt;div id="mutlak"&gt;Ben absolute'um.&lt;/div&gt;
+  &lt;div id="ustte"&gt;Üstteyim&lt;/div&gt;
+  &lt;div id="altta"&gt;Alttayım&lt;/div&gt;
+&lt;/div&gt;
+&lt;h2 id="yapiskan"&gt;Yapışkan Başlık&lt;/h2&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>#goreceli</code> elemanını <code>position: relative;</code> yaparak normal konumundan <code>10px</code> aşağı kaydırın.</li>
+                            <li><code>#sabit</code> elemanını sayfanın sağ üst köşesine sabitleyin (<code>fixed</code>).</li>
+                            <li><code>#kapsayici</code>'ya <code>position: relative;</code> ve içindeki <code>#mutlak</code> elemanına <code>position: absolute;</code> vererek, iç elemanı kapsayıcının sol alt köşesine yerleştirin.</li>
+                             <li><code>#ustte</code> ve <code>#altta</code> elemanlarını üst üste bindirin ve <code>z-index</code> kullanarak <code>#ustte</code> elemanının görünmesini sağlayın.</li>
+                             <li>Uzun bir sayfa oluşturduğunuzu varsayarak, <code>#yapiskan</code> başlığın sayfa kaydırıldığında en üste yapışıp kalmasını sağlayın (<code>position: sticky; top: 0;</code>).</li>
+                             <li>Bir input alanının içine (sağ üst köşesine) ikon gibi bir <code>&lt;div&gt;</code> yerleştirin. (İpucu: input'u bir kapsayıcıya alın).</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 📌</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu bildirim kutusunu stilize edin:</p>
+                        <pre><code class="language-html">&lt;div class="bildirim-kapsayici"&gt;
+  &lt;img src="avatar.png" class="avatar"&gt;
+  &lt;span class="bildirim-sayaci"&gt;3&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.bildirim-kapsayici</code>'ya <code>position: relative;</code> verin.</li>
+                            <li><code>.bildirim-sayaci</code>'na <code>position: absolute;</code> verin.</li>
+                            <li>Sayacı, kapsayıcının sağ üst köşesine yerleştirin (<code>top: 0; right: 0;</code>).</li>
+                            <li>Sayacın avatarın hafifçe üzerine gelmesi için <code>top</code> ve <code>right</code> değerlerini negatif yapın (örn: <code>-5px</code>).</li>
+                            <li>İki adet <code>&lt;div&gt;</code> oluşturun, ikisine de <code>position: absolute;</code> verin ve <code>z-index</code> ile birini diğerinin arkasında bırakın.</li>
+                             <li>Bir <code>&lt;footer&gt;</code> elemanının, <code>position: sticky;</code> ve <code>bottom: 0;</code> ile sayfanın en altına yapışmasını sağlayın.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="sozde-siniflar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Sözde Sınıflar (Pseudo-classes)</h2>
+                    <p class="mb-4">Sözde sınıflar, bir elemanın özel bir durumunu (örneğin fareyle üzerine gelindiğinde) seçmek için kullanılır. <code>:</code> ile başlarlar.</p>
+                     <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;a href="#"&gt;Bir Link&lt;/a&gt;
+&lt;button&gt;Tıkla Bana&lt;/button&gt;
+&lt;input type="text" placeholder="Odaklan..."&gt;
+&lt;ul&gt;
+  &lt;li&gt;Öğe 1&lt;/li&gt;
+  &lt;li&gt;Öğe 2&lt;/li&gt;
+  &lt;li&gt;Öğe 3&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                    </div>
+                     <pre><code class="language-css">/* Fareyle üzerine gelinen link */
+a:hover { color: red; }
+
+/* Tıklanma anındaki buton */
+button:active { transform: scale(0.98); }
+
+/* Odaklanılmış input alanı */
+input:focus { border-color: skyblue; outline: none; }
+
+/* Listedeki ilk eleman */
+li:first-child { font-weight: bold; }
+
+/* Listedeki tek sayılı elemanlar */
+li:nth-child(odd) { background-color: #1e293b; }
+</code></pre>
+                      <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Ziyaret edilmiş ve edilmemiş linkler:</strong></p>
+                                <pre><code class="language-css">a:link { color: blue; } /* Ziyaret edilmemiş */
+a:visited { color: purple; } /* Ziyaret edilmiş */</code></pre>
+                            </li>
+                            <li><p><strong>Pasif (`disabled`) butonları biçimlendirme:</strong></p>
+                                <pre><code class="language-css">button:disabled { background-color: gray; cursor: not-allowed; }</code></pre>
+                            </li>
+                             <li><p><strong>Her üç elemanda bir (`nth-child`):</strong></p>
+                                <pre><code class="language-css">li:nth-child(3n) { background-color: darkred; }</code></pre>
+                            </li>
+                            <li><p><strong>Boş olmayan (`:not(:empty)`) paragraflar:</strong></p>
+                                <pre><code class="language-css">p:not(:empty) { border: 1px solid gray; }</code></pre>
+                            </li>
+                             <li><p><strong>`::before` ve `::after` Sözde Elemanları:</strong> Bir elemanın içeriğinden önce veya sonra içerik ekler.</p>
+                                <pre><code class="language-css">a[target="_blank"]::after { content: ' 🔗'; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                      <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) ✨</h3>
+                         <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;button class="hover-buton"&gt;Üzerime Gel&lt;/button&gt;
+&lt;input type="text" class="focus-input"&gt;
+&lt;ul class="liste"&gt;
+  &lt;li&gt;Bir&lt;/li&gt;&lt;li&gt;İki&lt;/li&gt;&lt;li&gt;Üç&lt;/li&gt;&lt;li&gt;Dört&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Bu paragrafın ilk harfi büyük olacak.&lt;/p&gt;
+&lt;a href="dosya.pdf"&gt;Rapor (PDF)&lt;/a&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.hover-buton</code>'un üzerine fareyle gelindiğinde (<code>:hover</code>) arka plan renginin değişmesini sağlayın.</li>
+                            <li><code>.focus-input</code> alanına tıklandığında (<code>:focus</code>) kenarlığının (border) 2px olmasını sağlayın.</li>
+                            <li><code>.liste</code>'deki son elemanın (<code>:last-child</code>) yazı rengini turuncu yapın.</li>
+                            <li>Paragrafların ilk harfini <code>::first-letter</code> sözde elemanı ile büyütün ve renklendirin.</li>
+                            <li><code>.liste</code>'deki çift sayılı elemanların (2., 4., vs.) arka plan rengini değiştirin (<code>:nth-child(even)</code>).</li>
+                            <li>Sonu ".pdf" ile biten linklerin yanına <code>::after</code> kullanarak bir ikon veya metin ekleyin.</li>
+                        </ul>
+
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) ✨</h3>
+                         <p class="text-slate-400 mb-4">Şimdi de bu form elemanlarını stilize edin:</p>
+                        <pre><code class="language-html">&lt;input type="checkbox" id="onay"&gt;
+&lt;label for="onay"&gt;Kabul Ediyorum&lt;/label&gt;
+&lt;div&gt;
+  &lt;p&gt;İlk paragraf.&lt;/p&gt;
+  &lt;p&gt;&lt;/p&gt; &lt;!-- Boş paragraf --&gt;
+  &lt;p&gt;Son paragraf.&lt;/p&gt;
+&lt;/div&gt;
+&lt;button disabled&gt;Gönderilemez&lt;/button&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                             <li>Checkbox işaretlendiğinde (<code>:checked</code>), yanındaki <code>label</code>'ın rengini yeşil yapın. (İpucu: Bitişik kardeş seçici `+` kullanın).</li>
+                             <li>Pasif (<code>:disabled</code>) olan butonun opaklığını (<code>opacity</code>) 0.5 yapın.</li>
+                             <li>Div içindeki sadece ilk paragrafın (<code>:first-of-type</code>) altını çizin.</li>
+                             <li>Div içindeki boş olmayan (<code>:not(:empty)</code>) paragraflara bir arka plan rengi verin.</li>
+                             <li>Paragrafların ilk satırını (<code>::first-line</code>) kalın yapın.</li>
+                             <li>Input'a odaklanıldığında (<code>:focus</code>) yanındaki <code>label</code>'ın yazı boyutunu büyütün.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="gecisler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-sky-500">Geçişler (Transitions)</h2>
+                    <p class="mb-4"><code>transition</code> özelliği, bir CSS özelliğinin değerinin zaman içinde yumuşak bir şekilde değişmesini sağlar. Bu, animasyonlu efektler oluşturmanın basit bir yoludur.</p>
+                     <div class="html-context">
+                        <h4>Örnek HTML Yapısı</h4>
+                        <pre><code class="language-html">&lt;button class="buton"&gt;Yumuşak Geçiş&lt;/button&gt;</code></pre>
+                    </div>
+                     <pre><code class="language-css">.buton {
+  background-color: blue;
+  padding: 15px 30px;
+  color: white;
+  border: none;
+  
+  /* Kısa yol: Hangi özellik, ne kadar sürede, nasıl bir hızla değişecek */
+  transition: background-color 0.4s ease-in-out, transform 0.3s ease;
+}
+
+.buton:hover {
+  background-color: red;
+  transform: translateY(-5px); /* Üzerine gelince 5px yukarı kaydır */
+}
+</code></pre>
+                     <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-sky-400 mb-2">Çözümlü Örnekler 💡</h3>
+                        <ol class="list-decimal list-inside space-y-4">
+                            <li><p><strong>Tüm özelliklere geçiş uygulama:</strong></p>
+                                <pre><code class="language-css">div { transition: all 0.5s ease; }</code></pre>
+                            </li>
+                            <li><p><strong>Geçiş gecikmesi (`transition-delay`):</strong> Animasyonun başlamadan önce bekleme süresi.</p>
+                                <pre><code class="language-css">div:hover { width: 300px; }
+div { transition: width 1s; transition-delay: 0.5s; }</code></pre>
+                            </li>
+                             <li><p><strong>Hız eğrisi (`transition-timing-function`):</strong> Geçişin hızlanma ve yavaşlama şekli.</p>
+                                <pre><code class="language-css">div { transition: transform 1s linear; } /* Sabit hız */</code></pre>
+                            </li>
+                            <li><p><strong>Kutu gölgesine geçiş (`box-shadow`):</strong></p>
+                                <pre><code class="language-css">.kutu {
+  box-shadow: 2px 2px 5px black;
+  transition: box-shadow 0.3s;
+}
+.kutu:hover { box-shadow: 5px 5px 15px black; }</code></pre>
+                            </li>
+                             <li><p><strong>Renk ve Opaklık geçişi:</strong></p>
+                                <pre><code class="language-css">.kutu {
+  background: blue; opacity: 1;
+  transition: background 0.5s, opacity 0.5s;
+}
+.kutu:hover { background: red; opacity: 0.5; }</code></pre>
+                            </li>
+                        </ol>
+                    </div>
+                      <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 1) 🪄</h3>
+                        <p class="text-slate-400 mb-4">Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                        <pre><code class="language-html">&lt;div class="gecisli-kutu"&gt;&lt;/div&gt;</code></pre>
+                        <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.gecisli-kutu</code> elemanına bir başlangıç genişliği ve yüksekliği verin.</li>
+                            <li>Bu kutunun üzerine fareyle gelindiğinde (<code>:hover</code>) genişliğinin (<code>width</code>) artmasını sağlayın.</li>
+                            <li>Bu genişlik değişimine 0.5 saniyelik bir <code>transition</code> ekleyerek yumuşak bir animasyon oluşturun.</li>
+                             <li>Kutunun opaklığının (<code>opacity</code>) da <code>1</code>'den <code>0</code>'a düşmesini sağlayın ve buna 1 saniyelik bir geçiş verin.</li>
+                             <li>Genişlik geçişinin başlaması için 0.2 saniyelik bir gecikme (<code>transition-delay</code>) ekleyin.</li>
+                             <li>Kutunun üzerine gelindiğinde 45 derece dönmesini (<code>transform: rotate(45deg);</code>) sağlayın ve <code>transform</code> özelliğine yumuşak bir geçiş ekleyin.</li>
+                        </ul>
+                        
+                        <hr class="my-8 border-slate-700">
+
+                        <h3 class="text-xl font-semibold text-amber-400 mb-2">Sıra Sende! (Bölüm 2) 🪄</h3>
+                        <p class="text-slate-400 mb-4">Şimdi de bu linki stilize edin:</p>
+                        <pre><code class="language-html">&lt;a href="#" class="menu-link"&gt;Ana Sayfa&lt;/a&gt;</code></pre>
+                         <ul class="list-disc list-inside space-y-2 mt-4">
+                            <li><code>.menu-link</code>'e başlangıç rengi olarak <code>white</code> verin.</li>
+                            <li>Üzerine gelindiğinde (<code>:hover</code>) metin renginin <code>skyblue</code> olmasını sağlayın.</li>
+                            <li>Bu renk değişiminin <code>0.3 saniye</code> sürmesini ve <code>ease-in</code> hız eğrisine sahip olmasını sağlayın.</li>
+                            <li>Linkin harf aralığının (<code>letter-spacing</code>) da üzerine gelindiğinde <code>2px</code>'e çıkmasını sağlayın.</li>
+                            <li>Harf aralığı değişimine <code>0.4 saniye</code> süren bir geçiş ekleyin.</li>
+                            <li>Tüm geçişleri tek bir <code>transition</code> özelliği ile yazın.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuLinks = document.querySelectorAll('.menu-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            function showSection(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                menuLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+
+                const targetSection = document.getElementById(targetId);
+                const activeLink = document.querySelector(`.menu-link[data-target="${targetId}"]`);
+                
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const targetId = this.dataset.target;
+                    showSection(targetId);
+                });
+            });
+
+            // İlk olarak giriş bölümünü göster
+            showSection('giris');
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
+

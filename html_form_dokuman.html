@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İnteraktif HTML Form Kılavuzu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Midnight Slate -->
+    <!-- Application Structure Plan: Kullanıcıların konular arasında serbestçe geçiş yapabilmesi için solda sabit bir gezinme menüsü ve sağda dinamik bir içerik alanından oluşan iki sütunlu bir düzen tasarlanmıştır. Bu yapı, uzun bir belgede gezinmek yerine belirli bilgilere hızlı erişim sağlayarak öğrenme deneyimini iyileştirir. Her bölümde, kod örnekleri ve bu kodların canlı, etkileşimli önizlemeleri yan yana sunularak anında geri bildirim sağlanır. 'Sıra Sende!' bölümleri, çözümleri gizleyen/gösteren butonlarla daha etkileşimli hale getirilmiştir. -->
+    <!-- Visualization & Content Choices: Bu uygulama, veri görselleştirmesi için grafikler yerine, form elemanlarının kendisini 'görselleştirme' aracı olarak kullanır. Rapor Bilgisi: HTML form elemanları -> Amaç: Öğretmek ve karşılaştırmak -> Görselleştirme/Sunum Metodu: Kod parçacıklarının yanında canlı, işlevsel form elemanlarının render edilmesi -> Etkileşim: Kullanıcılar render edilmiş form elemanlarıyla doğrudan etkileşime girebilir (yazı yazma, seçim yapma vb.). Çözümleri göster/gizle butonları. -> Gerekçe: Bu yaklaşım, soyut kod ile somut sonuç arasındaki bağlantıyı anında kurarak öğrenmeyi hızlandırır. -> Kütüphane/Metot: Vanilla JS, Tailwind CSS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        .nav-link.active {
+            background-color: #0c4a6e; /* sky-800 */
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .code-block {
+            background-color: #1f2937; /* gray-800 */
+            color: #d1d5db;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-slate-100">İnteraktif HTML Form Kılavuzu</h1>
+            <p class="text-lg text-slate-400 mt-2">HTML form elemanlarını canlı örneklerle ve kodlarıyla keşfedin.</p>
+        </header>
+
+        <div class="flex flex-col md:flex-row gap-8">
+            <!-- Navigation -->
+            <aside class="w-full md:w-1/4 lg:w-1/5">
+                <nav id="navigation" class="sticky top-8 bg-slate-800 p-4 rounded-lg shadow-sm border border-slate-700">
+                    <ul class="space-y-2">
+                        <li><a href="#form" class="nav-link block w-full text-left px-4 py-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"><code>&lt;form&gt;</code></a></li>
+                        <li><a href="#input" class="nav-link block w-full text-left px-4 py-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"><code>&lt;input&gt;</code></a></li>
+                        <li><a href="#selection" class="nav-link block w-full text-left px-4 py-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-white transition-colors">Seçim Elemanları</a></li>
+                        <li><a href="#textarea-select" class="nav-link block w-full text-left px-4 py-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"><code>&lt;textarea&gt;</code> & <code>&lt;select&gt;</code></a></li>
+                        <li><a href="#fieldset" class="nav-link block w-full text-left px-4 py-2 rounded-md text-slate-400 hover:bg-slate-700 hover:text-white transition-colors"><code>&lt;fieldset&gt;</code></a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Content -->
+            <main class="w-full md:w-3/4 lg:w-4/5">
+                <!-- Section: Form -->
+                <section id="form" class="content-section space-y-6 bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-700">
+                    <h2 class="text-3xl font-bold text-slate-100 border-b border-slate-700 pb-2">Formlar (<code>&lt;form&gt;</code>)</h2>
+                    <p class="text-slate-400">Bu bölüm, HTML'de kullanıcı verilerini toplamak için kullanılan temel <code>&lt;form&gt;</code> etiketini ve onun temel niteliklerini tanıtmaktadır. Formlar, web sayfalarının kullanıcılarla etkileşim kurmasını sağlayan temel yapı taşlarıdır.</p>
+                    <p class="text-slate-400"><code>&lt;form&gt;</code> etiketi, metin kutuları, onay kutuları, radyo düğmeleri ve gönder butonları gibi çeşitli girdi elemanları için bir kapsayıcı görevi görür. Formun erişilebilirliği ve kullanılabilirliği için <code>&lt;label&gt;</code> etiketinin <code>for</code> özelliği ile <code>&lt;input&gt;</code> etiketinin <code>id</code>'sinin eşleşmesi kritik öneme sahiptir. Bu, etikete tıklandığında ilgili giriş alanının odaklanmasını sağlar.</p>
+                    
+                    <div class="space-y-4">
+                        <h4 class="text-xl font-semibold text-slate-200">Örnek: Temel Form Yapısı ve Nitelikleri</h4>
+                        <div class="grid md:grid-cols-2 gap-4 items-start">
+                            <pre class="code-block"><code>&lt;form action="/kayit-ol" method="post"&gt;
+  &lt;label for="ad"&gt;Adınız:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="text" id="ad" name="kullanici_ad"&gt;&lt;br&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Gönder&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                            <div class="border p-4 rounded-lg bg-slate-900 border-slate-700">
+                                <form action="javascript:void(0);">
+                                  <label for="ad_form">Adınız:</label><br>
+                                  <input type="text" id="ad_form" name="kullanici_ad" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500"><br><br>
+                                  <button type="submit" class="bg-sky-600 text-white px-4 py-2 rounded-md hover:bg-sky-700">Gönder</button>
+                                </form>
+                            </div>
+                        </div>
+                        <ul class="list-disc list-inside text-slate-400 space-y-1">
+                            <li><b class="text-slate-200 font-semibold">action:</b> Form verilerinin gönderileceği URL'yi belirtir.</li>
+                            <li><b class="text-slate-200 font-semibold">method:</b> Verileri göndermek için kullanılacak HTTP metodunu belirtir (genellikle `get` veya `post`).</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-sky-900/20 border-l-4 border-sky-600 p-4 rounded-md">
+                        <h3 class="text-lg font-semibold text-sky-300">Sıra Sende! 🗳️</h3>
+                        <p class="text-sky-400">Verileri "/iletisim" adresine <code>POST</code> metodu ile gönderecek bir form oluşturun. Formun içine `name="email"` olan bir metin giriş alanı ve bunun için "E-posta:" yazan bir <code>&lt;label&gt;</code> ekleyin. Formun sonuna "Kaydet" yazan bir gönder butonu (`&lt;button&gt;`) ekleyin.</p>
+                        <button onclick="toggleSolution(this)" class="mt-2 text-sm bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1 rounded-md hover:bg-slate-600">Çözümü Göster</button>
+                        <div class="solution hidden mt-4">
+                             <pre class="code-block"><code>&lt;form action="/iletisim" method="post"&gt;
+  &lt;label for="email_adresi"&gt;E-posta:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="text" id="email_adresi" name="email"&gt;&lt;br&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Kaydet&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section: Input -->
+                <section id="input" class="content-section space-y-6 hidden bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-700">
+                    <h2 class="text-3xl font-bold text-slate-100 border-b border-slate-700 pb-2">Giriş Elemanları (<code>&lt;input&gt;</code>)</h2>
+                    <p class="text-slate-400"><code>&lt;input&gt;</code> etiketi, en yaygın kullanılan form elemanıdır. <code>type</code> niteliğine atanan değere göre kullanıcıya metin kutusu, parola alanı, sayı girişi veya tarih seçici gibi çok çeşitli giriş kontrolleri sunar. Bu bölüm, en sık kullanılan <code>input</code> türlerini interaktif örneklerle açıklamaktadır.</p>
+
+                    <h4 class="text-xl font-semibold text-slate-200">Örnek 1: Metin, Parola, E-posta ve Sayı</h4>
+                    <div class="grid md:grid-cols-2 gap-4 items-start">
+                        <pre class="code-block"><code>&lt;form&gt;
+  &lt;label&gt;Kullanıcı Adı (text):&lt;/label&gt;
+  &lt;input type="text"&gt;
+
+  &lt;label&gt;Parola (password):&lt;/label&gt;
+  &lt;input type="password"&gt;
+
+  &lt;label&gt;E-posta (email):&lt;/label&gt;
+  &lt;input type="email"&gt;
+  
+  &lt;label&gt;Miktar (number):&lt;/label&gt;
+  &lt;input type="number" min="1" max="10"&gt;
+&lt;/form&gt;</code></pre>
+                        <div class="border p-4 rounded-lg bg-slate-900 border-slate-700 space-y-4">
+                            <form action="javascript:void(0);" class="flex flex-col space-y-2">
+                                <div>
+                                    <label class="font-medium">Kullanıcı Adı (text):</label>
+                                    <input type="text" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">
+                                </div>
+                                 <div>
+                                    <label class="font-medium">Parola (password):</label>
+                                    <input type="password" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">
+                                </div>
+                                <div>
+                                    <label class="font-medium">E-posta (email):</label>
+                                    <input type="email" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">
+                                </div>
+                                 <div>
+                                    <label class="font-medium">Miktar (number):</label>
+                                    <input type="number" min="1" max="10" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <h4 class="text-xl font-semibold text-slate-200">Örnek 2: Tarih, Dosya ve Renk Seçiciler</h4>
+                    <div class="grid md:grid-cols-2 gap-4 items-start">
+                        <pre class="code-block"><code>&lt;form&gt;
+  &lt;label&gt;Doğum Günü (date):&lt;/label&gt;
+  &lt;input type="date"&gt;
+
+  &lt;label&gt;Dosya Seç (file):&lt;/label&gt;
+  &lt;input type="file"&gt;
+
+  &lt;label&gt;Favori Renk (color):&lt;/label&gt;
+  &lt;input type="color" value="#2563eb"&gt;
+&lt;/form&gt;</code></pre>
+                        <div class="border p-4 rounded-lg bg-slate-900 border-slate-700 space-y-4">
+                            <form action="javascript:void(0);" class="flex flex-col space-y-4">
+                                <div>
+                                    <label class="font-medium">Doğum Günü (date):</label>
+                                    <input type="date" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500" style="color-scheme: dark;">
+                                </div>
+                                <div>
+                                    <label class="font-medium">Dosya Seç (file):</label>
+                                    <input type="file" class="w-full text-sm text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-sky-600 file:text-white hover:file:bg-sky-700">
+                                </div>
+                                <div>
+                                    <label class="font-medium">Favori Renk (color):</label>
+                                    <input type="color" value="#2563eb" class="h-10 w-full bg-slate-700 border-slate-600">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                     <div class="bg-sky-900/20 border-l-4 border-sky-600 p-4 rounded-md">
+                        <h3 class="text-lg font-semibold text-sky-300">Sıra Sende! 🗳️</h3>
+                        <p class="text-sky-400">"/profil" adresine `POST` metodu ile veri gönderecek bir form oluşturun. İçine "Ad Soyad" için bir `text`, "Yaş" için bir `number` ve "Profil Fotoğrafı" için bir `file` input'u ekleyin. Formu göndermek için "Güncelle" yazan bir buton ekleyin.</p>
+                        <button onclick="toggleSolution(this)" class="mt-2 text-sm bg-slate-700 border border-slate-600 text-slate-300 px-3 py-1 rounded-md hover:bg-slate-600">Çözümü Göster</button>
+                        <div class="solution hidden mt-4">
+                             <pre class="code-block"><code>&lt;form action="/profil" method="post" enctype="multipart/form-data"&gt;
+  &lt;label for="adsoyad"&gt;Ad Soyad:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="text" id="adsoyad" name="adsoyad"&gt;&lt;br&gt;&lt;br&gt;
+    
+  &lt;label for="yas"&gt;Yaş:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="number" id="yas" name="yas"&gt;&lt;br&gt;&lt;br&gt;
+    
+  &lt;label for="avatar"&gt;Profil Fotoğrafı:&lt;/label&gt;&lt;br&gt;
+  &lt;input type="file" id="avatar" name="avatar"&gt;&lt;br&gt;&lt;br&gt;
+    
+  &lt;button type="submit"&gt;Güncelle&lt;/button&gt;
+&lt;/form&gt;
+&lt;!-- Not: Dosya göndermek için enctype="multipart/form-data" gerekir. --&gt;
+</code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                 <!-- Section: Selection -->
+                <section id="selection" class="content-section space-y-6 hidden bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-700">
+                    <h2 class="text-3xl font-bold text-slate-100 border-b border-slate-700 pb-2">Seçim Elemanları</h2>
+                     <p class="text-slate-400">Bu bölümde, kullanıcının belirli seçenekler arasından seçim yapmasını sağlayan form elemanları incelenmektedir. Radyo düğmeleri, bir grup seçenekten yalnızca birinin seçilmesine izin verirken, onay kutuları bir veya daha fazla seçeneğin aynı anda seçilmesine olanak tanır.</p>
+                    
+                    <h4 class="text-xl font-semibold text-slate-200">Örnek 1: Radyo Düğmeleri (Radio Buttons)</h4>
+                    <p class="text-slate-400">Radyo düğmelerini bir grup olarak çalıştırmak için hepsine aynı <code>name</code> değeri verilmelidir. Bu, seçeneklerden sadece birinin seçili olmasını sağlar.</p>
+                    <div class="grid md:grid-cols-2 gap-4 items-start">
+                        <pre class="code-block"><code>&lt;p&gt;Cinsiyetinizi seçin:&lt;/p&gt;
+&lt;input type="radio" id="erkek" name="cinsiyet" value="erkek"&gt;
+&lt;label for="erkek"&gt;Erkek&lt;/label&gt;&lt;br&gt;
+
+&lt;input type="radio" id="kadin" name="cinsiyet" value="kadin"&gt;
+&lt;label for="kadin"&gt;Kadın&lt;/label&gt;&lt;br&gt;
+
+&lt;input type="radio" id="diger" name="cinsiyet" value="diger"&gt;
+&lt;label for="diger"&gt;Diğer&lt;/label&gt;</code></pre>
+                        <div class="border p-4 rounded-lg bg-slate-900 border-slate-700">
+                            <p class="font-medium mb-2">Cinsiyetinizi seçin:</p>
+                            <div class="space-y-2">
+                                <div>
+                                    <input type="radio" id="erkek" name="cinsiyet" value="erkek" class="text-sky-600 focus:ring-sky-500">
+                                    <label for="erkek">Erkek</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="kadin" name="cinsiyet" value="kadin" class="text-sky-600 focus:ring-sky-500">
+                                    <label for="kadin">Kadın</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="diger" name="cinsiyet" value="diger" class="text-sky-600 focus:ring-sky-500">
+                                    <label for="diger">Diğer</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 class="text-xl font-semibold text-slate-200">Örnek 2: Onay Kutuları (Checkboxes)</h4>
+                    <p class="text-slate-400">Onay kutuları, kullanıcıya birden fazla seçenek sunmak ve istediklerini seçmelerine izin vermek için idealdir. Her onay kutusu bağımsız çalışır.</p>
+                    <div class="grid md:grid-cols-2 gap-4 items-start">
+                        <pre class="code-block"><code>&lt;p&gt;Bildiğiniz dilleri seçin:&lt;/p&gt;
+&lt;input type="checkbox" id="dil1" value="Türkçe"&gt;
+&lt;label for="dil1"&gt; Türkçe&lt;/label&gt;&lt;br&gt;
+
+&lt;input type="checkbox" id="dil2" value="İngilizce"&gt;
+&lt;label for="dil2"&gt; İngilizce&lt;/label&gt;&lt;br&gt;
+
+&lt;input type="checkbox" id="dil3" value="Almanca"&gt;
+&lt;label for="dil3"&gt; Almanca&lt;/label&gt;</code></pre>
+                        <div class="border p-4 rounded-lg bg-slate-900 border-slate-700">
+                            <p class="font-medium mb-2">Bildiğiniz dilleri seçin:</p>
+                            <div class="space-y-2">
+                                <div>
+                                    <input type="checkbox" id="dil1" name="dil1" value="Türkçe" class="rounded text-sky-600 focus:ring-sky-500">
+                                    <label for="dil1"> Türkçe</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="dil2" name="dil2" value="İngilizce" class="rounded text-sky-600 focus:ring-sky-500">
+                                    <label for="dil2"> İngilizce</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="dil3" name="dil3" value="Almanca" class="rounded text-sky-600 focus:ring-sky-500">
+                                    <label for="dil3"> Almanca</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                 <!-- Section: Textarea and Select -->
+                <section id="textarea-select" class="content-section space-y-6 hidden bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-700">
+                    <h2 class="text-3xl font-bold text-slate-100 border-b border-slate-700 pb-2"><code>&lt;textarea&gt;</code> & <code>&lt;select&gt;</code></h2>
+                    <p class="text-slate-400">Bu bölüm, çok satırlı metin girişi için kullanılan <code>&lt;textarea&gt;</code> ve kullanıcıya önceden tanımlanmış bir listeden seçim yapma imkanı sunan <code>&lt;select&gt;</code> (açılır liste) elemanlarını ele almaktadır.</p>
+                    
+                    <h4 class="text-xl font-semibold text-slate-200">Örnek 1: Çok Satırlı Metin Alanı (Textarea)</h4>
+                    <p class="text-slate-400"><code>rows</code> ve <code>cols</code> nitelikleri ile metin alanının boyutu ayarlanabilir.</p>
+                    <div class="grid md:grid-cols-2 gap-4 items-start">
+                        <pre class="code-block"><code>&lt;label for="yorum"&gt;Yorumunuz:&lt;/label&gt;&lt;br&gt;
+&lt;textarea id="yorum" name="yorum" rows="4"&gt;
+Buraya yorumunuzu yazabilirsiniz...
+&lt;/textarea&gt;</code></pre>
+                        <div class="border p-4 rounded-lg bg-slate-900 border-slate-700">
+                            <label for="yorum" class="font-medium">Yorumunuz:</label><br>
+                            <textarea id="yorum" name="yorum" rows="4" class="w-full border rounded-md p-2 mt-1 bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">Buraya yorumunuzu yazabilirsiniz...</textarea>
+                        </div>
+                    </div>
+
+                    <h4 class="text-xl font-semibold text-slate-200">Örnek 2: Açılır Liste (Select)</h4>
+                    <p class="text-slate-400">Liste içindeki her bir seçenek <code>&lt;option&gt;</code> etiketi ile tanımlanır. <code>selected</code> niteliği, sayfa yüklendiğinde hangi seçeneğin varsayılan olarak seçili geleceğini belirtir.</p>
+                     <div class="grid md:grid-cols-2 gap-4 items-start">
+                        <pre class="code-block"><code>&lt;label for="sehirler"&gt;Şehir Seçin:&lt;/label&gt;
+&lt;select name="sehir" id="sehirler"&gt;
+  &lt;option value="ist"&gt;İstanbul&lt;/option&gt;
+  &lt;option value="ank"&gt;Ankara&lt;/option&gt;
+  &lt;option value="izm"&gt;İzmir&lt;/option&gt;
+  &lt;option value="brs" selected&gt;Bursa&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                        <div class="border p-4 rounded-lg bg-slate-900 border-slate-700">
+                            <label for="sehirler" class="font-medium">Şehir Seçin:</label>
+                            <select name="sehir" id="sehirler" class="w-full border rounded-md p-2 mt-1 bg-slate-700 border-slate-600 text-white focus:ring-sky-500 focus:border-sky-500">
+                              <option value="ist">İstanbul</option>
+                              <option value="ank">Ankara</option>
+                              <option value="izm">İzmir</option>
+                              <option value="brs" selected>Bursa</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+                
+                 <!-- Section: Fieldset -->
+                <section id="fieldset" class="content-section space-y-6 hidden bg-slate-800 p-6 rounded-lg shadow-sm border border-slate-700">
+                    <h2 class="text-3xl font-bold text-slate-100 border-b border-slate-700 pb-2">Form Elemanlarını Gruplama (<code>&lt;fieldset&gt;</code>)</h2>
+                    <p class="text-slate-400"><code>&lt;fieldset&gt;</code> etiketi, form içindeki mantıksal olarak ilişkili elemanları bir çerçeve içinde gruplandırmak için kullanılır. <code>&lt;legend&gt;</code> etiketi ise bu gruba bir başlık ekleyerek formun okunabilirliğini ve anlaşılırlığını artırır. Bu yapı, özellikle uzun ve karmaşık formları daha yönetilebilir bölümlere ayırmak için çok kullanışlıdır.</p>
+                    
+                    <h4 class="text-xl font-semibold text-slate-200">Örnek: Kişisel Bilgiler ve İletişim Bilgileri</h4>
+                    <div class="grid md:grid-cols-2 gap-4 items-start">
+                        <pre class="code-block"><code>&lt;form&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;Kişisel Bilgiler&lt;/legend&gt;
+    &lt;label for="fname"&gt;Ad:&lt;/label&gt;&lt;br&gt;
+    &lt;input type="text" id="fname"&gt;&lt;br&gt;&lt;br&gt;
+    &lt;label for="lname"&gt;Soyad:&lt;/label&gt;&lt;br&gt;
+    &lt;input type="text" id="lname"&gt;
+  &lt;/fieldset&gt;
+  &lt;br&gt;
+  &lt;fieldset&gt;
+    &lt;legend&gt;İletişim Bilgileri&lt;/legend&gt;
+    ...
+  &lt;/fieldset&gt;
+&lt;/form&gt;</code></pre>
+                        <div class="border p-4 rounded-lg bg-slate-900 border-slate-700">
+                            <form action="javascript:void(0);">
+                              <fieldset class="border border-slate-600 p-4 rounded-md">
+                                <legend class="px-2 font-semibold text-slate-200">Kişisel Bilgiler</legend>
+                                <div class="space-y-2">
+                                    <div>
+                                        <label for="fname">Ad:</label><br>
+                                        <input type="text" id="fname" name="fname" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">
+                                    </div>
+                                    <div>
+                                        <label for="lname">Soyad:</label><br>
+                                        <input type="text" id="lname" name="lname" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">
+                                    </div>
+                                </div>
+                              </fieldset>
+                              <br>
+                               <fieldset class="border border-slate-600 p-4 rounded-md">
+                                <legend class="px-2 font-semibold text-slate-200">İletişim Bilgileri</legend>
+                                <div class="space-y-2">
+                                    <div>
+                                        <label for="email_grup">E-posta:</label><br>
+                                        <input type="email" id="email_grup" name="email_grup" class="border rounded p-1 w-full bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-sky-500 focus:border-sky-500">
+                                    </div>
+                                </div>
+                              </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        function updateContent(hash) {
+            const targetHash = hash || navLinks[0].getAttribute('href');
+            
+            contentSections.forEach(section => {
+                if ('#' + section.id === targetHash) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === targetHash) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        }
+        
+        document.getElementById('navigation').addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+                const hash = e.target.getAttribute('href');
+                history.pushState(null, null, hash);
+                updateContent(hash);
+            }
+        });
+
+        window.addEventListener('popstate', () => {
+            updateContent(window.location.hash);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateContent(window.location.hash);
+        });
+
+        function toggleSolution(button) {
+            const solutionDiv = button.nextElementSibling;
+            const isHidden = solutionDiv.classList.contains('hidden');
+            if (isHidden) {
+                solutionDiv.classList.remove('hidden');
+                button.textContent = 'Çözümü Gizle';
+            } else {
+                solutionDiv.classList.add('hidden');
+                button.textContent = 'Çözümü Göster';
+            }
+        }
+    </script>
+</body>
+</html>
+
