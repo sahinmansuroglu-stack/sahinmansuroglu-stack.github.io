@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linklerim</title>
+    <style>
+        /* Genel Sayfa Stilleri */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #eaf5ff; /* Açık mavi arka plan */
+            color: #333;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Linkleri İçeren Ana Kutu */
+        .link-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px 40px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        /* Başlık */
+        h1 {
+            color: #005a9c; /* Koyu mavi başlık */
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        /* Link Listesi */
+        .link-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .link-list li {
+            margin-bottom: 15px;
+        }
+
+        /* Linklerin Görünümü */
+        .link-list a {
+            display: block;
+            background-color: #007bff; /* Canlı mavi */
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease; /* Yumuşak geçiş efekti */
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+
+        /* Fare ile üzerine gelince linklerin alacağı stil */
+        .link-list a:hover {
+            background-color: #0056b3; /* Hover durumunda daha koyu mavi */
+            transform: translateY(-3px); /* Hafif yukarı kalkma efekti */
+            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="link-container">
+        <h1>Linklerim</h1>
+        <ul class="link-list">
+            <!-- Buradaki linkleri kendinize göre düzenleyebilirsiniz -->
+            <li><a href="https://www.github.com" target="_blank">GitHub Profilim</a></li>
+            <li><a href="https://www.linkedin.com" target="_blank">LinkedIn Hesabım</a></li>
+            <li><a href="https://www.twitter.com" target="_blank">Twitter (X) Hesabım</a></li>
+            <li><a href="#" target="_blank">Kişisel Web Sitem</a></li>
+        </ul>
+    </div>
+
+</body>
+</html>
