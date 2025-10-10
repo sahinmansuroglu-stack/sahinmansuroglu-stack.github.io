@@ -1229,22 +1229,8 @@ public class Kullanici
 var kullanici1 = new Kullanici { Ad = "Emre" };
 kullanici1.BilgileriYazdir(); // Metodu çağırma
 </code></pre>
-                    <pre><code class="language-csharp">// Örnek 3: Sadece okunabilir özellik (readonly property)
-public class Urun
-{
-    public string Ad { get; } // Sadece constructor'da değer atanabilir
-    public double Fiyat { get; set; }
-
-    public Urun(string ad)
-    {
-        Ad = ad;
-    }
-}
-
-var urun1 = new Urun("Bilgisayar");
-// urun1.Ad = "Tablet"; // Hata! 'Ad' özelliği sadece okunabilir.
-</code></pre>
-                    <pre><code class="language-csharp">// Örnek 4: Sınıf içinde metot tanımlama
+                
+                    <pre><code class="language-csharp">// Örnek 3: Sınıf içinde metot tanımlama
 public class HesapMakinesi
 {
     public int Topla(int a, int b) => a + b;
@@ -1254,7 +1240,7 @@ public class HesapMakinesi
 var hesapMakinesi = new HesapMakinesi();
 Console.WriteLine($"Toplam: {hesapMakinesi.Topla(10, 5)}");
 </code></pre>
-                    <pre><code class="language-csharp">// Örnek 5: Basit bir sınıf örneği
+                    <pre><code class="language-csharp">// Örnek 4: Basit bir sınıf örneği
 public class Ogrenci
 {
     public string Ad { get; set; }
@@ -1264,7 +1250,7 @@ public class Ogrenci
 var ogrenci1 = new Ogrenci { Ad = "Elif", Soyad = "Demir" };
 Console.WriteLine($"Öğrenci: {ogrenci1.Ad} {ogrenci1.Soyad}");
 </code></pre>
-                    <pre><code class="language-csharp">// Örnek 6: Kullanıcı girdisi ile nesne özelliklerini doldurma
+                    <pre><code class="language-csharp">// Örnek 5: Kullanıcı girdisi ile nesne özelliklerini doldurma
 var yeniOgrenci = new Ogrenci();
 Console.Write("Öğrenci Adı: ");
 yeniOgrenci.Ad = Console.ReadLine();
@@ -1277,7 +1263,6 @@ Console.WriteLine($"Kayıt oluşturuldu: {yeniOgrenci.Ad} {yeniOgrenci.Soyad}");
                         <ul class="list-disc list-inside space-y-2">
                              <li>`Ev` adında, `OdaSayisi` (int) ve `Metrekare` (int) özelliklerine sahip bir sınıf oluşturun ve bir nesnesini tanımlayın.</li>
                              <li>`Arac` adında, `Marka`, `Model` özelliklerine ve `Hizlan()` metoduna sahip bir sınıf oluşturun. `Hizlan()` metodu, "Araç [Marka] hızlanıyor." çıktısını versin.</li>
-                             <li>`Kitap` adında, `Baslik`, `Yazar` ve `YayinYili` özelliklerine sahip bir sınıf oluşturun. Nesne oluştururken bu değerleri yapıcı metot (constructor) üzerinden atayın.</li>
                              <li>`Kedi` adında, `Ad` ve `Yas` özelliklerine sahip bir sınıf oluşturun ve bu sınıfın bir nesnesini tanımlayın.</li>
                              <li>Bir `Dikdortgen` sınıfı oluşturun. `Genislik` ve `Yukseklik` özellikleri olsun. `AlanHesapla()` adında bir metot ekleyin ve bu metot `Genislik * Yukseklik` değerini döndürsün.</li>
                              <li>Kullanıcıdan bir kedinin adını ve yaşını alarak bir `Kedi` nesnesi oluşturun ve bilgilerini yazdırın.</li>
@@ -2833,6 +2818,7 @@ if (metin.Length > 5) // Koşul doğru, 7 > 5
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 </body>
 </html>
+
 
 
 
