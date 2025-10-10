@@ -1,0 +1,2838 @@
+<!-- Chosen Palette: .NET Core (Dark Theme) - Slate background with Purple, Blue, and a touch of Green accents. -->
+<!-- Application Structure Plan: A two-column layout SPA. The left column is a fixed navigation sidebar listing all topics. Clicking a topic dynamically shows its content in the right main area. This structure provides intuitive, direct access to specific information, which is ideal for educational documentation, enhancing user experience by allowing them to focus on one topic at a time without scrolling through a long document. -->
+<!-- Visualization & Content Choices: Report Info (C# educational text) -> Goal (Inform/Educate) -> Presentation (Styled HTML for text, lists, and code blocks) -> Interaction (Clickable side navigation to show/hide content sections) -> Justification (This is the standard and most effective way to present navigable documentation, offering clarity and ease of use.) -> Library/Method (Vanilla JS for navigation logic, Tailwind CSS for styling). -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# Etkileşimli Dokümantasyon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .content-section {
+            display: none;
+        }
+        .content-section.active {
+            display: block;
+        }
+        .menu-link.active {
+            background-color: #334155; /* Slate-700 */
+        }
+        pre[class*="language-"] {
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .exercise-block {
+            background-color: #1e293b; /* Slate-800 */
+            border-left: 4px solid #f97316; /* Orange-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        .solution-block {
+            background-color: #1a2434;
+            border-left: 4px solid #3b82f6; /* Blue-500 */
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-300">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-1/4 bg-slate-800 p-6 md:sticky top-0 md:h-screen overflow-y-auto">
+            <h1 class="text-2xl font-bold text-white mb-6 pb-4 border-b border-slate-700">C# Dokümantasyonu 🚀</h1>
+            <nav>
+                <ul id="menu-list" class="space-y-2">
+                 
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="hello-world">Hello World</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="degiskenler">Değişkenler ve Veri Tipleri 📦</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="operatorler">Operatörler ➕➖✖️</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="if-else">Karar İfadeleri (If-Else) 🤔</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="switch">Switch İfadesi 🔀</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="donguler">Döngüler 🔁</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="diziler">Diziler (Arrays) 🔢</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="collections">Koleksiyonlar (List, Dictionary) 📚</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="metotlar">Metotlar ⚙️</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="metot-asiri-yukleme">Metotları Aşırı Yükleme (Overloading) 🏋️</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="siniflar">Sınıflar ve Nesneler 🏗️</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="constructor">Constructor (Yapıcı Metot) 🧱</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="erisim-belirleyiciler">Erişim Belirleyiciler 🔑</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="kapsulleme">Kapsülleme (Encapsulation) 💊</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="inheritance">Kalıtım (Inheritance) 👨‍👩‍👧</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="cok-bicimlilik">Çok Biçimlilik (Polymorphism) 🎭</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="abstract">Soyut Sınıflar (Abstract) 👻</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="interface">Arayüzler (Interface) 🤝</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="static-members">Static Üyeler 🏛️</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="muhurlu-parcali-siniflar">Mühürlü ve Parçalı Sınıflar 🧱🧩</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="isimsiz-siniflar">İsimsiz Tipler (Anonymous) 🕵️</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="try-catch">Hata Yönetimi (Try-Catch) 🛡️</a></li>
+                    <li><a href="#" class="menu-link block p-3 rounded-md hover:bg-slate-700 transition" data-target="hata-ayiklama">Hata Ayıklama (Debugging) 🐞</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="w-full md:w-3/4 p-6 md:p-10 overflow-y-auto">
+            <div id="content-area">
+                
+               
+
+                <div id="hello-world" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Hello World - İlk C# Programımız 👋</h2>
+                    <p class="mb-4">Her programlama dilinde olduğu gibi, C#'a "Hello World" yazarak başlıyoruz. Bu basit program, bir C# uygulamasının ana giriş noktası olan `Main` metodunu ve konsola çıktı veren `Console.WriteLine` metodunu tanıtır.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Temel Hello World programı (Modern C#)
+Console.WriteLine("Hello, World!");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Geleneksel yapı
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Merhaba Dünya!");
+    }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Farklı bir metottan çağırma
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        Selamla();
+    }
+
+    static void Selamla()
+    {
+        Console.WriteLine("Program başladı.");
+        Console.WriteLine("Hoş geldiniz!");
+    }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Argüman alan Main metodu
+using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine($"Program başladı. Argüman sayısı: {args.Length}");
+        if (args.Length > 0)
+        {
+            Console.WriteLine($"İlk argüman: {args[0]}");
+        }
+    }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Farklı satırlarda çıktı
+Console.Write("Merhaba ");
+Console.Write("Dünya");
+Console.WriteLine("!"); // İmleci bir alt satıra atar
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan girdi alma
+Console.Write("Lütfen adınızı girin: ");
+string ad = Console.ReadLine();
+Console.WriteLine($"Hoş geldin, {ad}!");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧠</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Konsola "Sınav başladı!" yazdıran bir program yazın.</li>
+                            <li>`Main` metodu içinden çağrılan `SinavMesaji` adlı bir metot oluşturun ve bu metot "Başarılar dileriz!" mesajını yazdırsın.</li>
+                            <li>`Main` metoduna argüman olarak "Ali" ismini vererek, konsola "Merhaba Ali!" yazdıran bir program yazın.</li>
+                            <li>Konsola sırasıyla "C#", "Öğreniyorum" ve "!" kelimelerini farklı `Write` metotlarıyla, ama aynı satırda yazdırın.</li>
+                            <li>Yukarıdaki örnekleri kullanarak, "Adım [Ad], Soyadım [Soyad]" şeklinde bir çıktı veren program yazın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Konsola "Sınav başladı!" yazdıran bir program
+Console.WriteLine("Sınav başladı!");
+
+// 2. Main metodu içinden çağrılan SinavMesaji metodu
+SinavMesaji();
+static void SinavMesaji()
+{
+    Console.WriteLine("Başarılar dileriz!");
+}
+
+// 3. Argüman alan Main metodu
+static void Main(string[] args)
+{
+    if (args.Length > 0)
+    {
+        Console.WriteLine($"Merhaba, {args[0]}!");
+    }
+}
+// Konsoldan çalıştırma: dotnet run Ali
+
+// 4. Aynı satırda çıktı
+Console.Write("C# ");
+Console.Write("Öğreniyorum");
+Console.Write("!");
+
+// 5. Ad ve Soyad çıktısı
+string ad = "Ahmet";
+string soyad = "Yılmaz";
+Console.WriteLine($"Adım {ad}, Soyadım {soyad}");
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="degiskenler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Değişkenler ve Temel Veri Tipleri 📦</h2>
+                    <p class="mb-2">C#'ta değişkenler, `tip adı degiskenAdi = deger;` şeklinde tanımlanır. `var` anahtar kelimesi, derleyicinin tipi otomatik olarak belirlemesini sağlar.</p>
+                    <pre><code class="language-csharp">// Örnek 1: String değişkeni (Metin)
+string isim = "Ahmet";
+Console.WriteLine(isim);</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Integer değişkeni (Tam sayı)
+int yas = 30;
+Console.WriteLine($"Yaşım: {yas}");
+yas = 31; // Değerini değiştirebiliriz
+Console.WriteLine($"Yeni yaşım: {yas}");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Double (Ondalıklı) ve bool (Mantıksal) tipleri
+double pi = 3.14159;
+bool isActive = true; // Sadece true veya false olabilir
+Console.WriteLine($"Pi sayısı: {pi}, Aktif mi: {isActive}");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: 'var' anahtar kelimesi ile tip çıkarımı
+var mesaj = "C# Öğreniyorum"; // Derleyici tipin string olduğunu anlar
+var sayi = 20; // Derleyici tipin int olduğunu anlar
+Console.WriteLine(mesaj);
+Console.WriteLine(sayi);</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Sabit (değiştirilemez) değişken - const
+const double GRAVITY = 9.81;
+// GRAVITY = 10; // Hata verir: const değişkeni yeniden atanamaz
+Console.WriteLine($"Yer çekimi ivmesi: {GRAVITY}");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan string girdi alıp integer'a çevirme
+Console.Write("Yaşınızı giriniz: ");
+string yasGirdisi = Console.ReadLine();
+int kullaniciYas = Convert.ToInt32(yasGirdisi);
+Console.WriteLine($"Seneye {kullaniciYas + 1} yaşında olacaksınız.");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ✍️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Değeri "Masaüstü Bilgisayar" olan bir `string` değişkeni oluşturun.</li>
+                            <li>Adı `stok` olan ve değeri 50 olan bir `int` değişkeni oluşturun, sonra bu değeri 45 olarak değiştirip her iki değeri de yazdırın.</li>
+                            <li>Bir `bool` değişkeni tanımlayın ve ismini `isLoggedIn` koyun, değerini `false` olarak atayın.</li>
+                            <li>Bir `char` değişkeni oluşturun ve değerini 'E' olarak atayın.</li>
+                            <li>`decimal` tipinde, `const` anahtar kelimesini kullanarak `KDV_ORANI` adında bir sabit tanımlayın ve değerini 0.18 olarak belirleyin.</li>
+                            <li>Kullanıcıdan en sevdiği rengi girmesini isteyin ve bunu bir `string` değişkende saklayıp ekrana yazdırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. string değişkeni
+string urunAdi = "Masaüstü Bilgisayar";
+Console.WriteLine(urunAdi);
+
+// 2. int değişkeni
+int stok = 50;
+Console.WriteLine($"Stok: {stok}");
+stok = 45;
+Console.WriteLine($"Yeni stok: {stok}");
+
+// 3. bool değişkeni
+bool isLoggedIn = false;
+Console.WriteLine($"Giriş yapıldı mı: {isLoggedIn}");
+
+// 4. char değişkeni
+char harf = 'E';
+Console.WriteLine($"Karakter: {harf}");
+
+// 5. decimal tipinde const değişkeni
+const decimal KDV_ORANI = 0.18m;
+Console.WriteLine($"KDV Oranı: {KDV_ORANI}");
+
+// 6. Kullanıcıdan renk girdisi alma
+Console.Write("En sevdiğiniz renk nedir? ");
+string favoriRenk = Console.ReadLine();
+Console.WriteLine($"Favori renginiz: {favoriRenk}");</code></pre>
+                    </div>
+                </div>
+                
+                 <div id="operatorler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Operatörler ➕➖✖️</h2>
+                    <p class="mb-4">Operatörler, değerler üzerinde işlem yapmak için kullanılan sembollerdir.</p>
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-blue-400">Aritmetiksel Operatörler</h3>
+                    <pre><code class="language-csharp">// Örnek 1: Aritmetiksel operatörler
+int a = 10;
+int b = 5;
+Console.WriteLine($"Toplama: {a + b}");     // 15
+Console.WriteLine($"Çıkarma: {a - b}");     // 5
+Console.WriteLine($"Çarpma: {a * b}");      // 50
+Console.WriteLine($"Bölme: {(double)a / b}"); // 2.0
+Console.WriteLine($"Mod (Kalan): {a % b}"); // 0
+</code></pre>
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-blue-400">Atama ve Mantıksal Operatörler</h3>
+                    <pre><code class="language-csharp">// Örnek 2: Atama operatörleri
+int x = 10;
+x += 5; // x = x + 5  (x'in yeni değeri 15)
+Console.WriteLine($"x yeni değeri: {x}");
+x *= 2; // x = x * 2  (x'in son değeri 30)
+Console.WriteLine($"x'in son değeri: {x}");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Karşılaştırma operatörleri
+int c = 10;
+int d = 20;
+Console.WriteLine($"c == d? {c == d}"); // Eşit mi? -> false
+Console.WriteLine($"c != d? {c != d}"); // Eşit değil mi? -> true
+Console.WriteLine($"d > c? {d > c}");   // Büyük mü? -> true
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Mantıksal operatörler
+bool isTrue = true;
+bool isFalse = false;
+Console.WriteLine($"VE (&&): {isTrue && isFalse}"); // isTrue VE isFalse -> false
+Console.WriteLine($"VEYA (||): {isTrue || isFalse}"); // isTrue VEYA isFalse -> true
+Console.WriteLine($"DEĞİL (!): {!isTrue}");        // isTrue DEĞİL -> false
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Artırma ve Azaltma
+int e = 5;
+e++; // e'yi 1 artır
+Console.WriteLine($"e'nin yeni değeri: {e}"); // 6
+e--; // e'yi 1 azalt
+Console.WriteLine($"e'nin son değeri: {e}"); // 5
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan alınan iki sayıyı toplama
+Console.Write("Birinci sayıyı girin: ");
+int sayi1 = Convert.ToInt32(Console.ReadLine());
+Console.Write("İkinci sayıyı girin: ");
+int sayi2 = Convert.ToInt32(Console.ReadLine());
+Console.WriteLine($"{sayi1} + {sayi2} = {sayi1 + sayi2}");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ⚙️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`sayi1` ve `sayi2` değişkenlerini tanımlayın (değerleri siz belirleyin) ve `sayi1`'in `sayi2`'den küçük veya eşit olup olmadığını kontrol edin.</li>
+                            <li>`krediSkoru` değişkeni 700'den büyükse VE `gelir` değişkeni 5000'den büyükse true döndüren bir mantıksal ifade yazın.</li>
+                            <li>`sayi` değişkenini 5'e bölün ve kalanı bir başka değişkene atayarak yazdırın.</li>
+                            <li>`toplam` adında bir `int` değişkeni oluşturun, başlangıç değeri 0 olsun. Bu değişkene sırasıyla 10, 5 ve 20 ekleyerek son değerini yazdırın.</li>
+                            <li>`sayac` adında bir değişken oluşturun ve `++` operatörünü kullanarak değerini bir artırıp konsola yazdırın.</li>
+                            <li>Kullanıcıdan iki sayı alın ve bu sayıların çarpımını ekrana yazdırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Karşılaştırma
+int sayi1 = 15;
+int sayi2 = 20;
+Console.WriteLine($"Sayı1, Sayı2'den küçük veya eşit mi? {sayi1 <= sayi2}");
+
+// 2. Mantıksal ifade
+int krediSkoru = 750;
+double gelir = 6000;
+bool uygun = krediSkoru > 700 && gelir > 5000;
+Console.WriteLine($"Kredi uygun mu? {uygun}");
+
+// 3. Mod operatörü
+int sayi = 17;
+int kalan = sayi % 5;
+Console.WriteLine($"5'e bölümünden kalan: {kalan}");
+
+// 4. Atama operatörleri
+int toplam = 0;
+toplam += 10;
+toplam += 5;
+toplam += 20;
+Console.WriteLine($"Toplamın son değeri: {toplam}");
+
+// 5. Artırma operatörü
+int sayac = 0;
+sayac++;
+Console.WriteLine($"Sayanın yeni değeri: {sayac}");
+
+// 6. Kullanıcıdan alınan iki sayının çarpımı
+Console.Write("Birinci sayıyı giriniz: ");
+int num1 = Convert.ToInt32(Console.ReadLine());
+Console.Write("İkinci sayıyı giriniz: ");
+int num2 = Convert.ToInt32(Console.ReadLine());
+Console.WriteLine($"Çarpım: {num1 * num2}");
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="if-else" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Karar İfadeleri (If-Else) 🤔</h2>
+                    <p class="mb-4">`if`, `else if` ve `else` ifadeleri, belirli koşullara bağlı olarak kodun farklı bölümlerini çalıştırmak için kullanılır.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Basit if-else
+int yas = 17;
+if (yas >= 18)
+{
+    Console.WriteLine("Ehliyet alabilirsiniz. ✅");
+}
+else
+{
+    Console.WriteLine("Ehliyet için yaşınız yetersiz. ❌");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: if-else if-else zinciri
+int not = 85;
+if (not >= 90)
+{
+    Console.WriteLine("Notunuz A 🥇");
+}
+else if (not >= 80)
+{
+    Console.WriteLine("Notunuz B 🥈");
+}
+else if (not >= 70)
+{
+    Console.WriteLine("Notunuz C 🥉");
+}
+else
+{
+    Console.WriteLine("Notunuz D 😔");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: String karşılaştırması
+string kullaniciAdi = "admin";
+if (kullaniciAdi == "admin")
+{
+    Console.WriteLine("Yönetici girişi başarılı. 👑");
+}
+else
+{
+    Console.WriteLine("Kullanıcı adı yanlış.");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Birden fazla koşul
+int saat = 22;
+bool isWeekend = true;
+if (saat > 20 && isWeekend)
+{
+    Console.WriteLine("Film izleme zamanı. 🍿");
+}
+else
+{
+    Console.WriteLine("Ders çalışma zamanı. 📚");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Tek satırlık if-else
+int puan = 65;
+if (puan > 50) Console.WriteLine("Geçtiniz! 🎉"); else Console.WriteLine("Kaldınız. 🙁");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan yaş alıp oy kullanma durumu kontrolü
+Console.Write("Lütfen yaşınızı girin: ");
+int girilenYas = Convert.ToInt32(Console.ReadLine());
+if (girilenYas >= 18)
+{
+    Console.WriteLine("Oy kullanabilirsiniz. 🗳️");
+}
+else
+{
+    Console.WriteLine("Oy kullanamazsınız.");
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🎯</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`sayi` adında bir değişken tanımlayın. Eğer bu sayı 0'dan büyükse "Pozitif", 0'dan küçükse "Negatif" ve 0'a eşitse "Sıfır" yazdıran bir kod yazın.</li>
+                            <li>`kullaniciSifre` değişkeni "12345"e eşitse "Giriş başarılı.", aksi takdirde "Hatalı şifre." yazdırın.</li>
+                            <li>`sicaklik` değişkeni 15'in altındaysa "Hava soğuk 🥶", 25'in üzerindeyse "Hava sıcak 🔥" ve aralıktaysa "Hava ılık 😊" yazdırın.</li>
+                            <li>`isLoggedin` değişkeni `true` ise VE `isAdmin` değişkeni `true` ise "Yönetici paneli" yazdırın, aksi takdirde "Normal kullanıcı paneli" yazdırın.</li>
+                            <li>Bir öğrencinin notu 50'den büyük veya eşitse "Geçti", değilse "Kaldı" yazdıran basit bir if-else ifadesi yazın.</li>
+                            <li>Kullanıcıdan bir sayı alın ve sayının tek mi çift mi olduğunu ekrana yazdırın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Sayı pozitif, negatif veya sıfır
+int sayi = -5;
+if (sayi > 0)
+{
+    Console.WriteLine("Pozitif");
+}
+else if (sayi < 0)
+{
+    Console.WriteLine("Negatif");
+}
+else
+{
+    Console.WriteLine("Sıfır");
+}
+
+// 2. Şifre kontrolü
+string kullaniciSifre = "12345";
+if (kullaniciSifre == "12345")
+{
+    Console.WriteLine("Giriş başarılı.");
+}
+else
+{
+    Console.WriteLine("Hatalı şifre.");
+}
+
+// 3. Sıcaklık kontrolü
+int sicaklik = 20;
+if (sicaklik < 15)
+{
+    Console.WriteLine("Hava soğuk 🥶");
+}
+else if (sicaklik > 25)
+{
+    Console.WriteLine("Hava sıcak 🔥");
+}
+else
+{
+    Console.WriteLine("Hava ılık 😊");
+}
+
+// 4. Çoklu koşul kontrolü
+bool isLoggedin = true;
+bool isAdmin = false;
+if (isLoggedin && isAdmin)
+{
+    Console.WriteLine("Yönetici paneli");
+}
+else
+{
+    Console.WriteLine("Normal kullanıcı paneli");
+}
+
+// 5. Öğrenci notu
+int ogrenciNotu = 75;
+if (ogrenciNotu >= 50)
+{
+    Console.WriteLine("Geçti");
+}
+else
+{
+    Console.WriteLine("Kaldı");
+}
+
+// 6. Kullanıcı girdisiyle tek/çift kontrolü
+Console.Write("Bir sayı giriniz: ");
+int kullaniciSayisi = Convert.ToInt32(Console.ReadLine());
+if (kullaniciSayisi % 2 == 0)
+{
+    Console.WriteLine("Sayı çifttir.");
+}
+else
+{
+    Console.WriteLine("Sayı tektir.");
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="switch" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Switch İfadesi 🔀</h2>
+                     <p class="mb-4">`switch` ifadesi, bir değişkenin değerini bir dizi `case` (durum) ile karşılaştırır. Modern C#'ta desen eşleştirme (pattern matching) ile çok daha güçlü hale gelmiştir.</p>
+                     <pre><code class="language-csharp">// Örnek 1: Klasik switch ifadesi
+int gun = 3;
+switch (gun)
+{
+    case 1:
+        Console.WriteLine("Pazartesi");
+        break;
+    case 2:
+        Console.WriteLine("Salı");
+        break;
+    case 3:
+        Console.WriteLine("Çarşamba");
+        break;
+    default:
+        Console.WriteLine("Geçersiz gün");
+        break;
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Switch ifadesi (C# 8.0 ve sonrası)
+int not = 4;
+string notAciklamasi = not switch
+{
+    5 => "Çok İyi",
+    4 => "İyi",
+    3 => "Orta",
+    _ => "Geçersiz" // default durumu
+};
+Console.WriteLine(notAciklamasi);</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Desen eşleştirme ile tip kontrolü
+object obj = "Merhaba";
+switch (obj)
+{
+    case int i:
+        Console.WriteLine($"Bu bir integer: {i}");
+        break;
+    case string s:
+        Console.WriteLine($"Bu bir string: {s}");
+        break;
+    default:
+        Console.WriteLine("Bilinmeyen tip");
+        break;
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: 'when' anahtar kelimesi ile ek koşul
+int yas = 15;
+string durum = yas switch
+{
+    < 12 => "Çocuk",
+    >= 12 when yas < 18 => "Genç",
+    _ => "Yetişkin"
+};
+Console.WriteLine(durum);</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Gruplandırılmış case'ler
+char harf = 'a';
+switch (harf)
+{
+    case 'a':
+    case 'e':
+    case 'i':
+    case 'o':
+    case 'u':
+        Console.WriteLine("Sesli harf");
+        break;
+    default:
+        Console.WriteLine("Sessiz harf");
+        break;
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcı girdisine göre işlem seçme
+Console.WriteLine("1- Toplama\n2- Çıkarma");
+Console.Write("Seçiminiz: ");
+string secim = Console.ReadLine();
+switch (secim)
+{
+    case "1":
+        Console.WriteLine("Toplama seçildi.");
+        break;
+    case "2":
+        Console.WriteLine("Çıkarma seçildi.");
+        break;
+    default:
+        Console.WriteLine("Geçersiz seçim.");
+        break;
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧩</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`mevsim` değişkenini ("Kış", "İlkbahar" vb.) kontrol ederek o mevsime ait bir ay (ör. "Ocak") yazdırın.</li>
+                            <li>`httpStatusCode` değişkenini (ör. 200, 404) kontrol ederek "OK", "Not Found" gibi durum mesajlarını döndüren bir `switch` ifadesi yazın.</li>
+                            <li>Bir `object` değişkeninin tipini kontrol edin. Eğer `double` ise "Bu bir double", `bool` ise "Bu bir bool" yazdırın.</li>
+                            <li>Bir `int puan` değişkeni için, 90'dan büyükse "A", 80-89 arasındaysa "B", 70-79 arasındaysa "C" ve diğer durumlarda "F" döndüren bir `switch` ifadesi yazın (`when` kullanarak).</li>
+                            <li>Haftanın gününü temsil eden bir sayı (1-7) için, 1-5 arası "Hafta içi", 6-7 arası "Hafta sonu" yazdıran bir `switch` ifadesi oluşturun.</li>
+                            <li>Kullanıcıdan 1-3 arasında bir sayı girmesini isteyin ve `switch` ile seçilen menü öğesini ("Menü 1 Seçildi" gibi) yazdırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Mevsim kontrolü
+string mevsim = "Yaz";
+string ay = mevsim switch
+{
+    "Kış" => "Ocak",
+    "İlkbahar" => "Nisan",
+    "Yaz" => "Temmuz",
+    "Sonbahar" => "Ekim",
+    _ => "Bilinmiyor"
+};
+Console.WriteLine(ay);
+
+// 2. HTTP durum kodu
+int httpStatusCode = 404;
+string durumMesaji = httpStatusCode switch
+{
+    200 => "OK",
+    404 => "Not Found",
+    500 => "Internal Server Error",
+    _ => "Unknown Status"
+};
+Console.WriteLine(durumMesaji);
+
+// 3. Tip kontrolü
+object veri = true;
+switch(veri)
+{
+    case double d: Console.WriteLine($"Bu bir double: {d}"); break;
+    case bool b: Console.WriteLine($"Bu bir bool: {b}"); break;
+}
+
+// 4. Puan kontrolü
+int puan = 88;
+string harfNot = puan switch
+{
+    >= 90 => "A",
+    >= 80 and < 90 => "B",
+    >= 70 and < 80 => "C",
+    _ => "F"
+};
+Console.WriteLine($"Harf notunuz: {harfNot}");
+
+// 5. Hafta içi / Hafta sonu
+int gunNo = 6;
+string gunTipi = gunNo switch
+{
+    >= 1 and <= 5 => "Hafta içi",
+    6 or 7 => "Hafta sonu",
+    _ => "Geçersiz gün"
+};
+Console.WriteLine(gunTipi);
+
+// 6. Kullanıcı girdisine göre menü seçimi
+Console.Write("Menü seçin (1-3): ");
+string secim = Console.ReadLine();
+switch(secim)
+{
+    case "1": Console.WriteLine("Menü 1 Seçildi"); break;
+    case "2": Console.WriteLine("Menü 2 Seçildi"); break;
+    case "3": Console.WriteLine("Menü 3 Seçildi"); break;
+    default: Console.WriteLine("Geçersiz seçim"); break;
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="donguler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Döngüler 🔁</h2>
+                     <p class="mb-4">Döngüler, bir kod bloğunu belirli sayıda veya bir koşul doğru olduğu sürece tekrarlamak için kullanılır.</p>
+                     <pre><code class="language-csharp">// Örnek 1: For döngüsü
+for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine($"i'nin değeri: {i}");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Foreach döngüsü (koleksiyonlarda gezinme)
+var meyveler = new List&lt;string&gt; { "🍎 Elma", "🍐 Armut", "🍒 Kiraz" };
+foreach (var meyve in meyveler)
+{
+    Console.WriteLine(meyve);
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: While döngüsü
+int sayac = 0;
+while (sayac < 5)
+{
+    Console.WriteLine($"Sayac: {sayac}");
+    sayac++;
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Do-while döngüsü
+int i = 0;
+do
+{
+    Console.WriteLine($"Do-while ile i: {i}"); // Bu blok en az bir kere çalışır
+    i++;
+} while (i < 3);</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Break ve Continue
+for (int num = 1; num <= 10; num++)
+{
+    if (num == 5)
+    {
+        continue; // 5'i atla, döngünün başına dön
+    }
+    if (num == 8)
+    {
+        break; // 8'de döngüyü tamamen sonlandır
+    }
+    Console.WriteLine(num);
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcı "çıkış" yazana kadar girdiyi tekrar etme
+string girdi = "";
+while (girdi.ToLower() != "çıkış")
+{
+    Console.Write("Bir metin yazın ('çıkış' yazarak sonlandırın): ");
+    girdi = Console.ReadLine();
+    Console.WriteLine($"Yazdınız: {girdi}");
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🔄</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`sehirler` adlı bir string listesi oluşturun ("İstanbul", "Ankara", "İzmir") ve bir `foreach` döngüsüyle her şehri yazdırın.</li>
+                            <li>1'den 100'e kadar olan sayıların toplamını bir `while` döngüsü kullanarak bulun.</li>
+                            <li>Kullanıcıdan "evet" yazmasını isteyen, yanlış yazdığı sürece "Tekrar deneyin." yazdıran bir `do-while` döngüsü oluşturun.</li>
+                            <li>`for` döngüsüyle 1'den 20'ye kadar olan sayılardan tek olanları atlayarak çift olanları yazdırın.</li>
+                            <li>1'den 10'a kadar olan sayılar içinde 7'ye ulaştığında döngüyü sonlandıran bir `for` döngüsü yazın.</li>
+                            <li>Kullanıcıdan bir sayı alın ve 1'den o sayıya kadar olan sayıları bir `for` döngüsü ile yazdırın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Şehirleri yazdırma
+var sehirler = new List&lt;string&gt; { "İstanbul", "Ankara", "İzmir" };
+foreach (var sehir in sehirler)
+{
+    Console.WriteLine(sehir);
+}
+
+// 2. 1'den 100'e kadar toplam
+int toplam = 0;
+int sayi = 1;
+while (sayi <= 100)
+{
+    toplam += sayi;
+    sayi++;
+}
+Console.WriteLine($"Toplam: {toplam}");
+
+// 3. Do-while döngüsü
+string input;
+do
+{
+    Console.WriteLine("Lütfen 'evet' yazın:");
+    input = Console.ReadLine();
+} while (input != "evet");
+Console.WriteLine("Doğru!");
+
+// 4. Tek sayıları atlama
+for (int i = 1; i <= 20; i++)
+{
+    if (i % 2 != 0)
+    {
+        continue;
+    }
+    Console.WriteLine(i);
+}
+
+// 5. 7'de döngüyü sonlandırma
+for (int i = 1; i <= 10; i++)
+{
+    if (i == 7)
+    {
+        break;
+    }
+    Console.WriteLine(i);
+}
+
+// 6. Kullanıcının girdiği sayıya kadar yazdırma
+Console.Write("Bir bitiş sayısı girin: ");
+int bitis = Convert.ToInt32(Console.ReadLine());
+for (int j = 1; j <= bitis; j++)
+{
+    Console.WriteLine(j);
+}</code></pre>
+                    </div>
+                </div>
+
+                <div id="diziler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Diziler (Arrays) 🔢</h2>
+                    <p class="mb-4">Diziler, aynı türden belirli sayıda veriyi bir arada tutan yapılardır. Boyutları oluşturulduktan sonra değiştirilemez.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Dizi oluşturma ve değer atama
+int[] sayilar = new int[5]; // 5 elemanlı bir integer dizisi
+sayilar[0] = 10;
+sayilar[1] = 20;
+Console.WriteLine($"İlk eleman: {sayilar[0]}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Başlangıç değerleriyle dizi oluşturma
+string[] gunler = { "Pazartesi", "Salı", "Çarşamba" };
+Console.WriteLine($"İkinci gün: {gunler[1]}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Dizi üzerinde for döngüsü ile gezinme
+double[] notlar = { 85.5, 92.0, 78.5 };
+for (int i = 0; i < notlar.Length; i++)
+{
+    Console.WriteLine($"{i + 1}. Not: {notlar[i]}");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Dizi üzerinde foreach döngüsü ile gezinme
+foreach (var gun in gunler)
+{
+    Console.WriteLine(gun);
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Çok boyutlu dizi (Matris)
+int[,] matris = new int[2, 3] { { 1, 2, 3 }, { 4, 5, 6 } };
+Console.WriteLine($"Matrisin [1,1] elemanı: {matris[1, 1]}"); // Çıktı: 5
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan 3 adet meyve ismi alıp diziye atama
+string[] meyveler = new string[3];
+for (int i = 0; i < meyveler.Length; i++)
+{
+    Console.Write($"{i + 1}. meyveyi girin: ");
+    meyveler[i] = Console.ReadLine();
+}
+Console.WriteLine("Girdiğiniz meyveler:");
+foreach(var meyve in meyveler)
+{
+    Console.WriteLine("- " + meyve);
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 📝</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`string` tipinde 4 elemanlı, `renkler` adında bir dizi oluşturun ve içini doldurun.</li>
+                            <li>Oluşturduğunuz dizinin son elemanını konsola yazdırın.</li>
+                            <li>`int` tipinde, başlangıç değerleri {5, 10, 15, 20} olan bir dizi oluşturun.</li>
+                            <li>Bir `for` döngüsü kullanarak bu dizideki elemanların toplamını bulun.</li>
+                            <li>`char` tipinde 3x3'lük bir matris oluşturun.</li>
+                            <li>Kullanıcıdan 3 arkadaşının ismini alıp bir `string` dizisinde saklayın ve sonra ekrana yazdırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Renkler dizisi
+string[] renkler = { "Kırmızı", "Mavi", "Yeşil", "Sarı" };
+
+// 2. Son elemanı yazdırma
+Console.WriteLine($"Son renk: {renkler[3]}");
+// Veya daha güvenli: Console.WriteLine($"Son renk: {renkler[renkler.Length - 1]}");
+
+// 3. Sayı dizisi
+int[] sayilar = { 5, 10, 15, 20 };
+
+// 4. Dizideki elemanların toplamı
+int toplam = 0;
+for (int i = 0; i < sayilar.Length; i++)
+{
+    toplam += sayilar[i];
+}
+Console.WriteLine($"Toplam: {toplam}");
+
+// 5. 3x3'lük matris
+char[,] oyunTahtasi = new char[3, 3];
+
+// 6. Kullanıcıdan arkadaş isimleri alma
+string[] arkadaslar = new string[3];
+for(int i = 0; i < arkadaslar.Length; i++)
+{
+    Console.Write($"{i+1}. arkadaşınızın adını girin: ");
+    arkadaslar[i] = Console.ReadLine();
+}
+Console.WriteLine("\nArkadaşlarınız:");
+foreach(var arkadas in arkadaslar)
+{
+    Console.WriteLine(arkadas);
+}
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="collections" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Koleksiyonlar (List, Dictionary) 📚</h2>
+                     <p class="mb-4">Dizilerin aksine, koleksiyonların boyutu dinamik olarak değişebilir. `List&lt;T&gt;` ve `Dictionary&lt;TKey, TValue&gt;` en yaygın kullanılan koleksiyonlardır.</p>
+                     <pre><code class="language-csharp">// Örnek 1: List oluşturma ve eleman ekleme
+var sayilar = new List&lt;int&gt; { 1, 2, 3, 4, 5 };
+sayilar.Add(6);
+Console.WriteLine(sayilar[0]); // İlk eleman: 1
+Console.WriteLine($"Listenin boyutu: {sayilar.Count}"); // Boyut: 6
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Listede döngü ile gezinme
+var meyveListesi = new List&lt;string&gt; { "Elma", "Muz", "Portakal" };
+foreach (var meyve in meyveListesi)
+{
+    Console.WriteLine(meyve);
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Dictionary oluşturma (anahtar-değer çiftleri)
+var ogrenciNotlari = new Dictionary&lt;string, int&gt;
+{
+    { "Ahmet", 90 },
+    { "Zeynep", 85 }
+};
+ogrenciNotlari["Mehmet"] = 95; // Yeni eleman ekleme
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Dictionary'de döngü
+foreach (var ogrenci in ogrenciNotlari)
+{
+    Console.WriteLine($"{ogrenci.Key} adlı öğrencinin notu: {ogrenci.Value}");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Eleman silme ve kontrol etme
+meyveListesi.Remove("Muz");
+Console.WriteLine($"Listede Muz var mı? {meyveListesi.Contains("Muz")}");
+
+ogrenciNotlari.Remove("Zeynep");
+Console.WriteLine($"Sözlükte Zeynep var mı? {ogrenciNotlari.ContainsKey("Zeynep")}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan şehirler alıp listeye ekleme
+var sehirler = new List&lt;string&gt;();
+string sehir;
+Console.WriteLine("Şehirleri girin ('tamam' yazarak bitirin):");
+do
+{
+    sehir = Console.ReadLine();
+    if (sehir.ToLower() != "tamam")
+    {
+        sehirler.Add(sehir);
+    }
+} while (sehir.ToLower() != "tamam");
+
+Console.WriteLine("Eklenen Şehirler:");
+foreach(var s in sehirler) Console.WriteLine(s);
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 📋</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`string` tipinde `kitaplar` adlı 4 elemanlı bir liste oluşturun.</li>
+                             <li>Oluşturduğunuz listenin ilk elemanını ve son elemanını yazdırın.</li>
+                             <li>Listenin eleman sayısını (`Count`) ve "C# Kitabı" kelimesini içerip içermediğini kontrol edip yazdırın.</li>
+                             <li>`urunFiyatlari` adında, 3 farklı ürün (string) ve fiyatını (double) içeren bir `Dictionary` oluşturun.</li>
+                             <li>Oluşturduğunuz `Dictionary`'e yeni bir ürün ve fiyat ekleyin ve bir ürünü silin.</li>
+                             <li>Kullanıcı "bitti" yazana kadar girdiği şehirleri bir `List&lt;string&gt;`'e ekleyin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Liste oluşturma
+var kitaplar = new List&lt;string&gt; { "Nutuk", "Sefiller", "Suç ve Ceza", "C# Kitabı" };
+Console.WriteLine(kitaplar[0]); // İlk eleman
+
+// 2. İlk ve son eleman
+Console.WriteLine($"İlk kitap: {kitaplar.First()}");
+Console.WriteLine($"Son kitap: {kitaplar.Last()}");
+
+// 3. Boyut ve eleman kontrolü
+Console.WriteLine($"Liste boyutu: {kitaplar.Count}");
+Console.WriteLine($"Liste 'C# Kitabı' içeriyor mu: {kitaplar.Contains("C# Kitabı")}");
+
+// 4. Dictionary oluşturma
+var urunFiyatlari = new Dictionary&lt;string, double&gt;
+{
+    { "Telefon", 15000.50 },
+    { "Tablet", 8000.0 },
+    { "Kulaklık", 1500.75 }
+};
+
+// 5. Dictionary işlemleri
+urunFiyatlari["Mouse"] = 500.0; // Ekleme
+urunFiyatlari.Remove("Tablet"); // Silme
+foreach(var urun in urunFiyatlari)
+{
+    Console.WriteLine($"{urun.Key}: {urun.Value}");
+}
+
+// 6. Kullanıcıdan şehir listesi alma
+var sehirler = new List&lt;string&gt;();
+string girilenSehir;
+Console.WriteLine("Şehir girin ('bitti' ile sonlandırın):");
+while((girilenSehir = Console.ReadLine()) != "bitti")
+{
+    sehirler.Add(girilenSehir);
+}
+Console.WriteLine("Girilen şehirler: " + string.Join(", ", sehirler));
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="metotlar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Metotlar ⚙️</h2>
+                    <p class="mb-4">Metotlar, belirli bir işi yapan, tekrar tekrar çağrılabilen kod bloklarıdır. Bu, kod tekrarını önler ve programı daha modüler hale getirir.</p>
+                     <pre><code class="language-csharp">// Örnek 1: İki sayıyı toplayan ve sonuç döndüren metot
+int Topla(int a, int b)
+{
+    return a + b;
+}
+int sonuc = Topla(10, 20);
+Console.WriteLine($"Toplam: {sonuc}");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Değer döndürmeyen (void) metot
+void SelamVer(string isim)
+{
+    Console.WriteLine($"Merhaba, {isim}! 👋");
+}
+SelamVer("Mert");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Expression-bodied metot (tek satırlık)
+int Carpma(int x, int y) => x * y;
+Console.WriteLine($"Çarpım: {Carpma(5, 4)}");</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Varsayılan parametreli metot
+void MesajGoster(string mesaj, string baslik = "Bilgi")
+{
+    Console.WriteLine($"[{baslik}] {mesaj}");
+}
+MesajGoster("İşlem başarılı."); // Başlık parametresi verilmedi, varsayılan kullanılır.
+MesajGoster("Kayıt bulunamadı.", "Uyarı");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: out parametresi ile birden fazla değer döndürme
+bool Bolme(int bolunen, int bolen, out double sonuc)
+{
+    if (bolen == 0)
+    {
+        sonuc = 0;
+        return false;
+    }
+    sonuc = (double)bolunen / bolen;
+    return true;
+}
+
+if (Bolme(10, 2, out double bolmeSonucu))
+{
+    Console.WriteLine($"Sonuç: {bolmeSonucu}");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan alınan sayının karesini hesaplayan metot
+int KaresiniAl(int sayi) => sayi * sayi;
+
+Console.Write("Karesi alınacak sayıyı girin: ");
+int kullaniciSayisi = Convert.ToInt32(Console.ReadLine());
+int kareSonuc = KaresiniAl(kullaniciSayisi);
+Console.WriteLine($"{kullaniciSayisi} sayısının karesi: {kareSonuc}");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ➡️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`CevreHesapla` adında, bir dairenin çevresini hesaplayan bir metot yazın. Parametre olarak dairenin yarıçapını (double) alsın ve sonucu double olarak döndürsün.</li>
+                            <li>İki `string` parametresi alıp bu string'leri birleştiren ve sonucu döndüren bir metot yazın.</li>
+                            <li>Bir sayının karesini hesaplayan, expression-bodied (tek satırlık) bir metot yazın.</li>
+                            <li>`AdSoyadYazdir` adında, `ad` ve `soyad` parametreleri alan `void` bir metot yazın.</li>
+                            <li>Bir sayının tek mi çift mi olduğunu kontrol edip `bool` değer döndüren bir metot yazın.</li>
+                            <li>Kullanıcıdan adını alın ve bu adı `SelamVer(string isim)` metoduna göndererek kullanıcıyı selamlayın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Çevre hesaplama
+double CevreHesapla(double yaricap)
+{
+    return 2 * Math.PI * yaricap;
+}
+
+// 2. String birleştirme
+string StringBirlestir(string s1, string s2) => s1 + " " + s2;
+
+// 3. Kare hesaplama (tek satır)
+int KareHesapla(int sayi) => sayi * sayi;
+
+// 4. Ad Soyad Yazdırma
+void AdSoyadYazdir(string ad, string soyad)
+{
+    Console.WriteLine($"Ad: {ad}, Soyad: {soyad}");
+}
+
+// 5. Tek mi çift mi kontrolü
+bool TekMi(int sayi)
+{
+    return sayi % 2 != 0;
+}
+
+// 6. Kullanıcı girdisiyle metot çağırma
+void SelamVer(string isim) => Console.WriteLine($"Hoş geldin, {isim}!");
+Console.Write("Adınızı giriniz: ");
+string kullaniciAdi = Console.ReadLine();
+SelamVer(kullaniciAdi);
+</code></pre>
+                    </div>
+                </div>
+                
+                <div id="metot-asiri-yukleme" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Metotları Aşırı Yükleme (Overloading) 🏋️</h2>
+                    <p class="mb-4">Aynı isme sahip fakat farklı parametre imzalarına (parametre sayısı veya türü) sahip birden fazla metot oluşturmaya metot aşırı yükleme denir.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Farklı sayıda parametre
+public class Hesaplayici
+{
+    public int Topla(int a, int b) => a + b;
+    public int Topla(int a, int b, int c) => a + b + c;
+}
+var h = new Hesaplayici();
+Console.WriteLine(h.Topla(5, 10));       // 15
+Console.WriteLine(h.Topla(5, 10, 15)); // 30
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Farklı türde parametre
+public class Yazdirici
+{
+    public void Yazdir(string metin) => Console.WriteLine($"Metin: {metin}");
+    public void Yazdir(int sayi) => Console.WriteLine($"Sayı: {sayi}");
+}
+var y = new Yazdirici();
+y.Yazdir("Merhaba");
+y.Yazdir(123);
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Farklı tür ve sayıda parametre
+public class AlanHesaplayici
+{
+    public double Alan(double kenar) => kenar * kenar; // Kare
+    public double Alan(double kisaKenar, double uzunKenar) => kisaKenar * uzunKenar; // Dikdörtgen
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Parametre sırasının farklı olması
+public class Islem
+{
+    public void BilgiGoster(string ad, int yas) => Console.WriteLine($"{ad}, {yas} yaşında.");
+    public void BilgiGoster(int yas, string ad) => Console.WriteLine($"Yaş: {yas}, İsim: {ad}");
+}
+var i = new Islem();
+i.BilgiGoster("Ali", 30);
+i.BilgiGoster(25, "Veli");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Constructor Overloading (Yapıcı metot aşırı yükleme)
+public class Urun
+{
+    public string Ad { get; set; }
+    public double Fiyat { get; set; }
+
+    public Urun(string ad) { Ad = ad; Fiyat = 0; }
+    public Urun(string ad, double fiyat) { Ad = ad; Fiyat = fiyat; }
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🏋️‍♀️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Carp` adında, iki `int` ve üç `int` parametre alan iki farklı metot yazın.</li>
+                            <li>`Selamla` adında, bir `string` (isim) alan ve parametre almayan iki metot oluşturun. Parametresiz olan "Merhaba!" yazsın.</li>
+                            <li>`Ciz` adında, `int yaricap` (daire) ve `int genislik, int yukseklik` (dikdörtgen) parametreleri alan iki metot yazın.</li>
+                            <li>`double` ve `int` tipinde iki sayıyı toplayan iki farklı `Topla` metodu yazın.</li>
+                            <li>`Ogrenci` sınıfı için, sadece `Ad` alan ve `Ad` ile `Numara` alan iki farklı constructor yazın.</li>
+                            <li>Kullanıcıya kaç sayı toplamak istediğini (2 veya 3) sorun ve girdiye göre aşırı yüklenmiş `Topla` metodunu çağırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Carp metotları
+public int Carp(int a, int b) => a * b;
+public int Carp(int a, int b, int c) => a * b * c;
+
+// 2. Selamla metotları
+public void Selamla() => Console.WriteLine("Merhaba!");
+public void Selamla(string isim) => Console.WriteLine($"Merhaba, {isim}!");
+
+// 3. Ciz metotları
+public void Ciz(int yaricap) => Console.WriteLine($"{yaricap} yarıçaplı daire çiziliyor.");
+public void Ciz(int genislik, int yukseklik) => Console.WriteLine($"{genislik}x{yukseklik} dikdörtgen çiziliyor.");
+
+// 4. Farklı tiplerde Topla metotları
+public int Topla(int a, int b) => a + b;
+public double Topla(double a, double b) => a + b;
+
+// 5. Ogrenci constructor'ları
+public class Ogrenci
+{
+    public string Ad { get; set; }
+    public int Numara { get; set; }
+    public Ogrenci(string ad) { Ad = ad; }
+    public Ogrenci(string ad, int numara) { Ad = ad; Numara = numara; }
+}
+
+// 6. Kullanıcı seçimine göre metot çağırma
+Console.Write("Kaç sayı toplayacaksınız (2 veya 3)? ");
+string secim = Console.ReadLine();
+if (secim == "2") {
+    Console.WriteLine(Topla(5,10));
+} else if (secim == "3") {
+    Console.WriteLine(Topla(5,10,15)); // 'Topla(int, int, int)' metodu gerekli
+}
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="siniflar" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Sınıflar ve Nesneler 🏗️</h2>
+                     <p class="mb-4">Sınıf, bir nesnenin planıdır (blueprint). Nesne (object/instance) ise bu plandan oluşturulan somut bir örnektir. Özellikler (properties) ve metotlar (methods) içerir.</p>
+                     <pre><code class="language-csharp">// Örnek 1: Temel sınıf tanımı
+public class Araba
+{
+    // Özellikler (Properties)
+    public string Marka { get; set; }
+    public string Renk { get; set; }
+}
+
+var araba1 = new Araba(); // Araba sınıfından bir nesne (instance) oluşturma
+araba1.Marka = "Toyota";
+araba1.Renk = "Beyaz";
+Console.WriteLine($"Araba markası: {araba1.Marka}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Metotlu sınıf
+public class Kullanici
+{
+    public string Ad { get; set; }
+
+    // Metot
+    public void BilgileriYazdir()
+    {
+        Console.WriteLine($"Kullanıcı Adı: {Ad}");
+    }
+}
+
+var kullanici1 = new Kullanici { Ad = "Emre" };
+kullanici1.BilgileriYazdir(); // Metodu çağırma
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Sadece okunabilir özellik (readonly property)
+public class Urun
+{
+    public string Ad { get; } // Sadece constructor'da değer atanabilir
+    public double Fiyat { get; set; }
+
+    public Urun(string ad)
+    {
+        Ad = ad;
+    }
+}
+
+var urun1 = new Urun("Bilgisayar");
+// urun1.Ad = "Tablet"; // Hata! 'Ad' özelliği sadece okunabilir.
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Sınıf içinde metot tanımlama
+public class HesapMakinesi
+{
+    public int Topla(int a, int b) => a + b;
+    public int Cikar(int a, int b) => a - b;
+}
+
+var hesapMakinesi = new HesapMakinesi();
+Console.WriteLine($"Toplam: {hesapMakinesi.Topla(10, 5)}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Basit bir sınıf örneği
+public class Ogrenci
+{
+    public string Ad { get; set; }
+    public string Soyad { get; set; }
+}
+
+var ogrenci1 = new Ogrenci { Ad = "Elif", Soyad = "Demir" };
+Console.WriteLine($"Öğrenci: {ogrenci1.Ad} {ogrenci1.Soyad}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcı girdisi ile nesne özelliklerini doldurma
+var yeniOgrenci = new Ogrenci();
+Console.Write("Öğrenci Adı: ");
+yeniOgrenci.Ad = Console.ReadLine();
+Console.Write("Öğrenci Soyadı: ");
+yeniOgrenci.Soyad = Console.ReadLine();
+Console.WriteLine($"Kayıt oluşturuldu: {yeniOgrenci.Ad} {yeniOgrenci.Soyad}");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 👷</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`Ev` adında, `OdaSayisi` (int) ve `Metrekare` (int) özelliklerine sahip bir sınıf oluşturun ve bir nesnesini tanımlayın.</li>
+                             <li>`Arac` adında, `Marka`, `Model` özelliklerine ve `Hizlan()` metoduna sahip bir sınıf oluşturun. `Hizlan()` metodu, "Araç [Marka] hızlanıyor." çıktısını versin.</li>
+                             <li>`Kitap` adında, `Baslik`, `Yazar` ve `YayinYili` özelliklerine sahip bir sınıf oluşturun. Nesne oluştururken bu değerleri yapıcı metot (constructor) üzerinden atayın.</li>
+                             <li>`Kedi` adında, `Ad` ve `Yas` özelliklerine sahip bir sınıf oluşturun ve bu sınıfın bir nesnesini tanımlayın.</li>
+                             <li>Bir `Dikdortgen` sınıfı oluşturun. `Genislik` ve `Yukseklik` özellikleri olsun. `AlanHesapla()` adında bir metot ekleyin ve bu metot `Genislik * Yukseklik` değerini döndürsün.</li>
+                             <li>Kullanıcıdan bir kedinin adını ve yaşını alarak bir `Kedi` nesnesi oluşturun ve bilgilerini yazdırın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Ev sınıfı
+public class Ev
+{
+    public int OdaSayisi { get; set; }
+    public int Metrekare { get; set; }
+}
+var ev1 = new Ev { OdaSayisi = 3, Metrekare = 120 };
+Console.WriteLine($"Ev: {ev1.OdaSayisi} oda, {ev1.Metrekare} m²");
+
+// 2. Araç sınıfı
+public class Arac
+{
+    public string Marka { get; set; }
+    public string Model { get; set; }
+    public void Hizlan() => Console.WriteLine($"Araç {Marka} hızlanıyor.");
+}
+var arac1 = new Arac { Marka = "BMW", Model = "X5" };
+arac1.Hizlan();
+
+// 3. Kitap sınıfı
+public class Kitap
+{
+    public string Baslik { get; }
+    public string Yazar { get; }
+    public int YayinYili { get; }
+    public Kitap(string baslik, string yazar, int yayinYili)
+    {
+        Baslik = baslik; Yazar = yazar; YayinYili = yayinYili;
+    }
+}
+var kitap = new Kitap("Nutuk", "Mustafa Kemal Atatürk", 1927);
+Console.WriteLine($"Kitap: {kitap.Baslik}");
+
+// 4. Kedi sınıfı
+public class Kedi
+{
+    public string Ad { get; set; }
+    public int Yas { get; set; }
+}
+var kedi1 = new Kedi { Ad = "Tekir", Yas = 2 };
+Console.WriteLine($"Kedi: {kedi1.Ad}, Yaş: {kedi1.Yas}");
+
+// 5. Dikdörtgen sınıfı
+public class Dikdortgen 
+{
+    public double Genislik { get; set; }
+    public double Yukseklik { get; set; }
+    public double AlanHesapla() => Genislik * Yukseklik;
+}
+var dikdortgen = new Dikdortgen { Genislik = 5, Yukseklik = 10 };
+Console.WriteLine($"Alan: {dikdortgen.AlanHesapla()}");
+
+// 6. Kullanıcı girdisiyle Kedi nesnesi oluşturma
+var benimKedim = new Kedi();
+Console.Write("Kedinizin adı: ");
+benimKedim.Ad = Console.ReadLine();
+Console.Write("Kedinizin yaşı: ");
+benimKedim.Yas = Convert.ToInt32(Console.ReadLine());
+Console.WriteLine($"Kedim: {benimKedim.Ad}, Yaş: {benimKedim.Yas}");
+</code></pre>
+                    </div>
+                </div>
+                
+                <div id="constructor" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Constructor (Yapıcı Metot) 🧱</h2>
+                    <p class="mb-4">Yapıcı metot (constructor), bir sınıftan nesne oluşturulduğunda otomatik olarak çağrılan özel bir metottur. Genellikle başlangıç değerlerini atamak için kullanılır.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Varsayılan ve parametreli constructor
+public class Personel
+{
+    public string Ad { get; set; }
+    
+    public Personel() { Ad = "İsimsiz"; } // Parametresiz
+    public Personel(string ad) { Ad = ad; } // Parametreli
+}
+var p1 = new Personel();
+var p2 = new Personel("Canan");
+Console.WriteLine(p1.Ad); // İsimsiz
+Console.WriteLine(p2.Ad); // Canan
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Sadece parametreli constructor
+public class EvcilHayvan
+{
+    public string Tur { get; }
+    public EvcilHayvan(string tur)
+    {
+        Tur = tur;
+        Console.WriteLine($"Yeni bir {Tur} nesnesi oluşturuldu.");
+    }
+}
+var kedi = new EvcilHayvan("Kedi");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Birden fazla constructor (overloading)
+public class Kitap
+{
+    public string Baslik { get; set; }
+    public string Yazar { get; set; }
+    
+    public Kitap(string baslik)
+    {
+        Baslik = baslik;
+        Yazar = "Bilinmiyor";
+    }
+    public Kitap(string baslik, string yazar)
+    {
+        Baslik = baslik;
+        Yazar = yazar;
+    }
+}
+var kitap1 = new Kitap("Sefiller");
+var kitap2 = new Kitap("Nutuk", "M. K. Atatürk");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Constructor'dan başka constructor'ı çağırma (: this)
+public class Dikdortgen
+{
+    public double En { get; }
+    public double Boy { get; }
+
+    public Dikdortgen(double en, double boy) { En = en; Boy = boy; }
+    public Dikdortgen(double kenar) : this(kenar, kenar) { } // Diğer constructor'ı çağırır
+}
+var kare = new Dikdortgen(5); // 5x5'lik bir dikdörtgen (kare) oluşturur
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Nesne başlatıcı (Object Initializer)
+public class Musteri
+{
+    public int Id { get; set; }
+    public string Ad { get; set; }
+}
+// Constructor yerine nesne başlatıcı kullanmak
+var musteri = new Musteri { Id = 1, Ad = "Deniz" };
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcı girdisini constructor'a gönderme
+Console.Write("Yeni personelin adını girin: ");
+string personelAdi = Console.ReadLine();
+var yeniPersonel = new Personel(personelAdi);
+Console.WriteLine($"Yeni personel oluşturuldu: {yeniPersonel.Ad}");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🛠️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`Ogrenci` adında, `Ad` ve `Numara` özelliklerini constructor'da alan bir sınıf oluşturun.</li>
+                             <li>`Film` adında, `Baslik` ve `Yonetmen` özelliklerine sahip bir sınıf oluşturun. Sadece `Baslik` alan ve `Yonetmen`'i "Bilinmiyor" olarak atayan bir constructor ekleyin.</li>
+                             <li>`Araba` sınıfına `Marka` ve `ModelYili` parametreleri alan bir constructor ekleyin. `ModelYili`'ni almayan, varsayılan olarak 2023 atayan ikinci bir constructor daha yazın.</li>
+                             <li>`Siparis` adında, `MusteriAdi` ve `UrunSayisi` parametreleri alan bir sınıf oluşturun.</li>
+                             <li>`Musteri` sınıfına `Id` parametresi alan bir constructor ekleyin ve bu constructor içinde "Müşteri [Id] oluşturuldu." yazdırın.</li>
+                             <li>Kullanıcıdan bir müşterinin ID'sini alarak bu ID ile yeni bir `Musteri` nesnesi oluşturun.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Öğrenci sınıfı
+public class Ogrenci
+{
+    public string Ad { get; }
+    public int Numara { get; }
+    public Ogrenci(string ad, int numara) { Ad = ad; Numara = numara; }
+}
+
+// 2. Film sınıfı
+public class Film
+{
+    public string Baslik { get; }
+    public string Yonetmen { get; }
+    public Film(string baslik)
+    {
+        Baslik = baslik;
+        Yonetmen = "Bilinmiyor";
+    }
+    public Film(string baslik, string yonetmen) { Baslik = baslik; Yonetmen = yonetmen; }
+}
+
+// 3. Araba sınıfı
+public class Araba
+{
+    public string Marka { get; }
+    public int ModelYili { get; }
+    public Araba(string marka, int modelYili) { Marka = marka; ModelYili = modelYili; }
+    public Araba(string marka) : this(marka, 2023) { }
+}
+
+// 4. Sipariş sınıfı
+public class Siparis
+{
+    public string MusteriAdi { get; }
+    public int UrunSayisi { get; }
+    public Siparis(string musteriAdi, int urunSayisi) { MusteriAdi = musteriAdi; UrunSayisi = urunSayisi; }
+}
+
+// 5. Müşteri sınıfı
+public class Musteri
+{
+    public int Id { get; }
+    public Musteri(int id)
+    {
+        Id = id;
+        Console.WriteLine($"Müşteri {Id} oluşturuldu.");
+    }
+}
+
+// 6. Kullanıcı girdisiyle nesne oluşturma
+Console.Write("Müşteri ID'sini girin: ");
+int musteriId = Convert.ToInt32(Console.ReadLine());
+var yeniMusteri = new Musteri(musteriId);
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="erisim-belirleyiciler" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Erişim Belirleyiciler 🔑</h2>
+                    <p class="mb-4">Erişim belirleyiciler, sınıfların ve üyelerinin (metot, özellik) nerelerden erişilebileceğini kontrol eder.</p>
+                    <pre><code class="language-csharp">// Örnek 1: public - Her yerden erişilebilir
+public class Banka
+{
+    public string Ad { get; set; } // Her yerden erişilebilir
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: private - Sadece tanımlandığı sınıf içinden erişilebilir
+public class Kasa
+{
+    private double _bakiye = 1000; // Sadece Kasa sınıfı içinden erişilebilir
+
+    public void ParaCek(double miktar)
+    {
+        if (_bakiye >= miktar) _bakiye -= miktar;
+    }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: protected - Tanımlandığı sınıf ve o sınıftan türeyen sınıflardan erişilebilir
+public class Canli
+{
+    protected int Yas { get; set; }
+}
+public class Insan : Canli
+{
+    public void YasAta() { this.Yas = 30; } // 'Yas' protected olduğu için erişilebilir
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: internal - Sadece aynı proje (assembly) içinden erişilebilir
+internal class ProjeAyarlari
+{
+    public static string ApiKey = "12345";
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: protected internal - Aynı proje içinden veya farklı projelerdeki türemiş sınıflardan erişilebilir
+public class TemelSinif
+{
+    protected internal string Mesaj = "Merhaba";
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🔐</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Ogrenci` sınıfında `Ad` özelliğini `public`, `OgrenciNo` özelliğini `private` yapın.</li>
+                            <li>`Arac` sınıfında `Hiz` özelliğini `protected` yapın.</li>
+                            <li>`VeritabaniBaglantisi` adında `internal` bir sınıf oluşturun.</li>
+                            <li>`private` bir alana dışarıdan erişmeye çalışın ve neden hata aldığınızı bir yorum satırıyla açıklayın.</li>
+                            <li>`Personel` sınıfından türeyen `Yonetici` sınıfı oluşturun. `Personel`'deki `protected` bir alana `Yonetici` içinden erişin.</li>
+                            <li>`Kasa` sınıfına `public SifreDegistir(string yeniSifre)` metodu ekleyin. Bu metot `private` bir `_sifre` alanını güncellesin. Kullanıcıdan yeni şifreyi alıp bu metodu çağırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Ogrenci sınıfı
+public class Ogrenci {
+    public string Ad { get; set; }
+    private string OgrenciNo { get; set; }
+}
+
+// 2. Arac sınıfı
+public class Arac {
+    protected int Hiz { get; set; }
+}
+
+// 3. VeritabaniBaglantisi sınıfı
+internal class VeritabaniBaglantisi {}
+
+// 4. private alana erişim hatası
+public class Deneme { private string _gizli = "Sır"; }
+var d = new Deneme();
+// Console.WriteLine(d._gizli); // Hata! '_gizli' private olduğu için erişilemez.
+
+// 5. protected alana erişim
+public class Personel { protected double Maas; }
+public class Yonetici : Personel {
+    public void MaasAta() { this.Maas = 50000; }
+}
+
+// 6. Private alana metot ile erişim
+public class Kasa {
+    private string _sifre = "123";
+    public void SifreDegistir(string yeniSifre) { _sifre = yeniSifre; Console.WriteLine("Şifre değişti!"); }
+}
+var kasa = new Kasa();
+Console.Write("Yeni şifre girin: ");
+kasa.SifreDegistir(Console.ReadLine());
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="kapsulleme" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Kapsülleme (Encapsulation) 💊</h2>
+                    <p class="mb-4">Kapsülleme, bir nesnenin verilerini (alanlarını) gizlemek ve bu verilere sadece kendi metotları (genellikle public property'ler) aracılığıyla erişilmesini sağlamaktır. Bu, veri bütünlüğünü korur.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Private field ve public property
+public class Ogrenci
+{
+    private string _ad; // private alan (veri)
+
+    public string Ad // public özellik (veriye erişim noktası)
+    {
+        get { return _ad; }
+        set { _ad = value; }
+    }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: get/set içinde mantık
+public class BankaHesabi
+{
+    private double _bakiye;
+    public double Bakiye
+    {
+        get { return _bakiye; }
+        private set // Sadece sınıf içinden değiştirilebilir
+        {
+            if (value < 0) throw new Exception("Bakiye negatif olamaz!");
+            _bakiye = value;
+        }
+    }
+    public void ParaYatir(double miktar) { Bakiye += miktar; }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Otomatik özellikler (Auto-implemented properties)
+// Derleyici arka planda private bir alan oluşturur.
+public class Urun
+{
+    public string Ad { get; set; }
+    public double Fiyat { get; private set; } // Fiyat dışarıdan değiştirilemez
+    public Urun(double fiyat) { Fiyat = fiyat; }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Sadece-getir (get-only) özellik
+public class Dikdortgen
+{
+    public double Genislik { get; set; }
+    public double Yukseklik { get; set; }
+    public double Alan => Genislik * Yukseklik; // Değeri her çağrıldığında hesaplanır
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: init ile değişmezlik
+public class Ayarlar
+{
+    public string Tema { get; init; } // Sadece nesne oluşturulurken atanabilir
+}
+var ayar = new Ayarlar { Tema = "Karanlık" };
+// ayar.Tema = "Açık"; // Hata!
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcı girdisini doğrulamalı özelliğe atama
+var bankaMusterisi = new BankaHesabi();
+Console.Write("Yatırılacak tutarı girin: ");
+double tutar = Convert.ToDouble(Console.ReadLine());
+bankaMusterisi.ParaYatir(tutar); // Kapsülleme ile Bakiye'ye erişim
+Console.WriteLine($"Yeni bakiye: {bankaMusterisi.Bakiye}");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 💊</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Personel` sınıfında `_tcNo` adında `private` bir alan ve bu alana erişim sağlayan `public string TcNo` adında bir özellik oluşturun.</li>
+                            <li>`Ogrenci` sınıfında `_not` `private` alanına `public Not` özelliği üzerinden değer atanırken, notun 0-100 arasında olduğunu kontrol edin.</li>
+                            <li>`Araba` sınıfında `Marka` ve `Model` için otomatik özellikler kullanın.</li>
+                            <li>`TamAd` adında, `Ad` ve `Soyad` özelliklerini birleştiren, sadece-getir (get-only) bir özellik yazın.</li>
+                            <li>`Kitap` sınıfında `ISBN` özelliğini `init` anahtar kelimesiyle tanımlayarak değişmez yapın.</li>
+                            <li>Kullanıcıdan bir not alın ve `Ogrenci` sınıfının `Not` özelliğine atayın. Geçersiz bir not girildiğinde çıkan mesajı gözlemleyin.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Personel sınıfı
+public class Personel {
+    private string _tcNo;
+    public string TcNo { get { return _tcNo; } set { _tcNo = value; } }
+}
+
+// 2. Ogrenci sınıfı
+public class Ogrenci {
+    private int _not;
+    public int Not {
+        get { return _not; }
+        set {
+            if (value >= 0 && value <= 100) _not = value;
+            else Console.WriteLine("Geçersiz not!");
+        }
+    }
+}
+
+// 3. Araba sınıfı
+public class Araba {
+    public string Marka { get; set; }
+    public string Model { get; set; }
+}
+
+// 4. TamAd özelliği
+public class Kisi {
+    public string Ad { get; set; }
+    public string Soyad { get; set; }
+    public string TamAd => $"{Ad} {Soyad}";
+}
+
+// 5. Kitap sınıfı
+public class Kitap {
+    public string ISBN { get; init; }
+}
+
+// 6. Kullanıcı girdisiyle kapsülleme
+var ogr = new Ogrenci();
+Console.Write("Öğrenci notunu girin: ");
+ogr.Not = Convert.ToInt32(Console.ReadLine());
+Console.WriteLine($"Atanan not: {ogr.Not}");
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="inheritance" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Kalıtım (Inheritance) 👨‍👩‍👧</h2>
+                    <p class="mb-4">Kalıtım, bir sınıfın başka bir sınıftan özellik ve metotları miras almasını sağlar. Alt sınıf (derived class), üst sınıftan (base class) türer. Bu, kod tekrarını azaltır ve hiyerarşik bir yapı kurar.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Temel kalıtım
+public class Canli // Base class (Temel Sınıf)
+{
+    public void NefesAl() => Console.WriteLine("Nefes alınıyor...");
+}
+public class Insan : Canli // Derived class (Türemiş Sınıf)
+{
+    public void Konus() => Console.WriteLine("Konuşuyor...");
+}
+var insan = new Insan();
+insan.NefesAl(); // Miras alınan metot
+insan.Konus();
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: base constructor'ını çağırma
+public class Arac
+{
+    public int TekerlekSayisi { get; }
+    public Arac(int tekerlekSayisi) { TekerlekSayisi = tekerlekSayisi; }
+}
+public class Otomobil : Arac
+{
+    // base(4) ile üst sınıfın constructor'ını çağırıyoruz.
+    public Otomobil() : base(4) { } 
+}
+var otomobil = new Otomobil();
+Console.WriteLine($"Otomobilin tekerlek sayısı: {otomobil.TekerlekSayisi}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Metot geçersiz kılma (override)
+public class Hayvan
+{
+    public virtual void SesCikar() // override edilebilmesi için virtual olmalı
+    {
+        Console.WriteLine("Hayvan bir ses çıkarıyor.");
+    }
+}
+public class Kopek : Hayvan
+{
+    public override void SesCikar() // metodu geçersiz kıldık
+    {
+        Console.WriteLine("Hav hav! 🐶");
+    }
+}
+var kopek = new Kopek();
+kopek.SesCikar();
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Kurucu parametrelerini geçirme
+public class Kisi
+{
+    public string Ad { get; }
+    public Kisi(string ad) { Ad = ad; }
+}
+public class Calisan : Kisi
+{
+    public string Pozisyon { get; }
+    public Calisan(string ad, string pozisyon) : base(ad) // 'ad' parametresini base'e gönder
+    {
+        Pozisyon = pozisyon;
+    }
+}
+var calisan = new Calisan("Ayşe", "Mühendis");
+Console.WriteLine($"{calisan.Ad} adlı çalışanın pozisyonu: {calisan.Pozisyon}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: 'sealed' ile kalıtımı engelleme
+public sealed class String { /* ... */ }
+// public class MyString : String {} // Hata! Sealed sınıftan miras alınamaz.
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 👨‍👩‍👧‍👦</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>`Personel` adında, `Ad` ve `Soyad` özelliklerine sahip bir sınıf oluşturun. Bu sınıftan miras alan `Mudur` sınıfını oluşturun ve `Departman` özelliğini ekleyin.</li>
+                             <li>`Cihaz` adında `Ac()` metoduna sahip bir sınıf yazın. Bu sınıftan miras alan `Telefon` sınıfı oluşturun.</li>
+                             <li>`Hayvan -> Memeli -> Kedi` şeklinde bir kalıtım hiyerarşisi oluşturun.</li>
+                             <li>`Bina` sınıfı `KatSayisi` parametresi alsın. Bu sınıftan miras alan `Okul` sınıfı oluşturun ve `KatSayisi` ile birlikte `OgrenciSayisi` parametresi ekleyin.</li>
+                             <li>`Arac` ve `Otomobil` sınıflarını miras alma ilişkisiyle oluşturun. `Otomobil` nesnesi, `Arac` sınıfındaki `Hizlan()` metoduna erişebilsin.</li>
+                             <li>Kullanıcıdan bir müdürün adını, soyadını ve departmanını alarak bir `Mudur` nesnesi oluşturun ve bilgilerini yazdırın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Personel ve Müdür sınıfları
+public class Personel
+{
+    public string Ad { get; set; }
+    public string Soyad { get; set; }
+}
+public class Mudur : Personel
+{
+    public string Departman { get; set; }
+}
+
+// 2. Cihaz ve Telefon sınıfları
+public class Cihaz { public void Ac() => Console.WriteLine("Cihaz açılıyor."); }
+public class Telefon : Cihaz { }
+
+// 3. Hayvan hiyerarşisi
+public class Hayvan { }
+public class Memeli : Hayvan { }
+public class Kedi : Memeli { }
+
+// 4. Bina ve Okul sınıfları
+public class Bina
+{
+    public int KatSayisi { get; }
+    public Bina(int katSayisi) { KatSayisi = katSayisi; }
+}
+public class Okul : Bina
+{
+    public int OgrenciSayisi { get; }
+    public Okul(int katSayisi, int ogrenciSayisi) : base(katSayisi)
+    {
+        OgrenciSayisi = ogrenciSayisi;
+    }
+}
+
+// 5. Araç ve Otomobil sınıfları
+public class Arac { public void Hizlan() => Console.WriteLine("Araç hızlanıyor."); }
+public class Otomobil : Arac { }
+var otomobil = new Otomobil();
+otomobil.Hizlan();
+
+// 6. Kullanıcıdan alınan bilgilerle Müdür nesnesi oluşturma
+var mudur = new Mudur();
+Console.Write("Müdür Adı: ");
+mudur.Ad = Console.ReadLine();
+Console.Write("Müdür Soyadı: ");
+mudur.Soyad = Console.ReadLine();
+Console.Write("Departman: ");
+mudur.Departman = Console.ReadLine();
+Console.WriteLine($"Bilgiler: {mudur.Ad} {mudur.Soyad}, {mudur.Departman} Departmanı");
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="cok-bicimlilik" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Çok Biçimlilik (Polymorphism) 🎭</h2>
+                    <p class="mb-4">Çok biçimlilik, bir nesnenin farklı durumlarda farklı davranabilmesi yeteneğidir. Genellikle kalıtım yoluyla, üst sınıf referansının alt sınıf nesnelerini tutmasıyla ve `virtual`/`override` metotlarla sağlanır.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Temel Polymorphism
+public class Sekil
+{
+    public virtual void Ciz() => Console.WriteLine("Bir şekil çiziliyor.");
+}
+public class Daire : Sekil
+{
+    public override void Ciz() => Console.WriteLine("Bir daire çiziliyor. ⚪");
+}
+public class Kare : Sekil
+{
+    public override void Ciz() => Console.WriteLine("Bir kare çiziliyor. ⬜");
+}
+
+Sekil sekil1 = new Daire();
+Sekil sekil2 = new Kare();
+sekil1.Ciz(); // Daire.Ciz() çalışır
+sekil2.Ciz(); // Kare.Ciz() çalışır
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Liste ile polymorphism
+var sekiller = new List&lt;Sekil&gt;
+{
+    new Sekil(),
+    new Daire(),
+    new Kare()
+};
+foreach (var s in sekiller)
+{
+    s.Ciz(); // Her nesne kendi Ciz() metodunu çağırır
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Metot parametresi olarak polymorphism
+public void SekilCizdir(Sekil s)
+{
+    s.Ciz();
+}
+SekilCizdir(new Daire());
+SekilCizdir(new Kare());
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Abstract sınıflarla polymorphism
+public abstract class Hayvan { public abstract void SesCikar(); }
+public class Kedi : Hayvan { public override void SesCikar() => Console.WriteLine("Miyav!"); }
+public class Kopek : Hayvan { public override void SesCikar() => Console.WriteLine("Hav!"); }
+
+Hayvan h1 = new Kedi();
+h1.SesCikar();
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Interface ile polymorphism
+public interface IUcabilir { void Uc(); }
+public class Kus : IUcabilir { public void Uc() => Console.WriteLine("Kuş uçuyor."); }
+public class Ucak : IUcabilir { public void Uc() => Console.WriteLine("Uçak uçuyor."); }
+
+IUcabilir ucanNesne = new Kus();
+ucanNesne.Uc();
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🎭</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Calisan` adında `virtual MaasHesapla()` metodu olan bir sınıf oluşturun.</li>
+                            <li>`Mudur` ve `Isci` sınıflarını `Calisan`'dan türetin ve `MaasHesapla()` metodunu `override` edin.</li>
+                            <li>Bir `List&lt;Calisan&gt;` listesi oluşturup içine `Mudur` ve `Isci` nesneleri ekleyin.</li>
+                            <li>Bir `foreach` döngüsüyle listedeki tüm çalışanların maaşlarını hesaplatın.</li>
+                            <li>`IOdemeYontemi` adında `Ode(double tutar)` metodu olan bir arayüz ve bu arayüzü uygulayan `KrediKarti` ve `Nakit` sınıfları oluşturun.</li>
+                            <li>Kullanıcıdan "kare" veya "daire" girmesini isteyin. Girdiye göre ilgili `Sekil` nesnesini oluşturup `Ciz()` metodunu çağırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">
+// 1, 2, 3, 4. Çalışanlar
+public class Calisan {
+    public virtual double MaasHesapla() => 1000;
+}
+public class Mudur : Calisan {
+    public override double MaasHesapla() => 3000;
+}
+public class Isci : Calisan {
+    public override double MaasHesapla() => 1500;
+}
+
+var calisanlar = new List&lt;Calisan&gt; { new Mudur(), new Isci() };
+foreach(var calisan in calisanlar) {
+    Console.WriteLine($"Maaş: {calisan.MaasHesapla()}");
+}
+
+// 5. Ödeme Yöntemleri
+public interface IOdemeYontemi { void Ode(double tutar); }
+public class KrediKarti : IOdemeYontemi {
+    public void Ode(double tutar) => Console.WriteLine($"{tutar} TL kredi kartı ile ödendi.");
+}
+public class Nakit : IOdemeYontemi {
+    public void Ode(double tutar) => Console.WriteLine($"{tutar} TL nakit ödendi.");
+}
+
+// 6. Kullanıcı seçimiyle polymorphism
+Sekil sekil;
+Console.Write("Çizilecek şekli girin (kare/daire): ");
+string secim = Console.ReadLine();
+if (secim == "kare") {
+    sekil = new Kare();
+} else {
+    sekil = new Daire();
+}
+sekil.Ciz();
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="abstract" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Soyut (Abstract) Sınıflar 👻</h2>
+                     <p class="mb-4">Soyut sınıflar, `abstract` anahtar kelimesiyle tanımlanır ve doğrudan nesnesi oluşturulamaz (`new` ile örneklenemez). Alt sınıflar için bir "şablon" görevi görürler. Alt sınıfların uygulamak zorunda olduğu soyut metotlar ve özellikler içerebilirler.</p>
+                     <pre><code class="language-csharp">// Örnek 1: Soyut sınıf ve metot
+public abstract class Sekil
+{
+    public abstract double AlanHesapla(); // Alt sınıflar bunu uygulamak ZORUNDA
+}
+public class Kare : Sekil
+{
+    public double Kenar { get; set; }
+    public override double AlanHesapla() => Kenar * Kenar;
+}
+// var s = new Sekil(); // Hata! Soyut sınıftan nesne oluşturulamaz.
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Soyut ve normal metotlar bir arada
+public abstract class Veritabani
+{
+    public abstract void Baglan();    // Soyut metot
+    public abstract void Kapat();     // Soyut metot
+    public void Logla() => Console.WriteLine("İşlem loglandı."); // Normal metot
+}
+public class SqlVeritabani : Veritabani
+{
+    public override void Baglan() => Console.WriteLine("SQL'e bağlanıldı.");
+    public override void Kapat() => Console.WriteLine("SQL bağlantısı kapatıldı.");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Soyut özellik
+public abstract class Kitap
+{
+    public abstract int SayfaSayisi { get; }
+}
+public class Roman : Kitap
+{
+    public override int SayfaSayisi { get; }
+    public Roman(int sayfaSayisi) { SayfaSayisi = sayfaSayisi; }
+}
+var roman = new Roman(450);
+Console.WriteLine($"Roman {roman.SayfaSayisi} sayfa.");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Soyut sınıf hiyerarşisi
+public abstract class Canli { }
+public abstract class Hayvan : Canli { }
+public class Kedi : Hayvan { } // Kedi, somut (concrete) bir sınıftır
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Constructor'lı soyut sınıf
+public abstract class Varlik
+{
+    public string Ad { get; }
+    public Varlik(string ad) { Ad = ad; } // Constructor, türemiş sınıflar tarafından çağrılır
+}
+public class Insan : Varlik
+{
+    public Insan(string ad) : base(ad) { }
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 👻</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Bina` adında, `Adres` özelliğine sahip bir `abstract` sınıf oluşturun ve `BilgiYazdir()` adında soyut bir metot ekleyin.</li>
+                            <li>`Ev` sınıfını `Bina` sınıfından türetin ve `BilgiYazdir()` metodunu `override` ederek evin adresini yazdırsın.</li>
+                            <li>`SoyutHayvan` sınıfı oluşturun, `YemekYe()` adında soyut bir metot ve `Uyu()` adında normal bir metot tanımlayın.</li>
+                            <li>`Kedi` sınıfı `SoyutHayvan`'dan miras alsın ve `YemekYe` metodunu `override` etsin.</li>
+                            <li>`Hesaplayici` adında, `Topla()` ve `Cikar()` adında soyut metotlara sahip bir `abstract` sınıf oluşturun.</li>
+                            <li>Kullanıcıdan bir karenin kenar uzunluğunu alın, bir `Kare` nesnesi oluşturun ve `AlanHesapla()` metoduyla alanını yazdırın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1 ve 2. Bina ve Ev sınıfları
+public abstract class Bina
+{
+    public string Adres { get; }
+    public Bina(string adres) { Adres = adres; }
+    public abstract void BilgiYazdir();
+}
+public class Ev : Bina
+{
+    public Ev(string adres) : base(adres) { }
+    public override void BilgiYazdir() => Console.WriteLine($"Ev adresi: {Adres}");
+}
+
+// 3 ve 4. SoyutHayvan ve Kedi sınıfları
+public abstract class SoyutHayvan
+{
+    public abstract void YemekYe();
+    public void Uyu() => Console.WriteLine("Hayvan uyuyor.");
+}
+public class Kedi : SoyutHayvan
+{
+    public override void YemekYe() => Console.WriteLine("Kedi mama yiyor.");
+}
+
+// 5. Hesaplayıcı sınıfı
+public abstract class Hesaplayici
+{
+    public abstract int Topla(int a, int b);
+    public abstract int Cikar(int a, int b);
+}
+
+// 6. Kullanıcıdan alınan veriyle abstract sınıf kullanımı
+Console.Write("Karenin kenar uzunluğunu girin: ");
+double kenar = Convert.ToDouble(Console.ReadLine());
+Kare k = new Kare { Kenar = kenar };
+Console.WriteLine($"Karenin alanı: {k.AlanHesapla()}");
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="interface" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Arayüzler (Interface) 🤝</h2>
+                    <p class="mb-4">`interface`, bir sınıfın sahip olması gereken metotları ve özellikleri tanımlayan bir "sözleşmedir". Sadece imzaları içerir, gövdeleri yoktur (C# 8.0+ ile varsayılan gövde eklenebilir). Bir sınıf birden fazla `interface`'i uygulayabilir.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Temel interface
+public interface IHareketEdebilir
+{
+    void Ilerle();
+}
+public class Araba : IHareketEdebilir
+{
+    public void Ilerle() => Console.WriteLine("Araba hareket ediyor.");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Birden fazla interface
+public interface IHizlanabilir { void Hizlan(int hiz); }
+public interface IDurabilir { void Dur(); }
+
+public class Bisiklet : IHizlanabilir, IDurabilir
+{
+    public void Hizlan(int hiz) => Console.WriteLine($"Bisiklet {hiz} km/s hıza ulaştı.");
+    public void Dur() => Console.WriteLine("Bisiklet durdu.");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Interface'te varsayılan metot (C# 8.0+)
+public interface ILogger
+{
+    void Log(string message);
+    void LogError(string message) => Console.WriteLine($"HATA: {message}"); // Default implementation
+}
+public class ConsoleLogger : ILogger
+{
+    public void Log(string message) => Console.WriteLine(message);
+}
+var logger = new ConsoleLogger();
+logger.Log("Bilgi mesajı.");
+logger.LogError("Kritik hata!"); // Varsayılan metot çağrılabilir
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Interface'te özellikler
+public interface IVerimli
+{
+    int Verim { get; }
+}
+public class Ampul : IVerimli
+{
+    public int Verim { get; }
+    public Ampul(int verim) { Verim = verim; }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Farklı sınıfların aynı interface'i uygulaması
+public interface IYuruyebilir { void Yuru(); }
+public class At : IYuruyebilir
+{
+    public void Yuru() => Console.WriteLine("At yürüyor. 🐎");
+}
+public class Insan : IYuruyebilir
+{
+    public void Yuru() => Console.WriteLine("İnsan yürüyor. 🚶");
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🤝</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`IOynanabilir` adında, `Oyna()` ve `Dur()` metotlarına sahip bir interface tanımlayın.</li>
+                            <li>`MuzikCalar` sınıfı `IOynanabilir` interface'ini uygulasın.</li>
+                            <li>`IVeritabani` adında, `Ekle()` ve `Sil()` metotlarına sahip bir interface oluşturun.</li>
+                            <li>`SqlServer` ve `Oracle` sınıfları `IVeritabani` interface'ini uygulasın.</li>
+                            <li>`Ekran` sınıfı, `IAcilabilir` (Ac metodu) ve `IKapanabilir` (Kapa metodu) adında iki farklı interface'i uygulasın.</li>
+                            <li>Kullanıcıdan "sql" veya "oracle" seçmesini isteyin ve seçime göre ilgili `IVeritabani` nesnesini oluşturup `Ekle()` metodunu çağırın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1 ve 2. Oynanabilir arayüzü ve MuzikCalar
+public interface IOynanabilir { void Oyna(); void Dur(); }
+public class MuzikCalar : IOynanabilir
+{
+    public void Oyna() => Console.WriteLine("Müzik çalıyor.");
+    public void Dur() => Console.WriteLine("Müzik durdu.");
+}
+
+// 3 ve 4. IVeritabani ve sınıfları
+public interface IVeritabani { void Ekle(); void Sil(); }
+public class SqlServer : IVeritabani {
+    public void Ekle() => Console.WriteLine("SQL Server'a eklendi.");
+    public void Sil() => Console.WriteLine("SQL Server'dan silindi.");
+}
+public class Oracle : IVeritabani {
+    public void Ekle() => Console.WriteLine("Oracle'a eklendi.");
+    public void Sil() => Console.WriteLine("Oracle'dan silindi.");
+}
+
+// 5. Ekran sınıfı
+public interface IAcilabilir { void Ac(); }
+public interface IKapanabilir { void Kapa(); }
+public class Ekran : IAcilabilir, IKapanabilir
+{
+    public void Ac() => Console.WriteLine("Ekran açıldı.");
+    public void Kapa() => Console.WriteLine("Ekran kapandı.");
+}
+
+// 6. Kullanıcı seçimiyle arayüz kullanımı
+IVeritabani db;
+Console.Write("Veritabanı seçin (sql/oracle): ");
+string secim = Console.ReadLine();
+if (secim == "sql") {
+    db = new SqlServer();
+} else {
+    db = new Oracle();
+}
+db.Ekle();
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="static-members" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Static Sınıflar ve Üyeler 🏛️</h2>
+                    <p class="mb-4">`static` üyeler (metotlar, özellikler), bir sınıfın nesnesini oluşturmadan (`new` kullanmadan) doğrudan sınıf adıyla erişilebilen üyelerdir. `static` bir sınıf ise sadece `static` üyeler içerebilir ve nesnesi oluşturulamaz.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Static metot ve özellik
+public class Matematik
+{
+    public static readonly double PI = 3.14159;
+    public static double DaireAlanHesapla(double yaricap) => PI * yaricap * yaricap;
+}
+
+// Kullanımı:
+double alan = Matematik.DaireAlanHesapla(5);
+Console.WriteLine($"PI Değeri: {Matematik.PI}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Static sınıf (Tüm üyeleri static olmalı)
+public static class Donusturucu
+{
+    public static double SantimetreyiInceCevir(double cm) => cm / 2.54;
+}
+
+// Kullanımı:
+double inc = Donusturucu.SantimetreyiInceCevir(10);
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Static constructor
+public class Veritabani
+{
+    private static readonly string BaglantiCumlesi;
+    static Veritabani() // Sadece bir kez, ilk kullanımda çalışır
+    {
+        Console.WriteLine("Static constructor çalıştı.");
+        BaglantiCumlesi = "Server=myServer;Database=myDataBase;";
+    }
+    public static void Baglan() => Console.WriteLine($"{BaglantiCumlesi} ile bağlanıldı.");
+}
+
+Veritabani.Baglan(); // İlk çağrıda static constructor çalışır
+Veritabani.Baglan(); // İkinci çağrıda çalışmaz
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Normal sınıfta static sayaç
+public class Islem
+{
+    public static int IslemSayisi { get; private set; } = 0;
+    
+    public Islem()
+    {
+        IslemSayisi++; // Her nesne oluşturulduğunda artar
+    }
+}
+var islem1 = new Islem();
+var islem2 = new Islem();
+Console.WriteLine($"Toplam işlem sayısı: {Islem.IslemSayisi}"); // Çıktı: 2
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Extension Metot (static sınıf içinde)
+public static class StringExtensions
+{
+    public static string TersCevir(this string str)
+    {
+        char[] chars = str.ToCharArray();
+        Array.Reverse(chars);
+        return new string(chars);
+    }
+}
+string metin = "Merhaba";
+Console.WriteLine(metin.TersCevir()); // Çıktı: abahreM
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Static metot ile kullanıcı girdisini işleme
+Console.Write("İnç'e çevrilecek santimetreyi girin: ");
+double cm = Convert.ToDouble(Console.ReadLine());
+double inchResult = Donusturucu.SantimetreyiInceCevir(cm);
+Console.WriteLine($"{cm} cm = {inchResult:F2} inç");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧑‍🤝‍🧑</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Logger` adında, `Log(string mesaj)` `static` metoduna sahip bir `static` sınıf oluşturun.</li>
+                             <li>`YardimciFonksiyonlar` adında bir sınıf oluşturun ve içinde `static string BuyukHarfeCevir(string metin)` metodu yazın.</li>
+                             <li>`Uygulama` adında bir sınıf oluşturun ve içinde uygulamanın versiyonunu tutan `public static string Versiyon` adında bir özellik tanımlayın.</li>
+                             <li>`Kullanici` sınıfına, kaç tane kullanıcı nesnesi oluşturulduğunu sayan `static int KullaniciSayisi` adında bir özellik ekleyin.</li>
+                             <li>`int` tipine, sayının karesini alan `KaresiniAl()` adında bir extension metot yazın.</li>
+                             <li>Kullanıcıdan bir metin alın ve `YardimciFonksiyonlar` sınıfındaki `static` metodu kullanarak büyük harfe çevirip yazdırın.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Logger static sınıfı
+public static class Logger
+{
+    public static void Log(string mesaj) => Console.WriteLine($"LOG: {mesaj}");
+}
+Logger.Log("Uygulama başlatıldı.");
+
+// 2. Yardımcı Fonksiyonlar
+public class YardimciFonksiyonlar
+{
+    public static string BuyukHarfeCevir(string metin) => metin.ToUpper();
+}
+Console.WriteLine(YardimciFonksiyonlar.BuyukHarfeCevir("csharp"));
+
+// 3. Static özellik
+public class Uygulama
+{
+    public static string Versiyon { get; set; } = "1.0.0";
+}
+Console.WriteLine($"Uygulama Versiyonu: {Uygulama.Versiyon}");
+
+// 4. Static sayaç
+public class Kullanici
+{
+    public static int KullaniciSayisi { get; private set; }
+    public Kullanici() { KullaniciSayisi++; }
+}
+var k1 = new Kullanici(); var k2 = new Kullanici();
+Console.WriteLine($"Toplam kullanıcı: {Kullanici.KullaniciSayisi}");
+
+// 5. Extension metot
+public static class IntExtensions
+{
+    public static int KaresiniAl(this int sayi) => sayi * sayi;
+}
+int bes = 5;
+Console.WriteLine($"5'in karesi: {bes.KaresiniAl()}");
+
+// 6. Static metot ile kullanıcı girdisini işleme
+Console.Write("Bir metin girin: ");
+string metin = Console.ReadLine();
+Console.WriteLine(YardimciFonksiyonlar.BuyukHarfeCevir(metin));
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="muhurlu-parcali-siniflar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Mühürlü (Sealed) ve Parçalı (Partial) Sınıflar 🧱🧩</h2>
+                    <p class="mb-4">`sealed` ve `partial` anahtar kelimeleri sınıflara özel davranışlar kazandırır.</p>
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-blue-400">Mühürlü Sınıflar (Sealed)</h3>
+                    <p class="mb-2">Bir sınıf `sealed` olarak işaretlenirse, o sınıftan başka bir sınıf miras alamaz. Bu, sınıfın davranışının değiştirilmesini engellemek için kullanılır.</p>
+                    <pre><code class="language-csharp">// Örnek 1: Sealed sınıf
+public sealed class Ayarlar
+{
+    // ...
+}
+// public class GelismisAyarlar : Ayarlar {} // HATA! 'Ayarlar' sealed olduğu için miras alınamaz.
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Sealed metot
+public class Temel
+{
+    public virtual void Metot1() {}
+}
+public class Turemis : Temel
+{
+    public sealed override void Metot1() {} // Bu metot daha fazla override edilemez.
+}
+public class IleriTuremis : Turemis
+{
+    // public override void Metot1() {} // HATA! Metot1 sealed.
+}
+</code></pre>
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-blue-400">Parçalı Sınıflar (Partial)</h3>
+                    <p class="mb-2">Bir sınıfın tanımını birden fazla dosyaya bölmek için `partial` anahtar kelimesi kullanılır. Derleyici bu parçaları tek bir sınıf olarak birleştirir. Özellikle otomatik kod üreten araçlar (örn: WinForms, EF) tarafından sıkça kullanılır.</p>
+                    <pre><code class="language-csharp">// Dosya1: Personel_Properties.cs
+public partial class Personel
+{
+    public string Ad { get; set; }
+    public int Yas { get; set; }
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Dosya2: Personel_Methods.cs
+public partial class Personel
+{
+    public void BilgiYazdir()
+    {
+        Console.WriteLine($"{Ad}, {Yas} yaşında.");
+    }
+}
+// Kullanım: Derleyici bu iki dosyayı birleştirir.
+var p = new Personel { Ad = "Can", Yas = 28 };
+p.BilgiYazdir();
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Parçalı metot (Partial Method)
+// Bir parçada tanımı, diğer parçada implementasyonu yapılır.
+// Dosya1.cs
+public partial class Rapor {
+    partial void Logla(string mesaj); // Tanım
+
+    public void Olustur() {
+        // ...
+        Logla("Rapor oluşturuldu."); // Çağrı
+    }
+}
+// Dosya2.cs
+public partial class Rapor {
+    partial void Logla(string mesaj) { // Implementasyon
+        Console.WriteLine($"LOG: {mesaj}");
+    }
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🧱🧩</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`String` sınıfının neden `sealed` olduğunu bir cümleyle açıklayın.</li>
+                            <li>`Guvenlik` adında `sealed` bir sınıf oluşturun.</li>
+                            <li>`Araba` adında bir `partial` sınıf oluşturun. Bir dosyada özelliklerini (`Marka`, `Model`), diğer dosyada `Calistir()` metodunu tanımlayın.</li>
+                            <li>Oluşturduğunuz `Araba` sınıfından bir nesne yaratıp `Calistir()` metodunu çağırın.</li>
+                            <li>Neden `partial` sınıflara ihtiyaç duyulduğunu açıklayın.</li>
+                            <li>Kullanıcıdan `Araba`'nın markasını ve modelini alarak `partial` sınıfın farklı dosyalardaki özelliklerini doldurun ve metodu çağırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">
+// 1. String sınıfı, temel ve değiştirilemez bir yapı olduğu için
+// davranışının tutarlılığını korumak amacıyla mühürlenmiştir.
+
+// 2. Sealed Guvenlik sınıfı
+public sealed class Guvenlik {}
+
+// 3. Partial Araba sınıfı
+// Araba_Props.cs
+public partial class Araba {
+    public string Marka { get; set; }
+    public string Model { get; set; }
+}
+// Araba_Methods.cs
+public partial class Araba {
+    public void Calistir() => Console.WriteLine($"{Marka} çalıştırıldı.");
+}
+
+// 4. Araba nesnesi kullanımı
+var araba = new Araba { Marka = "Ford", Model = "Focus" };
+araba.Calistir();
+
+// 5. Partial sınıflar, büyük sınıfları yönetilebilir parçalara ayırmak ve 
+// otomatik üretilen kod ile manuel yazılan kodu ayırmak için kullanılır.
+
+// 6. Kullanıcıdan veri alarak partial sınıf kullanma
+var kullaniciAraba = new Araba();
+Console.Write("Araba Markası: ");
+kullaniciAraba.Marka = Console.ReadLine();
+Console.Write("Araba Modeli: ");
+kullaniciAraba.Model = Console.ReadLine();
+kullaniciAraba.Calistir();
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="isimsiz-siniflar" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">İsimsiz Tipler (Anonymous Types) 🕵️</h2>
+                    <p class="mb-4">İsimsiz tipler, geçici olarak birkaç özelliği bir arada gruplamak için kullanılır. `new { ... }` sözdizimi ile oluşturulurlar ve özellikleri sadece okunabilirdir (read-only).</p>
+                    <pre><code class="language-csharp">// Örnek 1: Temel isimsiz tip
+var kullanici = new { Ad = "Ali", Yas = 30 };
+Console.WriteLine($"Ad: {kullanici.Ad}, Yaş: {kullanici.Yas}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: LINQ sorgularında kullanımı
+var urunler = new[] {
+    new { Ad = "Laptop", Fiyat = 25000 },
+    new { Ad = "Mouse", Fiyat = 500 }
+};
+
+var pahaliUrunler = urunler.Where(u => u.Fiyat > 1000);
+foreach (var urun in pahaliUrunler)
+{
+    Console.WriteLine(urun.Ad);
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: İç içe isimsiz tipler
+var siparis = new
+{
+    Id = 101,
+    Musteri = new { Ad = "Veli", Sehir = "İzmir" },
+    Tutar = 150.75
+};
+Console.WriteLine($"Müşteri Adı: {siparis.Musteri.Ad}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Metottan isimsiz tip döndürme (genellikle tavsiye edilmez)
+object GetKullanici()
+{
+    return new { Ad = "Zeynep", AktifMi = true };
+}
+dynamic user = GetKullanici();
+Console.WriteLine(user.Ad);
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: İsimsiz tiplerin eşitliği
+var p1 = new { X = 10, Y = 20 };
+var p2 = new { X = 10, Y = 20 };
+// Özelliklerin isimleri, tipleri ve değerleri aynı olduğu için true döner.
+Console.WriteLine($"p1 ve p2 eşit mi? {p1.Equals(p2)}");
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🕵️‍♀️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>`Kitap` bilgilerini (`Baslik`, `Yazar`) tutan bir isimsiz tip oluşturun.</li>
+                            <li>`Id` ve `Ad` özelliklerine sahip birkaç isimsiz tipten oluşan bir dizi oluşturun.</li>
+                            <li>Bu dizideki Id'si 2 olan elemanın adını yazdırın (LINQ kullanarak).</li>
+                            <li>`Koordinat` bilgilerini (`X`, `Y`, `Z`) tutan bir isimsiz tip oluşturun.</li>
+                            <li>İsimsiz tiplerin en yaygın kullanım alanının neresi olduğunu bir cümleyle açıklayın.</li>
+                            <li>Kullanıcıdan bir ürün adı ve fiyatı alın ve bu bilgileri bir isimsiz tipte saklayarak ekrana yazdırın.</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Kitap isimsiz tipi
+var kitap = new { Baslik = "Sefiller", Yazar = "Victor Hugo" };
+
+// 2. İsimsiz tip dizisi
+var kategoriler = new[] {
+    new { Id = 1, Ad = "Elektronik" },
+    new { Id = 2, Ad = "Kitap" },
+    new { Id = 3, Ad = "Giyim" }
+};
+
+// 3. LINQ ile eleman bulma
+var kategori = kategoriler.FirstOrDefault(k => k.Id == 2);
+if (kategori != null) {
+    Console.WriteLine(kategori.Ad);
+}
+
+// 4. Koordinat isimsiz tipi
+var koordinat = new { X = 10.5, Y = 20.2, Z = 5.0 };
+
+// 5. Kullanım alanı: İsimsiz tipler en çok, LINQ sorgularından
+// dönen verileri geçici olarak şekillendirmek için kullanılır.
+
+// 6. Kullanıcıdan alınan veriyle isimsiz tip oluşturma
+Console.Write("Ürün adı: ");
+string ad = Console.ReadLine();
+Console.Write("Ürün fiyatı: ");
+double fiyat = Convert.ToDouble(Console.ReadLine());
+var urun = new { Ad = ad, Fiyat = fiyat };
+Console.WriteLine($"Eklenen Ürün: {urun.Ad}, Fiyatı: {urun.Fiyat} TL");
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="try-catch" class="content-section">
+                     <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Hata Yönetimi (Try-Catch) 🛡️</h2>
+                     <p class="mb-4">`try-catch` blokları, programınızın çökmesine neden olabilecek hataları (istisnaları/exceptions) yakalamak ve yönetmek için kullanılır. `finally` bloğu ise hata olsa da olmasa da çalışır.</p>
+                     <pre><code class="language-csharp">// Örnek 1: Format hatası
+try
+{
+    int sayi = int.Parse("abc"); // Bu satır hata fırlatacak
+}
+catch (FormatException ex) // Hata burada yakalanır
+{
+    Console.WriteLine($"Hata: Geçersiz sayı formatı. {ex.Message}");
+}
+finally
+{
+    Console.WriteLine("İşlem tamamlandı.");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Sıfıra bölme hatası
+int a = 10, b = 0;
+try
+{
+    Console.WriteLine(a / b);
+}
+catch (DivideByZeroException)
+{
+    Console.WriteLine("Hata: Sıfıra bölme hatası.");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Birden fazla catch bloğu
+try
+{
+    int[] arr = { 1, 2 };
+    Console.WriteLine(arr[5]); // IndexOutOfRangeException
+}
+catch (IndexOutOfRangeException)
+{
+    Console.WriteLine("Hata: Dizi sınırları dışında bir indekse erişim.");
+}
+catch (Exception ex) // Diğer tüm hatalar için
+{
+    Console.WriteLine($"Genel bir hata oluştu: {ex.GetType()}");
+}</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Kendi istisnamızı fırlatma (throw)
+void DosyaOku()
+{
+    try
+    {
+        throw new FileNotFoundException("Dosya bulunamadı!");
+    }
+    catch (FileNotFoundException ex)
+    {
+        Console.WriteLine($"Hata yakalandı: {ex.Message}");
+    }
+}
+DosyaOku();
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Hata filtresi (Exception Filter - C# 6.0+)
+try
+{
+    throw new HttpRequestException("Timeout", null, System.Net.HttpStatusCode.RequestTimeout);
+}
+catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+{
+    Console.WriteLine("Sayfa bulunamadı.");
+}
+catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.RequestTimeout)
+{
+    Console.WriteLine("İstek zaman aşımına uğradı.");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 6: Kullanıcıdan alınan yaş girdisini try-catch ile kontrol etme
+Console.Write("Lütfen yaşınızı girin: ");
+try
+{
+    int yas = int.Parse(Console.ReadLine());
+    Console.WriteLine($"Yaşınız: {yas}");
+}
+catch (FormatException)
+{
+    Console.WriteLine("Hata: Lütfen geçerli bir sayı girin.");
+}
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! ⚠️</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                             <li>Kullanıcıdan bir metin girmesini isteyin. Eğer girilen metin bir sayıya çevrilemiyorsa `FormatException`'ı yakalayıp "Geçersiz giriş" mesajı verin.</li>
+                             <li>`bolme` metodunda ikinci parametre 0 ise `DivideByZeroException` hatasını yakalayın.</li>
+                             <li>Bir `string` listesi oluşturun ve 5. indeksteki elemana erişmeye çalışın. `ArgumentOutOfRangeException` hatasını yakalayın.</li>
+                             <li>Bir `try` bloğu içinde `throw new InvalidOperationException("Geçersiz işlem");` ifadesiyle bir hata fırlatın ve `catch` bloğunda yakalayın.</li>
+                             <li>Bir `try-catch` bloğu oluşturun ve hem `catch` hem de `finally` bloklarının içine birer `Console.WriteLine` ifadesi ekleyerek her iki bloğun da çalıştığını gösterin.</li>
+                             <li>Kullanıcıdan doğum yılını isteyin ve yaşını hesaplayın. Girilen değer sayı değilse `try-catch` ile hatayı yönetin.</li>
+                        </ul>
+                    </div>
+                     <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">// 1. Sayı çevirme hatası
+try
+{
+    Console.Write("Bir sayı girin: ");
+    int sayi = Convert.ToInt32(Console.ReadLine());
+    Console.WriteLine($"Girilen sayı: {sayi}");
+}
+catch (FormatException)
+{
+    Console.WriteLine("Geçersiz giriş.");
+}
+
+// 2. Sıfıra bölme hatası
+try
+{
+    int sonuc = 10 / 0;
+}
+catch(DivideByZeroException)
+{
+    Console.WriteLine("Sıfıra bölünemez.");
+}
+
+// 3. Dizi sınırları hatası
+var metinler = new List&lt;string&gt; { "A", "B", "C" };
+try
+{
+    Console.WriteLine(metinler[5]);
+}
+catch (ArgumentOutOfRangeException)
+{
+    Console.WriteLine("Hata: Liste sınırları dışında bir indekse erişim.");
+}
+
+// 4. Kendi istisnamızı fırlatma
+try
+{
+    throw new InvalidOperationException("Geçersiz işlem");
+}
+catch (InvalidOperationException ex)
+{
+    Console.WriteLine($"Hata yakalandı: {ex.Message}");
+}
+
+// 5. Catch ve Finally
+try
+{
+    int x = int.Parse("test");
+}
+catch (Exception)
+{
+    Console.WriteLine("Catch bloğu çalıştı.");
+}
+finally
+{
+    Console.WriteLine("Finally bloğu her zaman çalışır.");
+}
+
+// 6. Yaş hesaplama ve hata yönetimi
+try
+{
+    Console.Write("Doğum yılınızı giriniz: ");
+    int dogumYili = Convert.ToInt32(Console.ReadLine());
+    int yas = DateTime.Now.Year - dogumYili;
+    Console.WriteLine($"Yaşınız: {yas}");
+}
+catch (FormatException)
+{
+    Console.WriteLine("Hata: Lütfen geçerli bir yıl girin.");
+}
+</code></pre>
+                    </div>
+                </div>
+
+                <div id="hata-ayiklama" class="content-section">
+                    <h2 class="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Hata Ayıklama (Debugging) 🐞</h2>
+                    <p class="mb-4">Hata ayıklama, kodunuzdaki hataları bulma ve düzeltme sürecidir. Visual Studio gibi IDE'ler bu süreç için güçlü araçlar sunar.</p>
+                    <h3 class="text-2xl font-semibold mt-6 mb-3 text-blue-400">Temel Teknikler</h3>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>Breakpoint (Kesme Noktası):</strong> Kodun belirli bir satırda durmasını sağlar. Değişkenlerin o anki değerlerini inceleyebilirsiniz. (Genellikle F9 ile konulur).</li>
+                        <li><strong>Step Over (F10):</strong> Kodu satır satır çalıştırır. Metot çağrılarına girmez, metodun sonucunu bekler.</li>
+                        <li><strong>Step Into (F11):</strong> Kodu satır satır çalıştırır. Bir metot çağrısına denk gelirse, o metodun içine girer.</li>
+                        <li><strong>Step Out (Shift+F11):</strong> İçinde bulunduğunuz metottan çıkıp, çağrıldığı yere geri döner.</li>
+                        <li><strong>Watch/Locals/Autos Pencereleri:</strong> Değişkenlerin değerlerini anlık olarak izlemenizi sağlar.</li>
+                    </ul>
+                    <pre><code class="language-csharp">// Örnek 1: Console.WriteLine ile hata ayıklama
+int a = 5;
+int b = 10;
+Console.WriteLine($"Döngüye girmeden önce a: {a}, b: {b}");
+for(int i = 0; i < 3; i++)
+{
+    a += i;
+    b *= i;
+    Console.WriteLine($"Döngü {i}. adım: a={a}, b={b}");
+}
+Console.WriteLine($"Sonuç: {a+b}");
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 2: Debug.WriteLine (Sadece Debug modunda çalışır)
+using System.Diagnostics;
+
+int toplam = 0;
+for (int i=0; i<5; i++)
+{
+    toplam += i;
+    Debug.WriteLine($"i={i}, mevcut toplam={toplam}");
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 3: Debugger.Break() ile kodu durdurma
+using System.Diagnostics;
+
+void KritikIslem()
+{
+    int sayi = new Random().Next(0, 2);
+    if (sayi == 0)
+    {
+        // Kodu tam bu noktada durdur ve incele
+        Debugger.Break();
+    }
+    // ...
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 4: Koşullu Breakpoint
+// IDE'de bir breakpoint'e sağ tıklayıp "Conditions" seçeneği ile
+// sadece belirli bir koşul sağlandığında durmasını sağlayabilirsiniz.
+// Örneğin, aşağıdaki döngüde i == 50 olduğunda durmasını isteyebilirsiniz.
+for (int i = 0; i < 100; i++)
+{
+    // ... i == 50 ise duracak
+}
+</code></pre>
+                    <pre><code class="language-csharp">// Örnek 5: Mantık Hatası Örneği
+// Bu kod 1'den 5'e kadar olan sayıları toplamalı ama yanlış topluyor.
+// Breakpoint koyup 'toplam' ve 'i' değişkenlerini izleyerek hata bulunabilir.
+int toplamSayilar = 0;
+for (int i = 1; i < 5; i++) // Hata: i <= 5 olmalıydı
+{
+    toplamSayilar += i;
+}
+Console.WriteLine(toplamSayilar); // 10 çıkar, 15 çıkması gerekirken
+</code></pre>
+                    <div class="exercise-block">
+                        <h3 class="text-xl font-semibold text-orange-400 mb-2">Sıra Sende! 🐞</h3>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li>Breakpoint'in ne işe yaradığını açıklayın.</li>
+                            <li>Step Over (F10) ve Step Into (F11) arasındaki fark nedir?</li>
+                            <li>Bir `for` döngüsü içinde, döngü değişkeninin değerini her adımda `Console.WriteLine` ile yazdırın.</li>
+                            <li>Bir metot yazın, metot içinde bir değişkenin değerini `Debug.WriteLine` ile yazdırın.</li>
+                            <li>Aşağıdaki kodda mantık hatasını bulun ve düzeltin:
+                                `string metin = "Merhaba"; if (metin.Length > 5) { Console.WriteLine("Uzun metin"); }`</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block mt-4">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-2">Çözümler ✅</h3>
+                        <pre><code class="language-csharp">
+// 1. Breakpoint, programın akışını belirtilen satırda durdurarak
+// o anki değişken durumunu ve program akışını incelememizi sağlar.
+
+// 2. Step Over bir sonraki satıra geçer, metotların içine girmez.
+// Step Into ise bir sonraki satıra geçerken, eğer o satırda bir metot
+// çağrısı varsa, o metodun içine girer.
+
+// 3. Döngü değişkenini yazdırma
+for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine($"i'nin şu anki değeri: {i}");
+}
+
+// 4. Debug.WriteLine kullanımı
+using System.Diagnostics;
+public void TestMetodu() {
+    string ad = "Test";
+    Debug.WriteLine($"Ad değişkeninin değeri: {ad}");
+}
+
+// 5. Mantık hatası: "Merhaba" 7 karakterlidir. 
+// Koşul `metin.Length >= 5` veya `metin.Length > 4` olmalıydı.
+// Mevcut haliyle "Merhaba" için çalışmaz. Düzeltilmiş hali:
+string metin = "Merhaba";
+if (metin.Length > 5) // Koşul doğru, 7 > 5
+{ 
+    Console.WriteLine("Uzun metin");
+}
+</code></pre>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuLinks = document.querySelectorAll('.menu-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            
+            function showSection(targetId) {
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                });
+                menuLinks.forEach(link => {
+                    link.classList.remove('active', 'text-orange-400', 'text-blue-400', 'text-purple-400');
+                });
+
+                const targetSection = document.getElementById(targetId);
+                const activeLink = document.querySelector(`.menu-link[data-target="${targetId}"]`);
+                
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                    const colorClasses = ['text-orange-400', 'text-blue-400', 'text-purple-400'];
+                    const color = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+                    activeLink.classList.add(color);
+                }
+            }
+
+            menuLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const targetId = this.dataset.target;
+                    showSection(targetId);
+                });
+            });
+
+            showSection('hello-world');
+        });
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
+
+
+
