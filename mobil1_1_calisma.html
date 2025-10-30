@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotlin Alıştırmaları ve Çözümleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        pre[class*="language-"] {
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        code[class*="language-"] {
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 leading-relaxed">
+
+    <main class="max-w-4xl mx-auto p-6 sm:p-10 bg-white rounded-lg shadow-lg my-10">
+        <h1 class="text-4xl font-bold text-blue-900 mb-4 pb-2 border-b border-stone-200">
+            Kotlin Dokümantasyonu - Alıştırmalar ve Çözümler (Döngüler'e kadar)
+        </h1>
+        <p class="text-lg text-stone-700 mb-8">
+            Bu belge, Kotlin Etkileimle Dokümantasyonundaki "Hello World" bölümünden "Döngüler" bölümüne kadar olan tüm alıştırmaları ve çözümlerini listeler.
+        </p>
+
+        <!-- Yeni Eklenen Bölüm -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                Genel Mobil Geliştirme Kavramları
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular ve Cevaplar
+            </h3>
+            <div class="space-y-6 text-stone-700">
+                <div>
+                    <p class="font-semibold">S1. Native uygulama ile Cross Platform uygulama arasındaki farkları açıklayınız.</p>
+                    <div class="pl-4 mt-2 space-y-1">
+                        <p><strong>C1.</strong></p>
+                        <p><strong>Native Uygulama:</strong> Belirli bir işletim sistemi veya cihaz için geliştirilen uygulamalardır. Farklı işletim sistemi ve cihazda çalışmaz.</p>
+                        <p><strong>Cross Platform Uygulama:</strong> Birden fazla işletim sistemi veya cihazda çalışabilecek şekilde geliştirilen uygulamalardır.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold">S.2 Emülatör nedir açıklayınız.</p>
+                    <div class="pl-4 mt-2 space-y-1">
+                        <p><strong>C.2</strong> Emülatör, farklı bir işletim sistemi için geliştirilmiş programları yerel işletim sisteminde çalıştırmaya yarayan yazılımlardır.</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <p class="font-semibold">S.3 Activity nedir?</p>
+                    <div class="pl-4 mt-2 space-y-1">
+                        <p><strong>C.3</strong> Activity, bir Android uygulamasında kullanıcıya gösterilen ve etkileşime girilen ekranlardır.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold">S.4. Drawable dizini ne amaçla kullanılır?</p>
+                    <div class="pl-4 mt-2 space-y-1">
+                        <p><strong>C.4.</strong> Drawable dizini, uygulama içinde kullanılacak görsellerin (resimler, ikonlar vb.) saklandığı yerdir.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold">S.5. Android uygulama geliştirmeye başlamak için bilgisayara kurulması gereken temel Java paketinin adı nedir?</p>
+                    <div class="pl-4 mt-2 space-y-1">
+                        <p><strong>C.5.</strong> Java Geliştirme Paketi'dir (JDK).</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <p class="font-semibold">S.6. Projeye dışarıdan, hazır işlevsellikler eklemek için kullanılan kod paketlerinin genel adı nedir?</p>
+                    <div class="pl-4 mt-2 space-y-1">
+                        <p><strong>C.6.</strong> Projeye hazır işlevsellikler eklemek için kullanılan kod paketlerine Kütüphane (Library) adı verilir.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="font-semibold">S.7. Mobil uygulama geliştirmek için bilgisayarda hangi programların kurulu olması gerekir? Yazınız.</p>
+                    <div class="pl-4 mt-2 space-y-1">
+                        <p><strong>C.7.</strong></p>
+                        <ul class="list-disc pl-5">
+                            <li>Java Software Development Kit (JDK)</li>
+                            <li>Android Studio</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bölüm 1 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                1. Hello World
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! 🧠)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li><code>main</code> fonksiyonu içinden çağrılan <code>sinavMesaji</code> adlı bir fonksiyon oluşturun ve bu fonksiyon "Başarılar dileriz!" mesajını yazdırsın.</li>
+                <li>Yukarıdaki örnekleri kullanarak, "Adım [Ad], Soyadım [Soyad]" şeklinde bir çıktı veren program yazın.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. main fonksiyonu içinden çağrılan sinavMesaji fonksiyonu
+fun main() {
+    sinavMesaji()
+}
+fun sinavMesaji() {
+    println("Başarılar dileriz!")
+}
+
+// 2. Ad ve Soyad çıktısı
+fun main() {
+    val ad = "Ahmet"
+    val soyad = "Yılmaz"
+    println("Adım $ad, Soyadım $soyad")
+}
+</code></pre>
+        </section>
+
+        <!-- Bölüm 2 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                2. Değişkenler ve Veri Tipleri
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! ✍️)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li>Adı <code>stok</code> olan ve değeri 50 olan bir <code>var</code> değişkeni oluşturun, sonra bu değeri 45 olarak değiştirip her iki değeri de yazdırın.</li>
+                <li>Double tipinde, <code>val</code> anahtar kelimesini kullanarak <code>katsayi</code> adında bir değişken tanımlayın ve değerini 2.71828 olarak belirleyin.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. var değişkeni
+var stok = 50
+println("Stok: $stok")
+stok = 45
+println("Yeni stok: $stok")
+
+// 2. Double tipinde val değişkeni
+val katsayi: Double = 2.71828
+println("Katsayı: $katsayi")
+</code></pre>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Ek Alıştırmalar 🔢)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li>Boolean tipinde <code>isCompleted</code> adında bir değişken oluşturun, <code>true</code> değerini atayın ve <code>isCompleted</code> değilse (yani <code>!isCompleted</code>) "Henüz tamamlanmadı." yazdırın.</li>
+                <li><code>Char</code> tipinde bir değişken tanımlayıp '?' karakterini atayın ve bir <code>String</code> değişkeniyle birleştirerek "Soru: ?" çıktısını elde edin.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. Boolean kontrolü
+val isCompleted: Boolean = true
+if (!isCompleted) {
+    println("Henüz tamamlanmadı.")
+} else {
+    println("Tamamlandı.")
+}
+
+// 2. Char ve String birleştirme
+val soruIsareti: Char = '?'
+val soruMetni = "Soru: " + soruIsareti
+println(soruMetni)
+</code></pre>
+        </section>
+
+        <!-- Bölüm 3 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                3. String Interpolation
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! 💡)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li><code>genislik</code> ve <code>uzunluk</code> değişkenleriyle bir dikdörtgenin alanını hesaplayıp, "Dikdörtgenin alanı [alan] birim karedir." şeklinde yazdırın.</li>
+                <li><code>siparisSayisi</code> adlı bir değişken 10'dan büyükse "Hızlı Teslimat" değilse "Normal Teslimat" yazdıran bir ifadeyi bir string içine gömün.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. Dikdörtgenin alanı
+val genislik = 5
+val uzunluk = 8
+println("Dikdörtgenin alanı ${genislik * uzunluk} birim karedir.")
+
+// 2. Koşullu ifade
+val siparisSayisi = 12
+val durum = if (siparisSayisi > 10) "Hızlı Teslimat" else "Normal Teslimat"
+println("Sipariş durumu: $durum")
+</code></pre>
+        </section>
+
+        <!-- Bölüm 4 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                4. Operatörler
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! ⚙️)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li><code>krediSkoru</code> değişkeni 700'den büyükse VE <code>gelir</code> değişkeni 5000'den büyükse true döndüren bir mantıksal ifade yazın.</li>
+                <li><code>sayi</code> değişkenini 5'e bölün ve kalanı bir başka değişkene atayarak yazdırın.</li>
+                <li><code>sayi</code> adında bir değişken oluşturun. Bu sayının hem pozitif (0'dan büyük) hem de çift olup olmadığını kontrol eden bir mantıksal ifade yazın.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. Mantıksal ifade
+val krediSkoru = 750
+val gelir = 6000
+val uygun = krediSkoru > 700 && gelir > 5000
+println("Kredi uygun mu? $uygun")
+
+// 2. Mod operatörü
+val sayi = 17
+val kalan = sayi % 5
+println("5'e bölümünden kalan: $kalan")
+
+// 3. Pozitif ve çift kontrolü
+val sayiCift = 10
+val gecerli = sayiCift > 0 && sayiCift % 2 == 0
+println("Sayı pozitif ve çift mi? $gecerli")
+</code></pre>
+        </section>
+
+        <!-- Bölüm 5 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                5. Koşul İfadeleri (If-Else)
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! 🎯)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li><code>sayi</code> adında bir değişken tanımlayın. Eğer bu sayı 0'dan büyükse "Pozitif", 0'dan küçükse "Negatif" ve 0'a eşitse "Sıfır" yazdıran bir kod yazın.</li>
+                <li><code>isLoggedin</code> değişkeni <code>true</code> ise VE <code>isAdmin</code> değişkeni <code>true</code> ise "Yönetici paneli" yazdırın, aksi takdirde "Normal kullanıcı paneli" yazdırın.</li>
+                <li><code>isLoggedin</code> değişkeni <code>true</code> ise, "Hoş geldin!" yazdırın. Bu kontrolün *içinde*, <code>isAdmin</code> değişkeni <code>true</code> ise ayrıca "Yönetici yetkileri verildi." yazdırın.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. Sayı pozitif, negatif veya sıfır
+val sayi = -5
+if (sayi > 0) {
+    println("Pozitif")
+} else if (sayi < 0) {
+    println("Negatif")
+} else {
+    println("Sıfır")
+}
+
+// 2. Çoklu koşul kontrolü
+val isLoggedin = true
+val isAdmin = false
+if (isLoggedin && isAdmin) {
+    println("Yönetici paneli")
+} else {
+    println("Normal kullanıcı paneli")
+}
+
+// 3. İç içe if kontrolü
+val isLoggedin2 = true
+val isAdmin2 = true
+if (isLoggedin2) {
+    println("Hoş geldin!")
+    if (isAdmin2) {
+        println("Yönetici yetkileri verildi.")
+    }
+} else {
+    println("Giriş yapılmadı.")
+}
+</code></pre>
+        </section>
+
+        <!-- Bölüm 6 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                6. If-Else İfadesi
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! 🧠)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li><code>saat</code> değişkenini kontrol ederek, "Sabah", "Öğle" veya "Akşam" değerlerinden birini döndüren bir if-else ifadesi yazın ve sonucu bir değişkene atayın.</li>
+                <li>Bir fonksiyon yazın. Bu fonksiyon, parametre olarak aldığı sayının tek mi çift mi olduğunu belirten bir string değer döndürsün.</li>
+                <li><code>metin</code> adında bir string değişkeni kontrol edin. Eğer metin boş (empty) ise "Boş" değerini, değilse "Dolu" değerini <code>durum</code> adlı bir değişkene atayın ve yazdırın.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. Günün saati
+val saat = 19
+val gunBolumu = if (saat < 12) "Sabah" else if (saat < 18) "Öğle" else "Akşam"
+println("Günün şu anki bölümü: $gunBolumu")
+
+// 2. Tek mi çift mi fonksiyonu
+fun tekMiCiftMi(sayi: Int): String {
+    return if (sayi % 2 == 0) "Çift" else "Tek"
+}
+println("5 bir ${tekMiCiftMi(5)} sayıdır.")
+
+// 3. Metin kontrolü ifadesi
+val metin = "Kotlin"
+val durum = if (metin.isEmpty()) "Boş" else "Dolu"
+println("Metin durumu: $durum")
+</code></pre>
+        </section>
+
+        <!-- Bölüm 7 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                7. Range (Aralıklar)
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! 🔍)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li>10'dan 1'e kadar olan sayıları tersten ve birer birer azalarak yazdırın.</li>
+                <li>20 ile 30 arasındaki çift sayıları <code>step</code> kullanarak yazdırın.</li>
+                <li>15'ten 5'e kadar olan *tek* sayıları tersten (ikişer ikişer azalarak) yazdırın.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. Tersten sayma
+for (i in 10 downTo 1) {
+    println(i)
+}
+
+// 2. Çift sayılar
+for (i in 20..30 step 2) {
+    println(i)
+}
+
+// 3. Tersten tek sayılar (step ile)
+for (i in 15 downTo 5 step 2) {
+    println(i)
+}
+</code></pre>
+        </section>
+
+        <!-- Bölüm 8 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                8. When İfadesi
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! 🧩)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li><code>siparisDurumu</code> değişkeni (ör. "Hazırlanıyor", "Kargoda", "Teslim Edildi") kontrol edilerek kullanıcıya uygun mesajı döndüren bir ifade yazın.</li>
+                <li><code>puan</code> değişkeni 90-100 aralığındaysa 'A', 80-89 aralığındaysa 'B' ve 0-79 aralığındaysa 'C' yazdıran bir <code>when</code> ifadesi oluşturun.</li>
+                <li><code>x</code> adında bir sayı tanımlayın. <code>when</code> ifadesi kullanarak bu sayının 3'e bölümünden kalanı kontrol edin: Kalan 0 ise "3'e tam bölünür", 1 ise "Kalan 1", 2 ise "Kalan 2" yazdırın.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. Sipariş durumu
+val siparisDurumu = "Kargoda"
+val mesaj = when (siparisDurumu) {
+    "Hazırlanıyor" -> "Siparişiniz hazırlanıyor."
+    "Kargoda" -> "Siparişiniz kargoya verildi."
+    "Teslim Edildi" -> "Siparişiniz teslim edildi."
+    else -> "Bilinmeyen durum."
+}
+println(mesaj)
+
+// 2. Puan kontrolü
+val puan = 88
+when (puan) {
+    in 90..100 -> println("A")
+    in 80..89 -> println("B")
+    else -> println("C")
+}
+
+// 3. Kalan kontrolü (when)
+val x = 14
+when (x % 3) {
+    0 -> println("3'e tam bölünür")
+    1 -> println("Kalan 1")
+    2 -> println("Kalan 2")
+}
+</code></pre>
+        </section>
+
+        <!-- Bölüm 9 -->
+        <section class="mb-10">
+            <h2 class="text-3xl font-semibold text-blue-800 mt-10 mb-5 border-b-2 border-stone-200 pb-2">
+                9. Döngüler (For, While, Do-While)
+            </h2>
+            
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Sorular (Sıra Sende! 🔁)
+            </h3>
+            <ol class="list-decimal list-inside space-y-3 mb-5 pl-4 text-stone-700">
+                <li>1'den 100'e kadar olan sayıların toplamını bir <code>while</code> döngüsü kullanarak bulun.</li>
+                <li><code>for</code> döngüsüyle 1'den 20'ye kadar olan sayılardan tek olanları atlayarak çift olanları yazdırın.</li>
+                <li><code>for</code> döngüsü kullanarak 20'den 50'ye kadar olan sayıları kontrol edin. 7'ye tam bölünen *ilk* sayıyı bulduğunuzda sayıyı yazdırın ve döngüyü <code>break</code> ile durdurun.</li>
+            </ol>
+
+            <h3 class="text-2xl font-medium text-blue-700 mt-6 mb-3">
+                Çözümler ✅
+            </h3>
+<pre><code class="language-kotlin">// 1. 1'den 100'e kadar toplam
+var toplam = 0
+var sayi = 1
+while (sayi <= 100) {
+    toplam += sayi
+    sayi++
+}
+println("Toplam: $toplam")
+
+// 2. Tek sayıları atlama
+for (i in 1..20) {
+    if (i % 2 != 0) {
+        continue
+    }
+    println(i)
+}
+
+// 3. Break kullanımı (ilk bölüneni bulma)
+for (i in 20..50) {
+    if (i % 7 == 0) {
+        println("20-50 arası 7'ye bölünen ilk sayı: $i")
+        break
+    }
+}
+</code></pre>
+        </section>
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
+
