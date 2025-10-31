@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# Soru & Cevap Listesi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font Ailesi -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f6; /* Hafif bir arka plan rengi */
+        }
+        /* Soru ve Cevap metinleri için özel stiller */
+        .soru {
+            color: #1a202c; /* Koyu gri (Tailwind gray-900) */
+            font-weight: 600; /* semi-bold */
+        }
+        .cevap {
+            color: #4a5568; /* Orta gri (Tailwind gray-700) */
+        }
+        .cevap-baslik {
+            color: #2b6cb0; /* Mavi (Tailwind blue-700) */
+            font-weight: 500; /* medium */
+        }
+
+        /* YENİ STİLLER EKLENDİ */
+        /* Çok satırlı kod blokları için (Siyah arka plan) */
+        pre {
+            background-color: #1a202c; /* Koyu gri/Siyah (Tailwind gray-900) */
+            color: #f7fafc; /* Beyaz/Açık gri (Tailwind gray-100) */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            overflow-x: auto; /* Yatay kaydırma için */
+            margin-top: 0.75rem; /* mt-3 */
+            margin-bottom: 0.5rem; /* mb-2 */
+            font-family: 'Courier New', Courier, monospace; /* Kod fontu */
+        }
+        
+        /* Satır içi kod referansları için (Gri arka plan) */
+        .inline-code {
+            background-color: #e2e8f0; /* bg-gray-200 */
+            color: #2d3748; /* text-gray-800 */
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden">
+        <header class="bg-blue-800 text-white p-6">
+            <h1 class="text-3xl font-bold text-center">C# Temel Kavramlar Soru & Cevap</h1>
+        </header>
+        
+        <div class="p-6 md:p-8 space-y-6">
+
+            <!-- Soru 1 (Kullanıcıdan) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">1- C# dilinin .NET Framework ile ilişkisi nedir? Kısaca Açıklayınız.</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> C#, .NET Framework üzerinde çalışan bir programlama dilidir. C# ile yazılan kodlar, .NET Framework tarafından sağlanan sınıf kütüphaneleri ve çalışma zamanı ortamı (CLR) ile çalışır.</p>
+            </div>
+
+            <!-- Soru 2 (Kullanıcıdan) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">2- Olaylar (Events) kavramı nedir? Kısaca açıklayınız.</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Olaylar, kullanıcı etkileşimleri (örneğin, bir butona tıklama) veya sistem bildirimleri gibi belirli durumları izler ve bu durumlar gerçekleştiğinde bir işlem (metot) yapılmasını sağlar.</p>
+            </div>
+
+            <!-- Soru 3 (Kullanıcıdan) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">3- <code class="inline-code">try-catch-finally</code> bloğu ne işe yarar?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">try</code> bloğu hata oluşabilecek kodları içerir, <code class="inline-code">catch</code> bloğu <code class="inline-code">try</code> bloğunda bir hata oluşursa yakalar ve işler, <code class="inline-code">finally</code> bloğu ise hata olsa da olmasa da her durumda çalışacak kodları içerir (kaynak temizleme vb.).</p>
+            </div>
+
+            <!-- Soru 4 (Kullanıcıdan) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">4- Aşağıdaki işlemin sonucunu hesaplayınız:</p>
+                <pre><code>(5 + 3 * 2) / (8 - 6) + 7 % 4</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Adımlar:</span> (5 + 6) / (2) + (7 % 4)  ->  (11 / 2) + 3  ->  5 + 3 (Tamsayı bölmesi)  ->  8</p>
+                <p class="mt-1 cevap"><span class="cevap-baslik">Sonuç:</span> 8 (Not: İşlem önceliğine göre önce parantez içleri ve çarpma/bölme/mod yapılır. 11/2 işlemi C#'ta tamsayı bölmesi olduğu için sonuç 5'tir, 5.5 değil.)</p>
+            </div>
+
+            <!-- Soru 5 (Kullanıcıdan) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">5- Aşağıdaki işlemin sonucunu hesaplayınız:</p>
+                <pre><code>!(true && (false || true)) || (false && true)</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Adımlar:</span> !(true && true) || (false)  ->  !(true) || false  ->  false || false</p>
+                <p class="mt-1 cevap"><span class="cevap-baslik">Sonuç:</span> false</p>
+            </div>
+
+            <!-- Soru 6 (Kazanım 1) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">6- Sınıf (Class) nedir? Kısaca açıklayınız.</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Sınıflar, nesnelerin özelliklerini (değişkenler) ve davranışlarını (metotlar) tanımlayan şablonlardır. Form uygulamalarındaki 'Form' veya 'Button' birer sınıftır.</p>
+            </div>
+
+            <!-- Soru 7 (Kazanım 1) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">7- Bir Form uygulamasında butona tıklandığında kod çalışmasını nasıl sağlarsınız?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Buton nesnesine çift tıklanır. Bu, otomatik olarak butonun <code class="inline-code">Click</code> (Tıklama) olayına (event) bağlı bir metot oluşturur. Çalışması istenen kodlar bu metodun süslü parantezleri <code class="inline-code">{ }</code> içine yazılır.</p>
+            </div>
+
+            <!-- Soru 8 (Kazanım 2) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">8- <code class="inline-code">namespace</code> (İsim Uzayı) anahtar kelimesinin amacı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Sınıfları ve diğer türleri mantıksal olarak gruplandırmak için kullanılır. Büyük projelerde aynı isme sahip sınıfların çakışmasını engeller (Örn: <code class="inline-code">System.Windows.Forms</code>).</p>
+            </div>
+
+            <!-- Soru 9 (Kazanım 3) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">9- Değer Türü (Value Type) ile Referans Türü (Reference Type) arasındaki temel fark nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Değer Türleri (<code class="inline-code">int</code>, <code class="inline-code">bool</code>, <code class="inline-code">double</code>) veriyi doğrudan bellekte (Stack) saklar. Referans Türleri (<code class="inline-code">string</code>, <code class="inline-code">object</code>, Sınıflar) ise verinin bellekteki (Heap) adresini saklar.</p>
+            </div>
+
+            <!-- Soru 10 (Kazanım 3) -->
+             <div class="border-b pb-4">
+                <p class="text-lg soru">10- Değişken Kapsamı (Variable Scope) nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Bir değişkenin programın hangi bölümlerinden erişilebilir olduğunu belirleyen kuraldır. Örneğin, bir metodun içinde <code class="inline-code">{ }</code> tanımlanan bir değişken, o metodun dışından kullanılamaz.</p>
+            </div>
+
+            <!-- Soru 11 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">11- <code class="inline-code">if-else</code> karar yapısının temel amacı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Belirli bir mantıksal koşulun (<code class="inline-code">true</code>) veya (<code class="inline-code">false</code>) olmasına bağlı olarak farklı kod bloklarının çalıştırılmasını sağlar. Programın akışını yönlendirir.</p>
+            </div>
+
+            <!-- Soru 12 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">12- <code class="inline-code">switch-case</code> ifadesi hangi durumlarda <code class="inline-code">if-else</code> yapısına tercih edilir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Tek bir değişkenin alabileceği çok sayıda sabit değere (örn: 1, 2, 3 veya 'A', 'B', 'C') göre farklı işlemler yapılması gerektiğinde tercih edilir. Kodu daha okunabilir hale getirir.</p>
+            </div>
+
+            <!-- Soru 13 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">13- <code class="inline-code">for</code> döngüsünün yazım formatını (sözdizimini) açıklayınız.</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">for(başlangıç; koşul; artış/azalış) { ... }</code> şeklinde kullanılır. <br>1. Başlangıçta bir sayaç tanımlanır (örn: <code class="inline-code">int i = 0</code>). <br>2. Koşul sağlandığı sürece döngü çalışır (örn: <code class="inline-code">i < 10</code>). <br>3. Her döngü sonunda sayaç güncellenir (örn: <code class="inline-code">i++</code>).</p>
+            </div>
+
+            <!-- Soru 14 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">14- <code class="inline-code">break;</code> komutu döngülerde ne amaçla kullanılır?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> İçinde bulunduğu döngü (<code class="inline-code">for</code>, <code class="inline-code">while</code>) veya <code class="inline-code">switch</code> bloğunu anında sonlandırmak için kullanılır. Döngünün normal koşulu beklenmeden dışarı çıkılır.</p>
+            </div>
+
+            <!-- Soru 15 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">15- Hata ayıklamada (debugging) 'Breakpoint' (Kesme Noktası) kullanmanın amacı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Programın çalışmasını kodun belirli bir satırında geçici olarak durdurmak için kullanılır. Bu noktada, programcı değişkenlerin o anki değerlerini inceleyebilir ve programın akışını adım adım izleyerek hatayı tespit edebilir.</p>
+            </div>
+
+            <!-- Soru 16 (Kazanım 1) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">16- Form uygulamasında <code class="inline-code">lblBaslik</code> isimli bir Label nesnesinin metnini "Merhaba" olarak nasıl değiştirirsiniz?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Nesnenin <code class="inline-code">Text</code> özelliği kullanılır. Kod: <code class="inline-code">lblBaslik.Text = "Merhaba";</code></p>
+            </div>
+
+            <!-- Soru 17 (Kazanım 2) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">17- Kod dosyasının başına yazılan <code class="inline-code">using System;</code> ifadesinin amacı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">System</code> isim uzayındaki (namespace) sınıfları (<code class="inline-code">Console</code>, <code class="inline-code">Math</code> vb.) kullanırken başına <code class="inline-code">System.</code> yazma zorunluluğunu kaldırır. Kodu kısaltır.</p>
+            </div>
+
+            <!-- Soru 18 (Kazanım 3) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">18- <code class="inline-code">int</code> ve <code class="inline-code">string</code> veri tipleri arasındaki temel fark nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">int</code> (tamsayı), 10, -5, 0 gibi sayısal verileri saklar ve matematiksel işlemlerde kullanılır. <code class="inline-code">string</code> (metin), "Merhaba", "123" gibi metinsel ifadeleri saklar.</p>
+            </div>
+
+            <!-- Soru 19 (Kazanım 3) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">19- Tür Dönüşümü (Type Casting) nedir? <code class="inline-code">string</code> tipindeki "50" değerini <code class="inline-code">int</code> tipine nasıl dönüştürürsünüz?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Bir veri tipindeki değişkenin başka bir veri tipine dönüştürülmesidir. <br>Kod: <code class="inline-code">string metin = "50";</code><br><code class="inline-code">int sayi = Convert.ToInt32(metin);</code> (veya <code class="inline-code">int.Parse(metin)</code>)</p>
+            </div>
+
+            <!-- Soru 20 (Kazanım 4/5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">20- <code class="inline-code">(10 == 10)</code> ifadesinin sonucu nedir? <code class="inline-code">==</code> operatörü ne tür bir operatördür?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Sonuç <code class="inline-code">true</code> (doğru)'dur. <code class="inline-code">==</code> operatörü bir "Karşılaştırma Operatörüdür" ve iki değerin birbirine eşit olup olmadığını kontrol eder.</p>
+            </div>
+
+            <!-- Soru 21 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">21- <code class="inline-code">while</code> döngüsü nedir ve <code class="inline-code">for</code> döngüsünden temel farkı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">while</code> döngüsü, parantez içindeki koşul <code class="inline-code">true</code> olduğu sürece çalışan bir döngüdür. <code class="inline-code">for</code> döngüsü genellikle tekrar sayısı belli olduğunda (örn: 10 kez dön) kullanılırken, <code class="inline-code">while</code> döngüsü tekrar sayısı belli olmadığında (örn: kullanıcı 'q' tuşuna basana kadar dön) tercih edilir.</p>
+            </div>
+
+            <!-- Soru 22 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">22- Aşağıdaki mantıksal işlemin sonucunu hesaplayınız: <br><code class="inline-code">(true || false) && (5 > 3)</code></p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Adımlar:</span> (true) && (true)</p>
+                <p class="mt-1 cevap"><span class="cevap-baslik">Sonuç:</span> true (<code class="inline-code">||</code> VEYA demektir, biri true ise sonuç true'dur. <code class="inline-code">&&</code> VE demektir, ikisi de true ise sonuç true'dur.)</p>
+            </div>
+
+            <!-- Soru 23 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">23- <code class="inline-code">continue;</code> komutu döngülerde ne amaçla kullanılır?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Döngünün o anki adımını (iterasyon) atlamak için kullanılır. <code class="inline-code">continue</code> görüldüğünde, döngü bloğunun geri kalanı çalıştırılmaz ve döngü bir sonraki adımdan (veya koşul kontrolünden) devam eder. <code class="inline-code">break</code> gibi döngüyü kırmaz.</p>
+            </div>
+
+            <!-- Soru 24 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">24- 'Yazım Hatası' (Syntax Error) nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Programlama dilinin kurallarına uymayan kod yazımıdır (Örn: noktalı virgülü unutmak, parantezi kapatmamak). Bu hatalar programın derlenmesini (çalıştırılmasını) engeller.</p>
+            </div>
+
+            <!-- Soru 25 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">25- 'Mantık Hatası' (Logic Error) nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Programın dil kurallarına göre doğru yazıldığı (syntax hatası olmadığı) ancak programcının hatası yüzünden beklenmedik veya yanlış sonuçlar ürettiği durumlardır (Örn: <code class="inline-code">+</code> yerine <code class="inline-code">-</code> kullanmak, yanlış koşul yazmak). Bulunması en zor hata türüdür.</p>
+            </div>
+            
+            <!-- Soru 26 (Kazanım 1) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">26- Form uygulamasında <code class="inline-code">TextBox</code> (Metin Kutusu) nesnesinin amacı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Kullanıcıdan metin veya sayı gibi klavye girdileri almak için kullanılır. (Örn: <code class="inline-code">kullaniciAdi = txtKullaniciAdi.Text;</code>)</p>
+            </div>
+
+            <!-- Soru 27 (Kazanım 3) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">27- <code class="inline-code">bool</code> (Boolean) veri tipi nedir ve hangi değerleri alabilir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Mantıksal bir veri tipidir. Yalnızca <code class="inline-code">true</code> (doğru) veya <code class="inline-code">false</code> (yanlış) değerlerini alabilir. Genellikle <code class="inline-code">if</code> gibi karar yapılarının koşullarında kullanılır.</p>
+            </div>
+
+            <!-- Soru 28 (Kazanım 4) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">28- Artırma (<code class="inline-code">++</code>) ve Azaltma (<code class="inline-code">--</code>) operatörleri ne işe yarar? <code class="inline-code">int a = 5; a++;</code> kodundan sonra <code class="inline-code">a</code>'nın değeri ne olur?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Bir tamsayı değişkenin değerini 1 artırmak (<code class="inline-code">++</code>) veya 1 azaltmak (<code class="inline-code">--</code>) için kullanılır. Kod çalıştıktan sonra <code class="inline-code">a</code>'nın değeri 6 olur.</p>
+            </div>
+
+            <!-- Soru 29 (Kazanım 4) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">29- Atama Operatörü (<code class="inline-code">=</code>) ile Eşitlik Operatörü (<code class="inline-code">==</code>) arasındaki fark nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Atama operatörü (<code class="inline-code">=</code>), sağdaki değeri soldaki değişkene atar (Örn: <code class="inline-code">int a = 10;</code>). Eşitlik operatörü (<code class="inline-code">==</code>), iki değerin birbirine eşit olup olmadığını kontrol eder ve sonuç olarak <code class="inline-code">true</code> veya <code class="inline-code">false</code> döndürür (Örn: <code class="inline-code">if (a == 10)</code>).</p>
+            </div>
+
+            <!-- Soru 30 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">30- Mantıksal DEĞİL (<code class="inline-code">!</code>) operatörü ne işe yarar? <code class="inline-code">!(5 > 3)</code> işleminin sonucu nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Bir mantıksal ifadenin sonucunu tersine çevirir (<code class="inline-code">true</code> ise <code class="inline-code">false</code>, <code class="inline-code">false</code> ise <code class="inline-code">true</code> yapar). <code class="inline-code">(5 > 3)</code> ifadesi <code class="inline-code">true</code> olduğundan, <code class="inline-code">!(true)</code> işleminin sonucu <code class="inline-code">false</code> olur.</p>
+            </div>
+
+            <!-- Soru 31 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">31- İç içe <code class="inline-code">if</code> (Nested if) yapısı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Bir <code class="inline-code">if</code> veya <code class="inline-code">else</code> bloğunun içine başka bir <code class="inline-code">if</code> bloğu yazılmasıdır. Bir koşul sağlandıktan *sonra* başka bir koşulu daha kontrol etmek için kullanılır.</p>
+            </div>
+
+            <!-- Soru 32 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">32- <code class="inline-code">do-while</code> döngüsünün <code class="inline-code">while</code> döngüsünden farkı nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">do-while</code> döngüsünde koşul, döngü bloğu *bir kez çalıştıktan sonra* kontrol edilir. Bu nedenle, koşul en başta <code class="inline-code">false</code> olsa bile döngü bloğu her zaman en az bir kez çalışır. <code class="inline-code">while</code> döngüsü ise koşul en başta <code class="inline-code">false</code> ise hiç çalışmayabilir.</p>
+            </div>
+
+            <!-- Soru 33 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">33- 'Sonsuz Döngü' (Infinite Loop) nedir ve <code class="inline-code">for</code> döngüsü ile nasıl oluşur?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Döngünün durma koşulunun hiçbir zaman sağlanamaması durumudur. Programın kilitlenmesine neden olur. Örnek: <code class="inline-code">for(int i = 0; i >= 0; i++) { ... }</code> (i her zaman 0'dan büyük veya eşit kalacaktır).</p>
+            </div>
+
+            <!-- Soru 34 (Kazanım 5) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">34- Hata ayıklamada 'Adım Adım Çalıştırma' (Step Over / F10) tekniği nedir?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Programı breakpoint'te durdurduktan sonra, bir sonraki kod satırına geçmek için kullanılır. Eğer satır bir metot çağrısıysa, metodun içine girmeden (Step Into) metodun tamamını çalıştırır ve bir sonraki satıra geçer.</p>
+            </div>
+
+            <!-- Soru 35 (Kazanım 1/3) -->
+            <div class="pb-4">
+                <p class="text-lg soru">35- Form uygulamasında <code class="inline-code">txtGirdi</code> isimli TextBox'tan alınan metni <code class="inline-code">lblSonuc</code> isimli Label'a nasıl yazdırırsınız?</p>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">lblSonuc.Text = txtGirdi.Text;</code></p>
+            </div>
+
+            <!-- == YENİ KOD ÇIKTI SORULARI (36-55) == -->
+
+            <!-- Soru 36 (Kolay - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">36- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int a = 5; 
+a++; 
+Console.WriteLine(a);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 6 (<code class="inline-code">a++</code> operatörü 'a'nın değerini 1 artırır.)</p>
+            </div>
+
+            <!-- Soru 37 (Kolay - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">37- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int x = 10; 
+x -= 3; 
+Console.WriteLine(x);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 7 (<code class="inline-code">x -= 3</code> ifadesi <code class="inline-code">x = x - 3</code> demektir.)</p>
+            </div>
+
+            <!-- Soru 38 (Kolay - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">38- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>Console.WriteLine(10 / 4);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 2 (İki tamsayı (int) bölündüğünde, C# ondalık kısmı atar ve sonucu tamsayı (int) olarak verir.)</p>
+            </div>
+
+            <!-- Soru 39 (Kolay - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">39- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>bool x = true; 
+Console.WriteLine(!x);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> false (<code class="inline-code">!</code> (DEĞİL) operatörü <code class="inline-code">true</code> değerini <code class="inline-code">false</code> yapar.)</p>
+            </div>
+
+            <!-- Soru 40 (Kolay - If/Else) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">40- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int yas = 15; 
+if (yas >= 18) 
+{ 
+    Console.WriteLine("Girebilir"); 
+} 
+else 
+{ 
+    Console.WriteLine("Giremez"); 
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Giremez (Koşul (15 >= 18) <code class="inline-code">false</code> olduğu için <code class="inline-code">else</code> bloğu çalışır.)</p>
+            </div>
+
+            <!-- Soru 41 (Kolay - Döngü) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">41- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>for (int i = 0; i < 2; i++) 
+{ 
+    Console.Write("Test "); 
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Test Test (Döngü i=0 ve i=1 için (2 kez) çalışır. <code class="inline-code">Console.Write</code> alt satıra inmez.)</p>
+            </div>
+
+            <!-- Soru 42 (Kolay - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">42- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>Console.WriteLine(5 == 5);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> true (<code class="inline-code">==</code> (Eşitlik) operatörü, iki değerin eşit olup olmadığını kontrol eder. 5, 5'e eşittir.)</p>
+            </div>
+
+            <!-- Soru 43 (Orta - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">43- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int a = 10; 
+int b = 3; 
+Console.WriteLine(a % b);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 1 (<code class="inline-code">%</code> (Mod) operatörü, bölme işleminden kalanı verir. 10'un 3'e bölümünden kalan 1'dir.)</p>
+            </div>
+
+            <!-- Soru 44 (Orta - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">44- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int a = 5; 
+int b = ++a; 
+Console.WriteLine(b);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 6 (<code class="inline-code">++a</code> (ön ek artırma) operatörü, önce 'a'nın değerini 6 yapar, *sonra* bu yeni değeri 'b'ye atar.)</p>
+            </div>
+
+            <!-- Soru 45 (Orta - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">45- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>bool x = true; 
+bool y = false; 
+Console.WriteLine(x && (y || true));</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> true (Adımlar: (y || true) -> <code class="inline-code">true</code> olur. (x && true) -> (true && true) -> <code class="inline-code">true</code> olur.)</p>
+            </div>
+
+            <!-- Soru 46 (Orta - If/Else) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">46- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int not = 75; 
+if (not >= 80) 
+{ 
+    Console.WriteLine("A"); 
+} 
+else if (not >= 70) 
+{ 
+    Console.WriteLine("B"); 
+} 
+else 
+{ 
+    Console.WriteLine("C"); 
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> B (İlk koşul (75 >= 80) <code class="inline-code">false</code>'tur. İkinci koşul (75 >= 70) <code class="inline-code">true</code>'dur, 'B' yazar ve blok sonlanır.)</p>
+            </div>
+
+            <!-- Soru 47 (Orta - Switch) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">47- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int gun = 9; 
+switch(gun) 
+{ 
+    case 1: 
+        Console.WriteLine("Pzt"); 
+        break; 
+    case 7: 
+        Console.WriteLine("Pzr"); 
+        break; 
+    default: 
+        Console.WriteLine("Hata"); 
+        break; 
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Hata (Değer (9), <code class="inline-code">case 1</code> veya <code class="inline-code">case 7</code> ile eşleşmediği için <code class="inline-code">default</code> (varsayılan) bloğu çalışır.)</p>
+            </div>
+
+            <!-- Soru 48 (Orta - Döngü) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">48- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int sayac = 0; 
+while (sayac < 3) 
+{ 
+    sayac++; 
+} 
+Console.WriteLine(sayac);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 3 (Döngü 0, 1, 2 için çalışır, 'sayac'ı 1, 2, 3 yapar. <code class="inline-code">sayac</code> 3 olunca (3 < 3) koşulu <code class="inline-code">false</code> olur, döngü durur ve 3 yazar.)</p>
+            </div>
+
+            <!-- Soru 49 (Orta - Döngü) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">49- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>for (int i = 0; i < 5; i++) 
+{ 
+    if (i == 2) break; 
+    Console.Write(i); 
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 01 (i=0 yazar, i=1 yazar, i=2 olduğunda <code class="inline-code">break</code> komutu döngüyü tamamen sonlandırır.)</p>
+            </div>
+
+            <!-- Soru 50 (Zor - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">50- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int a = 5; 
+int b = a++; 
+Console.WriteLine(a + "," + b);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 6,5 (<code class="inline-code">a++</code> (son ek artırma) operatörü, 'a'nın *o anki* değerini (5) 'b'ye atar. *Sonra* 'a'nın değerini 6 yapar.)</p>
+            </div>
+
+            <!-- Soru 51 (Zor - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">51- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>Console.WriteLine(10 / 4.0);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 2.5 (Sayıların tamsayı (int) olması yerine, <code class="inline-code">4.0</code> bir <code class="inline-code">double</code> (ondalıklı) olduğu için C# tamsayı bölmesi *yapmaz*, ondalıklı bölme yapar.)</p>
+            </div>
+
+            <!-- Soru 52 (Zor - Operatör/If) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">52- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int x = 10; 
+if (x > 5 && x < 10) 
+{ 
+    Console.WriteLine("İçeride"); 
+} 
+else 
+{ 
+    Console.WriteLine("Dışarıda"); 
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Dışarıda (Koşulun <code class="inline-code">true</code> olması için (x > 5) VE (x < 10) olması gerekir. (10 < 10) koşulu <code class="inline-code">false</code> olduğu için <code class="inline-code">else</code> bloğu çalışır.)</p>
+            </div>
+
+            <!-- Soru 53 (Zor - Switch) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">53- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar? (C# 8.0+)</p>
+                <pre><code>int seviye = 3; 
+string s = seviye switch 
+{ 
+    > 5 => "Yüksek", 
+    < 5 => "Düşük", 
+    _ => "Orta" 
+}; 
+Console.WriteLine(s);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Düşük (Modern <code class="inline-code">switch</code> ifadesi kullanılır. <code class="inline-code">seviye</code> (3), <code class="inline-code">< 5</code> koşuluyla eşleşir.)</p>
+            </div>
+
+            <!-- Soru 54 (Zor - Döngü) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">54- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int toplam = 0; 
+for (int i = 0; i < 5; i++) 
+{ 
+    if (i % 2 == 0) continue; 
+    toplam += i; 
+} 
+Console.WriteLine(toplam);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 4 (<code class="inline-code">continue</code>, <code class="inline-code">i</code> çift olduğunda (0, 2, 4) o adımı atlar. <code class="inline-code">toplam</code>'a sadece tek sayılar (1, 3) eklenir. Toplam = 1 + 3 = 4.)</p>
+            </div>
+
+            <!-- Soru 55 (Zor - Döngü) -->
+            <div class="border-b pb-4"> <!-- Son soru olduğu için border-b yoktu, eklendi -->
+                <p class="text-lg soru">55- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int i = 5; 
+do 
+{ 
+    Console.Write(i); 
+    i++; 
+} while (i < 5);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 5 (<code class="inline-code">do-while</code> döngüsü, koşul yanlış (<code class="inline-code">false</code>) olsa bile en az bir kez çalışır. 5'i yazar, i=6 olur, koşul (6 < 5) kontrol edilir ve döngü durur.)</p>
+            </div>
+            
+            <!-- == 10 YENİ SORU (56-65) == -->
+
+            <!-- Soru 56 (Kolay - Operatör/If) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">56- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>string ad = "Ali";
+if (ad != "Veli")
+{
+    Console.WriteLine("Hoşgeldin");
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Hoşgeldin (<code class="inline-code">!=</code> (Eşit Değil) operatörüdür. "Ali", "Veli"ye eşit olmadığı için koşul <code class="inline-code">true</code> olur ve <code class="inline-code">if</code> bloğu çalışır.)</p>
+            </div>
+
+            <!-- Soru 57 (Kolay - Döngü) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">57- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>for (int i = 3; i > 0; i--)
+{
+    Console.Write(i + " ");
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 3 2 1 (Döngü i=3, i=2 ve i=1 için çalışır. <code class="inline-code">i--</code> operatörü sayacı azaltır. i=0 olduğunda (0 > 0) koşulu <code class="inline-code">false</code> olur ve döngü durur.)</p>
+            </div>
+
+            <!-- Soru 58 (Kolay - Form) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">58- Form uygulamasında <code class="inline-code">btnKaydet</code> isimli bir Butonun tıklanmasını engellemek (pasif hale getirmek) için hangi kod yazılır?</p>
+                <pre><code>// Butonu pasif yapmak için hangi kod yazılmalı?</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> <code class="inline-code">btnKaydet.Enabled = false;</code> (<code class="inline-code">Enabled</code> özelliği <code class="inline-code">false</code> yapıldığında nesne pasif (gri) hale gelir ve tıklanamaz.)</p>
+            </div>
+
+            <!-- Soru 59 (Orta - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">59- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>Console.WriteLine( (15 / 4) + (15 % 4) );</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 6 (Adımlar: (15 / 4) tamsayı bölmesi olduğu için sonucu 3'tür. (15 % 4) mod işlemi olduğu için kalan 3'tür. Sonuç: 3 + 3 = 6.)</p>
+            </div>
+
+            <!-- Soru 60 (Orta - Döngü) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">60- Aşağıdaki iç içe döngü (nested loop) çalıştığında çıktı ne olur?</p>
+                <pre><code>for (int i = 0; i < 2; i++)
+{
+    for (int j = 0; j < 3; j++)
+    {
+        Console.Write("X");
+    }
+    Console.WriteLine(); // Alt satıra in
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span><br>XXX<br>XXX<br>(Dış döngü 2 kez döner. İç döngü her dış döngü adımında 3 kez "X" yazar ve ardından <code class="inline-code">Console.WriteLine()</code> ile alt satıra geçer.)</p>
+            </div>
+
+            <!-- Soru 61 (Orta - If/Else) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">61- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int sayi = 10;
+if (sayi > 5)
+{
+    Console.Write("A");
+    if (sayi == 10)
+    {
+        Console.Write("B");
+    }
+}
+else
+{
+    Console.Write("C");
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> AB (İlk <code class="inline-code">if</code> (10 > 5) <code class="inline-code">true</code> olur, 'A' yazar. İçteki <code class="inline-code">if</code> (10 == 10) da <code class="inline-code">true</code> olur, 'B' yazar. <code class="inline-code">else</code> bloğu atlanır.)</p>
+            </div>
+
+            <!-- Soru 62 (Orta - Switch) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">62- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int kod = 1;
+switch (kod)
+{
+    case 1:
+        Console.Write("Ekle ");
+        // break unutuldu!
+    case 2:
+        Console.Write("Düzenle ");
+        break;
+    case 3:
+        Console.Write("Sil");
+        break;
+}</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> Ekle Düzenle (<code class="inline-code">kod = 1</code> olduğu için <code class="inline-code">case 1</code> çalışır, "Ekle " yazar. <code class="inline-code">case 1</code>'de <code class="inline-code">break</code> olmadığı için kod bir sonraki <code class="inline-code">case</code>'e (fall-through) düşer, <code class="inline-code">case 2</code>'yi de çalıştırır, "Düzenle " yazar ve <code class="inline-code">break</code> görerek durur.)</p>
+            </div>
+
+            <!-- Soru 63 (Zor - Operatör) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">63- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int a = 5;
+a = a++;
+Console.WriteLine(a);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 5 (<code class="inline-code">a++</code> (son ek artırma) operatörü, 'a'nın o anki değerini (5) alır ve atama işlemi için kullanır. Atama bittikten *sonra* 'a'nın değeri geçici olarak 6 olur, ancak <code class="inline-code">a = 5</code> ataması zaten gerçekleştiği için 'a'nın değeri 5 olarak kalır. Bu, C#'ta kafa karıştırıcı bir kullanımdır.)</p>
+            </div>
+            
+            <!-- Soru 64 (Zor - Döngü) -->
+            <div class="border-b pb-4">
+                <p class="text-lg soru">64- Aşağıdaki kod bloğu çalıştırıldığında konsola ne yazar?</p>
+                <pre><code>int sayac = 0;
+while (true) // Sonsuz döngü
+{
+    sayac++;
+    if (sayac == 3)
+    {
+        break; // Döngüyü kır
+    }
+}
+Console.WriteLine(sayac);</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Cevap:</span> 3 (<code class="inline-code">while(true)</code> bir sonsuz döngü başlatır. s=1 olur, s=2 olur, s=3 olur. <code class="inline-code">if (3 == 3)</code> koşulu <code class="inline-code">true</code> olunca <code class="inline-code">break</code> çalışır ve döngü sonlanır. <code class="inline-code">sayac</code>'ın son değeri 3'tür.)</p>
+            </div>
+
+            <!-- Soru 65 (Zor - Operatör) -->
+            <div class="pb-4"> <!-- Son soru olduğu için border-b yok -->
+                <p class="text-lg soru">65- Aşağıdaki mantıksal işlemin sonucu nedir?</p>
+                <pre><code>(true && false) || !(false || false)</code></pre>
+                <p class="mt-2 cevap"><span class="cevap-baslik">Adımlar:</span> (false) || !(false)  ->  false || true</p>
+                <p class="mt-1 cevap"><span class="cevap-baslik">Sonuç:</span> true (<code class="inline-code">||</code> (VEYA) operatöründe, ifadelerden birinin <code class="inline-code">true</code> olması sonucu <code class="inline-code">true</code> yapar.)</p>
+            </div>
+
+            <!-- == YENİ SORULAR BİTİŞİ == -->
+
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+
