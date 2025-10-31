@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Tabanlı Uygulama - Soru & Cevap</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Inter font ailesini yükle */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Hafif gri arka plan */
+        }
+        
+        /* Kod blokları için temel stil */
+        pre {
+            background-color: #2d3748; /* Koyu gri */
+            color: #e2e8f0; /* Açık gri yazı */
+            padding: 1rem;
+            border-radius: 0.5rem; /* 8px */
+            overflow-x: auto; /* Yatay kaydırma */
+            white-space: pre-wrap; /* Satırları kaydır */
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        
+        /* Soru-Cevap kartı */
+        .qa-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 1.5rem; /* 24px */
+            padding: 1.5rem; /* 24px */
+            transition: all 0.3s ease;
+        }
+        
+        .qa-card:hover {
+             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Soru Başlığı */
+        .question-title {
+            color: #1d4ed8; /* Koyu mavi */
+            font-weight: 700;
+            font-size: 1.25rem; /* 20px */
+            margin-bottom: 0.75rem; /* 12px */
+        }
+
+        /* Cevap Alanı */
+        .answer-block {
+            background-color: #f9fafb; /* Çok hafif gri */
+            border-left: 4px solid #3b82f6; /* Mavi sol kenarlık */
+            padding: 1rem; /* 16px */
+            border-radius: 0.25rem; /* 4px */
+            margin-top: 1rem; /* 16px */
+        }
+        
+        .answer-title {
+            font-weight: 600;
+            color: #374151; /* Koyu gri */
+            margin-bottom: 0.5rem; /* 8px */
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-4 md:p-10 max-w-4xl">
+        
+        <h1 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-10">
+            Web Tabanlı Uygulama Geliştirme Ders Çalışma Soruları
+        </h1>
+        <p class="text-center text-lg text-gray-600 mb-12">
+           
+        </p>
+
+        <!-- Bölüm: Sınav Soruları -->
+        <section class="mb-16">
+            <h2 class="text-2xl md:text-3xl font-semibold text-gray-700 mb-8 border-b-2 border-blue-500 pb-3">
+               
+            </h2>
+
+            <!-- Soru 1 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 1: Hazırlanan web sitelerinin belirlenen alan adlarına göre internet ortamında yayınlanmasını sağlayan hizmet türüne ne denir?</h3>
+                <div class="answer-block">
+                    <h4 class="answer-title">Cevap:</h4>
+                    <p class="text-gray-700">Hosting</p>
+                </div>
+            </div>
+
+            <!-- Soru 2 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 2: Milli Eğitim Bakanlığı’nın sitesine bağlantı oluşturmak için gereken html ifadesini yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <a href="http://www.meb.gov.tr" target="_blank" class="text-blue-600 underline">Milli Eğitim Bakanlığı</a>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;a href="http://www.meb.gov.tr"&gt;Milli Eğitim Bakanlığı&lt;/a&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 3 (Yeni) -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 3: Frontend (Ön Yüz) ve Backend (Arka Yüz) kavramlarını kısaca açıklayınız.</h3>
+                <div class="answer-block">
+                    <h4 class="answer-title">Cevap:</h4>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li><strong>Frontend (Ön Yüz):</strong> Kullanıcının tarayıcıda gördüğü ve doğrudan etkileşime girdiği (butonlar, formlar, metinler gibi) arayüz kısımdır. Genellikle HTML, CSS ve JavaScript kullanılarak oluşturulur.</li>
+                        <li><strong>Backend (Arka Yüz):</strong> Sunucu tarafında çalışan, uygulamanın "beyni" olarak işlev gören kısımdır. Veri tabanı işlemleri, kullanıcı doğrulaması ve iş mantığı burada yürütülür. Kullanıcı bu kısmı görmez.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Soru 4 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 4: Aşağıdaki formu tablo yapısını da dikkate alarak html dilinde yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <form name="giris" action="#" method="get" onsubmit="return false;">
+                          <table border="2" cellpadding="5" class="border-collapse border border-gray-400">
+                            <th colspan="2" class="border border-gray-300 p-2 bg-gray-100 font-bold">Kullanıcı Giriş Ekranı</th>
+                            <tr class="border border-gray-300">
+                              <td class="border border-gray-300 p-2"> Kullanıcı Adı </td>
+                              <td class="border border-gray-300 p-2"><input type="text" name="ad" class="border border-gray-300 rounded p-1"/></td>
+                            </tr>
+                            <tr class="border border-gray-300">
+                              <td class="border border-gray-300 p-2"> Şifre </td>
+                              <td class="border border-gray-300 p-2"><input type="password" name="soyad" class="border border-gray-300 rounded p-1"/></td>
+                            </tr>
+                            <tr class="border border-gray-300">
+                              <td colspan="2" align="center" class="p-2">
+                                <input type="reset" value="Temizle" class="bg-gray-200 hover:bg-gray-300 text-black py-1 px-3 rounded cursor-pointer"/>
+                                <input type="submit" value="Gönder" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded cursor-pointer ml-2"/>
+                              </td>
+                            </tr>
+                          </table>
+                        </form>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;form name="giris" action="giris.html" method="get"&gt;
+  &lt;table border="2" cellpadding="5"&gt;
+    &lt;th colspan="2"&gt;Kullanıcı Giriş Ekranı&lt;/th&gt;
+    &lt;tr&gt;
+      &lt;td&gt; Kullanıcı Adı &lt;/td&gt;
+      &lt;td&gt;&lt;input type="text" name="ad"/&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt; Şifre &lt;/td&gt;
+      &lt;td&gt;&lt;input type="password" name="soyad"/&gt;&lt;/td&gt; <!-- Not: Şifre alanı için type="password" daha uygundur -->
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td colspan="2" align="center"&gt;
+        &lt;input type="reset" value="Temizle"/&gt;
+        &lt;input type="submit" value="Gönder"/&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/form&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 5 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 5: Aşağıdaki web tarayıcı görüntüsünü Başlık ve yazı biçimlendirme etiketlerini kullanarak HTML dilinde yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <h2 class="text-xl font-bold">Web Tabanlı Uygulama Geliştirme Dersi</h2>
+                        <p>
+                          Html etiketleri ile yazıları <b>Koyu</b>, 
+                          <i>İtalic</i> ve <u>altı çizili</u> olarak yazabilirsiniz.
+                        </p>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;h2&gt;Web Tabanlı Uygulama Geliştirme Dersi&lt;/h2&gt;
+&lt;p&gt;
+  Html etiketleri ile yazıları &lt;b&gt;Koyu&lt;/b&gt;, 
+  &lt;i&gt;İtalic&lt;/i&gt; ve &lt;u&gt;altı çizili&lt;/u&gt; olarak yazabilirsiniz.
+&lt;/p&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 6 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 6: Aşağıdaki listeyi oluşturan HTML kodlarını yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <h3 class="text-lg font-bold">Yazılım Geliştirme Dalı</h3>
+                        <ol class="list-decimal list-inside">
+                          <li>Web Tabanlı Uygulama Geliştirme</li>
+                          <li>Grafik ve Canlandırma</li>
+                          <li>Mobil Uygulamalar</li>
+                        </ol>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;h3&gt;Yazılım Geliştirme Dalı&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;Web Tabanlı Uygulama Geliştirme&lt;/li&gt;
+  &lt;li&gt;Grafik ve Canlandırma&lt;/li&gt;
+  &lt;li&gt;Mobil Uygulamalar&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 7 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 7: Web sitemize yüksekliği 200, genişliği 400 ve çerçeve kalınlığı 3 olan “resim.jpg” isimli resmi ekleyen kodu yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <img src="https://placehold.co/400x200/e2e8f0/64748b?text=resim.jpg" width="400" height="200" alt="Açıklayıcı Resim Metni" style="border: 3px solid #6b7280;" />
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;img src="resim.jpg" width="400" height="200" border="3" alt="Açıklayıcı Resim Metni" /&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 8 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 8: Html elemanlarına uygulanabilecek 4 temel ortak özellik nedir? Maddeler halinde yazınız.</h3>
+                <div class="answer-block">
+                    <h4 class="answer-title">Cevap:</h4>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li><strong>id:</strong> HTML etiketine benzersiz kimlik sağlar.</li>
+                        <li><strong>title:</strong> Eleman üzerine gelindiğinde ipucu görüntülenmesini sağlar.</li>
+                        <li><strong>class:</strong> HTML etiketini stil sayfası (CSS) aracılığıyla birleştirir.</li>
+                        <li><strong>style:</strong> Etikete özel anlık stil (inline CSS) tanımlar.</li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+        
+        <!-- Bölüm: Çalışma Soruları -->
+        <section>
+            <h2 class="text-2xl md:text-3xl font-semibold text-gray-700 mb-8 border-b-2 border-blue-500 pb-3">
+                Çalışma Soruları ve Konu Özetleri
+            </h2>
+
+            <!-- Soru 9 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 9: Yaygın alan adı uzantıları ve anlamları nelerdir?</h3>
+                <div class="answer-block">
+                    <h4 class="answer-title">Cevap:</h4>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1 columns-2">
+                        <li><strong>gov:</strong> Devlet kurumları</li>
+                        <li><strong>edu:</strong> Eğitim kurumları</li>
+                        <li><strong>k12:</strong> Temel eğitim ve ortaöğretim kurumları</li>
+                        <li><strong>org:</strong> Ticari olmayan kuruluşlar</li>
+                        <li><strong>com:</strong> Ticari kuruluşlar</li>
+                        <li><strong>mil:</strong> Askerî kurumlar</li>
+                        <li><strong>net:</strong> Servis sunucular</li>
+                        <li><strong>ac:</strong> Akademik kuruluşlar</li>
+                        <li><strong>int:</strong> Uluslararası kuruluşlar</li>
+                        <li><strong>info:</strong> Bilgi içerikli web siteleri</li>
+                        <li><strong>biz:</strong> Ticari kuruluşlar</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Soru 10 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 10: Sunucu (Server) Bilgisayar kavramını açıklayınız.</h3>
+                <div class="answer-block">
+                    <h4 class="answer-title">Cevap:</h4>
+                    <p class="text-gray-700">Server (sunucu) bilgisayarlar, hosting amacıyla kullanılan gelişmiş donanım özelliklerine sahip olan ve birçok kullanıcıya aynı anda hizmet veren bilgisayarlardır.</p>
+                </div>
+            </div>
+
+            <!-- Soru 11 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 11: “www.meb.gov.tr” alan adı tanımlamasında yer alan “meb” ifadesi; alan adı kodlama yapısının hangi parçasına karşılık gelmektedir?</h3>
+                <div class="answer-block">
+                    <h4 class="answer-title">Cevap:</h4>
+                    <p class="text-gray-700">B) Alan İsmi</p>
+                </div>
+            </div>
+
+            <!-- Soru 12 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 12: Web tasarımın ilkeleri nelerdir?</h3>
+                <div class="answer-block">
+                    <h4 class="answer-title">Cevap:</h4>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>İçerik</li>
+                        <li>Tasarım</li>
+                        <li>Biçimsellik</li>
+                        <li>İşlevsellik ve Kullanılabilirlik</li>
+                        <li>Güncellik</li>
+                        <li>Uygunluk ve Güvenilirlik</li>
+                        <li>Uyumluluk</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Soru 13 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 13: Kalın, italik, işaretli, kırmızı renkli, 18pt büyüklüğünde ekrana “ATATÜRK“ yazdıran html kodlarını yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <p>
+                          <mark style="font-weight: bold; 
+                                         font-style: italic; 
+                                         color: red; 
+                                         font-size: 18pt;">
+                            ATATÜRK
+                          </mark>
+                        </p>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+                    <p class="text-gray-600 mb-2">Not: 'İşaretli' <code>&lt;mark&gt;</code> etiketini (genellikle sarı arka plan), diğer özellikler ise <code>style</code> özniteliğini ifade eder.</p>
+<pre>
+&lt;p&gt;
+  &lt;mark style="font-weight: bold; 
+                 font-style: italic; 
+                 color: red; 
+                 font-size: 18pt;"&gt;
+    ATATÜRK
+  &lt;/mark&gt;
+&lt;/p&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 14 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 14: Güçlü, altı çizili, sarı renkli, &lt;h2&gt; başlığı ile ekrana “MEZİTLİ“ yazdıran html kodlarını yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <h2 class="text-xl font-bold">
+                          <strong style="text-decoration: underline; color: yellow; background-color: #333; padding: 0 4px;">
+                            MEZİTLİ
+                          </strong>
+                        </h2>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;h2&gt;
+  &lt;strong style="text-decoration: underline; color: yellow;"&gt;
+    MEZİTLİ
+  &lt;/strong&gt;
+&lt;/h2&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 15 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 15: Aşağıdaki iç içe listeyi oluşturan html kodlarını yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <ol class="list-decimal list-inside">
+                          <li>İç Donanım Birimleri</li>
+                          <ol type="I" class="list-inside ml-6" style="list-style-type: upper-roman;">
+                            <li>Anakart</li>
+                            <li>İşlemci</li>
+                            <li>Bellek</li>
+                          </ol>
+                          <li>Dış Donanım Birimleri</li>
+                        </ol>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;ol&gt;
+  &lt;li&gt;İç Donanım Birimleri&lt;/li&gt;
+  &lt;ol type="I"&gt;
+    &lt;li&gt;Anakart&lt;/li&gt;
+    &lt;li&gt;İşlemci&lt;/li&gt;
+    &lt;li&gt;Bellek&lt;/li&gt;
+  &lt;/ol&gt;
+  &lt;li&gt;Dış Donanım Birimleri&lt;/li&gt;
+&lt;/ol&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 16 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 16: Aşağıdaki "Otomobil Markası" tablosunu oluşturacak html kodlarını yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <table border="1" class="border-collapse border border-gray-400">
+                          <thead class="bg-gray-100">
+                            <tr class="border border-gray-300">
+                              <th class="border border-gray-300 p-2 font-bold">Otomobil Markası</th>
+                              <th class="border border-gray-300 p-2 font-bold">Menşei</th>
+                              <th class="border border-gray-300 p-2 font-bold">En Popüler Modeli</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="border border-gray-300">
+                              <td class="border border-gray-300 p-2">Toyota</td>
+                              <td class="border border-gray-300 p-2">Japonya</td>
+                              <td class="border border-gray-300 p-2">Corolla</td>
+                            </tr>
+                            <tr class="border border-gray-300">
+                              <td class="border border-gray-300 p-2">BMW</td>
+                              <td class="border border-gray-300 p-2">Almanya</td>
+                              <td class="border border-gray-300 p-2">E30</td>
+                            </tr>
+                            <tr class="border border-gray-300">
+                              <td class="border border-gray-300 p-2">Volvo</td>
+                              <td class="border border-gray-300 p-2">İsveç</td>
+                              <td class="border border-gray-300 p-2">S60</td>
+                            </tr>
+                            <tr class="border border-gray-300">
+                              <td class="border border-gray-300 p-2">Lada</td>
+                              <td class="border border-gray-300 p-2">Rusya</td>
+                              <td class="border border-gray-300 p-2">Ciguli</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;table border="1"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Otomobil Markası&lt;/th&gt;
+      &lt;th&gt;Menşei&lt;/th&gt;
+      &lt;th&gt;En Popüler Modeli&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Toyota&lt;/td&gt;
+      &lt;td&gt;Japonya&lt;/td&gt;
+      &lt;td&gt;Corolla&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;BMW&lt;/td&gt;
+      &lt;td&gt;Almanya&lt;/td&gt;
+      &lt;td&gt;E30&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Volvo&lt;/td&gt;
+      &lt;td&gt;İsveç&lt;/td&gt;
+      &lt;td&gt;S60&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Lada&lt;/td&gt;
+      &lt;td&gt;Rusya&lt;/td&gt;
+      &lt;td&D&gt;Ciguli&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 17 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 17: Temel metin biçimlendirme etiketlerine örnek kodlar nelerdir?</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <p>Bu, <u>metnin</u> altını çizer <br/>
+                           Bu <b>kalın</b> bir metindir <br/>
+                           Bu <strong>Güçlü</strong> bir metin <br/>
+                           Bu <i>italik</i> metindir <br/>
+                           Bu, metin <em>vurgulu</em> <br/>
+                           Bu, kelime <mark>işaretli</mark> <br/>
+                           Bu <small>küçük</small> bir metin <br/>
+                           Bu <big>büyük</big> metin <br/>
+                           Bu <del>metin değil</del> bu metin olmalı <br/>
+                           Lütfen <s>ŞU</s> yerine <ins>BUNU</ins> ekleyin <br/>
+                           H<sub>2</sub>O <br/>
+                           x<sup>3</sup> <br/>
+                        </p>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;p&gt;Bu, &lt;u&gt;metnin&lt;/u&gt; altını çizer &lt;br/&gt;
+   Bu &lt;b&gt;kalın&lt;/b&gt; bir metindir &lt;br/&gt;
+   Bu &lt;strong&gt;Güçlü&lt;/strong&gt; bir metin &lt;br/&gt;
+   Bu &lt;i&gt;italik&lt;/i&gt; metindir &lt;br/Y&gt;
+   Bu, metin &lt;em&gt;vurgulu&lt;/em&gt; &lt;br/&gt;
+   Bu, kelime &lt;mark&gt;işaretli&lt;/mark&gt; &lt;br/&gt;
+   Bu &lt;small&gt;küçük&lt;/small&gt; bir metin &lt;br/&gt;
+   Bu &lt;big&gt;büyük&lt;/big&gt; metin &lt;br/&gt;
+   Bu &lt;del&gt;metin değil&lt;/del&gt; bu metin olmalı &lt;br/&gt;
+   Lütfen &lt;s&gt;ŞU&lt;/s&gt; yerine &lt;ins&gt;BUNU&lt;/ins&gt; ekleyin &lt;br/&gt;
+   H&lt;sub&gt;2&lt;/sub&gt;O &lt;br/&gt;
+   x&lt;sup&gt;3&lt;/sup&gt; &lt;br/&gt;
+&lt;/p&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 18 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 18: Bir resim dosyasını (`logo.png`) tıklandığında `index.html` sayfasına giden bir bağlantı haline getiren HTML kodunu yazınız.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <a href="#" onclick="return false;" class="text-blue-600 underline">
+                            <img src="https://placehold.co/150x50/e2e8f0/64748b?text=logo.png" alt="Logo" style="border: 2px dashed #ccc;"/>
+                        </a>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;a href="index.html"&gt;
+  &lt;img src="logo.png" alt="Site Logosu"&gt;
+&lt;/a&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 19 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 19: Kullanıcıdan "Favori Web Teknolojisi"ni seçmesini isteyen ve "HTML", "CSS", "JavaScript" seçeneklerini sunan bir radio button (seçenek butonu) grubu oluşturun.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <form action="#" onsubmit="return false;">
+                          <p class="font-medium mb-2">Favori Web Teknolojiniz:</p>
+                          <input type="radio" id="html" name="fav_tech" value="HTML">
+                          <label for="html" class="ml-1 mr-4">HTML</label><br>
+                          
+                          <input type="radio" id="css" name="fav_tech" value="CSS">
+                          <label for="css" class="ml-1 mr-4">CSS</label><br>
+                          
+                          <input type="radio" id="js" name="fav_tech" value="JavaScript">
+                          <label for="js" class="ml-1">JavaScript</label>
+                        </form>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;form&gt;
+  &lt;p&gt;Favori Web Teknolojiniz:&lt;/p&gt;
+  &lt;input type="radio" id="html" name="fav_tech" value="HTML"&gt;
+  &lt;label for="html"&gt;HTML&lt;/label&gt;&lt;br&gt;
+  
+  &lt;input type="radio" id="css" name="fav_tech" value="CSS"&gt;
+  &lt;label for="css"&gt;CSS&lt;/label&gt;&lt;br&gt;
+  
+  &lt;input type="radio" id="js" name="fav_tech" value="JavaScript"&gt;
+  &lt;label for="js"&gt;JavaScript&lt;/label&gt;
+&lt;/form&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 20 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 20: Kullanıcının "İlgi Alanları"nı seçebileceği (birden fazla seçim yapabilir) "Web Tasarım", "Yapay Zeka" ve "Mobil Geliştirme" seçeneklerini sunan bir checkbox (onay kutusu) grubu oluşturun.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <form action="#" onsubmit="return false;">
+                          <p class="font-medium mb-2">İlgi Alanlarınız (Birden fazla seçebilirsiniz):</p>
+                          <input type="checkbox" id="ilgi1" name="ilgi" value="web">
+                          <label for="ilgi1" class="ml-1">Web Tasarım</label><br>
+                          
+                          <input type="checkbox" id="ilgi2" name="ilgi" value="ai">
+                          <label for="ilgi2" class="ml-1">Yapay Zeka</label><br>
+                          
+                          <input type="checkbox" id="ilgi3" name="ilgi" value="mobile">
+                          <label for="ilgi3" class="ml-1">Mobil Geliştirme</label>
+                        </form>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;form&gt;
+  &lt;p&gt;İlgi Alanlarınız (Birden fazla seçebilirsiniz):&lt;/p&gt;
+  &lt;input type="checkbox" id="ilgi1" name="ilgi1" value="web"&gt;
+  &lt;label for="ilgi1"&gt;Web Tasarım&lt;/label&gt;&lt;br&gt;
+  
+  &lt;input type="checkbox" id="ilgi2" name="ilgi2" value="ai"&gt;
+  &lt;label for="ilgi2"&gt;Yapay Zeka&lt;/label&gt;&lt;br&gt;
+  
+  &lt;input type="checkbox" id="ilgi3" name="ilgi3" value="mobile"&gt;
+  &lt;label for="ilgi3"&gt;Mobil Geliştirme&lt;/label&gt;
+&lt;/form&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 21 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 21: "İstanbul", "Ankara" ve "İzmir" şehirlerini içeren bir açılır liste (dropdown menu) oluşturun.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <label for="sehir-sec" class="font-medium">Şehir Seçin:</label>
+                        <select name="sehirler" id="sehir-sec" class="border border-gray-300 rounded p-1 ml-2">
+                          <option value="ist">İstanbul</option>
+                          <option value="ank">Ankara</option>
+                          <option value="izm">İzmir</option>
+                        </select>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;label for="sehir-sec"&gt;Şehir Seçin:&lt;/label&gt;
+&lt;select name="sehirler" id="sehir-sec"&gt;
+  &lt;option value="ist"&gt;İstanbul&lt;/option&gt;
+  &lt;option value="ank"&gt;Ankara&lt;/option&gt;
+  &lt;option value="izm"&gt;İzmir&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+                </div>
+            </div>
+
+            <!-- Soru 22 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 22: `colspan` kullanarak hücre birleştiren bir tablo oluşturun. İlk satır "Aylık Giderler" başlığını içermeli ve 2 sütunu kaplamalıdır. İkinci satırda "Ay" ve "Tutar" başlıkları olmalıdır.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <table border="1" class="border-collapse border border-gray-400">
+                          <thead>
+                            <tr class="border border-gray-300">
+                              <th colspan="2" class="border border-gray-300 p-2 bg-gray-100 font-bold">Aylık Giderler</th>
+                            </tr>
+                            <tr class="border border-gray-300">
+                              <th class="border border-gray-300 p-2 bg-gray-100 font-bold">Ay</th>
+                              <th class="border border-gray-300 p-2 bg-gray-100 font-bold">Tutar</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="border border-gray-300">
+                                <td class="border border-gray-300 p-2">Ocak</td>
+                                <td class="border border-gray-300 p-2">250 TL</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;table border="1"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th colspan="2"&gt;Aylık Giderler&lt;/th&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Ay&lt;/th&gt;
+      &lt;th&gt;Tutar&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Ocak&lt;/td&gt;
+      &lt;td&gt;250 TL&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 23 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 23: `rowspan` kullanarak hücre birleştiren bir tablo oluşturun. İlk sütundaki "Ocak Ayı" hücresi 2 satırı kaplamalıdır.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <table border="1" class="border-collapse border border-gray-400">
+                          <thead>
+                            <tr class="border border-gray-300">
+                              <th class="border border-gray-300 p-2 bg-gray-100 font-bold">Ay</th>
+                              <th class="border border-gray-300 p-2 bg-gray-100 font-bold">Hafta</th>
+                              <th class="border border-gray-300 p-2 bg-gray-100 font-bold">Satış</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr class="border border-gray-300">
+                                <td rowspan="2" class="border border-gray-300 p-2 align-top">Ocak</td>
+                                <td class="border border-gray-300 p-2">1. Hafta</td>
+                                <td class="border border-gray-300 p-2">100 TL</td>
+                            </tr>
+                            <tr class="border border-gray-300">
+                                <td class="border border-gray-300 p-2">2. Hafta</td>
+                                <td class="border border-gray-300 p-2">150 TL</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;table border="1"&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Ay&lt;/th&gt;
+      &lt;th&gt;Hafta&lt;/th&gt;
+      &lt;th&gt;Satış&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td rowspan="2"&gt;Ocak&lt;/td&gt;
+      &lt;td&gt;1. Hafta&lt;/td&gt;
+      &lt;td&gt;100 TL&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2. Hafta&lt;/td&gt;
+      &lt;td&gt;150 TL&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+</pre>
+                </div>
+            </div>
+            
+            <!-- Soru 24 -->
+            <div class="qa-card">
+                <h3 class="question-title">Soru 24: Kullanıcıdan "Adres" bilgisi almak için 5 satır yüksekliğinde ve 30 sütun genişliğinde çok satırlı bir metin alanı (`textarea`) oluşturun.</h3>
+                <div class="answer-block">
+                    <h5 class="answer-title">Çıktı (Görünüm):</h5>
+                    <div class="border border-gray-300 p-4 rounded-md bg-white mb-4">
+                        <form action="#" onsubmit="return false;">
+                            <label for="adres" class="font-medium block mb-2">Adresinizi Girin:</label>
+                            <textarea id="adres" name="adres" rows="5" cols="30" class="border border-gray-300 rounded p-1"></textarea>
+                        </form>
+                    </div>
+                    
+                    <h4 class="answer-title">Cevap (Kod):</h4>
+<pre>
+&lt;form&gt;
+  &lt;label for="adres"&gt;Adresinizi Girin:&lt;/label&gt;&lt;br&gt;
+  &lt;textarea id="adres" name="adres" rows="5" cols="30"&gt;&lt;/textarea&gt;
+&lt;/form&gt;
+</pre>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+</body>
+</html>
+
