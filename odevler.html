@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML & CSS Dönem Ödevi Listesi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #2c3e50;
+        }
+
+        h1 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 30px;
+            background-color: #e8f4f8;
+            padding: 10px;
+            border-left: 5px solid #3498db;
+            border-radius: 4px;
+        }
+
+        .intro {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+        }
+
+        .rules-list li {
+            margin-bottom: 10px;
+        }
+
+        code {
+            background-color: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: #c7254e;
+            font-family: Consolas, monospace;
+        }
+
+        .student-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            transition: transform 0.2s;
+        }
+
+        .student-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-name {
+            margin-top: 0;
+            color: #d35400;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 5px;
+        }
+
+        .project-details {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .project-details li {
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-weight: bold;
+            color: #27ae60;
+            font-size: 1.2em;
+        }
+
+        ul ul {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>📚 HTML & CSS Dönem Ödevi Listesi</h1>
+
+        <p class="intro">
+            Sevgili Öğrenciler,<br>
+            Aşağıda her biriniz için belirlenmiş proje konuları yer almaktadır. Bu ödevin amacı, öğrendiğiniz HTML ve
+            CSS bilgilerini kullanarak çok sayfalı, çalışan bir web sitesi ortaya çıkarmanızdır.
+        </p>
+
+        <hr>
+
+        <h2>⚠️ Genel Kurallar (Herkes İçin Geçerli)</h2>
+        <ol class="rules-list">
+            <li><strong>Teknoloji</strong>: Sadece **HTML** ve **CSS** kullanılacak. (JavaScript zorunlu değil).</li>
+            <li><strong>Sayfa Sayısı</strong>: Projeniz **en az 3 sayfadan** oluşmalıdır. (Örn: Ana Sayfa, Hakkımızda,
+                İletişim).</li>
+            <li><strong>Navigasyon</strong>: Her sayfada, diğer sayfalara geçişi sağlayan bir **Menü (Navbar)**
+                olmalıdır.</li>
+            <li><strong>Tasarım</strong>: Sayfalar estetik ve düzenli görünmelidir. Renk uyumuna dikkat edin.</li>
+            <li><strong>Görseller</strong>: Konunuzla ilgili kaliteli görseller kullanın.</li>
+            <li><strong>Klasör Düzeni</strong>:
+                <ul>
+                    <li><code>index.html</code> (Ana Sayfa)</li>
+                    <li><code>sayfa2.html</code> (İkinci Sayfa)</li>
+                    <li><code>sayfa3.html</code> (Üçüncü Sayfa)</li>
+                    <li><code>style.css</code> (Tüm stiller burada olacak)</li>
+                    <li><code>images/</code> (Resimler bu klasörde olacak)</li>
+                </ul>
+            </li>
+        </ol>
+
+        <hr>
+
+        <h2>📋 Öğrenci ve Proje Listesi</h2>
+
+        <div class="student-card">
+            <h3 class="student-name">1. İsmail Ali OKUR</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🛒 <strong>Tam Kapsamlı E-Ticaret Platformu (Amazon Tarzı)</strong></li>
+                <li><strong>Detay</strong>: Bir e-ticaret sitesinin tüm süreçlerini içeren dev bir proje. Ürün
+                    listeleme, detay sayfaları ve alışveriş süreci tasarımları.</li>
+                <li><strong>Sayfalar</strong>:
+                    <ol>
+                        <li><strong>Ana Sayfa</strong>: Slider, Kategoriler, Günün Fırsatları.</li>
+                        <li><strong>Ürün Listesi</strong>: Sol tarafta filtreler, sağda ürün ızgarası.</li>
+                        <li><strong>Ürün Detay</strong>: Büyük ürün resmi, açıklama, yorumlar bölümü.</li>
+                        <li><strong>Sepetim</strong>: Seçilen ürünlerin listesi ve fiyat özeti.</li>
+                        <li><strong>Ödeme Ekranı</strong>: Kredi kartı form tasarımı.</li>
+                        <li><strong>Giriş/Kayıt</strong>: Kullanıcı üyelik formları.</li>
+                    </ol>
+                </li>
+                <li><strong>Ekstra</strong>: Responsive (Mobil uyumlu) tasarım zorunludur.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">2. Mehmet Salih Bahçeci</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🏙️ <strong>Şehir Tanıtım Rehberi</strong></li>
+                <li><strong>Detay</strong>: Sevdiğin bir şehri veya ülkeyi tanıtan turizm sitesi. Gezilecek yerler ve
+                    meşhur yemekler.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Gezilecek Yerler, Galeri.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">3. Muhammet Kaan YILMAZ</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🎮 <strong>Oyun İnceleme Dünyası</strong></li>
+                <li><strong>Detay</strong>: Sevdiğin video oyunlarını tanıttığın, puan verdiğin bir inceleme sitesi.
+                </li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, İncelemeler, En İyiler Listesi.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">4. İbrahim Halil GÖÇEN</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🏋️ <strong>Spor Salonu / Fitness Kulübü</strong></li>
+                <li><strong>Detay</strong>: Bir spor salonunun tanıtımı. Ders programları, antrenörler ve üyelik
+                    bilgileri.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Dersler & Programlar, Üyelik.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">5. Arif Berkay AKYOL</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 📱 <strong>Teknoloji Blogu</strong></li>
+                <li><strong>Detay</strong>: Yeni çıkan telefonlar, bilgisayarlar veya teknolojik gelişmeler hakkında
+                    haberler.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Haberler, İnceleme Videoları (Embed).</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">6. Alperen ÖZ</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🏎️ <strong>Araba Galeri Sitesi</strong></li>
+                <li><strong>Detay</strong>: Lüks veya klasik arabaların sergilendiği, özelliklerinin anlatıldığı bir
+                    galeri sitesi.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Araçlar, Bize Ulaşın.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">7. Enes Günay</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🎬 <strong>Film ve Dizi Platformu</strong></li>
+                <li><strong>Detay</strong>: İzlediğin filmleri önerdiğin, konularını anlattığın bir sinema sitesi.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Film Önerileri, Dizi Önerileri.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">8. Hivan UÇUCU</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🍳 <strong>Dijital Mutfak (Yemek Tarifleri)</strong></li>
+                <li><strong>Detay</strong>: Lezzetli yemek tariflerinin, malzemelerin ve yapılış aşamalarının olduğu bir
+                    site.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Tatlılar, Tuzlular.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">9. Ali Efe LEBLEBİCİ</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🎸 <strong>Müzik Grubu Fan Sayfası</strong></li>
+                <li><strong>Detay</strong>: Sevdiğin bir müzik grubu veya sanatçı için hayran sitesi. Albümleri ve
+                    konser tarihleri.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Albümler, Konserler.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">10. Ezgi SİDAR</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 📸 <strong>Fotoğrafçılık Portfolyosu</strong></li>
+                <li><strong>Detay</strong>: Çekilen fotoğrafların sergilendiği şık bir galeri sitesi. Görsellik ön
+                    planda olmalı.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Portreler, Manzara Fotoğrafları.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">11. Duran Veli TUKUR</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🛍️ <strong>E-Ticaret Ürün Tanıtım</strong></li>
+                <li><strong>Detay</strong>: Ayakkabı, çanta veya teknolojik ürün satan bir mağazanın vitrini. (Satış
+                    yapmasına gerek yok, görüntü yeterli).</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Ürünler, Kampanyalar.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">12. Yahya ÖKSÜZ</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 📰 <strong>Okul Gazetesi / Haber Sitesi</strong></li>
+                <li><strong>Detay</strong>: Okuldaki etkinliklerin, duyuruların ve röportajların paylaşıldığı bir haber
+                    sitesi.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Haberler, Etkinlik Takvimi.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">13. Umut Kaan ŞAMLI</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🐾 <strong>Hayvan Barınağı / Sahiplendirme</strong></li>
+                <li><strong>Detay</strong>: Sevimli dostlarımızı sahiplendirmek için kurulan bir barınak sitesi.
+                    Hayvanların profilleri.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Sahiplenilmeyi Bekleyenler, Bağış & Destek.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">14. Leyla ÖZDEMİR</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: ☕ <strong>Kahve Dükkanı / Kafe Menüsü</strong></li>
+                <li><strong>Detay</strong>: Bir kafenin menüsünü, kahve çeşitlerini ve tatlılarını gösteren iştah açıcı
+                    bir site.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Menü, Hakkımızda.</li>
+            </ul>
+        </div>
+
+        <div class="student-card">
+            <h3 class="student-name">15. Musa İME</h3>
+            <ul class="project-details">
+                <li><strong>Konu</strong>: 🌍 <strong>Doğa ve Çevre Bilinci</strong></li>
+                <li><strong>Detay</strong>: Küresel ısınma, geri dönüşüm ve doğayı koruma hakkında bilgi veren sosyal
+                    sorumluluk projesi.</li>
+                <li><strong>Sayfalar</strong>: Ana Sayfa, Sorunlar, Çözüm Önerileri.</li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <div class="footer">
+            Başarılar Dilerim! 🚀
+        </div>
+
+    </div>
+
+</body>
+
+</html>
