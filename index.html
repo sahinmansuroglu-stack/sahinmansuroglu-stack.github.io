@@ -3,97 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linklerim</title>
+    <title>Şahin Mansuroğlu - Bilişim Teknolojileri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Genel Sayfa Stilleri */
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: #eaf5ff; /* Açık mavi arka plan */
-            color: #333;
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #004494;
+            --accent-color: #ffc107;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 40px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        /* Linkleri İçeren Ana Kutu */
-        .link-container {
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            padding: 30px 40px;
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-        /* Başlık */
-        h2 {
-            color: #005a9c; /* Koyu mavi başlık */
-            margin-bottom: 30px;
-            font-size: 2.5em;
-        }
-
-        /* Link Listesi */
-        .link-list {
-            list-style-type: none;
             padding: 0;
-            margin: 0;
         }
 
-        .link-list li {
-            margin-bottom: 15px;
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #eaf5ff;
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* Linklerin Görünümü */
-        .link-list a {
-            display: block;
-            background-color: #007bff; /* Canlı mavi */
-            color: #ffffff;
+        header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        h2.section-title {
+            color: var(--secondary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            display: inline-block;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             text-decoration: none;
-            padding: 15px 20px;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 500;
-            transition: all 0.3s ease; /* Yumuşak geçiş efekti */
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+            color: var(--text-color);
+            border-left: 5px solid transparent;
         }
 
-        /* Fare ile üzerine gelince linklerin alacağı stil */
-        .link-list a:hover {
-            background-color: #0056b3; /* Hover durumunda daha koyu mavi */
-            transform: translateY(-3px); /* Hafif yukarı kalkma efekti */
-            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.3);
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+            border-left-color: var(--accent-color);
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
-    <div class="link-container">
-        <h2>Şahin MANSUROĞLU</h1>
-        <h3>Bililişim Teknolojileri Öğretmeni</h2>
-        <ul class="link-list">
+    <header>
+        <h1>Şahin MANSUROĞLU</h1>
+        <p>Bilişim Teknolojileri Öğretmeni</p>
+    </header>
 
-            <li><a href="kotlin_ders.html" target="_blank">Kotlin Dersleri</a></li>
-            <li><a href="html_full.html" target="_blank">Html Dersleri</a></li>
-            <li><a href="html_form_dokuman.html" target="_blank">Html form Örnekler</a></li>
-            <li><a href="CSS_FULL.html" target="_blank">CSS Dersleri</a></li>
-            <li><a href="nesne.html" target="_blank">Nesne Tabanlı Programlama (C#) Dersleri</a></li>
-            <li><a href="https://github.com/sahinmansuroglu/NtpDersiDonem1" target="_blank">Nesne Tabanlı Programlama Geçmiş Örnekler</a></li>
-            <li><a href="mobil1_1_calisma.html" target="_blank">Mobil 1. Dönem  1. Sınav Çalışma</a></li>
-            <li><a href="nesne1_D_1_Y_calisma.html" target="_blank">NTP 1. Dönem  1. Sınav Çalışma</a></li>
-            <li><a href="web1_D_1_Y_calisma.html" target="_blank">Web Tabanlı Uygulama Geliştirme 1. Dönem  1. Sınav Çalışma</a></li>
-            
-            <li><a href="odevler.html" target="_blank">11 ATP Web Proje Odevei(20.11.2025)</a></li>
-            
-            <li><a href="/Kalitim/" target="_blank">C# Kalıtım Konusu (21.11.2025)</a></li>
+    <main>
+        <section>
+            <h2 class="section-title">Ders Notları</h2>
+            <div class="grid">
+                <a href="kotlin_ders.html" class="card" target="_blank">
+                    <h3>Kotlin Dersleri</h3>
+                    <p>Kotlin programlama dili ile ilgili ders notları ve kaynaklar.</p>
+                </a>
+                <a href="html_full.html" class="card" target="_blank">
+                    <h3>HTML Dersleri</h3>
+                    <p>Temel ve ileri seviye HTML ders içerikleri.</p>
+                </a>
+                <a href="CSS_FULL.html" class="card" target="_blank">
+                    <h3>CSS Dersleri</h3>
+                    <p>Web tasarımı ve stillendirme için CSS notları.</p>
+                </a>
+                <a href="html_form_dokuman.html" class="card" target="_blank">
+                    <h3>HTML Form Örnekleri</h3>
+                    <p>Web formları oluşturma üzerine uygulamalı örnekler.</p>
+                </a>
+                <a href="nesne.html" class="card" target="_blank">
+                    <h3>Nesne Tabanlı Programlama (C#)</h3>
+                    <p>C# ile nesne tabanlı programlama temelleri.</p>
+                </a>
+                <a href="/Kalitim/" class="card" target="_blank">
+                    <h3>C# Kalıtım Konusu</h3>
+                    <p>Nesne tabanlı programlamada kalıtım (inheritance) prensipleri. (21.11.2025)</p>
+                </a>
+            </div>
+        </section>
 
-        </ul>
-    </div>
+        <section>
+            <h2 class="section-title">Sınav Hazırlık</h2>
+            <div class="grid">
+                <a href="mobil1_1_calisma.html" class="card" target="_blank">
+                    <h3>Mobil Uygulama Geliştirme</h3>
+                    <p>1. Dönem 1. Sınav çalışma notları.</p>
+                </a>
+                <a href="nesne1_D_1_Y_calisma.html" class="card" target="_blank">
+                    <h3>Nesne Tabanlı Programlama</h3>
+                    <p>1. Dönem 1. Sınav çalışma notları.</p>
+                </a>
+                <a href="web1_D_1_Y_calisma.html" class="card" target="_blank">
+                    <h3>Web Uygulama Geliştirme</h3>
+                    <p>1. Dönem 1. Sınav çalışma notları.</p>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Ödevler ve Projeler</h2>
+            <div class="grid">
+                <a href="odevler.html" class="card" target="_blank">
+                    <h3>11 ATP Web Proje Ödevi</h3>
+                    <p>Web proje ödevi detayları ve teslim bilgileri. (20.11.2025)</p>
+                </a>
+                <a href="https://github.com/sahinmansuroglu/NtpDersiDonem1" class="card" target="_blank">
+                    <h3>GitHub: NTP Geçmiş Örnekler</h3>
+                    <p>Nesne Tabanlı Programlama dersi için kaynak kodlar ve örnekler.</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Şahin MANSUROĞLU. Tüm Hakları Saklıdır.</p>
+    </footer>
 
 </body>
 </html>
