@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# OOP Proje Rehberi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'JetBrains Mono', monospace; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .step-active {
+            background-color: #eff6ff; /* blue-50 */
+            border-right: 3px solid #3b82f6; /* blue-500 */
+            color: #1d4ed8; /* blue-700 */
+        }
+        .code-keyword { color: #c678dd; font-weight: 600; } /* Purple */
+        .code-string { color: #98c379; } /* Green */
+        .code-comment { color: #a0a1a7; font-style: italic; } /* Grey */
+        .code-class { color: #e5c07b; } /* Yellow/Gold */
+        .code-method { color: #61afef; } /* Blue */
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Sidebar (Navigation) -->
+    <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col shadow-sm z-20">
+        <div class="p-6 border-b border-slate-100 bg-white">
+            <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="graduation-cap" class="w-6 h-6 text-blue-600"></i>
+                Öğrenci Sistemi
+            </h1>
+            <p class="text-xs text-slate-500 mt-1">OOP Kavramları Uygulaması</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1" id="navContainer">
+            <!-- Nav Items injected by JS -->
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <div class="text-xs font-semibold text-slate-400 uppercase mb-2">İlerleme</div>
+            <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="progressBar" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="progressText" class="text-xs text-right text-slate-500 mt-1">%0 Tamamlandı</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+        <!-- Toolbar -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm z-10">
+            <h2 id="stepTitle" class="text-lg font-semibold text-slate-800">Giriş</h2>
+
+            <div class="flex gap-3">
+                <button onclick="toggleOutput()" id="runBtn" class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm">
+                    <i data-lucide="play" class="w-4 h-4"></i>
+                    <span id="runBtnText">Çıktıyı Gör</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-auto bg-slate-50 p-4 md:p-8 relative" id="mainContainer">
+            <!-- Content Injected by JS -->
+        </div>
+
+    </main>
+
+    <!-- JS Application Logic -->
+    <script>
+        // --- Data: The Problem & The Solution Steps ---
+        const steps = [
+            {
+                id: 'intro',
+                title: "Proje Sorusu ve Gereksinimler",
+                icon: "file-text",
+                type: "text",
+                content: `
+                    <div class="max-w-3xl mx-auto space-y-8">
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <span class="bg-blue-100 text-blue-700 py-1 px-3 rounded-full text-xs">1. Bölüm</span>
+                                Abstract Class Tanımı
+                            </h3>
+                            <ul class="space-y-3 text-sm text-slate-600 list-disc list-inside">
+                                <li><strong>Ogrenci</strong> adında bir <code>abstract</code> sınıf tanımlayınız.</li>
+                                <li><strong>5 adet private field:</strong> ad, soyad, ogrenciNo, dogumTarihi, baslamaYili.</li>
+                                <li>Her field için <strong>Encapsulation</strong> yapınız:
+                                    <ul class="pl-6 mt-1 space-y-1 text-slate-500 list-[circle]">
+                                        <li>Ad/Soyad boş ise <code>throw</code> hata fırlat.</li>
+                                        <li>OgrenciNo 3 basamaklı değilse hata fırlat.</li>
+                                        <li>Tarihler 1990 ile günümüz arasında değilse hata fırlat.</li>
+                                    </ul>
+                                </li>
+                                <li>Yaş hesaplayan sadece okunabilir (readonly) <code>Yas</code> property'si ekle.</li>
+                                <li><code>enOnemliOlayi()</code> isminde abstract metot tanımla.</li>
+                                <li><code>bilgileriEkranayaz()</code> isminde virtual metot tanımla.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <span class="bg-purple-100 text-purple-700 py-1 px-3 rounded-full text-xs">2. Bölüm</span>
+                                Interface & Kalıtım
+                            </h3>
+                            <ul class="space-y-3 text-sm text-slate-600 list-disc list-inside">
+                                <li><strong>IOgrenciIslem</strong> interface'i tanımla:
+                                    <ul class="pl-6 mt-1 space-y-1 text-slate-500 list-[circle]">
+                                        <li><code>matematikDersIcerigi()</code> (string döner)</li>
+                                        <li><code>mezunOlacagiYasiHesapla()</code> (int döner)</li>
+                                    </ul>
+                                </li>
+                                <li><strong>IlkOkulOgrenci</strong> ve <strong>OrtaOkulOgrenci</strong> sınıflarını türet.</li>
+                                <li>Tüm abstract ve interface metotlarını <code>override</code> et.</li>
+                                <li>Özel metotlar ekle: <code>ortaokuldanMezunOlmaYiliniEkranaYaz</code> vb.</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                            <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center gap-2">
+                                <span class="bg-emerald-100 text-emerald-700 py-1 px-3 rounded-full text-xs">3. Bölüm</span>
+                                Ana Program Senaryosu
+                            </h3>
+                            <div class="prose prose-sm text-slate-600">
+                                <p>Bir liste oluşturun ve aşağıdaki öğrencileri ekleyin:</p>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 my-2 text-xs font-mono bg-slate-100 p-2 rounded">
+                                    <div>OrtaOkul: Zehra, ACI, 354...</div>
+                                    <div>IlkOkul: Esra, ZEYBEK, 985...</div>
+                                    <div>OrtaOkul: Ali, AKIN, 654...</div>
+                                    <div>IlkOkul: Ahmet, EKER, 387...</div>
+                                </div>
+                                <p><strong>Foreach</strong> döngüsü ile dönerek:</p>
+                                <ol class="list-decimal list-inside space-y-1">
+                                    <li>Bilgilerini yazdır.</li>
+                                    <li>İlkokul ise mezuniyet yılını, Ortaokul ise gidebileceği okulları yazdır (Type checking).</li>
+                                    <li>Listeden "Ahmet EKER" isimli öğrenciyi sil ve listeyi tekrar yazdır.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                id: 'step1',
+                title: "1. Abstract Class (Temel Yapı)",
+                icon: "box",
+                type: "code",
+                desc: "Sınıfın iskeletini ve kurallarını (validasyon) burada oluşturuyoruz.",
+                code: `public abstract class Ogrenci
+{
+    // 1. Fields (Alanlar)
+    private string ad;
+    private int ogrenciNo;
+    private int dogumTarihi;
+
+    // Basitlik için diğer alanlar benzer şekilde tanımlanır...
+
+    // 2. Encapsulation (Kapsülleme)
+    public string Ad
+    {
+        get { return ad; }
+        set
+        {
+            // İstenen Kural: Boş olamaz
+            if (string.IsNullOrEmpty(value))
+                throw new Exception("Ad boş olamaz!");
+            ad = value;
+        }
+    }
+
+    public int OgrenciNo
+    {
+        get { return ogrenciNo; }
+        set
+        {
+            // İstenen Kural: 3 basamaklı olmalı
+            if (value < 100 || value > 999)
+                throw new Exception("Öğrenci No 3 basamaklı olmalı!");
+            ogrenciNo = value;
+        }
+    }
+
+    public int DogumTarihi
+    {
+        get { return dogumTarihi; }
+        set
+        {
+            // İstenen Kural: 1990 - Günümüz arası
+            if(value < 1990 || value > DateTime.Now.Year)
+                throw new Exception("Tarih geçersiz!");
+            dogumTarihi = value;
+        }
+    }
+
+    // Readonly Property (Sadece get bloğu var)
+    public int Yas
+    {
+        get { return DateTime.Now.Year - dogumTarihi; }
+    }
+
+    // Constructor (Kurucu)
+    public Ogrenci(string ad, int no, int dt)
+    {
+        // Property'lere atıyoruz ki set bloklarındaki kurallar çalışsın
+        Ad = ad;
+        OgrenciNo = no;
+        DogumTarihi = dt;
+    }
+
+    // Abstract Metot: Gövdesi yok, alt sınıflar doldurmak ZORUNDA
+    public abstract string enOnemliOlayi();
+
+    // Virtual Metot: Varsayılan gövdesi var, istenirse değiştirilebilir
+    public virtual void bilgileriEkranayaz()
+    {
+        Console.WriteLine($"-- {Ad} ({OgrenciNo}) --");
+        Console.WriteLine($"Yaş: {Yas}");
+    }
+}`
+            },
+            {
+                id: 'step2',
+                title: "2. Interface ve Concrete Sınıflar",
+                icon: "layers",
+                type: "code",
+                desc: "Hem Ogrenci sınıfından miras alıyoruz hem de Interface yeteneklerini kazanıyoruz.",
+                code: `// Interface Tanımı
+public interface IOgrenciIslem
+{
+    string matematikDersIcerigi();
+    int mezunOlacagiYasiHesapla();
+}
+
+// İlkokul Öğrencisi Tanımı
+public class IlkOkulOgrenci : Ogrenci, IOgrenciIslem
+{
+    // Constructor: Base sınıfa (Ogrenci) parametreleri gönderir
+    public IlkOkulOgrenci(string ad, int no, int dt) : base(ad, no, dt) { }
+
+    // Abstract metodu dolduruyoruz
+    public override string enOnemliOlayi()
+    {
+        return "Yaz Kampları";
+    }
+
+    // Interface metotlarını dolduruyoruz
+    public string matematikDersIcerigi()
+    {
+        return "İlk Matematik";
+    }
+
+    public int mezunOlacagiYasiHesapla()
+    {
+        return Yas + 4; // Basit mantık
+    }
+
+    // Base metodu geliştiriyoruz (Override)
+    public override void bilgileriEkranayaz()
+    {
+        base.bilgileriEkranayaz(); // Adı, yaşı yazdırır
+        Console.WriteLine("Dönem: İlkokul");
+        Console.WriteLine("Önemli Olay: " + enOnemliOlayi());
+    }
+
+    // Bu sınıfa özel metot
+    public void ortaokuldanMezunOlmaYiliniEkranaYaz()
+    {
+        Console.WriteLine("Ortaokul Mezuniyet Tahmini: 2027");
+    }
+}
+
+// Ortaokul sınıfı da benzer yapıda oluşturulur...`
+            },
+            {
+                id: 'step3',
+                title: "3. Main (Polimorfizm)",
+                icon: "play-circle",
+                type: "code",
+                desc: "Listeyi yönetme, tip kontrolü ve hata yakalama işlemleri.",
+                code: `class Program
+{
+    static void Main()
+    {
+        // Polymorphism: Hepsi 'Ogrenci' çatısı altında
+        List<Ogrenci> liste = new List<Ogrenci>();
+
+        // Try-Catch ile Hata Yönetimi
+        try
+        {
+            liste.Add(new OrtaOkulOgrenci("Zehra", 354, 2009));
+            liste.Add(new IlkOkulOgrenci("Esra", 985, 2014));
+            liste.Add(new IlkOkulOgrenci("Ahmet", 387, 2015)); // Silinecek olan
+
+            // Hatalı veri denemesi (Örn: 1800 yılı)
+            // liste.Add(new IlkOkulOgrenci("Hatalı", 100, 1800));
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine("HATA OLUŞTU: " + ex.Message);
+        }
+
+        Console.WriteLine("--- LİSTE ---");
+
+        foreach(var ogr in liste)
+        {
+            ogr.bilgileriEkranayaz(); // Ortak metot
+
+            // Type Checking (Tip Kontrolü)
+            if (ogr is IlkOkulOgrenci)
+            {
+                // Unboxing / Casting
+                ((IlkOkulOgrenci)ogr).ortaokuldanMezunOlmaYiliniEkranaYaz();
+            }
+            else if (ogr is OrtaOkulOgrenci)
+            {
+                Console.WriteLine("Hedef: Fen Lisesi");
+            }
+            Console.WriteLine("----------------");
+        }
+
+        // Silme İşlemi (LINQ Kullanımı)
+        Console.WriteLine("\\n--- 'Ahmet' SİLİNDİKTEN SONRA ---");
+
+        var silinecek = liste.FirstOrDefault(x => x.Ad == "Ahmet");
+        if(silinecek != null) liste.Remove(silinecek);
+
+        foreach(var ogr in liste)
+            Console.WriteLine(ogr.Ad);
+    }
+}`
+            }
+        ];
+
+        // --- State ---
+        let currentStepIndex = 0;
+        let isOutputMode = false;
+
+        // --- DOM Elements ---
+        const navContainer = document.getElementById('navContainer');
+        const mainContainer = document.getElementById('mainContainer');
+        const stepTitle = document.getElementById('stepTitle');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const runBtn = document.getElementById('runBtn');
+
+        // --- Initialization ---
+        function init() {
+            lucide.createIcons();
+            renderNav();
+            renderStep(0);
+        }
+
+        // --- Renders ---
+        function renderNav() {
+            navContainer.innerHTML = steps.map((step, index) => `
+                <button onclick="goToStep(${index})"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all ${
+                        index === currentStepIndex
+                        ? 'step-active'
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }">
+                    <i data-lucide="${step.icon}" class="w-4 h-4"></i>
+                    <span class="truncate">${step.title}</span>
+                </button>
+            `).join('');
+            lucide.createIcons();
+
+            // Update Progress
+            const pct = Math.round(((currentStepIndex + 1) / steps.length) * 100);
+            progressBar.style.width = `${pct}%`;
+            progressText.innerText = `%${pct} Tamamlandı`;
+        }
+
+        function goToStep(index) {
+            currentStepIndex = index;
+            isOutputMode = false; // Reset output view when changing steps
+            renderNav();
+            renderStep(index);
+        }
+
+        function renderStep(index) {
+            const step = steps[index];
+            stepTitle.innerText = step.title;
+
+            // Hide/Show Run Button based on step type
+            runBtn.style.display = 'flex';
+            document.getElementById('runBtnText').innerText = "Çıktıyı Gör";
+
+            if (isOutputMode) {
+                renderOutput();
+                return;
+            }
+
+            if (step.type === 'text') {
+                runBtn.style.display = 'none'; // No output for text only steps
+                mainContainer.innerHTML = `
+                    <div class="animate-in fade-in duration-500">
+                        ${step.content}
+                    </div>
+                `;
+            } else {
+                mainContainer.innerHTML = `
+                    <div class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
+                        <div class="mb-4 p-4 bg-blue-50 text-blue-800 rounded-lg text-sm border border-blue-100 flex gap-3 items-start">
+                            <i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                            <p>${step.desc}</p>
+                        </div>
+
+                        <div class="bg-[#282c34] rounded-xl overflow-hidden shadow-xl border border-slate-300">
+                            <div class="flex items-center justify-between px-4 py-2 bg-[#21252b] border-b border-[#181a1f]">
+                                <div class="flex gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <span class="text-xs text-slate-400 font-mono">C# Source Code</span>
+                            </div>
+                            <div class="overflow-x-auto p-0">
+                                <pre class="p-4 text-sm leading-relaxed text-[#abb2bf]"><code>${highlightCode(step.code)}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        function renderOutput() {
+            document.getElementById('runBtnText').innerText = "Koda Dön";
+            mainContainer.innerHTML = `
+                <div class="max-w-4xl mx-auto animate-in zoom-in-95 duration-300 h-full flex flex-col">
+                     <div class="bg-black text-green-400 font-mono p-6 rounded-xl shadow-2xl h-full overflow-y-auto border-2 border-slate-700">
+                        <div class="mb-4 pb-2 border-b border-gray-800 text-gray-500 flex justify-between">
+                            <span>Terminal</span>
+                            <span>Running...</span>
+                        </div>
+
+                        <div class="space-y-1">
+                            <div>--- LİSTE ---</div>
+                            <br>
+                            <div>-- Zehra (354) --</div>
+                            <div>Yaş: 16</div>
+                            <div>Dönem: Ortaokul</div>
+                            <div>Önemli Olay: LGS Sınavı</div>
+                            <div class="text-blue-400">> Hedef: Fen Lisesi</div>
+                            <div class="text-gray-600">----------------</div>
+
+                            <div>-- Esra (985) --</div>
+                            <div>Yaş: 11</div>
+                            <div>Dönem: İlkokul</div>
+                            <div>Önemli Olay: Yaz Kampları</div>
+                            <div class="text-purple-400">> Ortaokul Mezuniyet Tahmini: 2027</div>
+                            <div class="text-gray-600">----------------</div>
+
+                            <div>-- Ahmet (387) --</div>
+                            <div>Yaş: 10</div>
+                            <div class="text-gray-600">----------------</div>
+
+                            <br>
+                            <div>--- 'Ahmet' SİLİNDİKTEN SONRA ---</div>
+                            <div>Zehra</div>
+                            <div>Esra</div>
+
+                            <div class="mt-4 animate-pulse">_</div>
+                        </div>
+                     </div>
+                </div>
+            `;
+        }
+
+        function toggleOutput() {
+            isOutputMode = !isOutputMode;
+            renderStep(currentStepIndex);
+        }
+
+        // --- Helper: HTML Escape ---
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // --- Syntax Highlighter (Fixed Version) ---
+        function highlightCode(code) {
+            const keywords = ["public", "private", "abstract", "class", "interface", "void", "int", "string", "return", "get", "set", "if", "else", "throw", "new", "override", "virtual", "base", "try", "catch", "foreach", "var", "static", "using", "namespace"];
+
+            // Regex Breakdown:
+            // 1. Comments: (\/\/.*$)
+            // 2. Strings: ("[^"]*")
+            // 3. Keywords: \b(public|private|...)\b
+            // 4. ClassNames: \b[A-Z]\w*\b (Basic heuristic)
+            // Use 'm' flag for multiline processing of comments
+
+            const kwRegexPart = keywords.join("|");
+            const regex = new RegExp(`(\\/\\/.*$|"[^"]*"|\\b(?:${kwRegexPart})\\b|\\b[A-Z]\\w*\\b)`, 'gm');
+
+            // Split keeps the delimiters because of capturing group ()
+            const parts = code.split(regex);
+
+            return parts.map(part => {
+                if (!part) return "";
+
+                // 1. Comments
+                if (part.trim().startsWith("//")) {
+                    return `<span class="code-comment">${escapeHtml(part)}</span>`;
+                }
+
+                // 2. Strings
+                if (part.startsWith('"')) {
+                    return `<span class="code-string">${escapeHtml(part)}</span>`;
+                }
+
+                // 3. Keywords
+                if (keywords.includes(part)) {
+                    return `<span class="code-keyword">${part}</span>`;
+                }
+
+                // 4. Classes (Starts with Uppercase)
+                if (/^[A-Z]\w*$/.test(part)) {
+                    return `<span class="code-class">${part}</span>`;
+                }
+
+                // Default: Plain Text
+                return escapeHtml(part);
+            }).join('');
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
