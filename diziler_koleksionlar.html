@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# Koleksiyonlar ve LINQ Rehberi (Genişletilmiş)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .step-active {
+            background-color: #f0fdf4; /* green-50 */
+            border-right: 3px solid #16a34a; /* green-600 */
+            color: #15803d; /* green-700 */
+        }
+        
+        /* Syntax Highlighting Colors */
+        .code-keyword { color: #c678dd; font-weight: 600; } /* Purple */
+        .code-string { color: #98c379; } /* Green */
+        .code-comment { color: #a0a1a7; font-style: italic; } /* Grey */
+        .code-class { color: #e5c07b; } /* Yellow/Gold */
+        .code-method { color: #61afef; } /* Blue */
+        .code-number { color: #d19a66; } /* Orange */
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col md:flex-row overflow-hidden">
+
+    <!-- Sidebar (Navigation) -->
+    <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col shadow-sm z-20">
+        <div class="p-6 border-b border-slate-100 bg-white">
+            <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="database" class="w-6 h-6 text-green-600"></i>
+                Veri Yapıları & LINQ
+            </h1>
+            <p class="text-xs text-slate-500 mt-1">Full Kapsamlı Rehber</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto p-4 space-y-1" id="navContainer">
+            <!-- Nav Items injected by JS -->
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 bg-slate-50">
+            <div class="text-xs font-semibold text-slate-400 uppercase mb-2">İlerleme</div>
+            <div class="w-full bg-slate-200 rounded-full h-2">
+                <div id="progressBar" class="bg-green-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p id="progressText" class="text-xs text-right text-slate-500 mt-1">%0 Tamamlandı</p>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        
+        <!-- Toolbar -->
+        <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm z-10">
+            <h2 id="stepTitle" class="text-lg font-semibold text-slate-800">Giriş</h2>
+            
+            <div class="flex gap-3">
+                <button onclick="toggleOutput()" id="runBtn" class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm hidden">
+                    <i data-lucide="play" class="w-4 h-4"></i>
+                    <span id="runBtnText">Çalıştır</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="flex-1 overflow-auto bg-slate-50 p-4 md:p-8 relative" id="mainContainer">
+            <!-- Content Injected by JS -->
+        </div>
+
+    </main>
+
+    <!-- JS Application Logic -->
+    <script>
+        // --- Data: Solved Examples & Questions ---
+        const steps = [
+            {
+                id: 'intro',
+                title: "Detaylı Konu Özeti",
+                icon: "book-open",
+                type: "text",
+                content: `
+                    <div class="max-w-4xl mx-auto space-y-8">
+                        
+                        <!-- 1. Diziler -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 border-b pb-2">
+                                <i data-lucide="layout-grid" class="w-5 h-5 text-blue-500"></i>
+                                1. Diziler (Arrays) - Sabit Yapılar
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-600">
+                                <div>
+                                    <p class="mb-2">Bellekte sıralı (contiguous) bloklar halinde tutulur. Erişim çok hızlıdır ancak boyutu sabittir.</p>
+                                    <ul class="list-disc list-inside space-y-1 text-slate-500">
+                                        <li><code>int[] sayilar = new int[5];</code></li>
+                                        <li>Eleman sayısı çalışma anında değişemez.</li>
+                                        <li>Çok boyutlu olabilir: <code>int[,] matris</code></li>
+                                    </ul>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded border border-slate-100 font-mono text-xs">
+                                    // Hızlı Erişim<br>
+                                    int x = dizi[3]; // O(1) Complexity
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Koleksiyonlar -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 border-b pb-2">
+                                <i data-lucide="layers" class="w-5 h-5 text-green-500"></i>
+                                2. Koleksiyonlar - Dinamik Yapılar
+                            </h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <strong class="text-green-700">List&lt;T&gt;</strong>
+                                    <p class="text-sm text-slate-600">En sık kullanılan yapı. Boyutu otomatik artar. <code>Add</code>, <code>Remove</code>, <code>Insert</code> metodları vardır.</p>
+                                </div>
+                                <div class="grid md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-slate-50 p-3 rounded border">
+                                        <strong>Dictionary&lt;K,V&gt;</strong><br>
+                                        Anahtar-Değer ikilisi. Anahtarlar benzersizdir. Erişim çok hızlıdır.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded border">
+                                        <strong>HashSet&lt;T&gt;</strong><br>
+                                        Sadece benzersiz (unique) elemanları tutar. Matematiksel küme işlemleri için idealdir.
+                                    </div>
+                                    <div class="bg-slate-50 p-3 rounded border">
+                                        <strong>Stack/Queue</strong><br>
+                                        Stack: LIFO (Son giren ilk çıkar)<br>Queue: FIFO (İlk giren ilk çıkar)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. LINQ -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="text-lg font-bold text-slate-900 mb-3 flex items-center gap-2 border-b pb-2">
+                                <i data-lucide="filter" class="w-5 h-5 text-purple-500"></i>
+                                3. LINQ - Veri Sorgulama Sanatı
+                            </h3>
+                            <p class="text-sm text-slate-600 mb-3">Döngüler (foreach) yazmak yerine deklaratif sorgular yazmanızı sağlar.</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono">
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.Where(x => ...)</div>
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.Select(x => ...)</div>
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.OrderBy(x => ...)</div>
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.First() / .Last()</div>
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.Any() / .All()</div>
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.GroupBy(...)</div>
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.Sum() / .Average()</div>
+                                <div class="bg-purple-50 text-purple-700 p-2 rounded">.ToList() / .ToArray()</div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            
+            // --- 10 ÇÖZÜMLÜ ÖRNEK ---
+            
+            {
+                id: 'ex1',
+                title: "Örnek 1: Dizi (Array) Temelleri",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Basit bir tamsayı dizisi oluşturup elemanların ortalamasını bulan klasik program.",
+                output: `Dizi Elemanları: 10, 20, 30, 40, 50\nToplam: 150\nOrtalama: 30`,
+                code: `class Program 
+{
+    static void Main()
+    {
+        // 1. Dizi Tanımlama
+        int[] notlar = { 10, 20, 30, 40, 50 };
+        
+        int toplam = 0;
+
+        // 2. Foreach ile Dönme
+        foreach(int not in notlar)
+        {
+            toplam += not; // toplam = toplam + not
+        }
+
+        // 3. Ortalama Hesaplama
+        double ortalama = (double)toplam / notlar.Length;
+
+        Console.WriteLine($"Toplam: {toplam}");
+        Console.WriteLine($"Ortalama: {ortalama}");
+    }
+}`
+            },
+            {
+                id: 'ex2',
+                title: "Örnek 2: List<T> Operasyonları",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Dinamik Liste kullanımı. Eleman ekleme (Add), silme (Remove) ve listeleme.",
+                output: `--- Yapılacaklar ---\n1. Market alışverişi\n2. C# Çalış\n\n--- 'Spor' Eklendi, 'Market' Silindi ---\n1. C# Çalış\n2. Spor Yap`,
+                code: `class Program 
+{
+    static void Main()
+    {
+        // Listeler dinamiktir, boyutu belirtmeye gerek yoktur
+        List<string> gorevler = new List<string>();
+
+        // Veri Ekleme
+        gorevler.Add("Market alışverişi");
+        gorevler.Add("C# Çalış");
+
+        // Veri Silme (Değer ile)
+        gorevler.Remove("Market alışverişi"); 
+
+        // Yeni Veri
+        gorevler.Add("Spor Yap");
+
+        // Yazdırma
+        int sira = 1;
+        foreach(var gorev in gorevler)
+        {
+            Console.WriteLine($"{sira}. {gorev}");
+            sira++;
+        }
+    }
+}`
+            },
+            {
+                id: 'ex3',
+                title: "Örnek 3: Dictionary (Anahtar-Değer)",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Plaka Kodları (Key) ve Şehir İsimleri (Value) eşleşmesi. Key üzerinden hızlı erişim.",
+                output: `Aranan Plaka (34): İstanbul\nAranan Plaka (06): Ankara\n\nTüm Şehirler:\n34: İstanbul\n06: Ankara\n35: İzmir`,
+                code: `class Program 
+{
+    static void Main()
+    {
+        // Key: int (Plaka), Value: string (Şehir)
+        Dictionary<int, string> sehirler = new Dictionary<int, string>();
+
+        sehirler.Add(34, "İstanbul");
+        sehirler.Add(06, "Ankara");
+        sehirler.Add(35, "İzmir");
+
+        // Key ile erişim çok hızlıdır (O(1))
+        if(sehirler.ContainsKey(34))
+        {
+            Console.WriteLine("34 Plakalı Şehir: " + sehirler[34]);
+        }
+
+        // KeyValuePair ile gezme
+        foreach(var item in sehirler)
+        {
+            Console.WriteLine($"{item.Key}: {item.Value}");
+        }
+    }
+}`
+            },
+            {
+                id: 'ex4',
+                title: "Örnek 4: LINQ Temel Filtreleme",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Where (Filtre) ve OrderBy (Sıralama) kullanımı.",
+                output: `Orijinal: 4, 1, 8, 3, 12, 5\n\nFiltrelenmiş (Çift & Sıralı):\n12\n8\n4`,
+                code: `using System.Linq; // Şart!
+
+class Program 
+{
+    static void Main()
+    {
+        List<int> sayilar = new List<int> { 4, 1, 8, 3, 12, 5 };
+
+        // Fluent Syntax (Zincirleme Metotlar)
+        var sonuc = sayilar
+                    .Where(x => x % 2 == 0)     // Çiftleri al
+                    .OrderByDescending(x => x)  // Büyükten küçüğe
+                    .ToList();                  // Listeye çevir
+
+        foreach(var s in sonuc)
+            Console.WriteLine(s);
+        
+        // Tek satırda en büyük sayı
+        Console.WriteLine("Max: " + sayilar.Max());
+    }
+}`
+            },
+            {
+                id: 'ex5',
+                title: "Örnek 5: LINQ ve Nesneler",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Class yapısı ile LINQ kullanımı. Select ile veri projeksiyonu (dönüştürme).",
+                output: `Pahalı Ürünler (>5000 TL):\n- Laptop\n- Telefon`,
+                code: `class Urun {
+    public string Ad { get; set; }
+    public double Fiyat { get; set; }
+}
+
+class Program 
+{
+    static void Main()
+    {
+        List<Urun> urunler = new List<Urun> {
+            new Urun { Ad = "Laptop", Fiyat = 15000 },
+            new Urun { Ad = "Mouse", Fiyat = 200 },
+            new Urun { Ad = "Telefon", Fiyat = 8000 },
+            new Urun { Ad = "Klavye", Fiyat = 450 }
+        };
+
+        // Pahalı ürünlerin SADECE isimlerini al
+        var isimler = urunler
+                      .Where(u => u.Fiyat > 5000)
+                      .Select(u => u.Ad) // String listesine dönüşür
+                      .ToList();
+
+        Console.WriteLine("Pahalı Ürünler:");
+        isimler.ForEach(ad => Console.WriteLine("- " + ad));
+    }
+}`
+            },
+            {
+                id: 'ex6',
+                title: "Örnek 6: HashSet (Benzersiz Liste)",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Tekrar eden verileri otomatik engellemek için HashSet kullanımı.",
+                output: `Eklenenler: C#, Java, C#, Python\n\nKümeki Eleman Sayısı: 3\nElemanlar: C#, Java, Python`,
+                code: `class Program 
+{
+    static void Main()
+    {
+        // HashSet aynı elemanı ikinci kez eklemez
+        HashSet<string> diller = new HashSet<string>();
+
+        diller.Add("C#");
+        diller.Add("Java");
+        diller.Add("C#"); // Bu işlem yok sayılır
+        diller.Add("Python");
+
+        Console.WriteLine($"Kümeki Eleman Sayısı: {diller.Count}");
+        
+        foreach(var dil in diller)
+        {
+            Console.WriteLine(dil);
+        }
+    }
+}`
+            },
+            {
+                id: 'ex7',
+                title: "Örnek 7: Stack (Yığın - LIFO)",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Last-In-First-Out mantığı. Tarayıcı 'Geri' butonu simülasyonu.",
+                output: `Gezilen: google.com\nGezilen: github.com\nGezilen: stackoverflow.com\n\n<- Geri Yapıldı: stackoverflow.com\nŞu an buradasın: github.com`,
+                code: `class Program 
+{
+    static void Main()
+    {
+        Stack<string> tarihce = new Stack<string>();
+
+        // Push: Yığına ekle
+        tarihce.Push("google.com");
+        tarihce.Push("github.com");
+        tarihce.Push("stackoverflow.com");
+
+        // Pop: En üsttekini al ve sil
+        string sonSite = tarihce.Pop();
+        
+        Console.WriteLine($"<- Geri Yapıldı: {sonSite}");
+        
+        // Peek: En üsttekine bak ama silme
+        Console.WriteLine($"Şu an buradasın: {tarihce.Peek()}");
+    }
+}`
+            },
+            {
+                id: 'ex8',
+                title: "Örnek 8: Queue (Kuyruk - FIFO)",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "First-In-First-Out mantığı. Banka sırası veya yazıcı kuyruğu simülasyonu.",
+                output: `Sıraya Girdi: Ahmet\nSıraya Girdi: Ayşe\nSıraya Girdi: Mehmet\n\nİşlem Yapılıyor: Ahmet\nİşlem Yapılıyor: Ayşe\nKalan Kişi Sayısı: 1`,
+                code: `class Program 
+{
+    static void Main()
+    {
+        Queue<string> bankaSirasi = new Queue<string>();
+
+        // Enqueue: Kuyruğa ekle
+        bankaSirasi.Enqueue("Ahmet");
+        bankaSirasi.Enqueue("Ayşe");
+        bankaSirasi.Enqueue("Mehmet");
+
+        // Dequeue: Sıradakini al ve sil
+        while(bankaSirasi.Count > 1)
+        {
+            Console.WriteLine($"İşlem Yapılıyor: {bankaSirasi.Dequeue()}");
+        }
+
+        Console.WriteLine($"Kalan Kişi Sayısı: {bankaSirasi.Count}");
+    }
+}`
+            },
+            {
+                id: 'ex9',
+                title: "Örnek 9: LINQ GroupBy (Gruplama)",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "Verileri belirli bir özelliğe göre gruplama. Öğrencileri sınıflarına göre ayırma.",
+                output: `Sınıf: 12-A\n - Ali\n - Ayşe\n\nSınıf: 11-B\n - Veli`,
+                code: `class Ogrenci { public string Isim { get; set; } public string Sinif { get; set; } }
+
+class Program 
+{
+    static void Main()
+    {
+        var ogrenciler = new List<Ogrenci> {
+            new Ogrenci { Isim="Ali", Sinif="12-A" },
+            new Ogrenci { Isim="Veli", Sinif="11-B" },
+            new Ogrenci { Isim="Ayşe", Sinif="12-A" }
+        };
+
+        // Sınıfa göre grupla
+        var gruplar = ogrenciler.GroupBy(o => o.Sinif);
+
+        foreach(var grup in gruplar)
+        {
+            Console.WriteLine($"Sınıf: {grup.Key}"); // Key = Sinif adi
+            foreach(var ogr in grup)
+            {
+                Console.WriteLine($" - {ogr.Isim}");
+            }
+            Console.WriteLine();
+        }
+    }
+}`
+            },
+            {
+                id: 'ex10',
+                title: "Örnek 10: LINQ Join (Birleştirme)",
+                icon: "check-circle-2",
+                type: "code",
+                desc: "İlişkisel veritabanı mantığı. Yazar ve Kitap listelerini ID üzerinden birleştirme.",
+                output: `Kitap: Sefiller - Yazar: Victor Hugo\nKitap: Suç ve Ceza - Yazar: Dostoyevski`,
+                code: `class Yazar { public int Id { get; set; } public string Ad { get; set; } }
+class Kitap { public string Baslik { get; set; } public int YazarId { get; set; } }
+
+class Program 
+{
+    static void Main()
+    {
+        var yazarlar = new List<Yazar> { 
+            new Yazar { Id=1, Ad="Victor Hugo" }, 
+            new Yazar { Id=2, Ad="Dostoyevski" } 
+        };
+        
+        var kitaplar = new List<Kitap> { 
+            new Kitap { Baslik="Sefiller", YazarId=1 }, 
+            new Kitap { Baslik="Suç ve Ceza", YazarId=2 } 
+        };
+
+        // Join
+        var liste = kitaplar.Join(
+            yazarlar,               // Kiminle birleşecek?
+            kitap => kitap.YazarId, // Kitap'taki ortak alan
+            yazar => yazar.Id,      // Yazar'daki ortak alan
+            (kitap, yazar) => new { // Sonuç objesi (Anonymous Type)
+                KitapAdi = kitap.Baslik,
+                YazarAdi = yazar.Ad
+            }
+        );
+
+        foreach(var kayit in liste)
+        {
+            Console.WriteLine($"Kitap: {kayit.KitapAdi} - Yazar: {kayit.YazarAdi}");
+        }
+    }
+}`
+            },
+            
+            // --- 10 ÇÖZÜMSÜZ SORU ---
+            
+            {
+                id: 'q1',
+                title: "Soru 1: Tersten Dizi",
+                icon: "help-circle",
+                type: "practice",
+                desc: "Verilen string dizisini Array.Reverse() kullanmadan for döngüsü ile ters çevirip yazdırın.",
+                hint: "Döngüyü i = dizi.Length - 1'den başlatıp i >= 0 olana kadar azaltın.",
+                starterCode: `string[] meyveler = { "Elma", "Armut", "Kiraz" };\n\n// Kodunuz...`,
+                expectedOutput: `Kiraz\nArmut\nElma`
+            },
+            {
+                id: 'q2',
+                title: "Soru 2: Listeden Çiftleri Sil",
+                icon: "help-circle",
+                type: "practice",
+                desc: "Bir sayı listesindeki çift sayıları silen (Remove veya RemoveAll ile) ve kalanları yazdıran kodu yazın.",
+                hint: "liste.RemoveAll(x => x % 2 == 0) en pratik yoldur.",
+                starterCode: `List<int> sayilar = new List<int> { 1, 2, 3, 4, 5, 6 };\n\n// Kodunuz...`,
+                expectedOutput: `1\n3\n5`
+            },
+            {
+                id: 'q3',
+                title: "Soru 3: Dictionary Frekans Bulma",
+                icon: "help-circle",
+                type: "practice",
+                desc: "'MARMARA' kelimesindeki harflerin sayısını Dictionary kullanarak bulun. (M:2, A:3...)",
+                hint: "Döngü ile harfleri gez. Dictionary'de Key varsa Value'yu 1 artır, yoksa 1 olarak ekle.",
+                starterCode: `string kelime = "MARMARA";\nDictionary<char, int> frekans = new Dictionary<char, int>();\n\n// Kodunuz...`,
+                expectedOutput: `M: 2\nA: 3\nR: 2`
+            },
+            {
+                id: 'q4',
+                title: "Soru 4: LINQ ile Baş Harf Filtresi",
+                icon: "help-circle",
+                type: "practice",
+                desc: "Şehirler listesinden 'A' harfi ile başlayanları bulup alfabetik sıralayın.",
+                hint: ".Where(s => s.StartsWith(\"A\")).OrderBy(s => s)",
+                starterCode: `List<string> sehirler = new List<string> { "Ankara", "Bursa", "Antalya", "Van", "Adana" };\n\n// LINQ...`,
+                expectedOutput: `Adana\nAnkara\nAntalya`
+            },
+            {
+                id: 'q5',
+                title: "Soru 5: LINQ En Pahalı Ürün",
+                icon: "help-circle",
+                type: "practice",
+                desc: "Ürün listesindeki fiyatı en yüksek olan ürünün ADINI bulun.",
+                hint: ".OrderByDescending(...).First() veya .MaxBy(...) kullanabilirsiniz.",
+                starterCode: `class Urun { public string Ad { get; set; } public int Fiyat { get; set; } }\n\nList<Urun> liste = new List<Urun> {\n   new Urun { Ad="TV", Fiyat=5000 },\n   new Urun { Ad="Araba", Fiyat=250000 }\n};\n\n// Kodunuz...`,
+                expectedOutput: `En Pahalı: Araba`
+            },
+            {
+                id: 'q6',
+                title: "Soru 6: Kesişim Kümesi (Intersection)",
+                icon: "help-circle",
+                type: "practice",
+                desc: "İki farklı sayı listesindeki ORTAK sayıları bulup ekrana yazdırın.",
+                hint: "liste1.Intersect(liste2) metodunu araştırın.",
+                starterCode: `List<int> liste1 = new List<int> { 1, 2, 3, 4 };\nList<int> liste2 = new List<int> { 3, 4, 5, 6 };\n\n// Ortakları bul...`,
+                expectedOutput: `3\n4`
+            },
+            {
+                id: 'q7',
+                title: "Soru 7: Stack ile Cümle Tersi",
+                icon: "help-circle",
+                type: "practice",
+                desc: "Bir cümlenin kelimelerini Stack kullanarak tersten yazdırın. (Örn: 'Ali Gel' -> 'Gel Ali')",
+                hint: "Cümleyi .Split(' ') ile diziye böl, Stack'e Push et, sonra Pop ile çek.",
+                starterCode: `string cumle = "Bugün hava çok güzel";\nStack<string> yigin = new Stack<string>();\n\n// Kodunuz...`,
+                expectedOutput: `güzel\nçok\nhava\nBugün`
+            },
+            {
+                id: 'q8',
+                title: "Soru 8: Queue ile Çağrı Merkezi",
+                icon: "help-circle",
+                type: "practice",
+                desc: "3 Müşteriyi kuyruğa ekleyin. Sonra sırasıyla 'X kişisine hizmet verildi' yazarak kuyruğu boşaltın.",
+                hint: "Enqueue ile ekle, while(kuyruk.Count > 0) içinde Dequeue kullan.",
+                starterCode: `Queue<string> cagri = new Queue<string>();\ncagri.Enqueue("Müşteri 1");\n//...\n\n// Döngü...`,
+                expectedOutput: `Müşteri 1 hizmet aldı\nMüşteri 2 hizmet aldı\n...`
+            },
+            {
+                id: 'q9',
+                title: "Soru 9: LINQ Any/All Kontrolü",
+                icon: "help-circle",
+                type: "practice",
+                desc: "Bir not listesinde: 1) Herkes 50'den yüksek almış mı? (All) 2) Hiç 100 alan var mı? (Any) kontrolü yapın.",
+                hint: "liste.All(x => x > 50) ve liste.Any(x => x == 100) bool döner.",
+                starterCode: `List<int> notlar = new List<int> { 60, 80, 45, 90 };\n\n// Kontroller...`,
+                expectedOutput: `Herkes geçti mi?: Hayır\n100 alan var mı?: Hayır`
+            },
+            {
+                id: 'q10',
+                title: "Soru 10: Karmaşık LINQ Sorgusu",
+                icon: "help-circle",
+                type: "practice",
+                desc: "Departmanı 'IT' olan VE Maaşı 20000'den fazla olan çalışanların isimlerini A'dan Z'ye sıralayıp yazdırın.",
+                hint: ".Where(x => x.Dep == 'IT' && x.Maas > 20000).OrderBy(x => x.Ad).Select(x => x.Ad)",
+                starterCode: `class Calisan { public string Ad; public string Dep; public int Maas; }\n\n// Listeyi tanımla ve sorgula...`,
+                expectedOutput: `Ahmet\nZeynep`
+            }
+        ];
+
+        // --- State ---
+        let currentStepIndex = 0;
+        let isOutputMode = false;
+
+        // --- DOM Elements ---
+        const navContainer = document.getElementById('navContainer');
+        const mainContainer = document.getElementById('mainContainer');
+        const stepTitle = document.getElementById('stepTitle');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const runBtn = document.getElementById('runBtn');
+
+        // --- Initialization ---
+        function init() {
+            lucide.createIcons();
+            renderNav();
+            renderStep(0);
+        }
+
+        // --- Renders ---
+        function renderNav() {
+            navContainer.innerHTML = steps.map((step, index) => `
+                <button onclick="goToStep(${index})" 
+                    class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all ${
+                        index === currentStepIndex 
+                        ? 'step-active' 
+                        : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    }">
+                    <i data-lucide="${step.icon}" class="w-4 h-4 ${step.type === 'practice' ? 'text-orange-500' : ''}"></i>
+                    <span class="truncate">${step.title}</span>
+                </button>
+            `).join('');
+            lucide.createIcons();
+            
+            // Update Progress
+            const pct = Math.round(((currentStepIndex + 1) / steps.length) * 100);
+            progressBar.style.width = `${pct}%`;
+            progressText.innerText = `%${pct} Tamamlandı`;
+        }
+
+        function goToStep(index) {
+            currentStepIndex = index;
+            isOutputMode = false;
+            renderNav();
+            renderStep(index);
+        }
+
+        function renderStep(index) {
+            const step = steps[index];
+            stepTitle.innerText = step.title;
+            
+            // Button Logic
+            if (step.type === 'text') {
+                runBtn.classList.add('hidden');
+            } else {
+                runBtn.classList.remove('hidden');
+                const btnText = document.getElementById('runBtnText');
+                
+                if(isOutputMode) {
+                    btnText.innerText = "Koda Dön";
+                } else {
+                    btnText.innerText = step.type === 'practice' ? "Beklenen Çıktıyı Gör" : "Çalıştır";
+                }
+            }
+
+            if (isOutputMode) {
+                renderOutput(step);
+                return;
+            }
+
+            if (step.type === 'text') {
+                mainContainer.innerHTML = `
+                    <div class="animate-in fade-in duration-500">
+                        ${step.content}
+                    </div>
+                `;
+            } else if (step.type === 'practice') {
+                 mainContainer.innerHTML = `
+                    <div class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto space-y-4">
+                        <div class="p-5 bg-orange-50 text-orange-900 rounded-xl border border-orange-100">
+                            <h3 class="font-bold flex items-center gap-2 mb-2">
+                                <i data-lucide="help-circle" class="w-5 h-5"></i> Soru
+                            </h3>
+                            <p>${step.desc}</p>
+                            <div class="mt-3 text-sm bg-white/50 p-2 rounded text-orange-700 italic border border-orange-100/50">
+                                <strong>İpucu:</strong> ${step.hint}
+                            </div>
+                        </div>
+                        
+                        <div class="bg-[#282c34] rounded-xl overflow-hidden shadow-xl border border-slate-300">
+                            <div class="flex items-center justify-between px-4 py-2 bg-[#21252b] border-b border-[#181a1f]">
+                                <span class="text-xs text-slate-400 font-mono">Senin Kod Alanın</span>
+                            </div>
+                            <div class="overflow-x-auto p-0">
+                                <pre class="p-4 text-sm leading-relaxed text-[#abb2bf]"><code>${highlightCode(step.starterCode)}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                // Solved Example
+                mainContainer.innerHTML = `
+                    <div class="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-4xl mx-auto">
+                        <div class="mb-4 p-4 bg-green-50 text-green-800 rounded-lg text-sm border border-green-100 flex gap-3 items-start">
+                            <i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                            <p>${step.desc}</p>
+                        </div>
+                        
+                        <div class="bg-[#282c34] rounded-xl overflow-hidden shadow-xl border border-slate-300">
+                            <div class="flex items-center justify-between px-4 py-2 bg-[#21252b] border-b border-[#181a1f]">
+                                <span class="text-xs text-slate-400 font-mono">C# Çözümü</span>
+                            </div>
+                            <div class="overflow-x-auto p-0">
+                                <pre class="p-4 text-sm leading-relaxed text-[#abb2bf]"><code>${highlightCode(step.code)}</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            lucide.createIcons();
+        }
+
+        function renderOutput(step) {
+            const outputText = step.type === 'practice' ? step.expectedOutput : step.output;
+            const title = step.type === 'practice' ? "Beklenen Sonuç" : "Terminal Çıktısı";
+            const colorClass = step.type === 'practice' ? "text-orange-400" : "text-green-400";
+
+            mainContainer.innerHTML = `
+                <div class="max-w-4xl mx-auto animate-in zoom-in-95 duration-300 h-full flex flex-col">
+                     <div class="bg-black ${colorClass} font-mono p-6 rounded-xl shadow-2xl h-full overflow-y-auto border-2 border-slate-700">
+                        <div class="mb-4 pb-2 border-b border-gray-800 text-gray-500 flex justify-between">
+                            <span>${title}</span>
+                            <span>Running...</span>
+                        </div>
+                        
+                        <div class="whitespace-pre-wrap">${outputText}</div>
+                        <div class="mt-4 animate-pulse text-gray-500">_</div>
+                     </div>
+                </div>
+            `;
+        }
+
+        function toggleOutput() {
+            isOutputMode = !isOutputMode;
+            renderStep(currentStepIndex);
+        }
+
+        // --- Syntax Highlighter ---
+        function escapeHtml(text) {
+            if (!text) return "";
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function highlightCode(code) {
+            // Extended Keywords for new topics
+            const keywords = ["public", "private", "abstract", "class", "interface", "void", "int", "string", "double", "bool", "return", "get", "set", "if", "else", "foreach", "for", "while", "new", "override", "virtual", "base", "try", "catch", "var", "static", "using", "namespace", "List", "Dictionary", "HashSet", "Stack", "Queue", "where", "select", "from", "orderby", "group", "by", "join", "on", "equals", "into"];
+            
+            const kwRegexPart = keywords.join("|");
+            // Improved Regex to better handle C# syntax
+            const regex = new RegExp(`(\\/\\/.*$|"[^"]*"|\\b(?:${kwRegexPart})\\b|\\b\\w+(?=\\()|\\b[A-Z]\\w*\\b|\\b\\d+\\b)`, 'gm');
+            
+            const parts = code.split(regex);
+            
+            return parts.map(part => {
+                if (!part) return "";
+
+                if (part.trim().startsWith("//")) return `<span class="code-comment">${escapeHtml(part)}</span>`;
+                if (part.startsWith('"')) return `<span class="code-string">${escapeHtml(part)}</span>`;
+                if (keywords.includes(part)) return `<span class="code-keyword">${part}</span>`;
+                if (/^\d+$/.test(part)) return `<span class="code-number">${part}</span>`;
+                if (/^[A-Z]\w*$/.test(part) && !keywords.includes(part)) return `<span class="code-class">${part}</span>`;
+                
+                return escapeHtml(part);
+            }).join('');
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
