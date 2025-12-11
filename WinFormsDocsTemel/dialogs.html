@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dialog Kutuları</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="prism.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <header>
+        <h1>Mesaj ve Dialog Kutuları</h1>
+        <p>Kullanıcı ile Etkileşim ve Dosya İşlemleri</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Anasayfa</a>
+        <a href="controls.html">Kontroller</a>
+        <a href="dialogs.html">Dialog Kutuları</a>
+        <a href="projects_solved.html">Çözümlü Projeler</a>
+        <a href="projects_unsolved.html">Proje Soruları</a>
+    </nav>
+
+    <div class="container">
+
+        <h2>1. MessageBox (Mesaj Kutusu)</h2>
+        <p>Kullanıcıya uyarı, bilgi veya soru sormak için açılan küçük pencerelerdir.</p>
+
+        <h3>Basit Mesaj</h3>
+        <pre><code class="language-csharp">MessageBox.Show("İşlem Başarılı!");</code></pre>
+
+        <h3>Başlık ve Butonlu Mesaj</h3>
+        <pre><code class="language-csharp">MessageBox.Show("Kaydetmek istiyor musunuz?", "Onay", MessageBoxButtons.YesNo);</code></pre>
+
+        <h3>İkonlu Mesaj</h3>
+        <pre><code class="language-csharp">MessageBox.Show("Hata oluştu!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);</code></pre>
+
+        <h3>Cevabı Kontrol Etme</h3>
+        <pre><code class="language-csharp">DialogResult sonuc = MessageBox.Show("Çıkış yapılsın mı?", "Çıkış", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+if (sonuc == DialogResult.Yes)
+{
+    Application.Exit(); // Uygulamayı kapat
+}</code></pre>
+
+        <h2>2. OpenFileDialog (Dosya Açma Penceresi)</h2>
+        <p>Kullanıcının bilgisayardan bir dosya seçmesini sağlar.</p>
+        <pre><code class="language-csharp">OpenFileDialog dosyaAc = new OpenFileDialog();
+dosyaAc.Filter = "Metin Dosyaları|*.txt|Tüm Dosyalar|*.*";
+dosyaAc.Title = "Bir Dosya Seçin";
+
+if (dosyaAc.ShowDialog() == DialogResult.OK)
+{
+    string dosyaYolu = dosyaAc.FileName;
+    MessageBox.Show("Seçilen Dosya: " + dosyaYolu);
+}</code></pre>
+
+        <h2>3. SaveFileDialog (Dosya Kaydetme Penceresi)</h2>
+        <p>Kullanıcının bir dosyayı nereye kaydedeceğini seçmesini sağlar.</p>
+        <pre><code class="language-csharp">SaveFileDialog dosyaKaydet = new SaveFileDialog();
+dosyaKaydet.Filter = "Metin Dosyaları|*.txt";
+
+if (dosyaKaydet.ShowDialog() == DialogResult.OK)
+{
+    // Dosya kaydetme işlemleri buraya (File.WriteAllText vb.)
+    MessageBox.Show("Kaydedilecek yer: " + dosyaKaydet.FileName);
+}</code></pre>
+
+        <h2>4. ColorDialog (Renk Seçme Penceresi)</h2>
+        <p>Kullanıcının bir renk paletinden renk seçmesini sağlar.</p>
+        <pre><code class="language-csharp">ColorDialog renkSec = new ColorDialog();
+
+if (renkSec.ShowDialog() == DialogResult.OK)
+{
+    this.BackColor = renkSec.Color; // Formun arka plan rengini değiştir
+}</code></pre>
+
+        <h2>5. FontDialog (Yazı Tipi Seçme Penceresi)</h2>
+        <p>Kullanıcının yazı tipi, boyutu ve stilini seçmesini sağlar.</p>
+        <pre><code class="language-csharp">FontDialog yaziTipi = new FontDialog();
+
+if (yaziTipi.ShowDialog() == DialogResult.OK)
+{
+    label1.Font = yaziTipi.Font; // Label'ın fontunu değiştir
+}</code></pre>
+
+    </div>
+
+    <footer>
+        <p>C# Windows Forms Rehberi &copy; 2024</p>
+    </footer>
+
+    <script src="prism.js"></script>
+    <script src="prism-csharp.js"></script>
+
+</body>
+
+</html>

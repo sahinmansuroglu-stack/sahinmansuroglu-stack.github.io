@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çözümlü Projeler</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="prism.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <header>
+        <h1>Çözümlü Örnek Projeler</h1>
+        <p>kodlarıyla Birlikte 4 Tam Uygulama</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Anasayfa</a>
+        <a href="controls.html">Kontroller</a>
+        <a href="dialogs.html">Dialog Kutuları</a>
+        <a href="projects_solved.html">Çözümlü Projeler</a>
+        <a href="projects_unsolved.html">Proje Soruları</a>
+    </nav>
+
+    <div class="container">
+
+        <!-- Proje 1 -->
+        <div class="project-card solved">
+            <h2>Proje 1: Basit Hesap Makinesi</h2>
+            <p><strong>Amaç:</strong> İki sayı ile toplama, çıkarma, çarpma ve bölme işlemleri yapmak.</p>
+            <p><strong>Kullanılan Kontroller:</strong> 2 TextBox, 4 Button, 1 Label (Sonuç için).</p>
+
+            <h3>Kodlar:</h3>
+            <pre><code class="language-csharp">// Toplama Butonu Kodu
+private void btnTopla_Click(object sender, EventArgs e)
+{
+    try 
+    {
+        double s1 = Convert.ToDouble(txtSayi1.Text);
+        double s2 = Convert.ToDouble(txtSayi2.Text);
+        double sonuc = s1 + s2;
+        lblSonuc.Text = "Sonuç: " + sonuc.ToString();
+    }
+    catch
+    {
+        MessageBox.Show("Lütfen geçerli sayılar giriniz!");
+    }
+}
+// Diğer butonlar da benzer mantıkla çıkarma (-), çarpma (*) ve bölme (/) yapar.</code></pre>
+        </div>
+
+        <!-- Proje 2 -->
+        <div class="project-card solved">
+            <h2>Proje 2: Kullanıcı Giriş Paneli (Login Form)</h2>
+            <p><strong>Amaç:</strong> Kullanıcı adı ve şifre doğrulaması yapmak.</p>
+            <p><strong>Kullanılan Kontroller:</strong> 2 TextBox, 1 Button.</p>
+
+            <h3>Kodlar:</h3>
+            <pre><code class="language-csharp">private void btnGiris_Click(object sender, EventArgs e)
+{
+    string kadi = txtKullaniciAdi.Text;
+    string sifre = txtSifre.Text;
+
+    if (kadi == "admin" && sifre == "1234")
+    {
+        MessageBox.Show("Giriş Başarılı! Hoşgeldiniz.", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        // Yeni formu açabiliriz:
+        // AnaForm frm = new AnaForm();
+        // frm.Show();
+        // this.Hide();
+    }
+    else
+    {
+        MessageBox.Show("Hatalı Kullanıcı Adı veya Şifre!", "Hata", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}</code></pre>
+        </div>
+
+        <!-- Proje 3 -->
+        <div class="project-card solved">
+            <h2>Proje 3: Yapılacaklar Listesi (To-Do List)</h2>
+            <p><strong>Amaç:</strong> Listeye görev eklemek ve yapılanları silmek.</p>
+            <p><strong>Kullanılan Kontroller:</strong> 1 TextBox, 2 Button (Ekle, Sil), 1 ListBox.</p>
+
+            <h3>Kodlar:</h3>
+            <pre><code class="language-csharp">// Görev Ekleme
+private void btnEkle_Click(object sender, EventArgs e)
+{
+    if (txtGorev.Text != "")
+    {
+        listBox1.Items.Add(txtGorev.Text);
+        txtGorev.Clear(); // Kutuyu temizle
+        txtGorev.Focus(); // İmleci kutuya odakla
+    }
+}
+
+// Seçili Görevi Silme
+private void btnSil_Click(object sender, EventArgs e)
+{
+    if (listBox1.SelectedIndex != -1)
+    {
+        listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+    }
+    else
+    {
+        MessageBox.Show("Lütfen silinecek bir görev seçin.");
+    }
+}</code></pre>
+            <!-- Proje 5 -->
+            <div class="project-card solved">
+                <h2>Proje 5: Okul Yönetim Sistemi (Tek Sınıf)</h2>
+                <p><strong>Amaç:</strong> Tek bir <code>Ogrenci</code> sınıfı kullanarak Ortaokul ve Lise öğrencilerini
+                    yönetmek.</p>
+                <p><strong>Kullanılan Sınıf:</strong></p>
+                <pre><code class="language-csharp">public class Ogrenci
+{
+    private string ad;
+    private string soyad;
+    private int ogrenciNo;
+    private int dogumTarihi;
+    private int baslamaYili;
+    private string egitimDuzeyi; 
+
+    public Ogrenci(string ad, string soyad, int ogrenciNo, int dogumTarihi, int baslamaYili, string egitimDuzeyi)
+    {
+        this.Ad = ad;
+        this.Soyad = soyad;
+        this.OgrenciNo = ogrenciNo;
+        this.DogumTarihi = dogumTarihi;
+        this.BaslamaYili = baslamaYili;
+        this.EgitimDuzeyi = egitimDuzeyi;
+    }
+
+    public string Ad
+    {
+        get { return ad; }
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new Exception("Ad boş olamaz!");
+            ad = value;
+        }
+    }
+
+    public string Soyad
+    {
+        get { return soyad; }
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new Exception("Soyad boş olamaz!");
+            soyad = value;
+        }
+    }
+
+    public int OgrenciNo
+    {
+        get { return ogrenciNo; }
+        set
+        {
+            if (value < 100 || value > 999)
+                throw new Exception("Öğrenci No 3 basamaklı olmalıdır!");
+            ogrenciNo = value;
+        }
+    }
+
+    public int DogumTarihi
+    {
+        get { return dogumTarihi; }
+        set
+        {
+            if (value < 1990 || value > 2023)
+                throw new Exception("Doğum Tarihi 1990-2023 arasında olmalıdır!");
+            dogumTarihi = value;
+        }
+    }
+
+    public int BaslamaYili
+    {
+        get { return baslamaYili; }
+        set
+        {
+            if (value < 1990 || value > 2023)
+                throw new Exception("Başlama Yılı 1990-2023 arasında olmalıdır!");
+            baslamaYili = value;
+        }
+    }
+
+    public string EgitimDuzeyi
+    {
+        get { return egitimDuzeyi; }
+        set { egitimDuzeyi = value; }
+    }
+
+    public int Yas
+    {
+        get { return DateTime.Now.Year - this.dogumTarihi; }
+    }
+
+    public string enOnemliOlayi()
+    {
+        if (this.EgitimDuzeyi == "Ortaokul")
+            return "LGS Sınavı";
+        else if (this.EgitimDuzeyi == "Lise")
+            return "Üniversite Sınavı";
+        else
+            return "Bilinmiyor";
+    }
+
+    public void bilgileriEkranaYaz()
+    {
+        
+    }
+}</code></pre>
+
+                <h3>Form Kodları:</h3>
+                <pre><code class="language-csharp">private void btnKaydet_Click(object sender, EventArgs e)
+{
+    try
+    {
+        string ad = txtAd.Text;
+        string soyad = txtSoyad.Text;
+        int no = int.Parse(txtNo.Text);
+        int dogum = int.Parse(txtDogum.Text);
+        int baslama = int.Parse(txtBaslama.Text);
+        string duzey = cmbDuzey.SelectedItem.ToString();
+
+        Ogrenci ogr = new Ogrenci(ad, soyad, no, dogum, baslama, duzey);
+        
+        listBox1.Items.Add($"{ogr.EgitimDuzeyi} - {ogr.Ad} {ogr.Soyad} - Hedef: {ogr.enOnemliOlayi()}");
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show(ex.Message);
+    }
+}</code></pre>
+            </div>
+
+        </div>
+
+        <!-- Proje 4 -->
+        <div class="project-card solved">
+            <h2>Proje 4: Kafe Sipariş Sistemi</h2>
+            <p><strong>Amaç:</strong> Seçilen ürünlere göre toplam fiyat hesaplamak.</p>
+            <p><strong>Kullanılan Kontroller:</strong> 4 CheckBox (Çay, Kahve, Tost, Kola), 1 Button (Hesapla), 1 Label.
+            </p>
+
+            <h3>Kodlar:</h3>
+            <pre><code class="language-csharp">private void btnHesapla_Click(object sender, EventArgs e)
+{
+    double toplam = 0;
+
+    if (cbCay.Checked) toplam += 15;
+    if (cbKahve.Checked) toplam += 40;
+    if (cbTost.Checked) toplam += 60;
+    if (cbKola.Checked) toplam += 30;
+
+    lblToplam.Text = "Ödenecek Tutar: " + toplam.ToString() + " TL";
+}</code></pre>
+        </div>
+
+
+        <!-- Proje 6 -->
+        <div class="project-card solved">
+            <h2>Proje 6: Döviz Çevirici</h2>
+            <p><strong>Amaç:</strong> Girilen TL miktarını seçilen para birimine (USD, EUR) çevirmek.</p>
+            <p><strong>Kullanılan Kontroller:</strong> 1 TextBox (Miktar), 1 ComboBox (Para Birimi), 1 Button (Çevir), 1
+                Label (Sonuç).</p>
+
+            <h3>Kodlar:</h3>
+            <pre><code class="language-csharp">private void btnCevir_Click(object sender, EventArgs e)
+{
+    try
+    {
+        double miktar = Convert.ToDouble(txtMiktar.Text);
+        double kur = 0;
+        string birim = cmbParaBirimi.SelectedItem.ToString();
+
+        if (birim == "USD") kur = 32.50; // Örnek kur
+        else if (birim == "EUR") kur = 35.20; // Örnek kur
+
+        if (kur > 0)
+        {
+            double sonuc = miktar / kur;
+            lblSonuc.Text = string.Format("{0:0.00} {1}", sonuc, birim);
+        }
+        else
+        {
+            MessageBox.Show("Lütfen para birimi seçiniz.");
+        }
+    }
+    catch
+    {
+        MessageBox.Show("Geçerli bir miktar giriniz.");
+    }
+}</code></pre>
+        </div>
+
+        <!-- Proje 7 -->
+        <div class="project-card solved">
+            <h2>Proje 7: Kütüphane Kitap Takip (Class Kullanımı)</h2>
+            <p><strong>Amaç:</strong> <code>Kitap</code> sınıfını kullanarak kitap bilgilerini listeye eklemek.</p>
+            <p><strong>Kullanılan Sınıf:</strong></p>
+            <pre><code class="language-csharp">public class Kitap
+{
+    public string Ad { get; set; }
+    public string Yazar { get; set; }
+    public int SayfaSayisi { get; set; }
+
+    public Kitap(string ad, string yazar, int sayfa)
+    {
+        Ad = ad;
+        Yazar = yazar;
+        SayfaSayisi = sayfa;
+    }
+
+    public string BilgiGetir()
+    {
+        return $"{Ad} - {Yazar} ({SayfaSayisi} Sayfa)";
+    }
+}</code></pre>
+
+            <h3>Form Kodları:</h3>
+            <pre><code class="language-csharp">private void btnKitapEkle_Click(object sender, EventArgs e)
+{
+    string ad = txtKitapAd.Text;
+    string yazar = txtYazar.Text;
+    int sayfa = int.Parse(txtSayfa.Text);
+
+    Kitap yeniKitap = new Kitap(ad, yazar, sayfa);
+
+    listBoxKitaplar.Items.Add(yeniKitap.BilgiGetir());
+}</code></pre>
+        </div>
+
+        <!-- Proje 8 -->
+        <div class="project-card solved">
+            <h2>Proje 8: Sayı Tahmin Oyunu</h2>
+            <p><strong>Amaç:</strong> Bilgisayarın tuttuğu 1-100 arası sayıyı tahmin etmek.</p>
+            <p><strong>Kullanılan Kontroller:</strong> 1 TextBox (Tahmin), 1 Button (Tahmin Et), 1 Label (Yönlendirme).
+            </p>
+
+            <h3>Kodlar:</h3>
+            <pre><code class="language-csharp">// Form Load veya Başlat butonu ile sayı tutulur
+Random rnd = new Random();
+int hedefSayi = rnd.Next(1, 101);
+int hak = 5;
+
+private void btnTahmin_Click(object sender, EventArgs e)
+{
+    int tahmin = int.Parse(txtTahmin.Text);
+    hak--;
+
+    if (tahmin == hedefSayi)
+    {
+        MessageBox.Show("Tebrikler! Doğru Bildiniz.");
+        btnTahmin.Enabled = false;
+    }
+    else if (hak == 0)
+    {
+        MessageBox.Show("Hakkınız bitti. Sayı: " + hedefSayi);
+        btnTahmin.Enabled = false;
+    }
+    else if (tahmin < hedefSayi)
+    {
+        lblYonlendirme.Text = "Daha büyük bir sayı girin. Kalan Hak: " + hak;
+    }
+    else
+    {
+        lblYonlendirme.Text = "Daha küçük bir sayı girin. Kalan Hak: " + hak;
+    }
+}</code></pre>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>C# Windows Forms Rehberi &copy; 2024</p>
+    </footer>
+
+    <script src="prism.js"></script>
+    <script src="prism-csharp.js"></script>
+
+</body>
+
+</html>

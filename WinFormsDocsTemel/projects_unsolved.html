@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Soruları</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header>
+        <h1>Proje Soruları (Sıra Sizde)</h1>
+        <p>Kendinizi Geliştirmeniz İçin 4 Çözümsüz Örnek</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Anasayfa</a>
+        <a href="controls.html">Kontroller</a>
+        <a href="dialogs.html">Dialog Kutuları</a>
+        <a href="projects_solved.html">Çözümlü Projeler</a>
+        <a href="projects_unsolved.html">Proje Soruları</a>
+    </nav>
+
+    <div class="container">
+
+        <!-- Soru 1 -->
+        <div class="project-card unsolved">
+            <h2>Soru 1: Dijital Saat ve Alarm</h2>
+            <p><strong>Senaryo:</strong> Form üzerinde anlık saati, dakikayı ve saniyeyi gösteren bir uygulama yapın.
+            </p>
+            <ul>
+                <li><strong>İpucu:</strong> <code>Timer</code> kontrolünü kullanın ve Interval özelliğini 1000 (1
+                    saniye) yapın.</li>
+                <li><strong>Ekstra:</strong> Kullanıcı bir saat belirlesin (TextBox veya MaskedTextBox ile), o saat
+                    geldiğinde ekrana "Uyan!" mesajı versin.</li>
+            </ul>
+        </div>
+
+        <!-- Soru 2 -->
+        <div class="project-card unsolved">
+            <h2>Soru 2: Öğrenci Kayıt Sistemi</h2>
+            <p><strong>Senaryo:</strong> Bir öğrencinin Adı, Soyadı, Numarası ve Bölümü girilerek sisteme
+                kaydedilecektir.</p>
+            <ul>
+                <li>Öğrenci bilgileri bir <code>ListView</code> veya <code>DataGridView</code> içinde listelensin.</li>
+                <li>Seçili öğrenciyi listeden silme butonu olsun.</li>
+                <li>Aynı numara ile kayıt yapılmasına izin vermeyin.</li>
+            </ul>
+        </div>
+
+        <!-- Soru 3 -->
+        <div class="project-card unsolved">
+            <h2>Soru 3: Eşleştirme Oyunu (Memory Game)</h2>
+            <p><strong>Senaryo:</strong> Ekranda kapalı duran butonlara tıklayarak aynı olan resimleri veya sayıları
+                bulmaya çalışın.</p>
+            <ul>
+                <li>En az 16 buton (4x4) olsun.</li>
+                <li>Butonlara tıklandığında içeriği görünsün, eşleşmezse 1 saniye sonra tekrar kapansın.</li>
+                <li>Tüm eşleşmeler bulunduğunda "Tebrikler" mesajı verilsin.</li>
+            </ul>
+            <!-- Soru 5 -->
+            <div class="project-card unsolved">
+                <h2>Soru 5: Okul Yönetim Sistemi Geliştirme</h2>
+                <p><strong>Senaryo:</strong> Mevcut <code>Ogrenci</code> sınıfına yeni özellikler ekleyin.</p>
+                <ul>
+                    <li>Sınıfa <code>Ortalama</code> adında (double) bir özellik ekleyin (0-100 arası kontrolü yapın).
+                    </li>
+                    <li><code>enOnemliOlayi()</code> metodunu güncelleyin: Eğer ortalama 85 üstüyse "Takdir Almak",
+                        70-85 arasıysa "Teşekkür Almak", altındaysa "Sınıfı Geçmek" döndürsün.</li>
+                    <li>Form tasarımına bir MaskedTextBox ekleyerek ortalama bilgisini alın.</li>
+                    <li>Listeye eklendiğinde başarı durumunu da yanına yazdırın.</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Soru 4 -->
+        <div class="project-card unsolved">
+            <h2>Soru 4: Basit Metin Editörü (Notepad Klonu)</h2>
+            <p><strong>Senaryo:</strong> Kullanıcının yazı yazabileceği, kaydedebileceği ve yazı tipini
+                değiştirebileceği bir uygulama yapın.</p>
+            <ul>
+                <li>Sayfanın tamamını kaplayan bir <code>RichTextBox</code> kullanın.</li>
+                <li>Üstteki menüde (MenuStrip) "Dosya" > "Aç", "Kaydet" ve "Biçim" > "Yazı Tipi", "Renk" seçenekleri
+                    olsun.</li>
+                <li><code>OpenFileDialog</code>, <code>SaveFileDialog</code>, <code>FontDialog</code> ve
+                    <code>ColorDialog</code> kullanın.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Soru 6 -->
+        <div class="project-card unsolved">
+            <h2>Soru 6: Vücut Kitle İndeksi (VKI) Hesaplama</h2>
+            <p><strong>Senaryo:</strong> Kullanıcı boy (m) ve kilo (kg) bilgilerini girecek. "Hesapla" butonuna
+                bastığında VKI değeri hesaplanıp ekrana yazılacak. Ayrıca bu değere göre "Zayıf", "Normal", "Kilolu",
+                "Obez" gibi bir durum bilgisi gösterilecek.</p>
+            <p><strong>İpuçları:</strong></p>
+            <ul>
+                <li>Formül: Kilo / (Boy * Boy)</li>
+                <li>Boyu metre cinsinden almak için TextBox kullanabilir veya cm alıp koda dönüştürebilirsiniz.</li>
+                <li>Sonucu yazdırmak için <code>Label</code> kullanın.</li>
+            </ul>
+        </div>
+
+        <!-- Soru 7 -->
+        <div class="project-card unsolved">
+            <h2>Soru 7: Ürün Stok Takip Sistemi (Class Kullanımı)</h2>
+            <p><strong>Senaryo:</strong> Bir <code>Urun</code> sınıfı oluşturun (Özellikler: <code>Ad</code>,
+                <code>Fiyat</code>, <code>StokAdedi</code>). Kullanıcı form üzerinden ürün bilgilerini girip "Stok Ekle"
+                butonuna basınca, bu ürün nesnesi oluşturulup bir ListBox'a eklensin. ListBox'ta ürünün adı ve stoğu
+                görünsün.</p>
+            <p><strong>İpuçları:</strong></p>
+            <ul>
+                <li><code>public class Urun { ... }</code> şeklinde sınıfınızı tanımlayın.</li>
+                <li>Nesne oluşturma: <code>Urun u = new Urun();</code></li>
+                <li>ListBox'a eklerken: <code>listBox1.Items.Add(u.Ad + " - " + u.StokAdedi);</code></li>
+            </ul>
+        </div>
+
+        <!-- Soru 8 -->
+        <div class="project-card unsolved">
+            <h2>Soru 8: Geri Sayım Sayacı</h2>
+            <p><strong>Senaryo:</strong> Kullanıcı TextBox'a saniye cinsinden bir süre girecek. "Başlat" butonuna
+                basınca <code>Timer</code> kontrolü çalışacak ve süre her saniye azalacak. Süre bittiğinde ekrana "Süre
+                Doldu!" mesajı gelecek.</p>
+            <p><strong>İpuçları:</strong></p>
+            <ul>
+                <li><code>Timer</code> kontrolünü forma sürükleyip bırakın.</li>
+                <li><code>Tick</code> olayında saniyeyi azaltın.</li>
+                <li>Görsel olarak <code>ProgressBar</code> kullanarak azalan süreyi gösterebilirsiniz.</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>C# Windows Forms Rehberi &copy; 2024</p>
+    </footer>
+
+</body>
+
+</html>

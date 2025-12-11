@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WinForms Kontrolleri</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="prism.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <header>
+        <h1>Temel UI Kontrolleri</h1>
+        <p>Windows Forms Uygulamalarının Yapı Taşları</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Anasayfa</a>
+        <a href="controls.html">Kontroller</a>
+        <a href="dialogs.html">Dialog Kutuları</a>
+        <a href="projects_solved.html">Çözümlü Projeler</a>
+        <a href="projects_unsolved.html">Proje Soruları</a>
+    </nav>
+
+    <div class="container">
+
+        <h2>1. Label (Etiket)</h2>
+        <p>Kullanıcıya metin bilgisi göstermek için kullanılır. Genellikle statik yazılar için tercih edilir.</p>
+        <pre><code class="language-csharp">// Label'a kod ile yazı atama
+label1.Text = "Merhaba Dünya!";
+label1.ForeColor = Color.Red; // Yazı rengini değiştirme</code></pre>
+
+        <h2>2. TextBox (Metin Kutusu)</h2>
+        <p>Kullanıcıdan veri girişi almak için kullanılır.</p>
+        <pre><code class="language-csharp">// TextBox'tan veri alma
+string ad = textBox1.Text;
+
+// TextBox'a veri yazma
+textBox1.Text = "Varsayılan Değer";
+
+// Şifreli karakter gösterme (PasswordChar)
+textBox1.PasswordChar = '*';</code></pre>
+
+        <h2>3. Button (Düğme)</h2>
+        <p>Kullanıcının bir işlemi tetiklemesi için kullanılır (Kaydet, Giriş Yap vb.).</p>
+        <pre><code class="language-csharp">// Buton tıklama olayı (Click Event)
+private void button1_Click(object sender, EventArgs e)
+{
+    label1.Text = "Butona Tıklandı!";
+    button1.Enabled = false; // Butonu pasif yapma
+}</code></pre>
+
+        <h2>4. CheckBox (İşaret Kutusu)</h2>
+        <p>Evet/Hayır şeklinde birden fazla seçim yapılmasına olanak tanır.</p>
+        <pre><code class="language-csharp">if (checkBox1.Checked)
+{
+    MessageBox.Show("Seçenek işaretlendi.");
+}
+else
+{
+    MessageBox.Show("Seçenek işaretlenmedi.");
+}</code></pre>
+
+        <h2>5. RadioButton (Seçenek Düğmesi)</h2>
+        <p>Bir grup seçenek arasından <b>sadece bir tanesinin</b> seçilmesine izin verir.</p>
+        <pre><code class="language-csharp">if (radioButton1.Checked)
+{
+    // 1. seçenek seçili
+}
+else if (radioButton2.Checked)
+{
+    // 2. seçenek seçili
+}</code></pre>
+
+        <h2>6. ListBox (Liste Kutusu)</h2>
+        <p>Alt alta sıralanmış verileri listelemek için kullanılır.</p>
+        <pre><code class="language-csharp">// Eleman ekleme
+listBox1.Items.Add("Elma");
+listBox1.Items.Add("Armut");
+
+// Seçili elemanı silme
+if (listBox1.SelectedIndex != -1)
+{
+    listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+}
+
+// Tüm elemanları temizleme
+listBox1.Items.Clear();</code></pre>
+
+        <h2>7. ComboBox (Açılır Liste)</h2>
+        <p>ListBox'a benzer ama daha az yer kaplar, açılır bir menü sunar.</p>
+        <pre><code class="language-csharp">// Eleman ekleme
+comboBox1.Items.Add("İstanbul");
+comboBox1.Items.Add("Ankara");
+
+// Seçili elemanı alma
+string sehir = comboBox1.SelectedItem.ToString();</code></pre>
+
+    </div>
+
+    <footer>
+        <p>C# Windows Forms Rehberi &copy; 2024</p>
+    </footer>
+
+    <script src="prism.js"></script>
+    <script src="prism-csharp.js"></script>
+
+</body>
+
+</html>
