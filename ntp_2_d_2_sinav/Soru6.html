@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soru 6: Döngü, Kontrol ve Silme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .keyword {
+            color: #569CD6;
+        }
+
+        .type {
+            color: #4EC9B0;
+        }
+
+        .string {
+            color: #CE9178;
+        }
+
+        .comment {
+            color: #6A9955;
+        }
+
+        .method {
+            color: #DCDCAA;
+        }
+
+        .number {
+            color: #B5CEA8;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+
+        <!-- Soru Kartı -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border-l-4 border-pink-600">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <span class="bg-pink-100 text-pink-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Soru 6</span>
+                    Döngü İşlemleri ve Kayıt Silme (25 Puan)
+                </h2>
+                <div class="text-gray-600 space-y-2 text-sm leading-relaxed">
+                    <p><strong>Bölüm 1 (20 Puan):</strong> <code>foreach</code> döngüsü ile listedeki her bir öğrencinin
+                        bilgilerini yazdırınız.</p>
+                    <ul class="list-disc list-inside ml-2">
+                        <li>Eğer öğrenci <strong>İlkokul</strong> ise <code>ortaokuldanMezunOlmaYiliniEkranaYaz()</code>
+                            çağır.</li>
+                        <li>Eğer öğrenci <strong>Ortaokul</strong> ise <code>gidebileceğiOkullariEkranaYaz()</code>
+                            çağır.</li>
+                    </ul>
+                    <p class="mt-2"><strong>Bölüm 2 (5 Puan):</strong> Listeden Ad:Ahmet soyadı:EKER olan öğrenciyi
+                        sildiriniz. Ardından listeyi tekrar yazdırınız.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Alanı -->
+        <div class="bg-[#1e1e1e] rounded-xl shadow-xl overflow-hidden text-gray-300 text-sm">
+            <div class="bg-[#2d2d2d] px-4 py-2 flex items-center justify-between border-b border-gray-700">
+                <span class="font-mono text-xs text-gray-400">Program.cs (Devamı)</span>
+                <div class="flex space-x-1.5">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+            </div>
+            <div class="p-6 overflow-x-auto">
+                <pre><code><span class="comment">// ... Main metodu içerisindeki ogrenciler listesi devamı ...</span>
+
+            <span class="comment">// BÖLÜM 1: Foreach ve Tip Kontrolü (is keyword)</span>
+            Console.WriteLine(<span class="string">"=== ÖĞRENCİ LİSTESİ ==="</span>);
+            
+            <span class="keyword">foreach</span> (<span class="keyword">var</span> ogr <span class="keyword">in</span> ogrenciler)
+            {
+                <span class="comment">// Temel bilgileri yaz</span>
+                ogr.bilgileriEkranaYaz(); 
+
+                <span class="comment">// Tip kontrolü ve Type Casting</span>
+                <span class="keyword">if</span> (ogr <span class="keyword">is</span> <span class="type">IlkOkulOgrencisi</span> ilkOkulOgr)
+                {
+                    ilkOkulOgr.ortaokuldanMezunOlmaYiliniEkranaYaz();
+                }
+                <span class="keyword">else if</span> (ogr <span class="keyword">is</span> <span class="type">OrtaOkulOgrencisi</span> ortaOkulOgr)
+                {
+                    ortaOkulOgr.gidebileceğiOkullariEkranaYaz();
+                }
+            }
+
+            <span class="comment">// BÖLÜM 2: Silme İşlemi</span>
+            Console.WriteLine(<span class="string">"\n=== SİLME İŞLEMİ (Ahmet EKER) ==="</span>);
+            
+            <span class="comment">// Listeden belirli koşula uyan elemanı bulma</span>
+            <span class="comment">// Not: System.Linq kütüphanesi gereklidir.</span>
+            <span class="keyword">var</span> silinecekOgrenci = <span class="keyword">null</span> as <span class="type">Ogrenci</span>;
+
+            <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> ogrenciler)
+            {
+                <span class="keyword">if</span>(item.Ad == <span class="string">"Ahmet"</span> && item.Soyad == <span class="string">"EKER"</span>)
+                {
+                    silinecekOgrenci = item;
+                    <span class="keyword">break</span>;
+                }
+            }
+
+            <span class="keyword">if</span> (silinecekOgrenci != <span class="keyword">null</span>)
+            {
+                ogrenciler.Remove(silinecekOgrenci);
+                Console.WriteLine(<span class="string">"Ahmet EKER listeden silindi."</span>);
+            }
+
+            <span class="comment">// Listeyi Tekrar Yazdırma</span>
+            Console.WriteLine(<span class="string">"\n=== GÜNCEL LİSTE ==="</span>);
+            <span class="keyword">foreach</span> (<span class="keyword">var</span> ogr <span class="keyword">in</span> ogrenciler)
+            {
+                Console.WriteLine(ogr.ToString());
+            }
+
+            Console.ReadLine();</code></pre>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

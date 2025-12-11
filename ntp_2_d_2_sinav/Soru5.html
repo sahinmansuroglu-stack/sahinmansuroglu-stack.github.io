@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soru 5: Liste ve Veri Ekleme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .keyword {
+            color: #569CD6;
+        }
+
+        .type {
+            color: #4EC9B0;
+        }
+
+        .string {
+            color: #CE9178;
+        }
+
+        .comment {
+            color: #6A9955;
+        }
+
+        .method {
+            color: #DCDCAA;
+        }
+
+        .number {
+            color: #B5CEA8;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+
+        <!-- Soru Kartı -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border-l-4 border-indigo-600">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <span class="bg-indigo-100 text-indigo-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Soru
+                        5</span>
+                    Liste Tanımlama ve Veri Ekleme (15 Puan)
+                </h2>
+                <div class="text-gray-600 space-y-2 text-sm leading-relaxed">
+                    <p>İçerisinde ilkokul ve ortaokul öğrencilerinin bulunabileceği bir liste tanımlayın. Bu Listeye
+                        aşağıda belirtilen 3 Adet İlkokul öğrencisi ve 3 adet Ortaokul öğrencisi ekleyin.</p>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200 font-mono text-xs">
+                        <ul class="space-y-1">
+                            <li>OrtaOkulOgrencisi("Zehra", "ACI", 354, 2009, 2019)</li>
+                            <li>IlkOkulOgrencisi("Esra", "ZEYBEK", 985, 2014, 2000)</li>
+                            <li>OrtaOkulOgrencisi("Ali", "AKIN", 654, 2010, 2020)</li>
+                            <li>IlkOkulOgrencisi("Ahmet", "EKER", 387, 2015, 2000)</li>
+                            <li>OrtaOkulOgrencisi("Ahmet", "ÇELİK", 658, 2011, 2022)</li>
+                            <li>IlkOkulOgrencisi("Arda", "AYDIN", 498, 2013, 2008)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Çözüm Alanı -->
+            <div class="bg-[#1e1e1e] rounded-xl shadow-xl overflow-hidden text-gray-300 text-sm">
+                <div class="bg-[#2d2d2d] px-4 py-2 flex items-center justify-between border-b border-gray-700">
+                    <span class="font-mono text-xs text-gray-400">Program.cs (Main Metodu Başı)</span>
+                    <div class="flex space-x-1.5">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                </div>
+                <div class="p-6 overflow-x-auto">
+                    <pre><code><span class="keyword">using</span> System;
+<span class="keyword">using</span> System.Collections.Generic;
+
+<span class="keyword">namespace</span> SinavUygulamasi
+{
+    <span class="keyword">class</span> <span class="type">Program</span>
+    {
+        <span class="keyword">static void</span> <span class="method">Main</span>(<span class="keyword">string</span>[] args)
+        {
+            <span class="comment">// Soru 5 Çözümü</span>
+            <span class="comment">// Polymorphism: Listeyi ana sınıf (Ogrenci) tipinde oluşturuyoruz.</span>
+            
+            <span class="type">List</span>&lt;<span class="type">Ogrenci</span>&gt; ogrenciler = <span class="keyword">new</span> <span class="type">List</span>&lt;<span class="type">Ogrenci</span>&gt;();
+
+            <span class="keyword">try</span>
+            {
+                ogrenciler.Add(<span class="keyword">new</span> <span class="type">OrtaOkulOgrencisi</span>(<span class="string">"Zehra"</span>, <span class="string">"ACI"</span>, <span class="number">354</span>, <span class="number">2009</span>, <span class="number">2019</span>));
+                ogrenciler.Add(<span class="keyword">new</span> <span class="type">IlkOkulOgrencisi</span>(<span class="string">"Esra"</span>, <span class="string">"ZEYBEK"</span>, <span class="number">985</span>, <span class="number">2014</span>, <span class="number">2000</span>));
+                ogrenciler.Add(<span class="keyword">new</span> <span class="type">OrtaOkulOgrencisi</span>(<span class="string">"Ali"</span>, <span class="string">"AKIN"</span>, <span class="number">654</span>, <span class="number">2010</span>, <span class="number">2020</span>));
+                ogrenciler.Add(<span class="keyword">new</span> <span class="type">IlkOkulOgrencisi</span>(<span class="string">"Ahmet"</span>, <span class="string">"EKER"</span>, <span class="number">387</span>, <span class="number">2015</span>, <span class="number">2000</span>));
+                ogrenciler.Add(<span class="keyword">new</span> <span class="type">OrtaOkulOgrencisi</span>(<span class="string">"Ahmet"</span>, <span class="string">"ÇELİK"</span>, <span class="number">658</span>, <span class="number">2011</span>, <span class="number">2022</span>));
+                ogrenciler.Add(<span class="keyword">new</span> <span class="type">IlkOkulOgrencisi</span>(<span class="string">"Arda"</span>, <span class="string">"AYDIN"</span>, <span class="number">498</span>, <span class="number">2013</span>, <span class="number">2008</span>));
+            }
+            <span class="keyword">catch</span> (<span class="type">Exception</span> ex)
+            {
+                Console.WriteLine(<span class="string">"Hata: "</span> + ex.Message);
+            }
+            
+            <span class="comment">// ... Programın devamı ...</span>
+        }
+    }
+}</code></pre>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

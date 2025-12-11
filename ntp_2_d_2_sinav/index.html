@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTP 1. Dönem 2. Sınav Çalışma Soruları Önizleme</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .active-btn {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 h-screen flex overflow-hidden font-sans">
+
+    <!-- Sidebar -->
+    <div class="w-64 bg-white shadow-lg flex flex-col z-10">
+        <div class="p-6 border-b">
+            <h1 class="text-2xl font-bold text-gray-800">Sınav Soruları</h1>
+            <p class="text-sm text-gray-500 mt-1">NTP 1. Dönem 2. Sınav Çalışma Soruları</p>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+            <button onclick="loadPage('Soru1.html', this)"
+                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between group active-btn">
+                <span class="font-medium">Soru 1</span>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded group-hover:bg-white">Abstract</span>
+            </button>
+
+            <button onclick="loadPage('Soru2.html', this)"
+                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                <span class="font-medium">Soru 2</span>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded group-hover:bg-white">Interface</span>
+            </button>
+
+            <button onclick="loadPage('Soru3.html', this)"
+                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                <span class="font-medium">Soru 3</span>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded group-hover:bg-white">İlkokul</span>
+            </button>
+
+            <button onclick="loadPage('Soru4.html', this)"
+                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                <span class="font-medium">Soru 4</span>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded group-hover:bg-white">Ortaokul</span>
+            </button>
+
+            <button onclick="loadPage('Soru5.html', this)"
+                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                <span class="font-medium">Soru 5</span>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded group-hover:bg-white">Liste</span>
+            </button>
+
+            <button onclick="loadPage('Soru6.html', this)"
+                class="w-full text-left px-4 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors flex items-center justify-between group">
+                <span class="font-medium">Soru 6</span>
+                <span class="text-xs bg-gray-100 text-gray-500 px-2 py-1 rounded group-hover:bg-white">Döngü</span>
+            </button>
+        </nav>
+
+        <div class="p-4 border-t text-center text-xs text-gray-400">
+            Sınav Önizleme Paneli v1.0
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col bg-gray-100">
+        <header class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+            <h2 id="current-title" class="text-lg font-semibold text-gray-700">Soru 1 Önizleme</h2>
+            <a href="Soru1.html" id="open-new-tab" target="_blank"
+                class="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                Yeni Sekmede Aç
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+            </a>
+        </header>
+
+        <div class="flex-1 p-6 overflow-hidden">
+            <div class="bg-white h-full rounded-xl shadow-lg border border-gray-200 overflow-hidden relative">
+                <iframe id="content-frame" src="Soru1.html" class="w-full h-full border-0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function loadPage(url, btn) {
+            // Update Iframe
+            const frame = document.getElementById('content-frame');
+            frame.src = url;
+
+            // Update Title and Link
+            const title = btn.querySelector('span.font-medium').innerText;
+            document.getElementById('current-title').innerText = title + " Önizleme";
+            document.getElementById('open-new-tab').href = url;
+
+            // Update Active State
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.classList.remove('active-btn');
+                // fix hover styles conflicting with active state if needed, but basic toggle is fine
+            });
+            btn.classList.add('active-btn');
+        }
+    </script>
+</body>
+
+</html>

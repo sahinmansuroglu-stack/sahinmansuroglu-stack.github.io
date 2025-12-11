@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soru 1: Abstract Ogrenci Sınıfı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        code { font-family: 'JetBrains Mono', monospace; }
+        .keyword { color: #569CD6; }
+        .type { color: #4EC9B0; }
+        .string { color: #CE9178; }
+        .comment { color: #6A9955; }
+        .method { color: #DCDCAA; }
+        .number { color: #B5CEA8; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-6">
+        
+        <!-- Soru Kartı -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden border-l-4 border-blue-600">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <span class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">Soru 1</span>
+                    Abstract Sınıf Tanımlama (25 Puan)
+                </h2>
+                <div class="text-gray-600 space-y-2 text-sm leading-relaxed">
+                    <p>Aşağıda Verilenlere Göre <strong>Ogrenci</strong> adında <strong>abstract</strong> bir sınıf tanımlayınız.</p>
+                    <ul class="list-disc list-inside space-y-1 ml-2">
+                        <li>ad, soyad, ogrenciNo, dogumTarihi ve başlamaYili olmak üzere 5 tane private field bulunacak.</li>
+                        <li>Herbir field için birer tane property oluşturarak encapsulation yapılacak.</li>
+                        <li><strong>Validasyonlar:</strong> Ad ve Soyad boş ise hata fırlat. OgrenciNo 3 basamaklı değilse hata fırlat. Tarihler 1990-2023 arasında değilse hata fırlat.</li>
+                        <li>Yas adında readonly property tanımlanarak dogumTarihinden yaş hesaplanacak.</li>
+                        <li>Değer ataması kurucu metot (constructor) içerisinde yapılacak.</li>
+                        <li>enOnemliOlayi() adında abstract metot tanımlanacak.</li>
+                        <li>bilgileriEkranaYaz() adında virtual metot tanımlanacak.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Çözüm Alanı -->
+        <div class="bg-[#1e1e1e] rounded-xl shadow-xl overflow-hidden text-gray-300 text-sm">
+            <div class="bg-[#2d2d2d] px-4 py-2 flex items-center justify-between border-b border-gray-700">
+                <span class="font-mono text-xs text-gray-400">Ogrenci.cs</span>
+                <div class="flex space-x-1.5">
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                </div>
+            </div>
+            <div class="p-6 overflow-x-auto">
+                <pre><code><span class="keyword">using</span> System;
+
+<span class="keyword">namespace</span> SinavUygulamasi
+{
+    <span class="keyword">public abstract class</span> <span class="type">Ogrenci</span>
+    {
+        <span class="comment">// Private Fields</span>
+        <span class="keyword">private string</span> ad;
+        <span class="keyword">private string</span> soyad;
+        <span class="keyword">private int</span> ogrenciNo;
+        <span class="keyword">private int</span> dogumTarihi;
+        <span class="keyword">private int</span> baslamaYili;
+
+        <span class="comment">// Constructor</span>
+        <span class="keyword">public</span> Ogrenci(<span class="keyword">string</span> ad, <span class="keyword">string</span> soyad, <span class="keyword">int</span> ogrenciNo, <span class="keyword">int</span> dogumTarihi, <span class="keyword">int</span> baslamaYili)
+        {
+            <span class="keyword">this</span>.Ad = ad;
+            <span class="keyword">this</span>.Soyad = soyad;
+            <span class="keyword">this</span>.OgrenciNo = ogrenciNo;
+            <span class="keyword">this</span>.DogumTarihi = dogumTarihi;
+            <span class="keyword">this</span>.BaslamaYili = baslamaYili;
+        }
+
+        <span class="comment">// Encapsulation & Validations</span>
+        <span class="keyword">public string</span> Ad
+        {
+            <span class="keyword">get</span> { <span class="keyword">return</span> ad; }
+            <span class="keyword">set</span>
+            {
+                <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(<span class="keyword">value</span>))
+                    <span class="keyword">throw new</span> <span class="type">Exception</span>(<span class="string">"Ad boş olamaz!"</span>);
+                ad = <span class="keyword">value</span>;
+            }
+        }
+
+        <span class="keyword">public string</span> Soyad
+        {
+            <span class="keyword">get</span> { <span class="keyword">return</span> soyad; }
+            <span class="keyword">set</span>
+            {
+                <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(<span class="keyword">value</span>))
+                    <span class="keyword">throw new</span> <span class="type">Exception</span>(<span class="string">"Soyad boş olamaz!"</span>);
+                soyad = <span class="keyword">value</span>;
+            }
+        }
+
+        <span class="keyword">public int</span> OgrenciNo
+        {
+            <span class="keyword">get</span> { <span class="keyword">return</span> ogrenciNo; }
+            <span class="keyword">set</span>
+            {
+                <span class="keyword">if</span> (<span class="keyword">value</span> < <span class="number">100</span> || <span class="keyword">value</span> > <span class="number">999</span>)
+                    <span class="keyword">throw new</span> <span class="type">Exception</span>(<span class="string">"Öğrenci No 3 basamaklı olmalıdır!"</span>);
+                ogrenciNo = <span class="keyword">value</span>;
+            }
+        }
+
+        <span class="keyword">public int</span> DogumTarihi
+        {
+            <span class="keyword">get</span> { <span class="keyword">return</span> dogumTarihi; }
+            <span class="keyword">set</span>
+            {
+                <span class="keyword">if</span> (<span class="keyword">value</span> < <span class="number">1990</span> || <span class="keyword">value</span> > <span class="number">2023</span>)
+                    <span class="keyword">throw new</span> <span class="type">Exception</span>(<span class="string">"Doğum Tarihi 1990-2023 arasında olmalıdır!"</span>);
+                dogumTarihi = <span class="keyword">value</span>;
+            }
+        }
+
+        <span class="keyword">public int</span> BaslamaYili
+        {
+            <span class="keyword">get</span> { <span class="keyword">return</span> baslamaYili; }
+            <span class="keyword">set</span>
+            {
+                <span class="keyword">if</span> (<span class="keyword">value</span> < <span class="number">1990</span> || <span class="keyword">value</span> > <span class="number">2023</span>)
+                    <span class="keyword">throw new</span> <span class="type">Exception</span>(<span class="string">"Başlama Yılı 1990-2023 arasında olmalıdır!"</span>);
+                baslamaYili = <span class="keyword">value</span>;
+            }
+        }
+
+        <span class="comment">// Readonly Property</span>
+        <span class="keyword">public int</span> Yas
+        {
+            <span class="keyword">get</span> { <span class="keyword">return</span> DateTime.Now.Year - <span class="keyword">this</span>.dogumTarihi; }
+        }
+
+        <span class="comment">// Abstract Metot</span>
+        <span class="keyword">public abstract string</span> <span class="method">enOnemliOlayi</span>();
+
+        <span class="comment">// Virtual Metot</span>
+        <span class="keyword">public virtual void</span> <span class="method">bilgileriEkranaYaz</span>()
+        {
+            Console.WriteLine(<span class="string">"--------------------------------"</span>);
+            Console.WriteLine($<span class="string">"Ad Soyad: {Ad} {Soyad}"</span>);
+            Console.WriteLine($<span class="string">"Numara: {OgrenciNo}"</span>);
+            Console.WriteLine($<span class="string">"Doğum Yılı: {DogumTarihi} (Yaş: {Yas})"</span>);
+            Console.WriteLine($<span class="string">"Başlama Yılı: {BaslamaYili}"</span>);
+        }
+    }
+}</code></pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
