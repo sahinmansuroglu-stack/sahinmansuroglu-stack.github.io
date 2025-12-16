@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobil Uygulama Dersi - 2. Sınav Çalışma Soruları</title>
+    <style>
+        :root {
+            --primary-color: #3DDC84; /* Android Green */
+            --primary-dark: #208a4e;
+            --secondary-color: #4285F4; /* Google Blue */
+            --bg-color: #f8f9fa;
+            --text-color: #202124;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 4px solid var(--primary-color);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        h1 { color: #333; margin: 0; }
+        h3 { color: #666; margin-top: 5px; font-weight: normal; }
+
+        .section-title {
+            background: var(--primary-color);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .compose-title {
+            background: var(--secondary-color);
+        }
+
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .question-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: var(--primary-color);
+        }
+
+        .q-header {
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 0 0 10px 0;
+            text-align: left;
+        }
+
+        .compose-card {
+            grid-column: span 2; 
+            text-align: center;
+        }
+        
+        .compose-card p {
+            margin-bottom: 25px;
+        }
+
+        .mock-preview {
+            border: 2px dashed #ddd;
+            background-color: #fcfcfc;
+            padding: 20px;
+            margin: 20px auto;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .mock-label {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 0 10px;
+            font-size: 0.8em;
+            color: #999;
+            font-weight: bold;
+        }
+
+        .mock-img { width: 60px; height: 60px; background: #ddd; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #777; font-size: 0.8em; }
+        .mock-circle { border-radius: 50%; }
+        .mock-text { height: 10px; background: #e0e0e0; width: 60%; border-radius: 2px; margin: 2px 0; }
+        .mock-btn { background: var(--secondary-color); color: white; padding: 5px 15px; border-radius: 4px; font-size: 0.8em; border: none; }
+        .mock-input { border: 1px solid #ccc; padding: 5px; width: 80%; border-radius: 4px; background: white; margin: 2px 0; font-size: 0.8em; color: #999; }
+        
+        @media (max-width: 768px) {
+            .compose-card { grid-column: span 1; }
+        }
+
+        details {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            text-align: left;
+        }
+
+        summary {
+            cursor: pointer;
+            color: var(--primary-dark);
+            font-weight: 600;
+            list-style: none;
+            text-align: center;
+        }
+        
+        summary::after { content: " ▼"; font-size: 0.8em; }
+        details[open] summary::after { content: " ▲"; }
+
+        .answer {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d32f2f;
+            padding: 5px;
+            background: #fff5f5;
+            border-radius: 4px;
+        }
+
+        .code-answer {
+            color: #2e7d32;
+            background: #e8f5e9;
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-weight: normal;
+        }
+
+        .print-btn {
+            background: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+
+        @media print {
+            .print-btn { display: none; }
+            details[open] summary { display: none; }
+            .answer { display: block !important; }
+            details { display: block !important; }
+            .question-grid { display: block; }
+            .question-card, .compose-card { margin-bottom: 20px; page-break-inside: avoid; }
+            .mock-preview { border: 1px solid #ccc; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Mobil Uygulama Geliştirme</h1>
+        <h3>11. Sınıf 2. Dönem Sınav Hazırlık Soruları</h3>
+    </header>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Sayfayı Yazdır / PDF Olarak Kaydet</button>
+
+    <!-- BÖLÜM 1: KOTLIN (KOD OKUMA) -->
+    <h2 class="section-title">Bölüm 1: Kotlin Kod Analizi ve Çıktı Tahmini (60 Soru)</h2>
+    <div class="question-grid">
+
+        <!-- 1-10: Temel Değişkenler -->
+        <div class="question-card"><div class="q-header">Soru 1</div><pre>fun main() {
+    var x = 10
+    x += 5
+    x *= 2
+    println(x)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">30</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 2</div><pre>fun main() {
+    val a = 11
+    val b = 4
+    println(a / b)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">2</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 3</div><pre>fun main() {
+    val x = 14
+    val y = 5
+    println(x % y)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">4</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 4</div><pre>fun main() {
+    var s = "A"
+    s = "B"
+    println(s)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">B</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 5</div><pre>fun main() {
+    val x = "5"
+    val y = "3"
+    println(x + y)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">53</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 6</div><pre>fun main() {
+    val a = 4
+    val b = 6
+    println("C: ${a + b}")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">C: 10</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 7</div><pre>fun main() {
+    val b = true
+    println(!b)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">false</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 8</div><pre>fun main() {
+    val a = 5
+    println(a.toDouble())
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">5.0</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 9</div><pre>fun main() {
+    var k = 0
+    k++
+    println(k)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">1</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 10</div><pre>fun main() {
+    val t = "ABC"
+    println(t.length)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">3</div></details></div>
+
+        <!-- 11-20: Koşul İfadeleri -->
+        <div class="question-card"><div class="q-header">Soru 11</div><pre>fun main() {
+    val x = 40
+    if (x >= 50) println("Y") else println("Z")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Z</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 12</div><pre>fun main() {
+    val a = 8
+    val b = 12
+    val c = if (a > b) a else b
+    println(c)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">12</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 13</div><pre>fun main() {
+    val s = "X"
+    val r = if (s == "Y") 1 else 0
+    println(r)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">0</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 14</div><pre>fun main() {
+    val n = 7
+    if (n > 5) print("A")
+    if (n > 8) print("B")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">A</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 15</div><pre>fun main() {
+    val x = 2
+    when (x) {
+        1 -> println("A")
+        2 -> println("B")
+        else -> println("C")
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">B</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 16</div><pre>fun main() {
+    val s = "D"
+    when (s) {
+        "C", "D" -> println("Type 1")
+        else -> println("Type 2")
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Type 1</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 17</div><pre>fun main() {
+    val k = 12
+    when {
+        k < 10 -> println("Low")
+        k > 10 -> println("High")
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">High</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 18</div><pre>fun main() {
+    val x = true
+    val y = false
+    if (x && y) println("1") else println("0")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">0</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 19</div><pre>fun main() {
+    val z = 15
+    if (z in 10..20) println("In") else println("Out")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">In</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 20</div><pre>fun main() {
+    val x = 75
+    val r = if (x > 80) "A" else if (x > 60) "B" else "C"
+    println(r)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">B</div></details></div>
+
+        <!-- 21-30: Döngüler -->
+        <div class="question-card"><div class="q-header">Soru 21</div><pre>fun main() {
+    for (k in 1..3) {
+        print(k)
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">123</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 22</div><pre>fun main() {
+    for (x in 0 until 3) {
+        print(x)
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">012</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 23</div><pre>fun main() {
+    for (j in 5 downTo 3) {
+        print(j)
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">543</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 24</div><pre>fun main() {
+    for (m in 0..4 step 2) {
+        print(m)
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">024</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 25</div><pre>fun main() {
+    var c = 0
+    while (c < 2) {
+        print(c)
+        c++
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">01</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 26</div><pre>fun main() {
+    var t = 0
+    for (x in 1..3) {
+        t += x
+    }
+    println(t)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">6</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 27</div><pre>fun main() {
+    val arr = listOf("X", "Y")
+    for (item in arr) {
+        print(item)
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">XY</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 28</div><pre>fun main() {
+    var k = 3
+    do {
+        print(k)
+        k--
+    } while (k > 1)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">32</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 29</div><pre>fun main() {
+    for (x in 1..5) {
+        if (x == 3) break
+        print(x)
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">12</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 30</div><pre>fun main() {
+    for (z in 1..4) {
+        if (z == 2) continue
+        print(z)
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">134</div></details></div>
+
+        <!-- 31-40: List & Map -->
+        <div class="question-card"><div class="q-header">Soru 31</div><pre>fun main() {
+    val l = listOf(5, 10, 15)
+    println(l[1])
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">10</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 32</div><pre>fun main() {
+    val l = listOf("A", "B", "C")
+    println(l.size)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">3</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 33</div><pre>fun main() {
+    val m = mutableListOf(1, 2)
+    m.add(3)
+    println(m)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">[1, 2, 3]</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 34</div><pre>fun main() {
+    val m = mutableListOf("A", "B")
+    m[0] = "C"
+    println(m[0])
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">C</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 35</div><pre>fun main() {
+    val m = mapOf("k1" to 10, "k2" to 20)
+    println(m["k2"])
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">20</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 36</div><pre>fun main() {
+    val s = setOf(1, 1, 2)
+    println(s.size)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">2</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 37</div><pre>fun main() {
+    val l = listOf(1, 2, 3, 4)
+    val r = l.filter { it > 2 }
+    println(r)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">[3, 4]</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 38</div><pre>fun main() {
+    val l = listOf(2, 3)
+    val r = l.map { it + 1 }
+    println(r)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">[3, 4]</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 39</div><pre>fun main() {
+    val m = mutableListOf(1, 2)
+    m.clear()
+    println(m.size)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">0</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 40</div><pre>fun main() {
+    val l = listOf("A", "B")
+    println(l.contains("C"))
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">false</div></details></div>
+
+        <!-- 41-50: Fonksiyonlar -->
+        <div class="question-card"><div class="q-header">Soru 41</div><pre>fun f(a: Int, b: Int): Int {
+    return a * b
+}
+fun main() {
+    println(f(3, 2))
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">6</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 42</div><pre>fun g(x: Int) = x + 5
+fun main() {
+    println(g(4))
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">9</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 43</div><pre>fun h(s: String = "Def") {
+    println(s)
+}
+fun main() {
+    h()
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Def</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 44</div><pre>fun main() {
+    val fn = { x: Int -> x - 1 }
+    println(fn(5))
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">4</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 45</div><pre>fun main() {
+    var x: String? = null
+    println(x?.length)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">null</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 46</div><pre>fun main() {
+    var x: String? = null
+    println(x ?: "Y")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Y</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 47</div><pre>fun main() {
+    var x: String? = "Z"
+    println(x ?: "Y")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Z</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 48</div><pre>fun main() {
+    try {
+        val n = "x".toInt()
+    } catch (e: Exception) {
+        println("E")
+    }
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">E</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 49</div><pre>fun test(x: Int, y: Int) {
+    println(x - y)
+}
+fun main() {
+    test(y = 2, x = 5)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">3</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 50</div><pre>fun main() {
+    var z: Int? = 5
+    z = null
+    if (z == null) println("A") else println("B")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">A</div></details></div>
+
+        <!-- 51-60: Class & OOP -->
+        <div class="question-card"><div class="q-header">Soru 51</div><pre>class A {
+    var v = 1
+}
+fun main() {
+    val obj = A()
+    obj.v = 2
+    println(obj.v)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">2</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 52</div><pre>class B(val v: String)
+fun main() {
+    val obj = B("Test")
+    println(obj.v)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Test</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 53</div><pre>data class D(val x: Int)
+fun main() {
+    val obj = D(3)
+    println(obj)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">D(x=3)</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 54</div><pre>class C {
+    init {
+        print("1")
+    }
+}
+fun main() {
+    val o = C()
+    print("2")
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">12</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 55</div><pre>open class P {
+    open fun f() = print("A")
+}
+class Ch : P() {
+    override fun f() = print("B")
+}
+fun main() {
+    val o = Ch()
+    o.f()
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">B</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 56</div><pre>class M {
+    companion object {
+        val x = 9
+    }
+}
+fun main() {
+    println(M.x)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">9</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 57</div><pre>data class E(val n: String)
+fun main() {
+    val e1 = E("A")
+    val e2 = e1.copy()
+    println(e2.n)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">A</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 58</div><pre>interface I {
+    fun op()
+}
+class Impl : I {
+    override fun op() = println("Run")
+}
+fun main() {
+    val o = Impl()
+    o.op()
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Run</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 59</div><pre>object S {
+    val v = 5
+}
+fun main() {
+    println(S.v)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">5</div></details></div>
+
+        <div class="question-card"><div class="q-header">Soru 60</div><pre>class F(val a: Int) {
+    override fun toString(): String {
+        return "Val:$a"
+    }
+}
+fun main() {
+    val o = F(7)
+    println(o)
+}</pre><details><summary>Cevabı Göster</summary><div class="answer">Val:7</div></details></div>
+    </div>
+
+
+    <!-- BÖLÜM 2: JETPACK COMPOSE (KOD YAZMA / UYGULAMA) -->
+    <h2 class="section-title compose-title">Bölüm 2: Jetpack Compose Uygulama Soruları</h2>
+    <div class="question-grid">
+        
+        <!-- Senaryo 1 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 1: Profil Sayfası (Column)</div>
+            <p>Ekrana alt alta Profil Resmi, İsim ve Meslek bilgilerini getiren tasarımı yapınız.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div class="mock-img mock-circle">Resim</div>
+                <div style="font-weight: bold;">Ali Yılmaz</div>
+                <div style="color: gray; font-size: 0.9em;">Yazılım Geliştirici</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun ProfilePage() {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp), // Ekrana padding eklendi
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.profil),
+            contentDescription = "Profil Resmi",
+            modifier = Modifier.size(100.dp)
+        )
+        Spacer(modifier = Modifier.height(8.dp)) // Elemanlar arası boşluk
+        Text(text = "Ali Yılmaz", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        Text(text = "Yazılım Geliştirici", color = Color.Gray)
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 2 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 2: Ürün Kartı (Row)</div>
+            <p>Yan yana bir Ürün Resmi, Ürün Adı ve Fiyatı gelecek şekilde bir liste elemanı tasarlayınız.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="display: flex; align-items: center; width: 100%; gap: 10px; justify-content: center;">
+                    <div class="mock-img">Resim</div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+                        <div style="font-weight: bold;">Laptop</div>
+                        <div style="color: green;">15.000 TL</div>
+                    </div>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun ProductCard() {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(16.dp), // Eleman çevresine padding
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.urun),
+            contentDescription = null,
+            modifier = Modifier.size(64.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp)) // Resim ile yazı arası boşluk
+        Column {
+            Text(text = "Laptop", fontWeight = FontWeight.Bold)
+            Text(text = "15.000 TL", color = Color.Green)
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 3 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 3: Resim Üzerine Yazı (Box)</div>
+            <p>Bir manzara resmi koyunuz ve sağ alt köşesine "Tatil" yazan bir etiket ekleyiniz.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="position: relative; width: 150px; height: 100px; background: #ddd; display: flex; align-items: center; justify-content: center;">
+                    <span style="color:#888;">Manzara Resmi</span>
+                    <div style="position: absolute; bottom: 0; right: 0; background: rgba(0,0,0,0.5); color: white; padding: 2px 5px; font-size: 0.8em;">Tatil</div>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun HolidayImage() {
+    Box(modifier = Modifier.size(200.dp).padding(8.dp)) {
+        Image(
+            painter = painterResource(id = R.drawable.manzara),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
+        )
+        Text(
+            text = "Tatil",
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(8.dp) // Yazının kenardan uzaklaşması için padding
+                .background(Color.Black.copy(alpha = 0.5f))
+                .padding(4.dp) // Yazı ile arka plan arası padding
+        )
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 4 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 4: Hesap Makinesi</div>
+            <p>İki sayı girilen alan, Topla/Çıkar butonları ve sonucu gösteren metin yapınız.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div class="mock-input">Sayı 1 Giriniz</div>
+                <div class="mock-input">Sayı 2 Giriniz</div>
+                <div style="display: flex; gap: 5px; margin: 5px;">
+                    <button class="mock-btn">Topla</button>
+                    <button class="mock-btn">Çıkar</button>
+                </div>
+                <div>Sonuç: 0</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun Calculator() {
+    var sayi1 by remember { mutableStateOf("") }
+    var sayi2 by remember { mutableStateOf("") }
+    var sonuc by remember { mutableStateOf("0") }
+
+    Column(modifier = Modifier.padding(16.dp)) { // Ekran kenar boşluğu
+        TextField(
+            value = sayi1, 
+            onValueChange = { sayi1 = it }, 
+            label = { Text("Sayı 1") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        )
+        TextField(
+            value = sayi2, 
+            onValueChange = { sayi2 = it }, 
+            label = { Text("Sayı 2") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        )
+        
+        Row(modifier = Modifier.padding(vertical = 8.dp)) {
+            Button(
+                onClick = { sonuc = ((sayi1.toIntOrNull() ?: 0) + (sayi2.toIntOrNull() ?: 0)).toString() },
+                modifier = Modifier.padding(end = 8.dp)
+            ) { Text("Topla") }
+            
+            Button(
+                onClick = { sonuc = ((sayi1.toIntOrNull() ?: 0) - (sayi2.toIntOrNull() ?: 0)).toString() }
+            ) { Text("Çıkar") }
+        }
+        
+        Text(text = "Sonuç: $sonuc", fontSize = 20.sp, modifier = Modifier.padding(top = 16.dp))
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 5 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 5: Resim Gizle/Göster</div>
+            <p>Butona her tıklandığında resim varsa yok olsun, yoksa geri gelsin.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <button class="mock-btn">Gizle / Göster</button>
+                <div class="mock-img" style="margin-top: 5px;">Resim</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun ToggleImage() {
+    var isVisible by remember { mutableStateOf(true) }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Button(
+            onClick = { isVisible = !isVisible },
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) {
+            Text(if (isVisible) "Gizle" else "Göster")
+        }
+        
+        if (isVisible) {
+            Image(
+                painter = painterResource(id = R.drawable.resim),
+                contentDescription = null,
+                modifier = Modifier.size(100.dp)
+            )
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 6 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 6: Login Doğrulama</div>
+            <p>Giriş butonuna basıldığında Şifre "1234" ise ekrana "Başarılı", değilse "Hatalı" yazınız.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div class="mock-input">Kullanıcı Adı</div>
+                <div class="mock-input">Şifre</div>
+                <button class="mock-btn" style="margin: 5px;">Giriş Yap</button>
+                <div style="color: green; font-weight: bold;">Başarılı / Hatalı</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun LoginScreen() {
+    var username by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var message by remember { mutableStateOf("") }
+
+    Column(modifier = Modifier.padding(24.dp)) {
+        TextField(
+            value = username, 
+            onValueChange = { username = it }, 
+            label = { Text("Kullanıcı Adı") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp)
+        )
+        TextField(
+            value = password, 
+            onValueChange = { password = it }, 
+            label = { Text("Şifre") },
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+        )
+        
+        Button(
+            onClick = { if (password == "1234") message = "Başarılı" else message = "Hatalı" },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Giriş Yap")
+        }
+        
+        Text(
+            text = message, 
+            color = if(message=="Başarılı") Color.Green else Color.Red,
+            modifier = Modifier.padding(top = 16.dp)
+        )
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 7 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 7: Meyve Listesi</div>
+            <p>TextField ile girilen meyveleri "Ekle" diyerek listeye ekleyip LazyColumn'da gösteriniz.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="display: flex; gap: 5px; width: 100%; justify-content: center;">
+                    <div class="mock-input" style="width: 50%;">Meyve Adı</div>
+                    <button class="mock-btn">Ekle</button>
+                </div>
+                <div style="border: 1px solid #eee; width: 80%; margin-top: 5px; padding: 5px; text-align: left;">
+                    <div>Elma</div><hr style="border: 0; border-top: 1px solid #eee;">
+                    <div>Armut</div><hr style="border: 0; border-top: 1px solid #eee;">
+                    <div>Kiraz</div>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun FruitList() {
+    var text by remember { mutableStateOf("") }
+    val fruits = remember { mutableStateListOf&lt;String&gt;() }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Row(modifier = Modifier.padding(bottom = 16.dp)) {
+            TextField(
+                value = text, 
+                onValueChange = { text = it }, 
+                modifier = Modifier.weight(1f).padding(end = 8.dp)
+            )
+            Button(onClick = { 
+                if(text.isNotEmpty()) {
+                    fruits.add(text)
+                    text = "" 
+                }
+            }) { Text("Ekle") }
+        }
+        
+        LazyColumn {
+            items(fruits) { fruit ->
+                Text(text = fruit, modifier = Modifier.padding(vertical = 8.dp))
+                Divider()
+            }
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 8 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 8: Scaffold ve FAB</div>
+            <p>Sayfaya bir Üst Menü (TopBar) ve sağ alta bir Ekleme Butonu (FAB) yerleştiriniz.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="width: 100%; height: 30px; background: var(--secondary-color); color: white; display: flex; align-items: center; padding-left: 10px; font-size: 0.8em;">Uygulamam</div>
+                <div style="height: 60px; width: 100%; display: flex; align-items: center; justify-content: center; color: #aaa;">İçerik</div>
+                <div style="width: 30px; height: 30px; background: var(--secondary-color); border-radius: 50%; position: absolute; bottom: 10px; right: 10px; display: flex; align-items: center; justify-content: center; color: white;">+</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ScaffoldScreen() {
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text("Uygulamam") })
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /* İşlem */ }) {
+                Icon(Icons.Filled.Add, contentDescription = "Ekle")
+            }
+        }
+    ) { paddingValues ->
+        Box(modifier = Modifier.padding(paddingValues).padding(16.dp)) {
+            Text("Ana Sayfa İçeriği")
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 9 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 9: Renk Değiştiren Kutu</div>
+            <p>Butona basıldığında kutunun rengi Kırmızı, basılmazsa Gri olsun.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="width: 60px; height: 60px; background: gray; margin-bottom: 5px;"></div>
+                <button class="mock-btn">Rengi Değiştir</button>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun ColorBox() {
+    var boxColor by remember { mutableStateOf(Color.Gray) }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .background(boxColor)
+                .padding(bottom = 16.dp)
+        )
+        
+        Button(
+            onClick = { boxColor = if (boxColor == Color.Gray) Color.Red else Color.Gray },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Rengi Değiştir")
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 10 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 10: Ekran Bölme (Weight)</div>
+            <p>Ekranı dikeyde 3 parçaya bölün. Üst %20, Orta %60, Alt %20 yer kaplasın.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="width: 100%; height: 20px; background: #ffcccc; display: flex; align-items: center; justify-content: center; font-size: 0.7em;">%20</div>
+                <div style="width: 100%; height: 60px; background: #ccffcc; display: flex; align-items: center; justify-content: center; font-size: 0.7em;">%60</div>
+                <div style="width: 100%; height: 20px; background: #ccccff; display: flex; align-items: center; justify-content: center; font-size: 0.7em;">%20</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun WeightLayout() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.weight(0.2f).fillMaxWidth().background(Color.Red))
+        Box(modifier = Modifier.weight(0.6f).fillMaxWidth().background(Color.Green))
+        Box(modifier = Modifier.weight(0.2f).fillMaxWidth().background(Color.Blue))
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 11 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 11: Log.d Kullanımı</div>
+            <p>Butona tıklandığında Logcat penceresinde "Butona Tıklandı" mesajı gönderiniz.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <button class="mock-btn">Log Gönder</button>
+                <div style="margin-top: 5px; font-family: monospace; font-size: 0.7em; background: #333; color: white; padding: 2px; width: 90%;">Logcat: D/Tag: Butona Tıklandı</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun LogButton() {
+    Box(modifier = Modifier.padding(16.dp)) {
+        Button(onClick = {
+            Log.d("UygulamaLogu", "Butona Tıklandı")
+        }) {
+            Text("Log Gönder")
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 12 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 12: Şifre Gizleme</div>
+            <p>Şifre alanına göz ikonu koyunuz. İkona basınca şifre görünür/gizli olsun.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="border: 1px solid #ccc; padding: 5px; width: 80%; display: flex; justify-content: space-between; align-items: center; background: white;">
+                    <span>******</span>
+                    <span>👁️</span>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun PasswordInput() {
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+
+    TextField(
+        value = password,
+        onValueChange = { password = it },
+        modifier = Modifier.padding(16.dp),
+        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+        trailingIcon = {
+            val image = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
+            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                Icon(imageVector = image, contentDescription = null)
+            }
+        }
+    )
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 13 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 13: Yuvarlak Resim (Clip)</div>
+            <p>Kare bir resmi Modifier.clip kullanarak yuvarlak hale getiriniz.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div class="mock-img mock-circle" style="background: #bbb;">Resim</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun RoundImage() {
+    Image(
+        painter = painterResource(id = R.drawable.profil),
+        contentDescription = null,
+        modifier = Modifier
+            .padding(16.dp)
+            .size(100.dp)
+            .clip(CircleShape) // Resmi yuvarlak yapar
+            .border(2.dp, Color.Gray, CircleShape) // Çerçeve ekler
+    )
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 14 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 14: LazyColumn Performans</div>
+            <p>1000 tane elemanı alt alta göstermek için neden Column yerine LazyColumn kullanmalıyız?</p>
+            <div class="mock-preview">
+                <span class="mock-label">Kavramsal Görsel</span>
+                <div style="border: 1px solid #ddd; height: 80px; width: 60%; overflow: hidden; position: relative;">
+                    <div style="padding: 2px;">Item 1</div>
+                    <div style="padding: 2px;">Item 2</div>
+                    <div style="padding: 2px;">Item 3</div>
+                    <div style="position: absolute; bottom: 0; width: 100%; background: linear-gradient(transparent, white); text-align: center; font-size: 0.8em;">...1000 items...</div>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm / Açıklama</summary>
+                <div class="answer code-answer">
+// Açıklama:
+// 'Column' tüm elemanları aynı anda oluşturur (Render eder). 
+// 1000 eleman varsa 1000'ini de hafızaya yükler, bu uygulama donmasına yol açar.
+// 'LazyColumn' ise sadece ekranda görünenleri oluşturur.
+// Ekranı kaydırdıkça alttaki elemanlar oluşturulur, üsttekiler hafızadan silinir (Recycling).
+// Bu yüzden uzun listelerde LazyColumn zorunludur.</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 15 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 15: Beğeni Butonu</div>
+            <p>Kalp ikonuna tıklayınca içi dolsun (Kırmızı), tekrar tıklayınca boşalsın.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="font-size: 2em; color: red;">♥</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun LikeButton() {
+    var isLiked by remember { mutableStateOf(false) }
+
+    IconToggleButton(
+        checked = isLiked, 
+        onCheckedChange = { isLiked = it },
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Icon(
+            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+            contentDescription = null,
+            tint = if (isLiked) Color.Red else Color.Gray,
+            modifier = Modifier.size(48.dp)
+        )
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 16 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 16: Checkbox Listesi</div>
+            <p>Checkbox seçilince yanındaki metnin rengi değişsin.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" checked onclick="return false;">
+                    <span style="text-decoration: line-through; color: gray;">Ödev Yap</span>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun TaskItem() {
+    var checked by remember { mutableStateOf(false) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(16.dp)
+    ) {
+        Checkbox(checked = checked, onCheckedChange = { checked = it })
+        Text(
+            text = "Ödev Yap",
+            color = if (checked) Color.Gray else Color.Black,
+            textDecoration = if (checked) TextDecoration.LineThrough else null,
+            modifier = Modifier.padding(start = 8.dp)
+        )
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 17 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 17: Yatay Kaydırma (LazyRow)</div>
+            <p>10 tane yuvarlak resmi kaydırılabilir şekilde (Scroll) gösteriniz.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="display: flex; gap: 5px; overflow: hidden; width: 100%;">
+                    <div class="mock-img mock-circle" style="width: 40px; height: 40px;">1</div>
+                    <div class="mock-img mock-circle" style="width: 40px; height: 40px;">2</div>
+                    <div class="mock-img mock-circle" style="width: 40px; height: 40px;">3</div>
+                    <div class="mock-img mock-circle" style="width: 40px; height: 40px;">4</div>
+                    <div class="mock-img mock-circle" style="width: 40px; height: 40px;">5</div>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun StoryList() {
+    LazyRow(contentPadding = PaddingValues(16.dp)) { // Listenin başına/sonuna padding
+        items(10) {
+            Box(
+                modifier = Modifier
+                    .padding(end = 8.dp) // Elemanlar arası boşluk
+                    .size(60.dp)
+                    .clip(CircleShape)
+                    .background(Color.Gray)
+            )
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 18 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 18: Mesaj Balonu (Shape)</div>
+            <p>Köşeleri yuvarlatılmış, arka planı yeşil, yazı rengi beyaz olan bir mesaj kutusu tasarlayınız.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="background: #25D366; color: white; padding: 10px; border-radius: 12px; font-size: 0.9em;">Merhaba, nasılsın?</div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun MessageBubble() {
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+            .background(color = Color(0xFF25D366), shape = RoundedCornerShape(12.dp))
+            .padding(16.dp) // Metin ile kutu kenarı arası padding
+    ) {
+        Text(text = "Merhaba, nasılsın?", color = Color.White)
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 19 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 19: Sayfa Geçişi</div>
+            <p>"Detay" butonuna basınca ekrandaki yazının değişmesini sağlayan yapı.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="border: 1px solid #eee; padding: 10px; width: 90%; text-align: center;">
+                    <div>Ana Sayfa</div>
+                    <button class="mock-btn" style="margin-top: 5px;">Detaya Git</button>
+                </div>
+                <div style="margin: 5px; font-size: 0.8em;">⬇ (Tıklayınca) ⬇</div>
+                <div style="border: 1px solid #eee; padding: 10px; width: 90%; text-align: center;">
+                    <div>Detay Sayfası</div>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun AppNavigation() {
+    var currentScreen by remember { mutableStateOf("Home") }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        if (currentScreen == "Home") {
+            Text("Ana Sayfa")
+            Button(
+                onClick = { currentScreen = "Detail" },
+                modifier = Modifier.padding(top = 16.dp)
+            ) { Text("Detaya Git") }
+        } else {
+            Text("Detay Sayfası")
+            Button(
+                onClick = { currentScreen = "Home" },
+                modifier = Modifier.padding(top = 16.dp)
+            ) { Text("Geri Dön") }
+        }
+    }
+}</div>
+            </details>
+        </div>
+
+        <!-- Senaryo 20 -->
+        <div class="question-card compose-card">
+            <div class="q-header" style="justify-content: center;">Senaryo 20: Switch Tema</div>
+            <p>Switch açıkken arka plan Siyah, kapalıyken Beyaz olsun.</p>
+            <div class="mock-preview">
+                <span class="mock-label">Hedeflenen Görüntü</span>
+                <div style="background: #333; color: white; padding: 15px; width: 100%; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Tema Modu</span>
+                    <div style="background: var(--primary-color); width: 30px; height: 15px; border-radius: 10px; position: relative;"><div style="background: white; width: 15px; height: 15px; border-radius: 50%; position: absolute; right: 0;"></div></div>
+                </div>
+            </div>
+            <details>
+                <summary>Çözüm Kodunu Göster</summary>
+                <div class="answer code-answer">
+@Composable
+fun DarkModeSwitch() {
+    var isDark by remember { mutableStateOf(false) }
+
+    Surface(color = if (isDark) Color.Black else Color.White, modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Tema Modu", color = if(isDark) Color.White else Color.Black)
+            Switch(
+                checked = isDark, 
+                onCheckedChange = { isDark = it },
+                modifier = Modifier.padding(top = 8.dp)
+            )
+        }
+    }
+}</div>
+            </details>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
