@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çözümler: Bileşen Kullanımı</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #dee2e6;
+            margin-bottom: 0;
+        }
+
+        code {
+            color: #d63384;
+        }
+
+        .solution-card {
+            border-left: 5px solid #198754;
+        }
+
+        .copy-hint {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header class="mb-5 border-bottom pb-4">
+            <h1 class="display-5 fw-bold text-success">Görev Çözümleri</h1>
+            <p class="lead text-muted">Aşağıda <code>readme.html</code> dosyasındaki 5 temel görevin bağımsız çözümleri
+                yer almaktadır. Bu kodlar <code>functional-app</code> için birer ön çalışma niteliğindedir.</p>
+            <a href="readme.html" class="btn btn-outline-secondary">&larr; Görevlere Dön</a>
+        </header>
+
+        <div class="row g-5">
+            <div class="col-lg-10 mx-auto">
+
+                <!-- Çözüm 1 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">1. Çözüm: FormInput Kullanımı</h3>
+                        <p>Kullanıcıdan başlık bilgisini almak için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import FormInput from "$lib/components/FormInput.svelte";
+    
+    // Veriyi tutacak değişken
+    let baslik = $state("");
+&lt;/script&gt;
+
+&lt;!-- Kullanımı --&gt;
+&lt;FormInput 
+    label="Başlık" 
+    placeholder="Örn: Alışveriş" 
+    bind:value={baslik} 
+/&gt;
+
+&lt;p&gt;Yazılan Değer: {baslik}&lt;/p&gt;</code></pre>
+                        <div class="copy-hint">Bu kodu boş bir Svelte sayfasına yapıştırarak test edebilirsiniz.</div>
+                    </div>
+                </div>
+
+                <!-- Çözüm 2 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">2. Çözüm: Card Kullanımı</h3>
+                        <p>Veriyi kart içinde göstermek ve butona tıklama olayını yakalamak için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import Card from "$lib/components/Card.svelte";
+    import cardImage from "$lib/images/card-image.png";
+
+    function sil() {
+        alert("Silme fonksiyonu çağrıldı!");
+    }
+&lt;/script&gt;
+
+&lt;div style="width: 300px;"&gt;
+    &lt;Card
+        title="Örnek Başlık"
+        imageUrl={cardImage}
+        buttonText="Sil"
+        onclick={sil}
+    &gt;
+        Bu alan kartın slot kısmıdır. Açıklama buraya gelir.
+    &lt;/Card&gt;
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Çözüm 3 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">3. Çözüm: Modal Kullanımı</h3>
+                        <p>Silme onayı için açılır pencere (Modal) kullanımı:</p>
+
+                        <pre><code>&lt;script&gt;
+    import Modal from "$lib/components/Modal.svelte";
+
+    let modalAcik = $state(false);
+
+    function onayla() {
+        alert("Silme onaylandı!");
+        modalAcik = false;
+    }
+&lt;/script&gt;
+
+&lt;button class="btn btn-primary" onclick={() =&gt; modalAcik = true}&gt;
+    Modalı Aç
+&lt;/button&gt;
+
+&lt;Modal
+    title="Silme Onayı"
+    bind:open={modalAcik}
+    onsave={onayla}
+&gt;
+    &lt;p&gt;Bu öğeyi silmek istediğinize emin misiniz?&lt;/p&gt;
+&lt;/Modal&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Çözüm 4 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">4. Çözüm: Alert Kullanımı</h3>
+                        <p>Hata mesajını göstermek için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import Alert from "$lib/components/Alert.svelte";
+    
+    let hata = $state("Bir sorun oluştu!");
+&lt;/script&gt;
+
+{#if hata}
+    &lt;Alert 
+        type="danger" 
+        message={hata} 
+        onclose={() =&gt; (hata = null)} 
+    /&gt;
+{:else}
+    &lt;button class="btn btn-warning" onclick={() =&gt; hata = "Yeni hata!"}&gt;
+        Hata Oluştur
+    &lt;/button&gt;
+{/if}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Çözüm 5 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">5. Çözüm: Spinner Kullanımı</h3>
+                        <p>Yükleniyor durumuna göre buton yerine spinner göstermek için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import Spinner from "$lib/components/Spinner.svelte";
+    
+    let yukleniyor = $state(false);
+
+    function islemYap() {
+        yukleniyor = true;
+        setTimeout(() =&gt; yukleniyor = false, 2000);
+    }
+&lt;/script&gt;
+
+{#if yukleniyor}
+    &lt;div class="d-flex align-items-center"&gt;
+        &lt;Spinner type="border" color="primary" size="sm" /&gt;
+        &lt;span class="ms-2"&gt;İşleniyor...&lt;/span&gt;
+    &lt;/div&gt;
+{:else}
+    &lt;button class="btn btn-success" onclick={islemYap}&gt;
+        Kaydet
+    &lt;/button&gt;
+{/if}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Çözüm 6 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">6. Çözüm: Navbar Kullanımı</h3>
+                        <p>Sayfa navigasyonu için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import Navbar from "$lib/components/Navbar.svelte";
+    
+    const navigasyonLinkleri = [
+        { text: "Anasayfa", href: "/" },
+        { text: "Hakkımızda", href: "/hakkimizda" },
+        { text: "İletişim", href: "/iletisim" }
+    ];
+&lt;/script&gt;
+
+&lt;Navbar 
+    brand="Benim Uygulamam" 
+    links={navigasyonLinkleri} 
+/&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Çözüm 7 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">7. Çözüm: Accordion Kullanımı</h3>
+                        <p>Sıkça sorulan sorular veya katlanabilir içerik için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import Accordion from "$lib/components/Accordion.svelte";
+    
+    const sss = [
+        { title: "Svelte nedir?", content: "Svelte bir UI derleyicisidir." },
+        { title: "Neden Svelte?", content: "Hızlı, reaktif ve az kod." },
+        { title: "Runes nedir?", content: "Svelte 5 ile gelen yeni durum yönetim sistemi." }
+    ];
+&lt;/script&gt;
+
+&lt;Accordion items={sss} /&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Çözüm 8 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">8. Çözüm: Basit Fade Animasyonu</h3>
+                        <p>Bileşenlerin yumuşak bir şekilde görünmesi veya kaybolması için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import { fade } from "svelte/transition";
+    let goster = $state(true);
+&lt;/script&gt;
+
+{#if goster}
+    &lt;div transition:fade&gt;
+        Bu kutu animasyonla gelir/gider.
+    &lt;/div&gt;
+{/if}
+
+&lt;button onclick={() =&gt; goster = !goster}&gt;Değiştir&lt;/button&gt;</code></pre>
+                    </div>
+                </div>
+
+                <!-- Çözüm 9 -->
+                <div class="card mb-5 shadow-sm solution-card">
+                    <div class="card-body">
+                        <h3 class="h5 card-title text-success fw-bold">9. Çözüm: Özelleştirilmiş Fade</h3>
+                        <p>Animasyonun süresini, gecikmesini veya easing fonksiyonunu değiştirmek için:</p>
+
+                        <pre><code>&lt;script&gt;
+    import { fade } from "svelte/transition";
+&lt;/script&gt;
+
+&lt;div transition:fade={{ duration: 2000, delay: 500 }}&gt;
+    Bu yazı 0.5 saniye bekler, sonra 2 saniyede yavaşça belirir.
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+</body>
+
+</html>

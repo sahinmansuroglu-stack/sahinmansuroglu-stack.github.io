@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Svelte 5 İşlevsel Uygulama Eğitimi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        .step-number {
+            background-color: #0d6efd;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header class="mb-5 border-bottom pb-4">
+            <h1 class="display-5 fw-bold">Adım Adım: İşlevsel Uygulama Geliştirme</h1>
+            <p class="lead text-muted">Bu rehber, Svelte 5 Runes kullanarak sıfırdan "functional-app" sayfasını nasıl
+                oluşturacağınızı öğretmeyi hedefler.</p>
+        </header>
+
+        <!-- Görevler Bölümü -->
+        <div class="alert alert-primary mb-5">
+            <h4 class="alert-heading">🚀 Görev Kartları: Kendini Sına!</h4>
+            <p>Aşağıdaki görevleri koda bakmadan önce zihninde veya kağıt üzerinde çözmeye çalış. Öğrenci olarak sadece
+                ilgili bileşeni bağlamaya odaklan, tasarım hazır!</p>
+
+            <div class="accordion" id="questionsAccordion">
+                <!-- Görev 1: FormInput -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q1">
+                            1. Görev: "Başlık" girişi için <code>FormInput</code> bileşenini kullan.
+                        </button>
+                    </h2>
+                    <div id="q1" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> Bileşene <code>label="Başlık"</code> prop'unu ver ve değerini
+                                (value) <code>baslik</code> değişkenine bind et.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan --&gt;
+&lt;div class="mb-3"&gt;
+    &lt;!-- FormInput bileşenini buraya yaz --&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görev 2: Card -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q2">
+                            2. Görev: Öğe detaylarını göstermek için <code>Card</code> bileşenini kullan.
+                        </button>
+                    </h2>
+                    <div id="q2" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> <code>title</code> prop'una başlığı gönder, <code>onclick</code>
+                                olayında silme fonksiyonunu çağır ve kartın içine (slot) açıklamayı yaz.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan --&gt;
+&lt;div class="col-md-4"&gt;
+    &lt;!-- Card bileşenini buraya yaz --&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görev 3: Modal -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q3">
+                            3. Görev: Silme onayı almak için <code>Modal</code> bileşenini kullan.
+                        </button>
+                    </h2>
+                    <div id="q3" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> <code>open</code> prop'unu <code>silmeModaliniGoster</code>
+                                değişkenine bind et ve <code>onsave</code> olayında silme işlemini tetikle.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan (Sayfanın en altına) --&gt;
+&lt;!-- Modal bileşenini buraya yaz --&gt;
+    &lt;p&gt;Silmek istediğinize emin misiniz?&lt;/p&gt;
+&lt;!-- /Modal --&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görev 4: Alert -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q4">
+                            4. Görev: Oluşan hatayı göstermek için <code>Alert</code> bileşenini kullan.
+                        </button>
+                    </h2>
+                    <div id="q4" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> <code>hata</code> değişkeni varsa (if bloğu) bileşeni göster,
+                                <code>type="danger"</code> yap ve <code>message</code> prop'una hata metnini ver.
+                            </p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan --&gt;
+&lt;div class="mb-3"&gt;
+    {#if hata}
+        &lt;!-- Alert bileşenini buraya yaz --&gt;
+    {/if}
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görev 5: Spinner -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q5">
+                            5. Görev: Kayıt esnasında butonu gizleyip <code>Spinner</code> bileşenini kullan.
+                        </button>
+                    </h2>
+                    <div id="q5" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> <code>yukleniyor</code> değişkeni true ise butonu gizle (else),
+                                yerine dönen bir spinner (type="border") göster.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan --&gt;
+&lt;div class="mt-3"&gt;
+    {#if yukleniyor}
+        &lt;div class="d-flex align-items-center"&gt;
+            &lt;!-- Spinner bileşenini buraya yaz --&gt;
+            &lt;span class="ms-2"&gt;Yükleniyor...&lt;/span&gt;
+        &lt;/div&gt;
+    {:else}
+        &lt;button class="btn btn-success" onclick={ogeEkle}&gt;Ekle&lt;/button&gt;
+    {/if}
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görev 6: Navbar -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q6">
+                            6. Görev: Sayfa başına <code>Navbar</code> bileşenini ekle.
+                        </button>
+                    </h2>
+                    <div id="q6" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> <code>brand</code> prop'una uygulamanın adını, <code>links</code>
+                                prop'una nesne dizisi (text, href) gönder.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan (En üste) --&gt;
+&lt;!-- Navbar bileşenini buraya yaz --&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görev 7: Accordion -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q7">
+                            7. Görev: Sıkça sorulan sorular için <code>Accordion</code> bileşenini kullan.
+                        </button>
+                    </h2>
+                    <div id="q7" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> <code>items</code> prop'una başlık (title) ve içerik (content)
+                                olan bir dizi gönder.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan --&gt;
+&lt;div class="mt-5"&gt;
+    &lt;h3&gt;Sıkça Sorulan Sorular&lt;/h3&gt;
+    &lt;!-- Accordion bileşenini buraya yaz --&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+                <!-- Görev 8: Basit Fade Animasyonu -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q8">
+                            8. Görev: Alert bileşeninin ekrana gelişine <code>fade</code> animasyonu ekle.
+                        </button>
+                    </h2>
+                    <div id="q8" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> Svelte'in <code>transition</code> modülünden <code>fade</code>'i
+                                import et ve bileşende kullan.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan --&gt;
+&lt;script&gt;
+    import { fade } from 'svelte/transition';
+&lt;/script&gt;
+
+{#if hata}
+    &lt;div transition:fade&gt;
+        &lt;Alert type="danger" message={hata} /&gt;
+    &lt;/div&gt;
+{/if}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Görev 9: Özelleştirilmiş Fade -->
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#q9">
+                            9. Görev: Fade animasyonunun süresini 2 saniye (2000ms) yap.
+                        </button>
+                    </h2>
+                    <div id="q9" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <p><strong>İpucu:</strong> <code>transition:fade</code> direktifine parametre olarak nesne
+                                gönder: <code>{{ duration: 2000 }}</code>.</p>
+                            <hr>
+                            <strong>Başlangıç Şablonu:</strong>
+                            <pre><code>&lt;!-- Bu şablonu kullan --&gt;
+&lt;div transition:fade={{ duration: 2000 }}&gt;
+    &lt;p&gt;Yavaşça beliren yazı...&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center py-5">
+            <p class="lead">Görevleri tamamladın mı veya takıldın mı?</p>
+            <a href="cevap.html" class="btn btn-success btn-lg">Çözümleri ve Adım Adım Rehberi Gör &rarr;</a>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+</body>
+
+</html>

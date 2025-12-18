@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Svelte 5 Proje Adımları</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            padding-top: 2rem;
+            padding-bottom: 4rem;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid #dee2e6;
+        }
+
+        code {
+            color: #d63384;
+        }
+
+        .step-section {
+            border-left: 5px solid #0d6efd;
+            padding-left: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .code-header {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            display: block;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header class="mb-5 border-bottom pb-4">
+            <h1 class="display-5 fw-bold">Proje Yapım Adımları</h1>
+            <p class="lead text-muted">Bu rehber, <code>functional-app</code> sayfasını sıfırdan nasıl
+                birleştireceğinizi gösterir. Önce hazır HTML şablonunu alacak, ardından adım adım mantığı (logic)
+                ekleyeceksiniz.</p>
+        </header>
+
+        <!-- ADIM 1 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 1: Hazırlık - Bileşenleri İçe Aktar</h2>
+            <p>Projeye başlarken önce kullanacağımız tuğlaları (bileşenleri) masaya koyalım. <code>+page.svelte</code>
+                dosyasının en üstüne şu kodları ekleyin:</p>
+            <pre><code>&lt;script&gt;
+                import { fade } from "svelte/transition";
+                import FormInput from "$lib/components/FormInput.svelte";
+                import Card from "$lib/components/Card.svelte";
+                import Modal from "$lib/components/Modal.svelte";
+                import Alert from "$lib/components/Alert.svelte";
+                import Spinner from "$lib/components/Spinner.svelte";
+                import Badge from "$lib/components/Badge.svelte";
+                import cardImage from "$lib/images/card-image.png";
+            &lt;/script&gt;</code></pre>
+        </div>
+
+        <!-- ADIM 2 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 2: Form İçin Değişkenleri Oluştur</h2>
+            <p>Kullanıcının girdiği verileri tutmak için hafızada yer açalım (State). <code>script</code> etiketinin
+                içine ekleyin:</p>
+            <pre><code>    let baslik = $state("");
+    let aciklama = $state("");</code></pre>
+        </div>
+
+        <!-- ADIM 3 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 3: Formu Oluştur</h2>
+            <p>HTML kısmında (script'in altına) formu oluşturup değişkenlere bağlayalım (bind):</p>
+            <pre><code>    &lt;div class="card p-4 mb-5 shadow-sm"&gt;
+        &lt;h4&gt;Yeni Ekle&lt;/h4&gt;
+        &lt;FormInput label="Başlık" placeholder="Örn: Alışveriş" bind:value={baslik} /&gt;
+        &lt;FormInput label="Açıklama" placeholder="Örn: Süt al" bind:value={aciklama} /&gt;
+        &lt;!-- Buton buraya gelecek --&gt;
+    &lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- ADIM 4 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 4: Bildirim (Alert) Değişkenlerini Oluştur</h2>
+            <p>Kullanıcıya hata veya başarı mesajı göstermek için değişkenleri tanımlayalım:</p>
+            <pre><code>    let hata = $state(null);
+    let basari = $state(null);</code></pre>
+        </div>
+
+        <!-- ADIM 5 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 5: Bildirim (Alert) Arayüzünü Oluştur</h2>
+            <p>Mesaj varsa ekranda görünmesi için koşullu (if) blokları ekleyelim:</p>
+            <pre><code>    &lt;div class="mb-3"&gt;
+        {#if hata}
+            &lt;Alert type="danger" message={hata} onclose={() =&gt; (hata = null)} /&gt;
+        {/if}
+        {#if basari}
+            &lt;Alert type="success" message={basari} onclose={() =&gt; (basari = null)} /&gt;
+        {/if}
+    &lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- ADIM 6 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 6: Boş Kontrolü Yap (Validation)</h2>
+            <p>Ekleme fonksiyonunu yazmaya başlayalım. Önce formun boş olup olmadığını kontrol edelim:</p>
+            <pre><code>    function ogeEkle() {
+        hata = null; // Önceki hatayı temizle
+        basari = null;
+
+        if (!baslik.trim() || !aciklama.trim()) {
+            hata = "Lütfen tüm alanları doldurunuz.";
+            return; // Fonksiyonu durdur
+        }
+        
+        // Devamı gelecek...
+    }</code></pre>
+        </div>
+
+        <!-- ADIM 7 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 7: Liste Değişkenini Tanımla</h2>
+            <p>Eklenen öğeleri tutacak ana listemizi oluşturalım. Tip güvenliği için JSDoc ekliyoruz:</p>
+            <pre><code>    /** @type {{ id: number, baslik: string, aciklama: string }[]} */
+    let ogeler = $state([]);</code></pre>
+        </div>
+
+        <!-- ADIM 8 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 8: Ekleme İşlemini Tamamla</h2>
+            <p>Verileri listeye ekleyen ve formu temizleyen yardımcı fonksiyonu yazalım:</p>
+            <pre><code>    function islemiTamamla() {
+        // Listeye yeni öğeyi ekle (Spread operator ile)
+        ogeler = [...ogeler, { id: Date.now(), baslik, aciklama }];
+        
+        // Formu temizle
+        baslik = "";
+        aciklama = "";
+    }</code></pre>
+        </div>
+
+        <!-- ADIM 9 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 9: Yükleniyor Durumu ve Spinner</h2>
+            <p>İşlem yapılırken kullanıcıya bilgi vermek için "Yükleniyor" durumunu ekleyelim:</p>
+            <pre><code>    let yukleniyor = $state(false);
+
+    // ogeEkle fonksiyonunu güncelle
+    yukleniyor = true;
+    setTimeout(islemiTamamla, 2000); // 2 saniye bekle
+
+    // islemiTamamla fonksiyonunu güncelle (en sona)
+    yukleniyor = false;</code></pre>
+            <p>Ve HTML'de buton yerine Spinner'ı gösterelim:</p>
+            <pre><code>    &lt;div class="mt-3"&gt;
+        {#if yukleniyor}
+            &lt;div class="d-flex align-items-center"&gt;
+                &lt;Spinner type="border" color="primary" size="sm" /&gt;
+                &lt;span class="ms-2"&gt;Ekleniyor...&lt;/span&gt;
+            &lt;/div&gt;
+        {:else}
+            &lt;button class="btn btn-success" onclick={ogeEkle}&gt;Ekle&lt;/button&gt;
+        {/if}
+    &lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- ADIM 10 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 10: Başarı Mesajını Göster</h2>
+            <p>İşlem bitince kullanıcıya başarı mesajı verelim:</p>
+            <pre><code>    // islemiTamamla fonksiyonuna ekle:
+    basari = "Öğe başarıyla eklendi!";
+    
+    // 3 saniye sonra mesajı otomatik sil
+    setTimeout(() => { basari = null; }, 3000);</code></pre>
+        </div>
+
+        <!-- ADIM 11 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 11: Listeyi Basitçe Göster</h2>
+            <p>Listeyi ekranda görmek için basit bir döngü kuralım:</p>
+            <pre><code>    &lt;div class="row"&gt;
+        {#each ogeler as oge (oge.id)}
+            &lt;div class="col-md-4 mb-4"&gt;
+                &lt;p&gt;{oge.baslik} - {oge.aciklama}&lt;/p&gt;
+            &lt;/div&gt;
+        {/each}
+        {#if ogeler.length === 0}
+            &lt;p class="text-muted text-center"&gt;Henüz eklenmiş bir öğe yok.&lt;/p&gt;
+        {/if}
+    &lt;/div&gt;</code></pre>
+        </div>
+
+        <!-- ADIM 12 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 12: Listeyi Card Olarak Göster</h2>
+            <p>Basit görünümü <code>Card</code> bileşeni ile güzelleştirelim:</p>
+            <pre><code>    {#each ogeler as oge (oge.id)}
+        &lt;div class="col-md-4 mb-4"&gt;
+            &lt;Card title={oge.baslik} imageUrl={cardImage} buttonText="Sil"&gt;
+                {oge.aciklama}
+                &lt;div class="mt-2"&gt;&lt;Badge color="info"&gt;Yeni&lt;/Badge&gt;&lt;/div&gt;
+            &lt;/Card&gt;
+        &lt;/div&gt;
+    {/each}</code></pre>
+        </div>
+
+        <!-- ADIM 13 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 13: Silme Modalı İçin Değişkenler</h2>
+            <p>Hangi öğenin silineceğini ve modalın açık olup olmadığını tutan değişkenler:</p>
+            <pre><code>    let silmeModaliniGoster = $state(false);
+    let silinecekOge = $state(null);</code></pre>
+        </div>
+
+        <!-- ADIM 14 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 14: Silme Tetikleyicisi</h2>
+            <p>Card bileşenindeki silme butonunu aktifleştirelim:</p>
+            <pre><code>    function silmeIstegi(oge) {
+        silinecekOge = oge;
+        silmeModaliniGoster = true;
+    }
+
+    // Card bileşenine ekle:
+    onclick={() => silmeIstegi(oge)}</code></pre>
+        </div>
+
+        <!-- ADIM 15 -->
+        <div class="step-section">
+            <h2 class="h3 fw-bold text-primary">Adım 15: Silme Onayı ve Modal</h2>
+            <p>Son olarak silme işlemini gerçekleştiren fonksiyonu ve Modal'ı ekleyelim:</p>
+            <pre><code>    function silmeyiOnayla() {
+        if (silinecekOge) {
+            const currentOge = silinecekOge;
+            ogeler = ogeler.filter((i) => i.id !== currentOge.id);
+            silinecekOge = null;
+        }
+    }
+
+    &lt;!-- Sayfanın en altına --&gt;
+    &lt;Modal title="Silme Onayı" bind:open={silmeModaliniGoster} onsave={silmeyiOnayla}&gt;
+        &lt;p&gt;Bu öğeyi silmek istediğinize emin misiniz?&lt;/p&gt;
+        &lt;p class="text-danger fw-bold"&gt;{silinecekOge ? silinecekOge.baslik : ""}&lt;/p&gt;
+        &lt;p class="small text-muted"&gt;Bu işlem geri alınamaz.&lt;/p&gt;
+    &lt;/Modal&gt;</code></pre>
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="js/jquery-3.7.1.min.js"></script>
+</body>
+
+</html>
