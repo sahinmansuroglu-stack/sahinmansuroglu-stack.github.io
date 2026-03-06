@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 4: State Yönetimi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 4</span>
+            <h1>🔄 State Yönetimi</h1>
+            <p class="subtitle">remember, mutableStateOf ve Recomposition</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • State nedir ve neden önemli?<br>
+                • remember ve mutableStateOf<br>
+                • State hoisting<br>
+                • Recomposition mantığı
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>State Nedir?</h2>
+            <p>State, zamanla değişebilen ve UI'ı etkileyen herhangi bir değerdir. Compose'da state değiştiğinde UI
+                otomatik olarak güncellenir (recomposition).</p>
+
+            <div class="code-example">
+                <div class="code-example-title">State Olmadan (Çalışmaz!)</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SayacYanlis</span>() {
+    <span class="comment">// ❌ Bu çalışmaz! Her recomposition'da sıfırlanır</span>
+    <span class="keyword">var</span> sayac = <span class="number">0</span>
+    
+    Button(onClick = { sayac++ }) {
+        Text(<span class="string">"Sayaç: $sayac"</span>)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>remember ve mutableStateOf</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Doğru State Kullanımı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SayacDogru</span>() {
+    <span class="comment">// ✅ remember: Recomposition'lar arasında değeri saklar</span>
+    <span class="comment">// mutableStateOf: Değer değişince recomposition tetikler</span>
+    <span class="keyword">var</span> sayac <span class="keyword">by</span> remember { mutableStateOf(<span class="number">0</span>) }
+    
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = <span class="string">"Sayaç: $sayac"</span>,
+            fontSize = <span class="number">32</span>.sp,
+            fontWeight = FontWeight.Bold
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Row(horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)) {
+            Button(onClick = { sayac-- }) {
+                Text(<span class="string">"-"</span>)
+            }
+            Button(onClick = { sayac++ }) {
+                Text(<span class="string">"+"</span>)
+            }
+            Button(onClick = { sayac = <span class="number">0</span> }) {
+                Text(<span class="string">"Sıfırla"</span>)
+            }
+        }
+    }
+}
+
+<span class="comment">// Alternatif syntax</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SayacAlternatif</span>() {
+    <span class="comment">// .value ile erişim</span>
+    <span class="keyword">val</span> sayac = remember { mutableStateOf(<span class="number">0</span>) }
+    
+    Button(onClick = { sayac.value++ }) {
+        Text(<span class="string">"Sayaç: ${sayac.value}"</span>)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Farklı State Türleri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">State Türleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">FarkliStateTurleri</span>() {
+    <span class="comment">// String state</span>
+    <span class="keyword">var</span> isim <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    
+    <span class="comment">// Boolean state</span>
+    <span class="keyword">var</span> acikMi <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    <span class="comment">// Int state (optimize edilmiş)</span>
+    <span class="keyword">var</span> sayac <span class="keyword">by</span> remember { mutableIntStateOf(<span class="number">0</span>) }
+    
+    <span class="comment">// Float state (optimize edilmiş)</span>
+    <span class="keyword">var</span> deger <span class="keyword">by</span> remember { mutableFloatStateOf(<span class="number">0.5f</span>) }
+    
+    <span class="comment">// Liste state</span>
+    <span class="keyword">var</span> liste <span class="keyword">by</span> remember { mutableStateOf(listOf(<span class="string">"A"</span>, <span class="string">"B"</span>, <span class="string">"C"</span>)) }
+    
+    <span class="comment">// Değiştirilebilir liste</span>
+    <span class="keyword">val</span> mutableListe = remember { mutableStateListOf(<span class="string">"A"</span>, <span class="string">"B"</span>) }
+    
+    Column {
+        OutlinedTextField(
+            value = isim,
+            onValueChange = { isim = it },
+            label = { Text(<span class="string">"İsim"</span>) }
+        )
+        
+        Switch(
+            checked = acikMi,
+            onCheckedChange = { acikMi = it }
+        )
+        
+        Slider(
+            value = deger,
+            onValueChange = { deger = it }
+        )
+        
+        <span class="comment">// Liste işlemleri</span>
+        Button(onClick = { 
+            mutableListe.add(<span class="string">"Yeni"</span>)
+        }) {
+            Text(<span class="string">"Ekle (${mutableListe.size})"</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>State Hoisting</h2>
+            <p>State hoisting, state'i üst bileşene taşıyarak bileşenleri stateless yapma tekniğidir.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">State Hoisting Örneği</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// ❌ Stateful composable (state içeride)</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">StatefulSayac</span>() {
+    <span class="keyword">var</span> count <span class="keyword">by</span> remember { mutableStateOf(<span class="number">0</span>) }
+    
+    Button(onClick = { count++ }) {
+        Text(<span class="string">"Count: $count"</span>)
+    }
+}
+
+<span class="comment">// ✅ Stateless composable (state dışarıda)</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">StatelessSayac</span>(
+    count: Int,
+    onIncrement: () -> Unit
+) {
+    Button(onClick = onIncrement) {
+        Text(<span class="string">"Count: $count"</span>)
+    }
+}
+
+<span class="comment">// Kullanım</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SayacKullanimi</span>() {
+    <span class="keyword">var</span> count <span class="keyword">by</span> remember { mutableStateOf(<span class="number">0</span>) }
+    
+    Column {
+        <span class="comment">// Aynı state'i paylaşan iki bileşen</span>
+        StatelessSayac(count = count, onIncrement = { count++ })
+        Text(<span class="string">"Mevcut değer: $count"</span>)
+        Button(onClick = { count = <span class="number">0</span> }) {
+            Text(<span class="string">"Sıfırla"</span>)
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="info-box">
+                <strong>💡 State Hoisting Avantajları:</strong><br>
+                • Bileşenler test edilebilir<br>
+                • Bileşenler yeniden kullanılabilir<br>
+                • State tek bir yerden yönetilir<br>
+                • Preview'da farklı state'ler gösterilebilir
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>rememberSaveable</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Konfigürasyon Değişikliklerinde State</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SaveableStateOrnek</span>() {
+    <span class="comment">// remember: Sadece recomposition'da saklar</span>
+    <span class="comment">// Ekran döndürme gibi konfigürasyon değişikliklerinde kaybolur</span>
+    <span class="keyword">var</span> normalState <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    
+    <span class="comment">// rememberSaveable: Konfigürasyon değişikliklerinde de saklar</span>
+    <span class="comment">// Bundle'a kaydedilebilen tipler için otomatik çalışır</span>
+    <span class="keyword">var</span> saveableState <span class="keyword">by</span> rememberSaveable { mutableStateOf(<span class="string">""</span>) }
+    
+    Column {
+        OutlinedTextField(
+            value = normalState,
+            onValueChange = { normalState = it },
+            label = { Text(<span class="string">"Normal (kaybolur)"</span>) }
+        )
+        
+        OutlinedTextField(
+            value = saveableState,
+            onValueChange = { saveableState = it },
+            label = { Text(<span class="string">"Saveable (kalır)"</span>) }
+        )
+        
+        Text(<span class="string">"Ekranı döndürüp test edin!"</span>)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Todo Uygulaması</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Basit Todo List</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TodoApp</span>() {
+    <span class="keyword">var</span> yeniGorev <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">val</span> gorevler = remember { mutableStateListOf&lt;String&gt;() }
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        <span class="comment">// Giriş alanı</span>
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedTextField(
+                value = yeniGorev,
+                onValueChange = { yeniGorev = it },
+                label = { Text(<span class="string">"Yeni görev"</span>) },
+                modifier = Modifier.weight(<span class="number">1f</span>)
+            )
+            
+            Spacer(modifier = Modifier.width(<span class="number">8</span>.dp))
+            
+            Button(
+                onClick = {
+                    <span class="keyword">if</span> (yeniGorev.isNotBlank()) {
+                        gorevler.add(yeniGorev)
+                        yeniGorev = <span class="string">""</span>
+                    }
+                }
+            ) {
+                Icon(Icons.Default.Add, <span class="keyword">null</span>)
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        <span class="comment">// Görev listesi</span>
+        gorevler.forEachIndexed { index, gorev ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = <span class="number">4</span>.dp)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(<span class="number">12</span>.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(gorev, modifier = Modifier.weight(<span class="number">1f</span>))
+                    
+                    IconButton(onClick = { gorevler.removeAt(index) }) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = <span class="string">"Sil"</span>,
+                            tint = Color.Red
+                        )
+                    }
+                }
+            }
+        }
+        
+        <span class="keyword">if</span> (gorevler.isEmpty()) {
+            Text(
+                <span class="string">"Henüz görev yok"</span>,
+                color = Color.Gray,
+                modifier = Modifier.padding(<span class="number">16</span>.dp)
+            )
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>+/- butonları ve sıfırlama özelliği olan bir sayaç yap.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>TextField'a yazılan metni gerçek zamanlı olarak altında gösteren bir uygulama yaz.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Todo örneğine "Tamamla" özelliği ekle (üstü çizili göster).</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders3.html" class="nav-btn prev">← Ders 3</a>
+            <a href="ders5.html" class="nav-btn next">Ders 5 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

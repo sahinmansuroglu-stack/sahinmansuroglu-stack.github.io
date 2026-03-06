@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 11: Animasyonlar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 11</span>
+            <h1>✨ Animasyonlar</h1>
+            <p class="subtitle">UI Animasyonları ve Geçişler</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • animate*AsState<br>
+                • AnimatedVisibility<br>
+                • AnimatedContent<br>
+                • Animatable ve Transition
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>animateAsState</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Basit State Animasyonları</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">AnimatedStateOrnekleri</span>() {
+    <span class="keyword">var</span> expanded <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    <span class="comment">// Boyut animasyonu</span>
+    <span class="keyword">val</span> size <span class="keyword">by</span> animateDpAsState(
+        targetValue = <span class="keyword">if</span> (expanded) <span class="number">200</span>.dp <span class="keyword">else</span> <span class="number">100</span>.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = <span class="string">"size"</span>
+    )
+    
+    <span class="comment">// Renk animasyonu</span>
+    <span class="keyword">val</span> color <span class="keyword">by</span> animateColorAsState(
+        targetValue = <span class="keyword">if</span> (expanded) Color.Red <span class="keyword">else</span> Color.Blue,
+        animationSpec = tween(durationMillis = <span class="number">500</span>),
+        label = <span class="string">"color"</span>
+    )
+    
+    <span class="comment">// Corner radius animasyonu</span>
+    <span class="keyword">val</span> cornerRadius <span class="keyword">by</span> animateDpAsState(
+        targetValue = <span class="keyword">if</span> (expanded) <span class="number">8</span>.dp <span class="keyword">else</span> <span class="number">50</span>.dp,
+        label = <span class="string">"corner"</span>
+    )
+    
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(size)
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(color)
+                .clickable { expanded = !expanded }
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Text(<span class="keyword">if</span> (expanded) <span class="string">"Küçült"</span> <span class="keyword">else</span> <span class="string">"Büyüt"</span>)
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">FloatAnimasyonu</span>() {
+    <span class="keyword">var</span> progress <span class="keyword">by</span> remember { mutableFloatStateOf(<span class="number">0f</span>) }
+    
+    <span class="keyword">val</span> animatedProgress <span class="keyword">by</span> animateFloatAsState(
+        targetValue = progress,
+        animationSpec = tween(<span class="number">1000</span>),
+        label = <span class="string">"progress"</span>
+    )
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        LinearProgressIndicator(
+            progress = { animatedProgress },
+            modifier = Modifier.fillMaxWidth()
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Row(horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)) {
+            Button(onClick = { progress = <span class="number">0f</span> }) { Text(<span class="string">"0%"</span>) }
+            Button(onClick = { progress = <span class="number">0.5f</span> }) { Text(<span class="string">"50%"</span>) }
+            Button(onClick = { progress = <span class="number">1f</span> }) { Text(<span class="string">"100%"</span>) }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>AnimatedVisibility</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Görünürlük Animasyonları</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">AnimatedVisibilityOrnekleri</span>() {
+    <span class="keyword">var</span> visible <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">true</span>) }
+    
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(<span class="number">16</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = { visible = !visible }) {
+            Text(<span class="keyword">if</span> (visible) <span class="string">"Gizle"</span> <span class="keyword">else</span> <span class="string">"Göster"</span>)
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        <span class="comment">// Varsayılan animasyon</span>
+        AnimatedVisibility(visible = visible) {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    <span class="string">"Varsayılan Animasyon"</span>,
+                    modifier = Modifier.padding(<span class="number">16</span>.dp)
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        
+        <span class="comment">// Özel enter/exit animasyonu</span>
+        AnimatedVisibility(
+            visible = visible,
+            enter = slideInHorizontally() + fadeIn(),
+            exit = slideOutHorizontally() + fadeOut()
+        ) {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    <span class="string">"Slide Animasyon"</span>,
+                    modifier = Modifier.padding(<span class="number">16</span>.dp)
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        
+        <span class="comment">// Scale animasyonu</span>
+        AnimatedVisibility(
+            visible = visible,
+            enter = scaleIn() + expandVertically(),
+            exit = scaleOut() + shrinkVertically()
+        ) {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    <span class="string">"Scale Animasyon"</span>,
+                    modifier = Modifier.padding(<span class="number">16</span>.dp)
+                )
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ListeAnimasyonu</span>() {
+    <span class="keyword">val</span> items = remember { mutableStateListOf(<span class="string">"Öğe 1"</span>, <span class="string">"Öğe 2"</span>, <span class="string">"Öğe 3"</span>) }
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        Button(onClick = { items.add(<span class="string">"Öğe ${items.size + 1}"</span>) }) {
+            Text(<span class="string">"Ekle"</span>)
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        items.forEachIndexed { index, item ->
+            AnimatedVisibility(
+                visible = <span class="keyword">true</span>,
+                enter = slideInHorizontally() + fadeIn()
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = <span class="number">4</span>.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(<span class="number">12</span>.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(item, modifier = Modifier.weight(<span class="number">1f</span>))
+                        IconButton(onClick = { items.removeAt(index) }) {
+                            Icon(Icons.Default.Delete, <span class="string">"Sil"</span>)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>AnimatedContent</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">İçerik Değişim Animasyonları</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">AnimatedContentOrnek</span>() {
+    <span class="keyword">var</span> count <span class="keyword">by</span> remember { mutableIntStateOf(<span class="number">0</span>) }
+    
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        AnimatedContent(
+            targetState = count,
+            transitionSpec = {
+                <span class="keyword">if</span> (targetState > initialState) {
+                    <span class="comment">// Sayı artarken yukarı kayarak gir</span>
+                    slideInVertically { -it } + fadeIn() togetherWith
+                        slideOutVertically { it } + fadeOut()
+                } <span class="keyword">else</span> {
+                    <span class="comment">// Sayı azalırken aşağı kayarak gir</span>
+                    slideInVertically { it } + fadeIn() togetherWith
+                        slideOutVertically { -it } + fadeOut()
+                }.using(SizeTransform(clip = <span class="keyword">false</span>))
+            },
+            label = <span class="string">"counter"</span>
+        ) { targetCount ->
+            Text(
+                text = <span class="string">"$targetCount"</span>,
+                fontSize = <span class="number">64</span>.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Row(horizontalArrangement = Arrangement.spacedBy(<span class="number">16</span>.dp)) {
+            Button(onClick = { count-- }) { Text(<span class="string">"-"</span>) }
+            Button(onClick = { count++ }) { Text(<span class="string">"+"</span>) }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TabAnimasyonu</span>() {
+    <span class="keyword">var</span> selectedTab <span class="keyword">by</span> remember { mutableIntStateOf(<span class="number">0</span>) }
+    <span class="keyword">val</span> tabs = listOf(<span class="string">"Ana Sayfa"</span>, <span class="string">"Arama"</span>, <span class="string">"Profil"</span>)
+    
+    Column {
+        TabRow(selectedTabIndex = selectedTab) {
+            tabs.forEachIndexed { index, title ->
+                Tab(
+                    selected = selectedTab == index,
+                    onClick = { selectedTab = index },
+                    text = { Text(title) }
+                )
+            }
+        }
+        
+        AnimatedContent(
+            targetState = selectedTab,
+            transitionSpec = {
+                <span class="keyword">val</span> direction = <span class="keyword">if</span> (targetState > initialState) <span class="number">1</span> <span class="keyword">else</span> -<span class="number">1</span>
+                slideInHorizontally { it * direction } + fadeIn() togetherWith
+                    slideOutHorizontally { -it * direction } + fadeOut()
+            },
+            label = <span class="string">"tab_content"</span>
+        ) { tab ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(<span class="number">16</span>.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = tabs[tab],
+                    style = MaterialTheme.typography.headlineLarge
+                )
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Infinite Animasyon</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Sürekli Animasyonlar</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">InfiniteAnimasyonlar</span>() {
+    <span class="comment">// Sürekli dönen animasyon</span>
+    <span class="keyword">val</span> infiniteTransition = rememberInfiniteTransition(label = <span class="string">"infinite"</span>)
+    
+    <span class="keyword">val</span> rotation <span class="keyword">by</span> infiniteTransition.animateFloat(
+        initialValue = <span class="number">0f</span>,
+        targetValue = <span class="number">360f</span>,
+        animationSpec = infiniteRepeatable(
+            animation = tween(<span class="number">2000</span>, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = <span class="string">"rotation"</span>
+    )
+    
+    <span class="comment">// Pulsating animasyon</span>
+    <span class="keyword">val</span> scale <span class="keyword">by</span> infiniteTransition.animateFloat(
+        initialValue = <span class="number">1f</span>,
+        targetValue = <span class="number">1.2f</span>,
+        animationSpec = infiniteRepeatable(
+            animation = tween(<span class="number">1000</span>),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = <span class="string">"scale"</span>
+    )
+    
+    <span class="comment">// Renk değişimi</span>
+    <span class="keyword">val</span> color <span class="keyword">by</span> infiniteTransition.animateColor(
+        initialValue = Color.Red,
+        targetValue = Color.Blue,
+        animationSpec = infiniteRepeatable(
+            animation = tween(<span class="number">1500</span>),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = <span class="string">"color"</span>
+    )
+    
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        <span class="comment">// Dönen ikon</span>
+        Icon(
+            Icons.Default.Refresh,
+            contentDescription = <span class="keyword">null</span>,
+            modifier = Modifier
+                .size(<span class="number">64</span>.dp)
+                .rotate(rotation),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        
+        <span class="comment">// Pulsating buton</span>
+        Box(
+            modifier = Modifier
+                .size(<span class="number">80</span>.dp)
+                .scale(scale)
+                .clip(CircleShape)
+                .background(color)
+        )
+        
+        <span class="comment">// Loading indicator</span>
+        LoadingDots()
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">LoadingDots</span>() {
+    <span class="keyword">val</span> infiniteTransition = rememberInfiniteTransition(label = <span class="string">"dots"</span>)
+    
+    Row(horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)) {
+        repeat(<span class="number">3</span>) { index ->
+            <span class="keyword">val</span> offsetY <span class="keyword">by</span> infiniteTransition.animateFloat(
+                initialValue = <span class="number">0f</span>,
+                targetValue = -<span class="number">10f</span>,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(<span class="number">300</span>, delayMillis = index * <span class="number">100</span>),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = <span class="string">"dot_$index"</span>
+            )
+            
+            Box(
+                modifier = Modifier
+                    .offset(y = offsetY.dp)
+                    .size(<span class="number">12</span>.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+            )
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Gesture ile Animasyon</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Swipe to Dismiss</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SwipeToDismissOrnek</span>() {
+    <span class="keyword">val</span> items = remember { mutableStateListOf(<span class="string">"Öğe 1"</span>, <span class="string">"Öğe 2"</span>, <span class="string">"Öğe 3"</span>, <span class="string">"Öğe 4"</span>) }
+    
+    LazyColumn(contentPadding = PaddingValues(<span class="number">16</span>.dp)) {
+        items(
+            items = items,
+            key = { it }
+        ) { item ->
+            <span class="keyword">val</span> dismissState = rememberSwipeToDismissBoxState(
+                confirmValueChange = { dismissValue ->
+                    <span class="keyword">if</span> (dismissValue == SwipeToDismissBoxValue.EndToStart) {
+                        items.remove(item)
+                        <span class="keyword">true</span>
+                    } <span class="keyword">else</span> {
+                        <span class="keyword">false</span>
+                    }
+                }
+            )
+            
+            SwipeToDismissBox(
+                state = dismissState,
+                backgroundContent = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.Red)
+                            .padding(<span class="number">16</span>.dp),
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = <span class="string">"Sil"</span>,
+                            tint = Color.White
+                        )
+                    }
+                },
+                modifier = Modifier.animateItemPlacement()
+            ) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = <span class="number">4</span>.dp)
+                ) {
+                    Text(
+                        text = item,
+                        modifier = Modifier.padding(<span class="number">16</span>.dp)
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Tıklandığında renk ve boyut değiştiren animasyonlu buton yap.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>AnimatedVisibility ile açılır/kapanır menu oluştur.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Yükleme göstergesi için custom loading animasyonu yap.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders10.html" class="nav-btn prev">← Ders 10</a>
+            <a href="ders12.html" class="nav-btn next">Ders 12 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

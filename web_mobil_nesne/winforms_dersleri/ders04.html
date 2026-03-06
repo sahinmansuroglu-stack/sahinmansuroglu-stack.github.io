@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 4: ListBox ve ComboBox</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 4</span>
+            <h1>ListBox ve ComboBox</h1>
+            <p class="subtitle">Liste Kontrolleri ve Veri Yönetimi</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders02.html">Ders 2</a>
+            <a href="ders03.html">Ders 3</a>
+            <a href="ders04.html" class="active">Ders 4</a>
+            <a href="ders05.html">Ders 5</a>
+            <a href="ders06.html">Ders 6</a>
+        </nav>
+
+        <section class="section">
+            <h2>1. ListBox (Liste Kutusu)</h2>
+            <p><strong>ListBox</strong>, alt alta sıralanmış verileri listelemek ve seçim yapmak için kullanılır.</p>
+
+            <div class="control-visual">
+                <select size="5" style="width: 200px; padding: 5px;">
+                    <option>İstanbul</option>
+                    <option selected>Ankara</option>
+                    <option>İzmir</option>
+                    <option>Bursa</option>
+                    <option>Antalya</option>
+                </select>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Items</td>
+                    <td>Listedeki elemanlar koleksiyonu</td>
+                </tr>
+                <tr>
+                    <td>SelectedItem</td>
+                    <td>Seçili eleman (object)</td>
+                </tr>
+                <tr>
+                    <td>SelectedIndex</td>
+                    <td>Seçili elemanın indeksi (0'dan başlar)</td>
+                </tr>
+                <tr>
+                    <td>SelectionMode</td>
+                    <td>Tekli/Çoklu seçim modu</td>
+                </tr>
+                <tr>
+                    <td>Sorted</td>
+                    <td>Alfabetik sıralama</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">ListBox - Eleman Ekleme</div>
+                <pre><code><span class="comment">// Tek eleman ekleme</span>
+listBox1.Items.Add(<span class="string">"Elma"</span>);
+listBox1.Items.Add(<span class="string">"Armut"</span>);
+listBox1.Items.Add(<span class="string">"Muz"</span>);
+
+<span class="comment">// Birden fazla eleman ekleme</span>
+<span class="keyword">string</span>[] meyveler = { <span class="string">"Çilek"</span>, <span class="string">"Karpuz"</span>, <span class="string">"Kavun"</span> };
+listBox1.Items.AddRange(meyveler);
+
+<span class="comment">// TextBox'tan ekleme</span>
+<span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrWhiteSpace(txtEleman.Text))
+    {
+        listBox1.Items.Add(txtEleman.Text);
+        txtEleman.Clear();
+        txtEleman.Focus();
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">ListBox - Eleman Silme</div>
+                <pre><code><span class="comment">// Seçili elemanı sil</span>
+<span class="keyword">if</span> (listBox1.SelectedIndex != -<span class="number">1</span>)
+{
+    listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+}
+
+<span class="comment">// Belirli bir elemanı sil</span>
+listBox1.Items.Remove(<span class="string">"Elma"</span>);
+
+<span class="comment">// İndeks ile sil</span>
+listBox1.Items.RemoveAt(<span class="number">0</span>); <span class="comment">// İlk elemanı sil</span>
+
+<span class="comment">// Tüm elemanları temizle</span>
+listBox1.Items.Clear();</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">ListBox - Seçim İşlemleri</div>
+                <pre><code><span class="comment">// Seçili elemanı alma</span>
+<span class="keyword">if</span> (listBox1.SelectedItem != <span class="keyword">null</span>)
+{
+    <span class="keyword">string</span> secilen = listBox1.SelectedItem.ToString();
+    MessageBox.Show(<span class="string">"Seçilen: "</span> + secilen);
+}
+
+<span class="comment">// Seçim değiştiğinde (SelectedIndexChanged olayı)</span>
+<span class="keyword">private void</span> <span class="method">listBox1_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listBox1.SelectedIndex != -<span class="number">1</span>)
+    {
+        lblSecim.Text = <span class="string">"Seçilen: "</span> + listBox1.SelectedItem.ToString();
+    }
+}
+
+<span class="comment">// Eleman sayısı</span>
+lblToplam.Text = <span class="string">"Toplam: "</span> + listBox1.Items.Count;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. ComboBox (Açılır Liste)</h2>
+            <p><strong>ComboBox</strong>, ListBox'a benzer ama daha az yer kaplar. Açılır menü şeklinde çalışır.</p>
+
+            <div class="control-visual">
+                <select style="width: 200px; padding: 8px;">
+                    <option>Bir şehir seçin...</option>
+                    <option>İstanbul</option>
+                    <option>Ankara</option>
+                    <option>İzmir</option>
+                </select>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Items</td>
+                    <td>Listedeki elemanlar</td>
+                </tr>
+                <tr>
+                    <td>SelectedItem</td>
+                    <td>Seçili eleman</td>
+                </tr>
+                <tr>
+                    <td>SelectedIndex</td>
+                    <td>Seçili indeks</td>
+                </tr>
+                <tr>
+                    <td>Text</td>
+                    <td>Görünen/yazılan metin</td>
+                </tr>
+                <tr>
+                    <td>DropDownStyle</td>
+                    <td>Simple, DropDown, DropDownList</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>📌 DropDownStyle Farkları:</strong>
+                <ul>
+                    <li><strong>DropDown:</strong> Kullanıcı yeni değer yazabilir</li>
+                    <li><strong>DropDownList:</strong> Sadece listeden seçim yapılabilir</li>
+                    <li><strong>Simple:</strong> Liste her zaman açık görünür</li>
+                </ul>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">ComboBox Kullanımı</div>
+                <pre><code><span class="comment">// Eleman ekleme</span>
+comboBox1.Items.Add(<span class="string">"İstanbul"</span>);
+comboBox1.Items.Add(<span class="string">"Ankara"</span>);
+comboBox1.Items.Add(<span class="string">"İzmir"</span>);
+
+<span class="comment">// Dizi ile ekleme</span>
+<span class="keyword">string</span>[] sehirler = { <span class="string">"Bursa"</span>, <span class="string">"Antalya"</span>, <span class="string">"Adana"</span> };
+comboBox1.Items.AddRange(sehirler);
+
+<span class="comment">// Varsayılan seçim</span>
+comboBox1.SelectedIndex = <span class="number">0</span>; <span class="comment">// İlk elemanı seç</span>
+
+<span class="comment">// Seçili elemanı alma</span>
+<span class="keyword">string</span> sehir = comboBox1.SelectedItem.ToString();
+
+<span class="comment">// DropDownList modunda kullanım (sadece listeden seçim)</span>
+comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">ComboBox - Şehir/İlçe Bağlantısı</div>
+                <pre><code><span class="comment">// İl seçildiğinde ilçeleri yükle</span>
+<span class="keyword">private void</span> <span class="method">cmbIl_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    cmbIlce.Items.Clear();
+    
+    <span class="keyword">switch</span> (cmbIl.SelectedItem.ToString())
+    {
+        <span class="keyword">case</span> <span class="string">"İstanbul"</span>:
+            cmbIlce.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"Kadıköy"</span>, <span class="string">"Beşiktaş"</span>, <span class="string">"Üsküdar"</span> });
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">"Ankara"</span>:
+            cmbIlce.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"Çankaya"</span>, <span class="string">"Keçiören"</span>, <span class="string">"Mamak"</span> });
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">"İzmir"</span>:
+            cmbIlce.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"Konak"</span>, <span class="string">"Karşıyaka"</span>, <span class="string">"Bornova"</span> });
+            <span class="keyword">break</span>;
+    }
+    
+    <span class="keyword">if</span> (cmbIlce.Items.Count > <span class="number">0</span>)
+        cmbIlce.SelectedIndex = <span class="number">0</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Yapılacaklar Listesi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Todo Uygulaması</div>
+                <pre><code><span class="comment">// Görev ekleme</span>
+<span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrWhiteSpace(txtGorev.Text))
+    {
+        listGorevler.Items.Add(txtGorev.Text);
+        txtGorev.Clear();
+        GuncelleSayac();
+    }
+}
+
+<span class="comment">// Seçili görevi sil</span>
+<span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listGorevler.SelectedIndex != -<span class="number">1</span>)
+    {
+        listGorevler.Items.RemoveAt(listGorevler.SelectedIndex);
+        GuncelleSayac();
+    }
+    <span class="keyword">else</span>
+    {
+        MessageBox.Show(<span class="string">"Lütfen silinecek görevi seçin!"</span>);
+    }
+}
+
+<span class="comment">// Tamamlanan görevi taşı</span>
+<span class="keyword">private void</span> <span class="method">btnTamamla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listGorevler.SelectedIndex != -<span class="number">1</span>)
+    {
+        <span class="keyword">string</span> gorev = listGorevler.SelectedItem.ToString();
+        listTamamlanan.Items.Add(<span class="string">"✓ "</span> + gorev);
+        listGorevler.Items.Remove(gorev);
+        GuncelleSayac();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">GuncelleSayac</span>()
+{
+    lblBekleyen.Text = $<span class="string">"Bekleyen: {listGorevler.Items.Count}"</span>;
+    lblTamamlanan.Text = $<span class="string">"Tamamlanan: {listTamamlanan.Items.Count}"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>TextBox'tan girilen isimleri ListBox'a ekleyen ve silme özelliği olan bir uygulama
+                    yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrWhiteSpace(txtIsim.Text))
+    {
+        listBox1.Items.Add(txtIsim.Text);
+        txtIsim.Clear();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listBox1.SelectedIndex != -<span class="number">1</span>)
+        listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>ComboBox'tan seçilen şehri Label'da gösteren bir uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="comment">// Form_Load'da şehirleri ekle</span>
+cmbSehirler.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"İstanbul"</span>, <span class="string">"Ankara"</span>, <span class="string">"İzmir"</span> });
+cmbSehirler.DropDownStyle = ComboBoxStyle.DropDownList;
+
+<span class="comment">// SelectedIndexChanged olayında</span>
+<span class="keyword">private void</span> <span class="method">cmbSehirler_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    lblSecim.Text = <span class="string">"Seçilen Şehir: "</span> + cmbSehirler.Text;
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>İki ListBox arasında eleman taşıma yapın (Sol → Sağ, Sağ → Sol).</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="comment">// Sola taşı</span>
+<span class="keyword">private void</span> <span class="method">btnSaga_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listSol.SelectedItem != <span class="keyword">null</span>)
+    {
+        listSag.Items.Add(listSol.SelectedItem);
+        listSol.Items.Remove(listSol.SelectedItem);
+    }
+}
+
+<span class="comment">// Sağa taşı</span>
+<span class="keyword">private void</span> <span class="method">btnSola_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listSag.SelectedItem != <span class="keyword">null</span>)
+    {
+        listSol.Items.Add(listSag.SelectedItem);
+        listSag.Items.Remove(listSag.SelectedItem);
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders03.html" class="nav-btn prev">← Önceki: CheckBox, RadioButton</a>
+            <a href="ders05.html" class="nav-btn next">Sonraki: Diğer Kontroller →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

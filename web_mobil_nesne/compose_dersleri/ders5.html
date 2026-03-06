@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 5: Listeler ve LazyColumn</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 5</span>
+            <h1>📋 Listeler ve LazyColumn</h1>
+            <p class="subtitle">Performanslı Liste Gösterimi</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • LazyColumn ve LazyRow<br>
+                • items ve itemsIndexed<br>
+                • LazyGrid kullanımı<br>
+                • Sticky headers
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Column vs LazyColumn</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Fark</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// ❌ Column: Tüm öğeleri aynı anda render eder</span>
+<span class="comment">// Büyük listelerde performans sorunu!</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ColumnIleList</span>(items: List&lt;String&gt;) {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+        items.forEach { item ->
+            Text(item)  <span class="comment">// Hepsi aynı anda oluşturulur</span>
+        }
+    }
+}
+
+<span class="comment">// ✅ LazyColumn: Sadece görünen öğeleri render eder</span>
+<span class="comment">// RecyclerView benzeri performans!</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">LazyColumnIleList</span>(items: List&lt;String&gt;) {
+    LazyColumn {
+        items(items) { item ->
+            Text(item)  <span class="comment">// Sadece ekrandakiler oluşturulur</span>
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>LazyColumn Temel Kullanım</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">LazyColumn Örnekleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">BasitListe</span>() {
+    <span class="keyword">val</span> isimler = listOf(<span class="string">"Ali"</span>, <span class="string">"Ayşe"</span>, <span class="string">"Mehmet"</span>, <span class="string">"Fatma"</span>, <span class="string">"Ahmet"</span>)
+    
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+    ) {
+        <span class="comment">// Tek öğe</span>
+        item {
+            Text(
+                <span class="string">"Kullanıcılar"</span>,
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
+        
+        <span class="comment">// Liste öğeleri</span>
+        items(isimler) { isim ->
+            KisiKarti(isim = isim)
+        }
+        
+        <span class="comment">// Index ile</span>
+        itemsIndexed(isimler) { index, isim ->
+            Text(<span class="string">"${index + 1}. $isim"</span>)
+        }
+        
+        <span class="comment">// Sabit sayıda öğe</span>
+        items(<span class="number">5</span>) { index ->
+            Text(<span class="string">"Öğe $index"</span>)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">KisiKarti</span>(isim: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(<span class="number">16</span>.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.Default.Person,
+                contentDescription = <span class="keyword">null</span>,
+                modifier = Modifier.size(<span class="number">40</span>.dp)
+            )
+            Spacer(modifier = Modifier.width(<span class="number">12</span>.dp))
+            Text(isim, style = MaterialTheme.typography.bodyLarge)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>LazyRow</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Yatay Liste</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">YatayKategoriListesi</span>() {
+    <span class="keyword">val</span> kategoriler = listOf(
+        <span class="string">"🍕 Pizza"</span>, <span class="string">"🍔 Burger"</span>, <span class="string">"🍣 Sushi"</span>, 
+        <span class="string">"🥗 Salata"</span>, <span class="string">"🍜 Noodle"</span>, <span class="string">"🌮 Taco"</span>
+    )
+    
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = <span class="number">16</span>.dp),
+        horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+    ) {
+        items(kategoriler) { kategori ->
+            FilterChip(
+                selected = <span class="keyword">false</span>,
+                onClick = { },
+                label = { Text(kategori) }
+            )
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ResimGalerisi</span>() {
+    <span class="keyword">val</span> resimler = (<span class="number">1</span>..<span class="number">20</span>).toList()
+    
+    LazyRow(
+        contentPadding = PaddingValues(<span class="number">16</span>.dp),
+        horizontalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp)
+    ) {
+        items(resimler) { index ->
+            Card(
+                modifier = Modifier.size(<span class="number">150</span>.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.linearGradient(
+                                listOf(Color.Blue, Color.Cyan)
+                            )
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        <span class="string">"Resim $index"</span>,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>LazyVerticalGrid</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Grid Görünümü</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">UrunGrid</span>() {
+    <span class="keyword">val</span> urunler = (<span class="number">1</span>..<span class="number">20</span>).map { <span class="string">"Ürün $it"</span> }
+    
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(<span class="number">2</span>),  <span class="comment">// Sabit 2 sütun</span>
+        contentPadding = PaddingValues(<span class="number">16</span>.dp),
+        horizontalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp)
+    ) {
+        items(urunler) { urun ->
+            UrunKarti(urun)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">AdaptiveGrid</span>() {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = <span class="number">128</span>.dp),  <span class="comment">// Minimum genişlik</span>
+        contentPadding = PaddingValues(<span class="number">8</span>.dp),
+        horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+    ) {
+        items(<span class="number">50</span>) { index ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(<span class="number">1f</span>)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    Text(<span class="string">"#$index"</span>)
+                }
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">UrunKarti</span>(urun: String) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(<span class="number">0.8f</span>)
+    ) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(<span class="number">1f</span>)
+                    .background(Color.LightGray),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.ShoppingCart,
+                    contentDescription = <span class="keyword">null</span>,
+                    modifier = Modifier.size(<span class="number">48</span>.dp)
+                )
+            }
+            Text(
+                text = urun,
+                modifier = Modifier.padding(<span class="number">8</span>.dp),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Sticky Headers</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Yapışkan Başlıklar</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@OptIn</span>(ExperimentalFoundationApi::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">GrupluListe</span>() {
+    <span class="keyword">val</span> kisiler = mapOf(
+        <span class="string">"A"</span> to listOf(<span class="string">"Ali"</span>, <span class="string">"Ayşe"</span>, <span class="string">"Ahmet"</span>),
+        <span class="string">"B"</span> to listOf(<span class="string">"Burak"</span>, <span class="string">"Beyza"</span>),
+        <span class="string">"C"</span> to listOf(<span class="string">"Can"</span>, <span class="string">"Ceren"</span>, <span class="string">"Cem"</span>),
+        <span class="string">"D"</span> to listOf(<span class="string">"Deniz"</span>, <span class="string">"Dilan"</span>)
+    )
+    
+    LazyColumn(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        kisiler.forEach { (harf, isimler) ->
+            <span class="comment">// Sticky header</span>
+            stickyHeader {
+                Text(
+                    text = harf,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .padding(<span class="number">12</span>.dp),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            
+            <span class="comment">// Grup içindeki öğeler</span>
+            items(isimler) { isim ->
+                Text(
+                    text = isim,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(<span class="number">16</span>.dp)
+                )
+                HorizontalDivider()
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Key Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Performans için Key</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">data class</span> <span class="class-name">Kullanici</span>(
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> isim: String
+)
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">KeyliListe</span>() {
+    <span class="keyword">val</span> kullanicilar = remember {
+        mutableStateListOf(
+            Kullanici(<span class="number">1</span>, <span class="string">"Ali"</span>),
+            Kullanici(<span class="number">2</span>, <span class="string">"Veli"</span>),
+            Kullanici(<span class="number">3</span>, <span class="string">"Ayşe"</span>)
+        )
+    }
+    
+    LazyColumn {
+        items(
+            items = kullanicilar,
+            key = { it.id }  <span class="comment">// Benzersiz key</span>
+        ) { kullanici ->
+            KullaniciSatiri(
+                kullanici = kullanici,
+                onSil = { kullanicilar.remove(kullanici) }
+            )
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">KullaniciSatiri</span>(
+    kullanici: Kullanici,
+    onSil: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(<span class="number">16</span>.dp)
+            .animateItemPlacement(),  <span class="comment">// Animasyonlu yerleşim</span>
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(kullanici.isim, modifier = Modifier.weight(<span class="number">1f</span>))
+        IconButton(onClick = onSil) {
+            Icon(Icons.Default.Delete, <span class="string">"Sil"</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>100 öğelik bir kişi listesi göster (isim + email).</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>LazyVerticalGrid ile 3 sütunlu ürün galerisi oluştur.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Alfabetik stickyHeader'lı rehber uygulaması yap.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders4.html" class="nav-btn prev">← Ders 4</a>
+            <a href="ders6.html" class="nav-btn next">Ders 6 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

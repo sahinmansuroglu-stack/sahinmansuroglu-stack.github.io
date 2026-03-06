@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 3: Controller ve Routing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 3</span>
+            <h1>Controller ve Routing</h1>
+            <p class="subtitle">URL Yönlendirme ve Action Metodları</p>
+        </header>
+
+        <section class="section">
+            <h2>Routing Nedir?</h2>
+            <p>Routing, gelen URL'leri uygun Controller ve Action'a yönlendirme işlemidir. ASP.NET MVC'de routing
+                kuralları <code>Program.cs</code> dosyasında tanımlanır.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Program.cs - Varsayılan Route</div>
+                <pre data-lang="C#"><code>app.MapControllerRoute(
+    name: <span class="string">"default"</span>,
+    pattern: <span class="string">"{controller=Home}/{action=Index}/{id?}"</span>
+);</code></pre>
+            </div>
+
+            <table>
+                <tr>
+                    <th>URL</th>
+                    <th>Controller</th>
+                    <th>Action</th>
+                    <th>Id</th>
+                </tr>
+                <tr>
+                    <td>/</td>
+                    <td>Home</td>
+                    <td>Index</td>
+                    <td>null</td>
+                </tr>
+                <tr>
+                    <td>/Product</td>
+                    <td>Product</td>
+                    <td>Index</td>
+                    <td>null</td>
+                </tr>
+                <tr>
+                    <td>/Product/Details</td>
+                    <td>Product</td>
+                    <td>Details</td>
+                    <td>null</td>
+                </tr>
+                <tr>
+                    <td>/Product/Details/5</td>
+                    <td>Product</td>
+                    <td>Details</td>
+                    <td>5</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Parametreli Action Metodları</h2>
+
+            <h3>1. Route Parametresi (URL'den)</h3>
+            <div class="code-example">
+                <div class="code-example-title">URL: /Product/Details/5</div>
+                <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+{
+    <span class="comment">// id = 5 olarak gelir</span>
+    ViewBag.ProductId = id;
+    <span class="keyword">return</span> View();
+}</code></pre>
+            </div>
+
+            <h3>2. Query String Parametresi</h3>
+            <div class="code-example">
+                <div class="code-example-title">URL: /Product/Search?name=laptop&minPrice=1000</div>
+                <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Search</span>(<span class="keyword">string</span> name, <span class="keyword">decimal</span>? minPrice)
+{
+    <span class="comment">// name = "laptop", minPrice = 1000</span>
+    ViewBag.SearchName = name;
+    ViewBag.MinPrice = minPrice ?? <span class="number">0</span>;
+    <span class="keyword">return</span> View();
+}</code></pre>
+            </div>
+
+            <h3>3. Varsayılan Parametre Değeri</h3>
+            <div class="code-example">
+                <div class="code-example-title">URL: /Product/List veya /Product/List/2</div>
+                <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">List</span>(<span class="keyword">int</span> page = <span class="number">1</span>)
+{
+    <span class="comment">// page belirtilmezse 1 olur</span>
+    ViewBag.CurrentPage = page;
+    <span class="keyword">return</span> View();
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Action Sonuç Tipleri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Farklı Dönüş Tipleri</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">DemoController</span> : Controller
+{
+    <span class="comment">// 1. View Döndürme</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">return</span> View();
+    }
+
+    <span class="comment">// 2. Farklı View Döndürme</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Custom</span>()
+    {
+        <span class="keyword">return</span> View(<span class="string">"OzelSayfa"</span>);
+    }
+
+    <span class="comment">// 3. Yönlendirme</span>
+    <span class="keyword">public</span> IActionResult <span class="method">GoHome</span>()
+    {
+        <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>, <span class="string">"Home"</span>);
+    }
+
+    <span class="comment">// 4. JSON Döndürme</span>
+    <span class="keyword">public</span> IActionResult <span class="method">GetData</span>()
+    {
+        <span class="keyword">var</span> data = <span class="keyword">new</span> { Name = <span class="string">"Ali"</span>, Age = <span class="number">17</span> };
+        <span class="keyword">return</span> Json(data);
+    }
+
+    <span class="comment">// 5. Düz Metin</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Message</span>()
+    {
+        <span class="keyword">return</span> Content(<span class="string">"Merhaba Dünya!"</span>);
+    }
+
+    <span class="comment">// 6. 404 Hatası</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Find</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">if</span> (id <= <span class="number">0</span>)
+            <span class="keyword">return</span> NotFound();
+        <span class="keyword">return</span> View();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Attribute Routing</h2>
+            <p>Route'ları action üzerinde özel olarak tanımlayabilirsiniz.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Özel Route Tanımlama</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">ProductController</span> : Controller
+{
+    <span class="comment">// GET: /urunler</span>
+    [Route(<span class="string">"urunler"</span>)]
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">return</span> View();
+    }
+
+    <span class="comment">// GET: /urun/5</span>
+    [Route(<span class="string">"urun/{id}"</span>)]
+    <span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">return</span> View();
+    }
+
+    <span class="comment">// GET: /kategori/elektronik/urunler</span>
+    [Route(<span class="string">"kategori/{categoryName}/urunler"</span>)]
+    <span class="keyword">public</span> IActionResult <span class="method">ByCategory</span>(<span class="keyword">string</span> categoryName)
+    {
+        ViewBag.Category = categoryName;
+        <span class="keyword">return</span> View();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Örnek: Ürün Controller (Tam)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/ProductController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+<span class="keyword">public class</span> <span class="class-name">ProductController</span> : Controller
+{
+    <span class="comment">// Örnek ürün listesi (normalde veritabanından gelir)</span>
+    <span class="keyword">private static</span> List&lt;Product&gt; _products = <span class="keyword">new</span> List&lt;Product&gt;
+    {
+        <span class="keyword">new</span> Product { Id = <span class="number">1</span>, Name = <span class="string">"Laptop"</span>, Price = <span class="number">15000</span> },
+        <span class="keyword">new</span> Product { Id = <span class="number">2</span>, Name = <span class="string">"Mouse"</span>, Price = <span class="number">250</span> },
+        <span class="keyword">new</span> Product { Id = <span class="number">3</span>, Name = <span class="string">"Keyboard"</span>, Price = <span class="number">500</span> }
+    };
+
+    <span class="comment">// GET: /Product</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">return</span> View(_products);
+    }
+
+    <span class="comment">// GET: /Product/Details/1</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> product = _products.FirstOrDefault(p => p.Id == id);
+        
+        <span class="keyword">if</span> (product == <span class="keyword">null</span>)
+            <span class="keyword">return</span> NotFound();
+            
+        <span class="keyword">return</span> View(product);
+    }
+
+    <span class="comment">// GET: /Product/Search?query=lap</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Search</span>(<span class="keyword">string</span> query)
+    {
+        <span class="keyword">var</span> results = _products
+            .Where(p => p.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+        
+        ViewBag.Query = query;
+        <span class="keyword">return</span> View(results);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Örnek: Sayfalama (Pagination)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Sayfalı Liste</div>
+                <pre data-lang="C#"><code><span class="comment">// GET: /Product/List?page=2&pageSize=10</span>
+<span class="keyword">public</span> IActionResult <span class="method">List</span>(<span class="keyword">int</span> page = <span class="number">1</span>, <span class="keyword">int</span> pageSize = <span class="number">10</span>)
+{
+    <span class="keyword">var</span> allProducts = GetAllProducts(); <span class="comment">// 100 ürün olsun</span>
+    
+    <span class="keyword">var</span> pagedProducts = allProducts
+        .Skip((page - <span class="number">1</span>) * pageSize)
+        .Take(pageSize)
+        .ToList();
+    
+    ViewBag.CurrentPage = page;
+    ViewBag.TotalPages = (<span class="keyword">int</span>)Math.Ceiling(allProducts.Count / (<span class="keyword">double</span>)pageSize);
+    
+    <span class="keyword">return</span> View(pagedProducts);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>/Student/Details/5 URL'i için Controller ve Action yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentController</span> : Controller
+{
+    <span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="comment">// id = 5 olarak gelir</span>
+        ViewBag.StudentId = id;
+        <span class="keyword">return</span> View();
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Query string ile isim ve sınıf alan bir arama action'ı yazın.<br>URL:
+                    /Student/Search?name=Ali&grade=11</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Search</span>(<span class="keyword">string</span> name, <span class="keyword">int</span>? grade)
+{
+    <span class="comment">// name = "Ali", grade = 11</span>
+    ViewBag.SearchName = name ?? <span class="string">""</span>;
+    ViewBag.SearchGrade = grade;
+    
+    <span class="comment">// Arama işlemi...</span>
+    <span class="keyword">return</span> View();
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Bulunamayan kayıt için NotFound dönen bir action yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> student = _students.FirstOrDefault(s => s.Id == id);
+    
+    <span class="keyword">if</span> (student == <span class="keyword">null</span>)
+    {
+        <span class="keyword">return</span> NotFound(); <span class="comment">// 404 hatası döner</span>
+    }
+    
+    <span class="keyword">return</span> View(student);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>İşlem sonrası Index action'ına yönlendiren bir action yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Complete</span>()
+{
+    <span class="comment">// İşlem yap...</span>
+    
+    <span class="comment">// Aynı controller'daki Index'e yönlendir</span>
+    <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);
+    
+    <span class="comment">// Farklı controller'a yönlendirme:</span>
+    <span class="comment">// return RedirectToAction("Index", "Home");</span>
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">5</span>
+                <strong>[Route("ogrenci/{id}")] attribute'u ile özel route tanımlayın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(5)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-5">
+                    <pre data-lang="C#"><code><span class="comment">// URL: /ogrenci/5 şeklinde çalışır</span>
+[Route(<span class="string">"ogrenci/{id}"</span>)]
+<span class="keyword">public</span> IActionResult <span class="method">GetStudent</span>(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> student = _students.FirstOrDefault(s => s.Id == id);
+    <span class="keyword">return</span> View(student);
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders2.html" class="nav-btn prev">← Önceki: MVC Mimarisi</a>
+            <a href="ders4.html" class="nav-btn next">Sonraki: View ve Razor →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

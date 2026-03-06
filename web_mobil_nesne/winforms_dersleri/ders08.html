@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 8: MenuStrip ve ToolStrip</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 8</span>
+            <h1>MenuStrip ve ToolStrip</h1>
+            <p class="subtitle">Menüler ve Araç Çubukları</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders06.html">Ders 6</a>
+            <a href="ders07.html">Ders 7</a>
+            <a href="ders08.html" class="active">Ders 8</a>
+            <a href="ders09.html">Ders 9</a>
+            <a href="ders10.html">Ders 10</a>
+        </nav>
+
+        <section class="section">
+            <h2>1. MenuStrip (Ana Menü)</h2>
+            <p><strong>MenuStrip</strong>, uygulamanın üst kısmındaki ana menüyü oluşturur. Notepad, Word gibi
+                uygulamalardaki "Dosya", "Düzen", "Görünüm" menüleri buna örnektir.</p>
+
+            <div class="control-visual">
+                <div style="background: #f0f0f0; border: 1px solid #ccc; padding: 5px; text-align: left;">
+                    <span style="padding: 5px 10px; cursor: pointer;">Dosya</span>
+                    <span style="padding: 5px 10px; cursor: pointer;">Düzen</span>
+                    <span style="padding: 5px 10px; cursor: pointer;">Görünüm</span>
+                    <span style="padding: 5px 10px; cursor: pointer;">Yardım</span>
+                </div>
+            </div>
+
+            <h3>MenuStrip Oluşturma (Tasarım Görünümü)</h3>
+            <ol>
+                <li>Toolbox'tan <strong>MenuStrip</strong> sürükleyin</li>
+                <li>"Type Here" yazan yere menü başlığı yazın (örn: "Dosya")</li>
+                <li>Alt menüler için aşağı tıklayarak devam edin</li>
+                <li>Çizgi için "-" (tire) yazın</li>
+            </ol>
+
+            <div class="tip-box">
+                <strong>💡 Kısayol Tuşu:</strong> Menü adının önüne & koyarak kısayol belirleyin: "&Dosya" → Alt+D ile
+                açılır
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>MenuStrip Olayları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Menü Click Olayları</div>
+                <pre><code><span class="comment">// Dosya > Yeni</span>
+<span class="keyword">private void</span> <span class="method">yeniToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.Clear();
+    <span class="keyword">this</span>.Text = <span class="string">"Yeni Belge"</span>;
+}
+
+<span class="comment">// Dosya > Aç</span>
+<span class="keyword">private void</span> <span class="method">acToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Filter = <span class="string">"Metin Dosyaları|*.txt"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.Text = File.ReadAllText(dialog.FileName);
+        <span class="keyword">this</span>.Text = Path.GetFileName(dialog.FileName);
+    }
+}
+
+<span class="comment">// Dosya > Kaydet</span>
+<span class="keyword">private void</span> <span class="method">kaydetToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    SaveFileDialog dialog = <span class="keyword">new</span> SaveFileDialog();
+    dialog.Filter = <span class="string">"Metin Dosyaları|*.txt"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        File.WriteAllText(dialog.FileName, txtIcerik.Text);
+        MessageBox.Show(<span class="string">"Dosya kaydedildi!"</span>);
+    }
+}
+
+<span class="comment">// Dosya > Çıkış</span>
+<span class="keyword">private void</span> <span class="method">cikisToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    Application.Exit();
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Düzen Menüsü</div>
+                <pre><code><span class="comment">// Düzen > Kes</span>
+<span class="keyword">private void</span> <span class="method">kesToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.Cut();
+}
+
+<span class="comment">// Düzen > Kopyala</span>
+<span class="keyword">private void</span> <span class="method">kopyalaToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.Copy();
+}
+
+<span class="comment">// Düzen > Yapıştır</span>
+<span class="keyword">private void</span> <span class="method">yapistirToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.Paste();
+}
+
+<span class="comment">// Düzen > Tümünü Seç</span>
+<span class="keyword">private void</span> <span class="method">tumunuSecToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.SelectAll();
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kısayol Tuşları (ShortcutKeys)</h2>
+            <p>Properties panelinden <code>ShortcutKeys</code> özelliğini ayarlayarak menü öğelerine kısayol
+                atayabilirsiniz.</p>
+
+            <table>
+                <tr>
+                    <th>Menü Öğesi</th>
+                    <th>Kısayol</th>
+                </tr>
+                <tr>
+                    <td>Yeni</td>
+                    <td>Ctrl+N</td>
+                </tr>
+                <tr>
+                    <td>Aç</td>
+                    <td>Ctrl+O</td>
+                </tr>
+                <tr>
+                    <td>Kaydet</td>
+                    <td>Ctrl+S</td>
+                </tr>
+                <tr>
+                    <td>Kes</td>
+                    <td>Ctrl+X</td>
+                </tr>
+                <tr>
+                    <td>Kopyala</td>
+                    <td>Ctrl+C</td>
+                </tr>
+                <tr>
+                    <td>Yapıştır</td>
+                    <td>Ctrl+V</td>
+                </tr>
+                <tr>
+                    <td>Geri Al</td>
+                    <td>Ctrl+Z</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Kod ile Kısayol Atama</div>
+                <pre><code><span class="comment">// Form_Load'da</span>
+kaydetToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.S;
+acToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.O;
+yeniToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. ToolStrip (Araç Çubuğu)</h2>
+            <p><strong>ToolStrip</strong>, sık kullanılan komutlara hızlı erişim sağlayan ikon butonları içerir.</p>
+
+            <div class="control-visual">
+                <div style="background: #f5f5f5; border: 1px solid #ccc; padding: 5px; text-align: left;">
+                    <button style="padding: 5px 10px; margin-right: 3px;">📄</button>
+                    <button style="padding: 5px 10px; margin-right: 3px;">📂</button>
+                    <button style="padding: 5px 10px; margin-right: 3px;">💾</button>
+                    <span style="border-left: 1px solid #ccc; margin: 0 5px;"></span>
+                    <button style="padding: 5px 10px; margin-right: 3px;">✂️</button>
+                    <button style="padding: 5px 10px; margin-right: 3px;">📋</button>
+                    <button style="padding: 5px 10px;">📌</button>
+                </div>
+            </div>
+
+            <h3>ToolStrip Öğeleri</h3>
+            <table>
+                <tr>
+                    <th>Öğe</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>ToolStripButton</td>
+                    <td>Tıklanabilir buton</td>
+                </tr>
+                <tr>
+                    <td>ToolStripSeparator</td>
+                    <td>Ayırıcı çizgi</td>
+                </tr>
+                <tr>
+                    <td>ToolStripLabel</td>
+                    <td>Metin etiketi</td>
+                </tr>
+                <tr>
+                    <td>ToolStripTextBox</td>
+                    <td>Metin kutusu</td>
+                </tr>
+                <tr>
+                    <td>ToolStripComboBox</td>
+                    <td>Açılır liste</td>
+                </tr>
+                <tr>
+                    <td>ToolStripDropDownButton</td>
+                    <td>Açılır menü butonu</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">ToolStrip Olayları</div>
+                <pre><code><span class="comment">// ToolStrip butonları için ortak handler</span>
+<span class="keyword">private void</span> <span class="method">toolStrip_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ToolStripButton btn = (ToolStripButton)sender;
+    
+    <span class="keyword">switch</span> (btn.Name)
+    {
+        <span class="keyword">case</span> <span class="string">"tsbYeni"</span>:
+            YeniDosya();
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">"tsbAc"</span>:
+            DosyaAc();
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">"tsbKaydet"</span>:
+            DosyaKaydet();
+            <span class="keyword">break</span>;
+    }
+}
+
+<span class="comment">// Arama kutusu</span>
+<span class="keyword">private void</span> <span class="method">tstArama_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span> arama = tstArama.Text;
+    <span class="comment">// Arama işlemi...</span>
+}
+
+<span class="comment">// Yazı boyutu ComboBox</span>
+<span class="keyword">private void</span> <span class="method">tscYaziBoyutu_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">int</span> boyut = <span class="keyword">int</span>.Parse(tscYaziBoyutu.SelectedItem.ToString());
+    txtIcerik.Font = <span class="keyword">new</span> Font(txtIcerik.Font.FontFamily, boyut);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. ContextMenuStrip (Sağ Tık Menüsü)</h2>
+            <p><strong>ContextMenuStrip</strong>, bir kontrole sağ tıklandığında açılan menüdür.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">ContextMenuStrip Kullanımı</div>
+                <pre><code><span class="comment">// Tasarım görünümünde:</span>
+<span class="comment">// 1. ContextMenuStrip ekleyin</span>
+<span class="comment">// 2. Kontrolün ContextMenuStrip özelliğine atayın</span>
+
+<span class="comment">// Veya kod ile bağlama</span>
+listBox1.ContextMenuStrip = contextMenuStrip1;
+
+<span class="comment">// Menü açılmadan önce kontrol</span>
+<span class="keyword">private void</span> <span class="method">contextMenuStrip1_Opening</span>(<span class="keyword">object</span> sender, CancelEventArgs e)
+{
+    <span class="comment">// Eleman seçili değilse menüyü açma</span>
+    <span class="keyword">if</span> (listBox1.SelectedIndex == -<span class="number">1</span>)
+    {
+        e.Cancel = <span class="keyword">true</span>;
+    }
+}
+
+<span class="comment">// Sağ tık > Sil</span>
+<span class="keyword">private void</span> <span class="method">silToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listBox1.SelectedIndex != -<span class="number">1</span>)
+    {
+        listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+    }
+}
+
+<span class="comment">// Sağ tık > Düzenle</span>
+<span class="keyword">private void</span> <span class="method">duzenleToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listBox1.SelectedItem != <span class="keyword">null</span>)
+    {
+        txtDuzenle.Text = listBox1.SelectedItem.ToString();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. StatusStrip (Durum Çubuğu)</h2>
+            <p><strong>StatusStrip</strong>, pencerenin altındaki bilgi çubuğudur.</p>
+
+            <div class="control-visual">
+                <div
+                    style="background: #f0f0f0; border: 1px solid #ccc; padding: 5px; display: flex; justify-content: space-between;">
+                    <span>Hazır</span>
+                    <span>Satır: 1, Sütun: 1 | Karakter: 0 | 14:30</span>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">StatusStrip Güncelleme</div>
+                <pre><code><span class="comment">// Durum mesajı güncelleme</span>
+toolStripStatusLabel1.Text = <span class="string">"Dosya kaydedildi."</span>;
+
+<span class="comment">// Karakter sayısını güncelle</span>
+<span class="keyword">private void</span> <span class="method">txtIcerik_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    tslKarakterSayisi.Text = $<span class="string">"Karakter: {txtIcerik.Text.Length}"</span>;
+}
+
+<span class="comment">// Saat gösterimi (Timer ile)</span>
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    tslSaat.Text = DateTime.Now.ToString(<span class="string">"HH:mm:ss"</span>);
+}
+
+<span class="comment">// İlerleme çubuğu</span>
+toolStripProgressBar1.Value = <span class="number">50</span>;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Notepad Benzeri Uygulama</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Basit Metin Editörü Menü Yapısı</div>
+                <pre><code><span class="comment">// Menü Yapısı:</span>
+<span class="comment">// Dosya</span>
+<span class="comment">//   ├── Yeni (Ctrl+N)</span>
+<span class="comment">//   ├── Aç (Ctrl+O)</span>
+<span class="comment">//   ├── Kaydet (Ctrl+S)</span>
+<span class="comment">//   ├── Farklı Kaydet</span>
+<span class="comment">//   ├── ──────────</span>
+<span class="comment">//   └── Çıkış</span>
+<span class="comment">// Düzen</span>
+<span class="comment">//   ├── Geri Al (Ctrl+Z)</span>
+<span class="comment">//   ├── ──────────</span>
+<span class="comment">//   ├── Kes (Ctrl+X)</span>
+<span class="comment">//   ├── Kopyala (Ctrl+C)</span>
+<span class="comment">//   ├── Yapıştır (Ctrl+V)</span>
+<span class="comment">//   └── Tümünü Seç (Ctrl+A)</span>
+<span class="comment">// Biçim</span>
+<span class="comment">//   ├── Yazı Tipi...</span>
+<span class="comment">//   └── Arka Plan Rengi...</span>
+
+<span class="keyword">private</span> <span class="keyword">string</span> mevcutDosya = <span class="string">""</span>;
+
+<span class="keyword">private void</span> <span class="method">kaydetToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(mevcutDosya))
+    {
+        farkliKaydetToolStripMenuItem_Click(sender, e);
+    }
+    <span class="keyword">else</span>
+    {
+        File.WriteAllText(mevcutDosya, txtIcerik.Text);
+        tslDurum.Text = <span class="string">"Kaydedildi"</span>;
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">yaziTipiToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FontDialog fd = <span class="keyword">new</span> FontDialog();
+    fd.Font = txtIcerik.Font;
+    
+    <span class="keyword">if</span> (fd.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.Font = fd.Font;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Dosya menüsü içeren (Yeni, Aç, Kaydet, Çıkış) bir MenuStrip oluşturun.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <ol>
+                        <li>Toolbox'tan MenuStrip sürükleyin</li>
+                        <li>"Dosya" yazın, Enter'a basın</li>
+                        <li>Alt öğeler: Yeni, Aç, Kaydet, -, Çıkış</li>
+                        <li>Her öğeye çift tıklayarak event handler oluşturun</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Yeni, Aç, Kaydet butonları içeren bir ToolStrip ekleyin.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <ol>
+                        <li>ToolStrip ekleyin</li>
+                        <li>Açılır menüden Button ekleyin</li>
+                        <li>Image özelliğinden ikon seçin veya Text yazın</li>
+                        <li>ToolTipText ile ipucu ekleyin</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>ListBox'a sağ tık menüsü ekleyin (Sil, Düzenle).</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="comment">// ContextMenuStrip oluştur ve bağla</span>
+listBox1.ContextMenuStrip = contextMenuStrip1;
+
+<span class="keyword">private void</span> <span class="method">silToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (listBox1.SelectedIndex != -<span class="number">1</span>)
+        listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders07.html" class="nav-btn prev">← Önceki: MessageBox</a>
+            <a href="ders09.html" class="nav-btn next">Sonraki: Dosya Dialogları →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 11: Dependency Injection ve Servisler</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 11</span>
+            <h1>Dependency Injection ve Servisler</h1>
+            <p class="subtitle">Temiz Mimari ve Bağımlılık Yönetimi</p>
+        </header>
+
+        <section class="section">
+            <h2>Dependency Injection Nedir?</h2>
+            <p><strong>Dependency Injection (DI)</strong>, bir sınıfın bağımlılıklarını dışarıdan almasını sağlayan
+                tasarım kalıbıdır.</p>
+
+            <div class="info-box">
+                <strong>💡 Neden DI Kullanırız?</strong><br>
+                • Kodun test edilebilirliği artar<br>
+                • Bağımlılıklar gevşek bağlı olur (loose coupling)<br>
+                • Kodun bakımı kolaylaşır<br>
+                • Aynı arayüzü farklı implementasyonlarla değiştirebiliriz
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Service Katmanı Oluşturma</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Services/IStudentService.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public interface</span> <span class="class-name">IStudentService</span>
+{
+    Task&lt;List&lt;Student&gt;&gt; <span class="method">GetAllAsync</span>();
+    Task&lt;Student&gt; <span class="method">GetByIdAsync</span>(<span class="keyword">int</span> id);
+    Task <span class="method">CreateAsync</span>(Student student);
+    Task <span class="method">UpdateAsync</span>(Student student);
+    Task <span class="method">DeleteAsync</span>(<span class="keyword">int</span> id);
+    Task&lt;List&lt;Student&gt;&gt; <span class="method">SearchAsync</span>(<span class="keyword">string</span> searchTerm);
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Services/StudentService.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentService</span> : <span class="class-name">IStudentService</span>
+{
+    <span class="keyword">private readonly</span> SchoolDbContext _context;
+    
+    <span class="keyword">public</span> <span class="method">StudentService</span>(SchoolDbContext context)
+    {
+        _context = context;
+    }
+    
+    <span class="keyword">public async</span> Task&lt;List&lt;Student&gt;&gt; <span class="method">GetAllAsync</span>()
+    {
+        <span class="keyword">return await</span> _context.Students
+            .Include(s => s.Classroom)
+            .OrderBy(s => s.LastName)
+            .ToListAsync();
+    }
+    
+    <span class="keyword">public async</span> Task&lt;Student&gt; <span class="method">GetByIdAsync</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">return await</span> _context.Students
+            .Include(s => s.Classroom)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+    
+    <span class="keyword">public async</span> Task <span class="method">CreateAsync</span>(Student student)
+    {
+        _context.Students.Add(student);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+    }
+    
+    <span class="keyword">public async</span> Task <span class="method">UpdateAsync</span>(Student student)
+    {
+        _context.Students.Update(student);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+    }
+    
+    <span class="keyword">public async</span> Task <span class="method">DeleteAsync</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> student = <span class="keyword">await</span> _context.Students.FindAsync(id);
+        <span class="keyword">if</span> (student != <span class="keyword">null</span>)
+        {
+            _context.Students.Remove(student);
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+        }
+    }
+    
+    <span class="keyword">public async</span> Task&lt;List&lt;Student&gt;&gt; <span class="method">SearchAsync</span>(<span class="keyword">string</span> searchTerm)
+    {
+        <span class="keyword">return await</span> _context.Students
+            .Where(s => s.FirstName.Contains(searchTerm) || 
+                       s.LastName.Contains(searchTerm))
+            .ToListAsync();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Program.cs'de Kayıt</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Program.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+<span class="comment">// DbContext</span>
+builder.Services.AddDbContext&lt;SchoolDbContext&gt;(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="string">"DefaultConnection"</span>)));
+
+<span class="comment">// Servis kayıtları</span>
+builder.Services.AddScoped&lt;IStudentService, StudentService&gt;();
+builder.Services.AddScoped&lt;IClassroomService, ClassroomService&gt;();
+
+<span class="comment">// MVC</span>
+builder.Services.AddControllersWithViews();
+
+<span class="keyword">var</span> app = builder.Build();</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Servis Yaşam Döngüleri:</strong><br>
+                • <code>AddScoped</code>: Her HTTP isteği için yeni instance<br>
+                • <code>AddTransient</code>: Her kullanımda yeni instance<br>
+                • <code>AddSingleton</code>: Uygulama boyunca tek instance
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller'da Kullanım</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/StudentController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentController</span> : Controller
+{
+    <span class="keyword">private readonly</span> IStudentService _studentService;
+    <span class="keyword">private readonly</span> IClassroomService _classroomService;
+    
+    <span class="comment">// Constructor Injection</span>
+    <span class="keyword">public</span> <span class="method">StudentController</span>(
+        IStudentService studentService,
+        IClassroomService classroomService)
+    {
+        _studentService = studentService;
+        _classroomService = classroomService;
+    }
+    
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Index</span>()
+    {
+        <span class="keyword">var</span> students = <span class="keyword">await</span> _studentService.GetAllAsync();
+        <span class="keyword">return</span> View(students);
+    }
+    
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> student = <span class="keyword">await</span> _studentService.GetByIdAsync(id);
+        <span class="keyword">if</span> (student == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        <span class="keyword">return</span> View(student);
+    }
+    
+    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(Student student)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            <span class="keyword">await</span> _studentService.CreateAsync(student);
+            TempData[<span class="string">"Success"</span>] = <span class="string">"Öğrenci eklendi!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+        }
+        <span class="keyword">return</span> View(student);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>IClassroomService interface'i oluşturun.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre data-lang="C#"><code><span class="keyword">public interface</span> <span class="class-name">IClassroomService</span>
+{
+    Task&lt;List&lt;Classroom&gt;&gt; GetAllAsync();
+    Task&lt;Classroom&gt; GetByIdAsync(<span class="keyword">int</span> id);
+    Task&lt;SelectList&gt; GetSelectListAsync(<span class="keyword">int</span>? selectedId = <span class="keyword">null</span>);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>AddScoped, AddTransient, AddSingleton arasındaki fark nedir?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <ul>
+                        <li><strong>Scoped:</strong> Her HTTP isteği için bir instance oluşturulur</li>
+                        <li><strong>Transient:</strong> Her enjeksiyon için yeni instance</li>
+                        <li><strong>Singleton:</strong> Uygulama boyunca tek instance</li>
+                    </ul>
+                    <p>DbContext için genellikle <code>AddScoped</code> kullanılır.</p>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders10.html" class="nav-btn prev">← Önceki: Layout ve Partial</a>
+            <a href="ders12.html" class="nav-btn next">Sonraki: İlişkisel Tablolar →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

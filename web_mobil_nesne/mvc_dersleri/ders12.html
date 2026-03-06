@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 12: İlişkisel Tablolar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 12</span>
+            <h1>İlişkisel Tablolar</h1>
+            <p class="subtitle">One-to-Many ve Many-to-Many İlişkiler</p>
+        </header>
+
+        <section class="section">
+            <h2>Tablo İlişkileri</h2>
+            <div class="info-box">
+                <strong>📊 İlişki Türleri:</strong><br>
+                • <strong>One-to-Many (1:N):</strong> Bir sınıfta birçok öğrenci<br>
+                • <strong>Many-to-Many (N:M):</strong> Bir öğrenci birçok ders alabilir, bir dersi birçok öğrenci
+                alabilir<br>
+                • <strong>One-to-One (1:1):</strong> Bir öğrencinin bir profili var
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>One-to-Many İlişki</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Classroom.cs (Parent)</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Classroom</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Navigation Property - Bir sınıfta birçok öğrenci</span>
+    <span class="keyword">public</span> ICollection&lt;Student&gt; Students { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs (Child)</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> FirstName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> LastName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Foreign Key</span>
+    <span class="keyword">public int</span> ClassroomId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Navigation Property</span>
+    <span class="keyword">public</span> Classroom Classroom { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Many-to-Many İlişki</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Course.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Course</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> Credit { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Many-to-Many Navigation</span>
+    <span class="keyword">public</span> ICollection&lt;StudentCourse&gt; StudentCourses { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/StudentCourse.cs (Ara Tablo)</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentCourse</span>
+{
+    <span class="keyword">public int</span> StudentId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Student Student { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> CourseId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Course Course { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Ek alanlar</span>
+    <span class="keyword">public</span> DateTime EnrollmentDate { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span>? Grade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">DbContext - OnModelCreating</div>
+                <pre data-lang="C#"><code><span class="keyword">protected override void</span> <span class="method">OnModelCreating</span>(ModelBuilder modelBuilder)
+{
+    <span class="comment">// Composite Primary Key</span>
+    modelBuilder.Entity&lt;StudentCourse&gt;()
+        .HasKey(sc => <span class="keyword">new</span> { sc.StudentId, sc.CourseId });
+    
+    <span class="comment">// İlişkileri tanımla</span>
+    modelBuilder.Entity&lt;StudentCourse&gt;()
+        .HasOne(sc => sc.Student)
+        .WithMany(s => s.StudentCourses)
+        .HasForeignKey(sc => sc.StudentId);
+    
+    modelBuilder.Entity&lt;StudentCourse&gt;()
+        .HasOne(sc => sc.Course)
+        .WithMany(c => c.StudentCourses)
+        .HasForeignKey(sc => sc.CourseId);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Include ile Veri Çekme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">İlişkili Verileri Yükleme</div>
+                <pre data-lang="C#"><code><span class="comment">// Öğrenciyi sınıfıyla birlikte getir</span>
+<span class="keyword">var</span> student = <span class="keyword">await</span> _context.Students
+    .Include(s => s.Classroom)
+    .FirstOrDefaultAsync(s => s.Id == id);
+
+<span class="comment">// Öğrenciyi dersleriyle birlikte getir</span>
+<span class="keyword">var</span> studentWithCourses = <span class="keyword">await</span> _context.Students
+    .Include(s => s.StudentCourses)
+        .ThenInclude(sc => sc.Course)
+    .FirstOrDefaultAsync(s => s.Id == id);
+
+<span class="comment">// Sınıfı öğrencileriyle birlikte getir</span>
+<span class="keyword">var</span> classroom = <span class="keyword">await</span> _context.Classrooms
+    .Include(c => c.Students)
+    .FirstOrDefaultAsync(c => c.Id == id);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Ders Kayıt Formu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">EnrollController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">EnrollController</span> : Controller
+{
+    <span class="keyword">private readonly</span> SchoolDbContext _context;
+    
+    [HttpGet]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(<span class="keyword">int</span> studentId)
+    {
+        ViewBag.StudentId = studentId;
+        ViewBag.Courses = <span class="keyword">new</span> SelectList(
+            <span class="keyword">await</span> _context.Courses.ToListAsync(), 
+            <span class="string">"Id"</span>, <span class="string">"Name"</span>);
+        <span class="keyword">return</span> View();
+    }
+    
+    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(<span class="keyword">int</span> studentId, <span class="keyword">int</span> courseId)
+    {
+        <span class="comment">// Zaten kayıtlı mı kontrol et</span>
+        <span class="keyword">var</span> exists = <span class="keyword">await</span> _context.StudentCourses
+            .AnyAsync(sc => sc.StudentId == studentId && sc.CourseId == courseId);
+        
+        <span class="keyword">if</span> (exists)
+        {
+            TempData[<span class="string">"Error"</span>] = <span class="string">"Öğrenci bu derse zaten kayıtlı!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="string">"Details"</span>, <span class="string">"Student"</span>, <span class="keyword">new</span> { id = studentId });
+        }
+        
+        <span class="keyword">var</span> enrollment = <span class="keyword">new</span> StudentCourse
+        {
+            StudentId = studentId,
+            CourseId = courseId,
+            EnrollmentDate = DateTime.Now
+        };
+        
+        _context.StudentCourses.Add(enrollment);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        TempData[<span class="string">"Success"</span>] = <span class="string">"Ders kaydı yapıldı!"</span>;
+        <span class="keyword">return</span> RedirectToAction(<span class="string">"Details"</span>, <span class="string">"Student"</span>, <span class="keyword">new</span> { id = studentId });
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Bir öğrencinin aldığı dersleri listeleyen View yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre data-lang="Razor"><code>@model Student
+
+&lt;h2&gt;@Model.FullName - Dersler&lt;/h2&gt;
+
+&lt;table class="table"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;&lt;th&gt;Ders&lt;/th&gt;&lt;th&gt;Kredi&lt;/th&gt;&lt;th&gt;Kayıt Tarihi&lt;/th&gt;&lt;th&gt;Not&lt;/th&gt;&lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        @foreach (var sc in Model.StudentCourses)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;@sc.Course.Name&lt;/td&gt;
+                &lt;td&gt;@sc.Course.Credit&lt;/td&gt;
+                &lt;td&gt;@sc.EnrollmentDate.ToShortDateString()&lt;/td&gt;
+                &lt;td&gt;@(sc.Grade ?? "-")&lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Ders silme işleminde ilişkili kayıtları da silin.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code>[HttpPost]
+<span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">DeleteCourse</span>(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> course = <span class="keyword">await</span> _context.Courses
+        .Include(c => c.StudentCourses)
+        .FirstOrDefaultAsync(c => c.Id == id);
+    
+    <span class="keyword">if</span> (course != <span class="keyword">null</span>)
+    {
+        <span class="comment">// Önce ilişkili kayıtları sil</span>
+        _context.StudentCourses.RemoveRange(course.StudentCourses);
+        <span class="comment">// Sonra dersi sil</span>
+        _context.Courses.Remove(course);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+    }
+    <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders11.html" class="nav-btn prev">← Önceki: Dependency Injection</a>
+            <a href="ders13.html" class="nav-btn next">Sonraki: Arama ve Sayfalama →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Öğrenci Not Defteri - Adım Adım Proje</title>
+    <style>
+        *,
+        ::before,
+        ::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface2: #242836;
+            --surface3: #2e3344;
+            --primary: #818cf8;
+            --primary-dim: #6366f1;
+            --secondary: #34d399;
+            --accent: #f472b6;
+            --danger: #f87171;
+            --warning: #fbbf24;
+            --text: #e2e8f0;
+            --text-dim: #94a3b8;
+            --radius: 12px;
+            --code-bg: #1e2235
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: var(--surface);
+            border-right: 1px solid var(--surface3);
+            padding: 24px 14px;
+            overflow-y: auto;
+            z-index: 100
+        }
+
+        .sidebar h2 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--surface3)
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 6px 10px;
+            border-radius: 8px;
+            color: var(--text-dim);
+            font-size: .82rem;
+            transition: .2s;
+            margin-bottom: 2px
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: var(--surface3);
+            color: var(--primary)
+        }
+
+        .main {
+            margin-left: 250px;
+            padding: 36px 44px;
+            max-width: 920px
+        }
+
+        @media(max-width:900px) {
+            .sidebar {
+                display: none
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px
+            }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 6px
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+            margin-bottom: 36px
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin: 44px 0 14px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--surface3)
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin: 24px 0 10px
+        }
+
+        h4 {
+            font-size: .95rem;
+            color: var(--accent);
+            margin: 16px 0 8px
+        }
+
+        p,
+        li {
+            color: var(--text-dim);
+            margin-bottom: 8px
+        }
+
+        ul,
+        ol {
+            padding-left: 22px;
+            margin-bottom: 14px
+        }
+
+        strong {
+            color: var(--text)
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--surface3);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 14px 0
+        }
+
+        .card-accent {
+            border-left: 4px solid var(--primary)
+        }
+
+        .card-warn {
+            border-left: 4px solid var(--warning);
+            background: rgba(251, 191, 36, .05)
+        }
+
+        .card-success {
+            border-left: 4px solid var(--secondary);
+            background: rgba(52, 211, 153, .05)
+        }
+
+        .card-danger {
+            border-left: 4px solid var(--danger);
+            background: rgba(248, 113, 113, .05)
+        }
+
+        pre {
+            background: var(--code-bg);
+            border: 1px solid var(--surface3);
+            border-radius: var(--radius);
+            padding: 18px;
+            overflow-x: auto;
+            font-size: .82rem;
+            line-height: 1.55;
+            margin: 10px 0 18px
+        }
+
+        code {
+            font-family: 'Cascadia Code', 'Fira Code', monospace
+        }
+
+        .kw {
+            color: #c084fc
+        }
+
+        .fn {
+            color: #60a5fa
+        }
+
+        .str {
+            color: #34d399
+        }
+
+        .cm {
+            color: #64748b;
+            font-style: italic
+        }
+
+        .ann {
+            color: #f472b6
+        }
+
+        .type {
+            color: #fbbf24
+        }
+
+        .num {
+            color: #f87171
+        }
+
+        .param {
+            color: #fb923c
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin: 14px 0
+        }
+
+        .step-num {
+            min-width: 34px;
+            height: 34px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: .85rem;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .step-content {
+            flex: 1
+        }
+
+        details {
+            margin: 10px 0
+        }
+
+        summary {
+            cursor: pointer;
+            background: var(--surface2);
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            color: var(--text);
+            font-weight: 500;
+            transition: .2s;
+            list-style: none
+        }
+
+        summary::-webkit-details-marker {
+            display: none
+        }
+
+        summary::before {
+            content: '▶ ';
+            font-size: .7rem;
+            color: var(--primary)
+        }
+
+        details[open] summary::before {
+            content: '▼ '
+        }
+
+        summary:hover {
+            background: var(--surface3)
+        }
+
+        details .detail-body {
+            padding: 14px;
+            background: var(--surface);
+            border: 1px solid var(--surface3);
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius)
+        }
+
+        .phone {
+            width: 280px;
+            height: 520px;
+            background: #fff;
+            border-radius: 28px;
+            border: 8px solid #1f2937;
+            margin: 16px auto;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .4)
+        }
+
+        .phone::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 18px;
+            background: #1f2937;
+            border-radius: 0 0 10px 10px;
+            z-index: 10
+        }
+
+        .phone-top {
+            background: var(--primary);
+            color: #fff;
+            padding: 26px 14px 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .85rem
+        }
+
+        .phone-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px
+        }
+
+        .phone-bottom {
+            background: #f8f9fa;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0
+        }
+
+        .phone-bottom div {
+            text-align: center;
+            font-size: .65rem;
+            color: #6b7280;
+            padding: 4px 6px
+        }
+
+        .phone-bottom div.act {
+            color: var(--primary-dim);
+            font-weight: 600
+        }
+
+        .phone-fab {
+            position: absolute;
+            bottom: 56px;
+            right: 14px;
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(129, 140, 248, .4)
+        }
+
+        .mini-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .08)
+        }
+
+        .mini-card h5 {
+            font-size: .8rem;
+            color: #1f2937;
+            margin-bottom: 2px
+        }
+
+        .mini-card p {
+            font-size: .7rem;
+            color: #6b7280;
+            margin: 0
+        }
+
+        .mini-card .grades {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px
+        }
+
+        .mini-card .grade {
+            background: #ede9fe;
+            color: #6366f1;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: .65rem;
+            font-weight: 600
+        }
+
+        .mini-card .del-btn {
+            float: right;
+            color: #ef4444;
+            font-size: .7rem;
+            cursor: pointer
+        }
+
+        .dialog-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, .5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20
+        }
+
+        .dialog-box {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            width: 85%;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .2)
+        }
+
+        .dialog-box h5 {
+            font-size: .9rem;
+            color: #1f2937;
+            margin-bottom: 6px
+        }
+
+        .dialog-box p {
+            font-size: .75rem;
+            color: #6b7280;
+            margin-bottom: 14px
+        }
+
+        .dialog-btns {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px
+        }
+
+        .dialog-btns span {
+            font-size: .8rem;
+            padding: 5px 10px;
+            border-radius: 8px
+        }
+
+        .btn-cancel {
+            color: #6b7280
+        }
+
+        .btn-danger {
+            color: #ef4444;
+            font-weight: 600
+        }
+
+        .sheet {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 14px 14px 0 0;
+            padding: 14px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, .15);
+            z-index: 20
+        }
+
+        .sheet-handle {
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 0 auto 10px
+        }
+
+        .sheet h5 {
+            font-size: .9rem;
+            color: #1f2937;
+            margin-bottom: 10px
+        }
+
+        .sheet-input {
+            display: block;
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: .75rem;
+            margin-bottom: 6px
+        }
+
+        .sheet-btn {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            background: #818cf8;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: .8rem;
+            margin-top: 8px;
+            cursor: pointer
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: .72rem;
+            font-weight: 600;
+            margin: 0 3px
+        }
+
+        .tag-blue {
+            background: rgba(129, 140, 248, .15);
+            color: var(--primary)
+        }
+
+        .tag-green {
+            background: rgba(52, 211, 153, .15);
+            color: var(--secondary)
+        }
+
+        .tag-pink {
+            background: rgba(244, 114, 182, .15);
+            color: var(--accent)
+        }
+
+        .emoji {
+            font-size: 1.1rem;
+            margin-right: 4px
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            align-items: start
+        }
+
+        @media(max-width:768px) {
+            .grid-2 {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .adim-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 40px 0 8px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, rgba(129, 140, 248, .1), rgba(244, 114, 182, .1));
+            border-radius: var(--radius);
+            border: 1px solid var(--surface3)
+        }
+
+        .adim-header .adim-no {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0
+        }
+
+        .adim-header .adim-title {
+            font-size: 1.2rem;
+            color: var(--text);
+            font-weight: 600
+        }
+
+        /* Bonus Özellikler Stilleri */
+        .bonus-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 40px 0 8px;
+            padding: 12px 18px;
+            background: linear-gradient(135deg, rgba(52, 211, 153, .12), rgba(251, 191, 36, .12));
+            border-radius: var(--radius);
+            border: 1px solid var(--surface3);
+            border-left: 4px solid var(--secondary)
+        }
+
+        .bonus-header .bonus-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0
+        }
+
+        .bonus-header .bonus-title {
+            font-size: 1.15rem;
+            color: var(--secondary);
+            font-weight: 600
+        }
+
+        .bonus-header .bonus-badge {
+            background: rgba(52, 211, 153, .15);
+            color: var(--secondary);
+            font-size: .65rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: .5px
+        }
+
+        .hint-box {
+            background: linear-gradient(135deg, rgba(251, 191, 36, .08), rgba(129, 140, 248, .08));
+            border: 1px dashed var(--warning);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin: 12px 0
+        }
+
+        .hint-box .hint-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--warning);
+            margin-bottom: 10px;
+            font-size: .95rem
+        }
+
+        .hint-box .hint-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 8px 0;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, .03);
+            border-radius: 8px;
+            transition: .2s
+        }
+
+        .hint-box .hint-item:hover {
+            background: rgba(255, 255, 255, .06);
+            transform: translateX(4px)
+        }
+
+        .hint-box .hint-icon {
+            color: var(--primary);
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px
+        }
+
+        .hint-box .hint-text {
+            color: var(--text-dim);
+            font-size: .85rem;
+            line-height: 1.5
+        }
+
+        .hint-box .hint-text code {
+            background: var(--surface3);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: .78rem;
+            color: var(--primary)
+        }
+
+        .difficulty {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px
+        }
+
+        .difficulty .star {
+            font-size: .7rem
+        }
+
+        .difficulty .star.filled {
+            color: var(--warning)
+        }
+
+        .difficulty .star.empty {
+            color: var(--surface3)
+        }
+
+        .preview-mockup {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 16px 0
+        }
+
+        .mini-card .avg {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: .65rem;
+            font-weight: 600
+        }
+
+        .mini-card .avg.fail {
+            background: #fee2e2;
+            color: #dc2626
+        }
+
+        .phone-bottom div.tab-pass {
+            color: #16a34a;
+            font-weight: 600
+        }
+
+        .phone-bottom div.tab-fail {
+            color: #dc2626;
+            font-weight: 600
+        }
+
+        .phone-bottom div.tab-best {
+            color: #f59e0b;
+            font-weight: 600
+        }
+
+        .try-yourself {
+            background: linear-gradient(135deg, rgba(129, 140, 248, .06), rgba(52, 211, 153, .06));
+            border: 1px solid var(--surface3);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin: 16px 0;
+            position: relative;
+            overflow: hidden
+        }
+
+        .try-yourself::before {
+            content: '🧑‍💻';
+            position: absolute;
+            top: -10px;
+            right: -5px;
+            font-size: 3rem;
+            opacity: .1
+        }
+
+        .try-yourself h4 {
+            margin-top: 0;
+            color: var(--secondary)
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="sidebar">
+        <h2>📓 Öğrenci Not Defteri</h2>
+        <a href="#giris" class="active">🏠 Proje Tanıtımı</a>
+        <a href="#adim1">Adım 1: Veri Modeli</a>
+        <a href="#adim2">Adım 2: State Yönetimi</a>
+        <a href="#adim3">Adım 3: Scaffold İskeleti</a>
+        <a href="#adim4">Adım 4: TopAppBar</a>
+        <a href="#adim5">Adım 5: BottomBar</a>
+        <a href="#adim6">Adım 6: FAB Butonu</a>
+        <a href="#adim7">Adım 7: Öğrenci Kartı</a>
+        <a href="#adim8">Adım 8: LazyColumn</a>
+        <a href="#adim9">Adım 9: BottomSheet (Ekle)</a>
+        <a href="#adim10">Adım 10: Dialog (Sil)</a>
+        <a href="#adim11">Adım 11: Tam Kod</a>
+        <a href="#ozet">📝 Özet</a>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--surface3)">
+            <p style="font-size:.7rem;color:var(--warning);font-weight:600;padding:0 10px;margin-bottom:6px">⭐ BONUS
+                ÖZELLİKLER</p>
+            <a href="#bonus1">🎯 Ortalama Hesaplama</a>
+            <a href="#bonus2">📊 Kalanlar & Geçenler</a>
+            <a href="#bonus3">🏆 En İyi Öğrenciler</a>
+            <a href="#bonus4">🔍 Öğrenci Arama</a>
+        </div>
+    </nav>
+
+    <div class="main">
+
+        <section id="giris">
+            <h1>📓 Öğrenci Not Defteri Projesi</h1>
+            <p class="subtitle">Material bileşenleri kullanarak adım adım gerçek bir uygulama yapalım!</p>
+
+            <div class="card card-warn">
+                <p><span class="emoji">🎯</span><strong>Ne yapacağız?</strong></p>
+                <ul>
+                    <li>Öğrenci <strong>ad-soyad</strong> ve <strong>2 ders notu</strong> ekleyeceğiz</li>
+                    <li>Öğrencileri <strong>kartlar</strong> halinde listeleyeceğiz</li>
+                    <li>Öğrenci <strong>silme</strong> işlemi için Dialog kullanacağız</li>
+                    <li>Yeni öğrenci <strong>ekleme</strong> için BottomSheet kullanacağız</li>
+                </ul>
+            </div>
+
+            <div class="card card-accent">
+                <p><span class="emoji">🧩</span><strong>Kullanacağımız Material bileşenler:</strong></p>
+                <p><span class="tag tag-blue">Scaffold</span> <span class="tag tag-blue">TopAppBar</span> <span
+                        class="tag tag-blue">NavigationBar</span> <span class="tag tag-green">FAB</span> <span
+                        class="tag tag-green">Card</span> <span class="tag tag-pink">Dialog</span> <span
+                        class="tag tag-pink">BottomSheet</span> <span class="tag tag-green">LazyColumn</span></p>
+            </div>
+
+            <h4>Uygulamanın son hali şöyle görünecek:</h4>
+            <div class="grid-2">
+                <div class="phone">
+                    <div class="phone-top"><span>☰</span><span style="flex:1">📓 Not Defteri</span><span>🔍</span></div>
+                    <div class="phone-body">
+                        <div class="mini-card">
+                            <h5>Ahmet Yılmaz <span class="del-btn">🗑️</span></h5>
+                            <div class="grades"><span class="grade">Mat: 85</span><span class="grade">Fen: 92</span>
+                            </div>
+                        </div>
+                        <div class="mini-card">
+                            <h5>Elif Kaya <span class="del-btn">🗑️</span></h5>
+                            <div class="grades"><span class="grade">Mat: 78</span><span class="grade">Fen: 65</span>
+                            </div>
+                        </div>
+                        <div class="mini-card">
+                            <h5>Can Demir <span class="del-btn">🗑️</span></h5>
+                            <div class="grades"><span class="grade">Mat: 90</span><span class="grade">Fen: 88</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-fab">+</div>
+                    <div class="phone-bottom">
+                        <div class="act">📋<br>Liste</div>
+                        <div>📊<br>İstatistik</div>
+                        <div>⚙️<br>Ayarlar</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="card card-success">
+                        <p><strong>Ekrandaki bileşenler:</strong></p>
+                        <div class="step">
+                            <div class="step-num">1</div>
+                            <div class="step-content"><strong>TopAppBar</strong> — "Not Defteri" başlığı ve ikonlar
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">2</div>
+                            <div class="step-content"><strong>Card</strong> — Her öğrenci bir kart</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">3</div>
+                            <div class="step-content"><strong>LazyColumn</strong> — Kartların listesi</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">4</div>
+                            <div class="step-content"><strong>FAB (+)</strong> — Yeni öğrenci ekle</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">5</div>
+                            <div class="step-content"><strong>BottomBar</strong> — Alt navigasyon</div>
+                        </div>
+                        <div class="step">
+                            <div class="step-num">6</div>
+                            <div class="step-content"><strong>🗑️ → Dialog</strong> — Silme onayı</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADIM 1 -->
+        <section id="adim1">
+            <div class="adim-header">
+                <div class="adim-no">1</div>
+                <div class="adim-title">Veri Modeli — Öğrenci sınıfını oluştur</div>
+            </div>
+            <p>Önce bir öğrencinin hangi bilgileri tutacağını tanımlayalım. Buna <strong>data class</strong> diyoruz.
+            </p>
+
+            <pre><code><span class="cm">// Bir öğrencinin bilgilerini tutan veri sınıfı</span>
+<span class="kw">data class</span> <span class="type">Ogrenci</span>(
+    <span class="kw">val</span> <span class="param">id</span>: <span class="type">Int</span>,          <span class="cm">// Benzersiz numara</span>
+    <span class="kw">val</span> <span class="param">ad</span>: <span class="type">String</span>,        <span class="cm">// Öğrenci adı</span>
+    <span class="kw">val</span> <span class="param">soyad</span>: <span class="type">String</span>,     <span class="cm">// Öğrenci soyadı</span>
+    <span class="kw">val</span> <span class="param">not1</span>: <span class="type">Int</span>,         <span class="cm">// 1. ders notu</span>
+    <span class="kw">val</span> <span class="param">not2</span>: <span class="type">Int</span>          <span class="cm">// 2. ders notu</span>
+)</code></pre>
+
+            <div class="card card-warn">
+                <p><span class="emoji">💡</span><strong>data class nedir?</strong> Sadece veri taşımak için kullanılan
+                    özel bir sınıftır. Kotlin otomatik olarak <code>toString()</code>, <code>equals()</code>,
+                    <code>copy()</code> gibi fonksiyonları üretir.
+                </p>
+            </div>
+        </section>
+
+        <!-- ADIM 2 -->
+        <section id="adim2">
+            <div class="adim-header">
+                <div class="adim-no">2</div>
+                <div class="adim-title">State Yönetimi — Verileri hafızada tut</div>
+            </div>
+            <p>Öğrenci listesini, dialog/sheet durumlarını <strong>state</strong> olarak tanımlıyoruz. State değişince
+                ekran güncellenir.</p>
+
+            <pre><code><span class="cm">// Öğrenci listesi (eklenip silinebilir)</span>
+<span class="kw">var</span> ogrenciler <span class="kw">by</span> <span class="fn">remember</span> {
+    <span class="fn">mutableStateOf</span>(
+        <span class="fn">listOf</span>(
+            <span class="type">Ogrenci</span>(<span class="num">1</span>, <span class="str">"Ahmet"</span>, <span class="str">"Yılmaz"</span>, <span class="num">85</span>, <span class="num">92</span>),
+            <span class="type">Ogrenci</span>(<span class="num">2</span>, <span class="str">"Elif"</span>, <span class="str">"Kaya"</span>, <span class="num">78</span>, <span class="num">65</span>)
+        )
+    )
+}
+
+<span class="cm">// BottomSheet açık mı?</span>
+<span class="kw">var</span> sheetAcik <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="kw">false</span>) }
+
+<span class="cm">// Dialog açık mı? Hangi öğrenci silinecek?</span>
+<span class="kw">var</span> silinecekOgrenci <span class="kw">by</span> <span class="fn">remember</span> {
+    <span class="fn">mutableStateOf</span>&lt;<span class="type">Ogrenci</span>?&gt;(<span class="kw">null</span>)
+}
+
+<span class="cm">// Form alanları (yeni öğrenci eklerken)</span>
+<span class="kw">var</span> yeniAd <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+<span class="kw">var</span> yeniSoyad <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+<span class="kw">var</span> yeniNot1 <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+<span class="kw">var</span> yeniNot2 <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }</code></pre>
+
+            <div class="card card-accent">
+                <p><span class="emoji">🔑</span><strong>Neden <code>silinecekOgrenci</code> nullable
+                        (<code>Ogrenci?</code>)?</strong></p>
+                <p>Eğer <code>null</code> ise dialog kapalıdır. Bir öğrenci atandığında dialog açılır ve o öğrencinin
+                    bilgisi gösterilir.</p>
+            </div>
+        </section>
+
+        <!-- ADIM 3 -->
+        <section id="adim3">
+            <div class="adim-header">
+                <div class="adim-no">3</div>
+                <div class="adim-title">Scaffold İskeleti — Çatıyı kur</div>
+            </div>
+            <p>Tüm bileşenleri Scaffold'un doğru yerlerine yerleştireceğiz:</p>
+
+            <pre><code><span class="fn">Scaffold</span>(
+    <span class="param">topBar</span> = { <span class="cm">/* Adım 4'te yapacağız */</span> },
+    <span class="param">bottomBar</span> = { <span class="cm">/* Adım 5'te yapacağız */</span> },
+    <span class="param">floatingActionButton</span> = { <span class="cm">/* Adım 6'da yapacağız */</span> }
+) { <span class="param">paddingValues</span> ->
+    <span class="cm">// Adım 8'de LazyColumn gelecek</span>
+}</code></pre>
+
+            <div class="card card-success">
+                <p><span class="emoji">🏗️</span>Scaffold bir evin çatısı gibi. Önce çatıyı kuruyoruz, sonra odaları
+                    (bileşenleri) tek tek yerleştireceğiz.</p>
+            </div>
+        </section>
+
+        <!-- ADIM 4 -->
+        <section id="adim4">
+            <div class="adim-header">
+                <div class="adim-no">4</div>
+                <div class="adim-title">TopAppBar — Üst çubuğu ekle</div>
+            </div>
+
+            <pre><code><span class="param">topBar</span> = {
+    <span class="fn">TopAppBar</span>(
+        <span class="param">title</span> = { <span class="fn">Text</span>(<span class="str">"📓 Öğrenci Not Defteri"</span>) },
+        <span class="param">navigationIcon</span> = {
+            <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+                <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Menu, <span class="str">"Menü"</span>)
+            }
+        },
+        <span class="param">actions</span> = {
+            <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+                <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Search, <span class="str">"Ara"</span>)
+            }
+        },
+        <span class="param">colors</span> = <span class="type">TopAppBarDefaults</span>.<span class="fn">topAppBarColors</span>(
+            <span class="param">containerColor</span> = <span class="type">MaterialTheme</span>.colorScheme.primaryContainer
+        )
+    )
+}</code></pre>
+        </section>
+
+        <!-- ADIM 5 -->
+        <section id="adim5">
+            <div class="adim-header">
+                <div class="adim-no">5</div>
+                <div class="adim-title">BottomBar — Alt menüyü ekle</div>
+            </div>
+
+            <pre><code><span class="param">bottomBar</span> = {
+    <span class="fn">NavigationBar</span> {
+        <span class="fn">NavigationBarItem</span>(
+            <span class="param">selected</span> = <span class="kw">true</span>, <span class="param">onClick</span> = { },
+            <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.List, <span class="kw">null</span>) },
+            <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Liste"</span>) }
+        )
+        <span class="fn">NavigationBarItem</span>(
+            <span class="param">selected</span> = <span class="kw">false</span>, <span class="param">onClick</span> = { },
+            <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Star, <span class="kw">null</span>) },
+            <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"İstatistik"</span>) }
+        )
+        <span class="fn">NavigationBarItem</span>(
+            <span class="param">selected</span> = <span class="kw">false</span>, <span class="param">onClick</span> = { },
+            <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Settings, <span class="kw">null</span>) },
+            <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Ayarlar"</span>) }
+        )
+    }
+}</code></pre>
+        </section>
+
+        <!-- ADIM 6 -->
+        <section id="adim6">
+            <div class="adim-header">
+                <div class="adim-no">6</div>
+                <div class="adim-title">FAB — Yeni öğrenci ekleme butonu</div>
+            </div>
+            <p>FAB'a tıklayınca BottomSheet açılacak:</p>
+
+            <pre><code><span class="param">floatingActionButton</span> = {
+    <span class="fn">FloatingActionButton</span>(
+        <span class="param">onClick</span> = { sheetAcik = <span class="kw">true</span> }  <span class="cm">// Sheet'i aç!</span>
+    ) {
+        <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Add, <span class="str">"Öğrenci Ekle"</span>)
+    }
+}</code></pre>
+        </section>
+
+        <!-- ADIM 7 -->
+        <section id="adim7">
+            <div class="adim-header">
+                <div class="adim-no">7</div>
+                <div class="adim-title">Öğrenci Kartı — Card bileşeni</div>
+            </div>
+            <p>Her öğrencinin bilgilerini gösteren kart:</p>
+
+            <pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">OgrenciKarti</span>(
+    <span class="param">ogrenci</span>: <span class="type">Ogrenci</span>,
+    <span class="param">onSil</span>: () -> <span class="type">Unit</span>   <span class="cm">// Silme butonuna tıklanınca</span>
+) {
+    <span class="fn">Card</span>(
+        <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>(),
+        <span class="param">elevation</span> = <span class="type">CardDefaults</span>.<span class="fn">cardElevation</span>(<span class="num">4</span>.dp)
+    ) {
+        <span class="fn">Row</span>(
+            <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp).<span class="fn">fillMaxWidth</span>(),
+            <span class="param">verticalAlignment</span> = <span class="type">Alignment</span>.CenterVertically
+        ) {
+            <span class="fn">Column</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">weight</span>(<span class="num">1</span>f)) {
+                <span class="fn">Text</span>(
+                    <span class="str">"${ogrenci.ad} ${ogrenci.soyad}"</span>,
+                    <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.titleMedium
+                )
+                <span class="fn">Spacer</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">4</span>.dp))
+                <span class="fn">Row</span>(<span class="param">horizontalArrangement</span> = <span class="type">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">8</span>.dp)) {
+                    <span class="fn">Text</span>(<span class="str">"Not 1: ${ogrenci.not1}"</span>,
+                        <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.bodySmall)
+                    <span class="fn">Text</span>(<span class="str">"Not 2: ${ogrenci.not2}"</span>,
+                        <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.bodySmall)
+                }
+            }
+            <span class="cm">// Silme butonu</span>
+            <span class="fn">IconButton</span>(<span class="param">onClick</span> = onSil) {
+                <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Delete,
+                    <span class="str">"Sil"</span>, <span class="param">tint</span> = <span class="type">Color</span>.Red)
+            }
+        }
+    }
+}</code></pre>
+        </section>
+
+        <!-- ADIM 8 -->
+        <section id="adim8">
+            <div class="adim-header">
+                <div class="adim-no">8</div>
+                <div class="adim-title">LazyColumn — Kartları listele</div>
+            </div>
+
+            <pre><code><span class="cm">// Scaffold'un content lambda'sı içinde:</span>
+<span class="fn">LazyColumn</span>(
+    <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(paddingValues),
+    <span class="param">contentPadding</span> = <span class="fn">PaddingValues</span>(<span class="num">16</span>.dp),
+    <span class="param">verticalArrangement</span> = <span class="type">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">12</span>.dp)
+) {
+    <span class="fn">items</span>(ogrenciler) { ogrenci ->
+        <span class="fn">OgrenciKarti</span>(
+            <span class="param">ogrenci</span> = ogrenci,
+            <span class="param">onSil</span> = { silinecekOgrenci = ogrenci }
+            <span class="cm">// ↑ Dialog'u aç, silinecek öğrenciyi kaydet</span>
+        )
+    }
+}</code></pre>
+
+            <div class="card card-warn">
+                <p><span class="emoji">⚠️</span><strong>items(ogrenciler)</strong> — Burada <code>items(10)</code>
+                    yerine doğrudan listeyi veriyoruz. Liste her değiştiğinde ekran otomatik güncellenir!</p>
+            </div>
+        </section>
+
+        <!-- ADIM 9 -->
+        <section id="adim9">
+            <div class="adim-header">
+                <div class="adim-no">9</div>
+                <div class="adim-title">BottomSheet — Yeni öğrenci ekleme formu</div>
+            </div>
+            <p>FAB'a tıklayınca alttan açılan form:</p>
+
+            <div class="phone">
+                <div class="phone-top"><span>☰</span><span style="flex:1">📓 Not Defteri</span></div>
+                <div class="phone-body"></div>
+                <div class="sheet">
+                    <div class="sheet-handle"></div>
+                    <h5>➕ Yeni Öğrenci Ekle</h5>
+                    <input class="sheet-input" placeholder="Ad" value="Zeynep">
+                    <input class="sheet-input" placeholder="Soyad" value="Güneş">
+                    <input class="sheet-input" placeholder="Not 1" value="95">
+                    <input class="sheet-input" placeholder="Not 2" value="88">
+                    <div class="sheet-btn">✓ Kaydet</div>
+                </div>
+            </div>
+
+            <pre><code><span class="kw">if</span> (sheetAcik) {
+    <span class="fn">ModalBottomSheet</span>(
+        <span class="param">onDismissRequest</span> = { sheetAcik = <span class="kw">false</span> },
+        <span class="param">sheetState</span> = <span class="fn">rememberModalBottomSheetState</span>()
+    ) {
+        <span class="fn">Column</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp)) {
+            <span class="fn">Text</span>(<span class="str">"Yeni Öğrenci Ekle"</span>,
+                <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.headlineSmall)
+            <span class="fn">Spacer</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">16</span>.dp))
+
+            <span class="fn">OutlinedTextField</span>(
+                <span class="param">value</span> = yeniAd,
+                <span class="param">onValueChange</span> = { yeniAd = it },
+                <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Ad"</span>) },
+                <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>()
+            )
+            <span class="fn">OutlinedTextField</span>(
+                <span class="param">value</span> = yeniSoyad,
+                <span class="param">onValueChange</span> = { yeniSoyad = it },
+                <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Soyad"</span>) },
+                <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>()
+            )
+            <span class="fn">OutlinedTextField</span>(
+                <span class="param">value</span> = yeniNot1,
+                <span class="param">onValueChange</span> = { yeniNot1 = it },
+                <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Not 1"</span>) },
+                <span class="param">keyboardOptions</span> = <span class="fn">KeyboardOptions</span>(
+                    <span class="param">keyboardType</span> = <span class="type">KeyboardType</span>.Number),
+                <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>()
+            )
+            <span class="fn">OutlinedTextField</span>(
+                <span class="param">value</span> = yeniNot2,
+                <span class="param">onValueChange</span> = { yeniNot2 = it },
+                <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Not 2"</span>) },
+                <span class="param">keyboardOptions</span> = <span class="fn">KeyboardOptions</span>(
+                    <span class="param">keyboardType</span> = <span class="type">KeyboardType</span>.Number),
+                <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>()
+            )
+            <span class="fn">Spacer</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">16</span>.dp))
+
+            <span class="fn">Button</span>(
+                <span class="param">onClick</span> = {
+                    <span class="cm">// Yeni öğrenciyi listeye ekle</span>
+                    <span class="kw">val</span> yeniId = (ogrenciler.maxOfOrNull { it.id } ?: <span class="num">0</span>) + <span class="num">1</span>
+                    ogrenciler = ogrenciler + <span class="type">Ogrenci</span>(
+                        yeniId, yeniAd, yeniSoyad,
+                        yeniNot1.<span class="fn">toIntOrNull</span>() ?: <span class="num">0</span>,
+                        yeniNot2.<span class="fn">toIntOrNull</span>() ?: <span class="num">0</span>
+                    )
+                    <span class="cm">// Formu temizle ve kapat</span>
+                    yeniAd = <span class="str">""</span>; yeniSoyad = <span class="str">""</span>
+                    yeniNot1 = <span class="str">""</span>; yeniNot2 = <span class="str">""</span>
+                    sheetAcik = <span class="kw">false</span>
+                },
+                <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>()
+            ) {
+                <span class="fn">Text</span>(<span class="str">"Kaydet"</span>)
+            }
+            <span class="fn">Spacer</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">32</span>.dp))
+        }
+    }
+}</code></pre>
+
+            <div class="card card-accent">
+                <p><span class="emoji">📌</span><strong>toIntOrNull()</strong> — Kullanıcı "abc" yazarsa hata vermez,
+                    yerine 0 koyar.</p>
+            </div>
+        </section>
+
+        <!-- ADIM 10 -->
+        <section id="adim10">
+            <div class="adim-header">
+                <div class="adim-no">10</div>
+                <div class="adim-title">Dialog — Silme onayı</div>
+            </div>
+            <p>Öğrencinin 🗑️ butonuna tıklayınca onay soracağız:</p>
+
+            <div class="phone">
+                <div class="phone-top"><span>☰</span><span style="flex:1">📓 Not Defteri</span></div>
+                <div class="phone-body"></div>
+                <div class="dialog-overlay">
+                    <div class="dialog-box">
+                        <h5>Öğrenciyi Sil</h5>
+                        <p><strong>Ahmet Yılmaz</strong> adlı öğrenciyi silmek istediğinize emin misiniz?</p>
+                        <div class="dialog-btns"><span class="btn-cancel">İptal</span><span
+                                class="btn-danger">Sil</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <pre><code><span class="cm">// silinecekOgrenci null değilse Dialog'u göster</span>
+silinecekOgrenci?.<span class="kw">let</span> { ogr ->
+    <span class="fn">AlertDialog</span>(
+        <span class="param">onDismissRequest</span> = { silinecekOgrenci = <span class="kw">null</span> },
+        <span class="param">title</span> = { <span class="fn">Text</span>(<span class="str">"Öğrenciyi Sil"</span>) },
+        <span class="param">text</span> = {
+            <span class="fn">Text</span>(<span class="str">"${ogr.ad} ${ogr.soyad} adlı öğrenciyi silmek istediğinize emin misiniz?"</span>)
+        },
+        <span class="param">confirmButton</span> = {
+            <span class="fn">TextButton</span>(<span class="param">onClick</span> = {
+                <span class="cm">// Listeden çıkar</span>
+                ogrenciler = ogrenciler.<span class="fn">filter</span> { it.id != ogr.id }
+                silinecekOgrenci = <span class="kw">null</span>
+            }) {
+                <span class="fn">Text</span>(<span class="str">"Sil"</span>, <span class="param">color</span> = <span class="type">Color</span>.Red)
+            }
+        },
+        <span class="param">dismissButton</span> = {
+            <span class="fn">TextButton</span>(<span class="param">onClick</span> = {
+                silinecekOgrenci = <span class="kw">null</span>
+            }) {
+                <span class="fn">Text</span>(<span class="str">"İptal"</span>)
+            }
+        }
+    )
+}</code></pre>
+
+            <div class="card card-success">
+                <p><span class="emoji">✅</span><strong>filter { it.id != ogr.id }</strong> — Listeden silinen öğrenciyi
+                    çıkarır ve yeni liste oluşturur.</p>
+            </div>
+        </section>
+
+        <!-- ADIM 11 -->
+        <section id="adim11">
+            <div class="adim-header">
+                <div class="adim-no">11</div>
+                <div class="adim-title">Tam Kod — Hepsini birleştir</div>
+            </div>
+
+            <details>
+                <summary>📄 OgrenciNotDefteri() — Tüm kodu göster</summary>
+                <div class="detail-body">
+                    <pre><code><span class="ann">@OptIn</span>(<span class="type">ExperimentalMaterial3Api</span>::<span class="kw">class</span>)
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">OgrenciNotDefteri</span>() {
+    <span class="kw">var</span> ogrenciler <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="fn">listOf</span>(
+        <span class="type">Ogrenci</span>(<span class="num">1</span>,<span class="str">"Ahmet"</span>,<span class="str">"Yılmaz"</span>,<span class="num">85</span>,<span class="num">92</span>),
+        <span class="type">Ogrenci</span>(<span class="num">2</span>,<span class="str">"Elif"</span>,<span class="str">"Kaya"</span>,<span class="num">78</span>,<span class="num">65</span>)
+    )) }
+    <span class="kw">var</span> sheetAcik <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="kw">false</span>) }
+    <span class="kw">var</span> silinecekOgrenci <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>&lt;<span class="type">Ogrenci</span>?&gt;(<span class="kw">null</span>) }
+    <span class="kw">var</span> yeniAd <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+    <span class="kw">var</span> yeniSoyad <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+    <span class="kw">var</span> yeniNot1 <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+    <span class="kw">var</span> yeniNot2 <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="str">""</span>) }
+
+    <span class="fn">Scaffold</span>(
+        <span class="param">topBar</span> = {
+            <span class="fn">TopAppBar</span>(
+                <span class="param">title</span> = { <span class="fn">Text</span>(<span class="str">"📓 Öğrenci Not Defteri"</span>) },
+                <span class="param">navigationIcon</span> = {
+                    <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+                        <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Menu, <span class="str">"Menü"</span>) }
+                },
+                <span class="param">actions</span> = { <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+                    <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Search, <span class="str">"Ara"</span>) } },
+                <span class="param">colors</span> = <span class="type">TopAppBarDefaults</span>.<span class="fn">topAppBarColors</span>(
+                    <span class="param">containerColor</span> = <span class="type">MaterialTheme</span>.colorScheme.primaryContainer)
+            )
+        },
+        <span class="param">floatingActionButton</span> = {
+            <span class="fn">FloatingActionButton</span>(<span class="param">onClick</span> = { sheetAcik = <span class="kw">true</span> }) {
+                <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Add, <span class="str">"Ekle"</span>)
+            }
+        },
+        <span class="param">bottomBar</span> = {
+            <span class="fn">NavigationBar</span> {
+                <span class="fn">NavigationBarItem</span>(<span class="kw">true</span>, { },
+                    { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.List, <span class="kw">null</span>) },
+                    <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Liste"</span>) })
+                <span class="fn">NavigationBarItem</span>(<span class="kw">false</span>, { },
+                    { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Star, <span class="kw">null</span>) },
+                    <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"İstatistik"</span>) })
+                <span class="fn">NavigationBarItem</span>(<span class="kw">false</span>, { },
+                    { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Settings, <span class="kw">null</span>) },
+                    <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Ayarlar"</span>) })
+            }
+        }
+    ) { paddingValues ->
+        <span class="fn">LazyColumn</span>(
+            <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(paddingValues),
+            <span class="param">contentPadding</span> = <span class="fn">PaddingValues</span>(<span class="num">16</span>.dp),
+            <span class="param">verticalArrangement</span> = <span class="type">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">12</span>.dp)
+        ) {
+            <span class="fn">items</span>(ogrenciler) { ogr ->
+                <span class="fn">OgrenciKarti</span>(ogr) { silinecekOgrenci = ogr }
+            }
+        }
+    }
+
+    <span class="cm">// BottomSheet</span>
+    <span class="kw">if</span> (sheetAcik) {
+        <span class="fn">ModalBottomSheet</span>(<span class="param">onDismissRequest</span> = { sheetAcik = <span class="kw">false</span> },
+            <span class="param">sheetState</span> = <span class="fn">rememberModalBottomSheetState</span>()
+        ) {
+            <span class="fn">Column</span>(<span class="type">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp)) {
+                <span class="fn">Text</span>(<span class="str">"Yeni Öğrenci"</span>, <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.headlineSmall)
+                <span class="fn">Spacer</span>(<span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">12</span>.dp))
+                <span class="fn">OutlinedTextField</span>(yeniAd, { yeniAd = it }, <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Ad"</span>) }, <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>())
+                <span class="fn">OutlinedTextField</span>(yeniSoyad, { yeniSoyad = it }, <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Soyad"</span>) }, <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>())
+                <span class="fn">OutlinedTextField</span>(yeniNot1, { yeniNot1 = it }, <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Not 1"</span>) }, <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>())
+                <span class="fn">OutlinedTextField</span>(yeniNot2, { yeniNot2 = it }, <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Not 2"</span>) }, <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>())
+                <span class="fn">Spacer</span>(<span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">12</span>.dp))
+                <span class="fn">Button</span>(<span class="param">onClick</span> = {
+                    <span class="kw">val</span> id = (ogrenciler.maxOfOrNull { it.id } ?: <span class="num">0</span>) + <span class="num">1</span>
+                    ogrenciler = ogrenciler + <span class="type">Ogrenci</span>(id, yeniAd, yeniSoyad,
+                        yeniNot1.<span class="fn">toIntOrNull</span>() ?: <span class="num">0</span>, yeniNot2.<span class="fn">toIntOrNull</span>() ?: <span class="num">0</span>)
+                    yeniAd=<span class="str">""</span>; yeniSoyad=<span class="str">""</span>; yeniNot1=<span class="str">""</span>; yeniNot2=<span class="str">""</span>
+                    sheetAcik = <span class="kw">false</span>
+                }, <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>()) { <span class="fn">Text</span>(<span class="str">"Kaydet"</span>) }
+                <span class="fn">Spacer</span>(<span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">32</span>.dp))
+            }
+        }
+    }
+
+    <span class="cm">// Dialog</span>
+    silinecekOgrenci?.<span class="kw">let</span> { ogr ->
+        <span class="fn">AlertDialog</span>(
+            <span class="param">onDismissRequest</span> = { silinecekOgrenci = <span class="kw">null</span> },
+            <span class="param">title</span> = { <span class="fn">Text</span>(<span class="str">"Öğrenciyi Sil"</span>) },
+            <span class="param">text</span> = { <span class="fn">Text</span>(<span class="str">"${ogr.ad} ${ogr.soyad} silinsin mi?"</span>) },
+            <span class="param">confirmButton</span> = { <span class="fn">TextButton</span>(<span class="param">onClick</span> = {
+                ogrenciler = ogrenciler.<span class="fn">filter</span> { it.id != ogr.id }
+                silinecekOgrenci = <span class="kw">null</span>
+            }) { <span class="fn">Text</span>(<span class="str">"Sil"</span>, <span class="param">color</span> = <span class="type">Color</span>.Red) } },
+            <span class="param">dismissButton</span> = { <span class="fn">TextButton</span>(<span class="param">onClick</span> = {
+                silinecekOgrenci = <span class="kw">null</span>
+            }) { <span class="fn">Text</span>(<span class="str">"İptal"</span>) } }
+        )
+    }
+}</code></pre>
+                </div>
+            </details>
+        </section>
+
+        <!-- ÖZET -->
+        <section id="ozet">
+            <h2>📝 Özet — Neler Öğrendik?</h2>
+            <div class="card card-success">
+                <table style="width:100%;border-collapse:collapse">
+                    <tr style="border-bottom:1px solid var(--surface3)">
+                        <td style="padding:8px"><span class="tag tag-blue">data class</span></td>
+                        <td style="padding:8px;color:var(--text-dim)">Öğrenci verisini modelledik</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--surface3)">
+                        <td style="padding:8px"><span class="tag tag-blue">State</span></td>
+                        <td style="padding:8px;color:var(--text-dim)">Liste, dialog ve sheet durumlarını yönettik</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--surface3)">
+                        <td style="padding:8px"><span class="tag tag-blue">Scaffold</span></td>
+                        <td style="padding:8px;color:var(--text-dim)">TopBar + BottomBar + FAB + İçerik iskeleti</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--surface3)">
+                        <td style="padding:8px"><span class="tag tag-green">Card</span></td>
+                        <td style="padding:8px;color:var(--text-dim)">Her öğrenciyi kart olarak gösterdik</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--surface3)">
+                        <td style="padding:8px"><span class="tag tag-green">LazyColumn</span></td>
+                        <td style="padding:8px;color:var(--text-dim)">Kartları otomatik listeledik</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--surface3)">
+                        <td style="padding:8px"><span class="tag tag-pink">BottomSheet</span></td>
+                        <td style="padding:8px;color:var(--text-dim)">Yeni öğrenci ekleme formu</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px"><span class="tag tag-pink">Dialog</span></td>
+                        <td style="padding:8px;color:var(--text-dim)">Silme onayı penceresi</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card card-warn" style="text-align:center;margin-top:24px">
+                <p style="font-size:2rem">🚀</p>
+                <p><strong>Artık temel proje tamam!</strong></p>
+                <p>Aşağıdaki <strong>Bonus Özellikler</strong> ile projeyi daha da geliştirebilirsin. Her birinde
+                    <em>ipuçları</em> var — çözümü kendin yazmayı dene!
+                </p>
+            </div>
+        </section>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- BONUS ÖZELLİKLER BÖLÜMÜ                   -->
+        <!-- ═══════════════════════════════════════════ -->
+
+        <h2 style="color:var(--warning);border-bottom-color:var(--warning);margin-top:60px">⭐ Bonus Özellikler — Sıra
+            Sende!</h2>
+        <div class="card card-accent" style="margin-bottom:24px">
+            <p><span class="emoji">💡</span><strong>Bu bölümde cevaplar yok, sadece ipuçları var!</strong></p>
+            <p style="color:var(--text-dim)">Her özellik için sana yol gösterici ipuçları veriyoruz. Kodu kendin yazarak
+                öğrenmen çok daha kalıcı olacak. Takılırsan ipuçlarını sırayla oku, her biri biraz daha fazla detay
+                veriyor.</p>
+        </div>
+
+        <!-- BONUS 1: Ortalama Hesaplama -->
+        <section id="bonus1">
+            <div class="bonus-header">
+                <div class="bonus-icon">🎯</div>
+                <div>
+                    <div class="bonus-title">Bonus 1: Not Ortalaması Hesaplama
+                        <span class="difficulty">
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star empty">★</span>
+                        </span>
+                    </div>
+                </div>
+                <span class="bonus-badge">Opsiyonel</span>
+            </div>
+
+            <p>Her öğrencinin <strong>not ortalamasını</strong> hesaplayıp kartında göster. Ayrıca ortalamaya göre
+                <strong>renk</strong> belirle: 50'nin altı kırmızı, 50-70 arası turuncu, 70 üstü yeşil.
+            </p>
+
+            <h4>📱 Hedef Görünüm:</h4>
+            <div class="preview-mockup">
+                <div class="phone" style="height:320px">
+                    <div class="phone-top" style="padding:20px 14px 10px"><span style="flex:1">📓 Not Defteri</span>
+                    </div>
+                    <div class="phone-body">
+                        <div class="mini-card">
+                            <h5>Ahmet Yılmaz</h5>
+                            <div class="grades">
+                                <span class="grade">Mat: 85</span>
+                                <span class="grade">Fen: 92</span>
+                                <span class="avg">Ort: 88.5 ✓</span>
+                            </div>
+                        </div>
+                        <div class="mini-card">
+                            <h5>Elif Kaya</h5>
+                            <div class="grades">
+                                <span class="grade">Mat: 35</span>
+                                <span class="grade">Fen: 42</span>
+                                <span class="avg fail">Ort: 38.5 ✗</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="try-yourself">
+                <h4>🧑‍💻 Sıra Sende!</h4>
+                <p style="color:var(--text-dim)">Aşağıdaki ipuçlarını sırayla oku. Her biri seni çözüme bir adım
+                    yaklaştırır:</p>
+            </div>
+
+            <div class="hint-box">
+                <div class="hint-title">💡 İpuçları</div>
+
+                <details>
+                    <summary>İpucu 1: Ortalamayı Nerede Hesaplamalı?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text"><code>data class Ogrenci</code> içine bir <strong>hesaplanmış
+                                    özellik (computed property)</strong> ekleyebilirsin. Kotlin'de
+                                <code>val ortalama: Double get() = ...</code> şeklinde bir özellik
+                                tanımlanabilir.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle olmalı:</strong> <code>data class</code>'ın süslü
+                                parantezleri içine yaz. Constructor parametresi olarak değil, <strong>body
+                                    içinde</strong> tanımla. Yani
+                                <code>data class Ogrenci(...) { val ortalama: Double get() = ... }</code>
+                                şeklinde.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">⚠️</span>
+                            <span class="hint-text"><strong>Dikkat:</strong> <code>get()</code> ile tanımlanan
+                                özellikler her çağrıldığında hesaplanır, bellekte yer tutmaz. Bu projede performans
+                                farkı olmaz ama bunu bilmek önemli.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 2: Ortalama Formülü</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">İki notun ortalaması: <code>(not1 + not2) / 2.0</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">⚠️</span>
+                            <span class="hint-text"><strong>Neden 2.0?</strong> Kotlin'de <code>Int / Int</code> sonucu
+                                yine <code>Int</code> olur. Yani <code>85 / 2 = 42</code> (noktadan sonrası kaybolur!).
+                                <code>2.0</code> yazınca sonuç <code>Double</code> olur: <code>85 / 2.0 = 42.5</code>.
+                                Alternatif olarak <code>.toDouble()</code> de kullanabilirsin.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 3: Kartda Nasıl Gösterilir?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text"><code>OgrenciKarti</code> composable'ında, Not 1 ve Not 2'yi
+                                gösteren <code>Row</code>'un <strong>hemen altına</strong> yeni bir <code>Text</code>
+                                ekle.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>String template kullan:</strong>
+                                <code>"Ortalama: ${ogrenci.ortalama}"</code> — Ayrıca bu Text'e
+                                <code>style = MaterialTheme.typography.bodyMedium</code> ve
+                                <code>fontWeight = FontWeight.Bold</code> ekleyerek öne çıkarabilirsin.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Konum:</strong> <code>Column</code> içindeki,
+                                <code>Row(horizontalArrangement = ...)</code> bloğunun altına, <code>Spacer</code>'dan
+                                sonra eklemen en uygun yer.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 4: Renk Nasıl Değiştirilir?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Önce bir <strong>renk değişkeni</strong> oluştur, sonra onu
+                                <code>Text</code>'in <code>color</code> parametresine ver.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle:</strong><br>
+                                <code>val renk = when {</code><br>
+                                &nbsp;&nbsp;<code>ogrenci.ortalama &lt; 50 -> Color.Red</code><br>
+                                &nbsp;&nbsp;<code>ogrenci.ortalama &lt; 70 -> Color(0xFFFF9800)</code> <em>//
+                                    Turuncu</em><br>
+                                &nbsp;&nbsp;<code>else -> Color(0xFF4CAF50)</code> <em>// Yeşil</em><br>
+                                <code>}</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Kullanım:</strong>
+                                <code>Text("Ort: ...", color = renk)</code> — Bu değişkeni <code>OgrenciKarti</code>
+                                fonksiyonunun <strong>başında</strong> (return'den önce) tanımla.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 5: Ondalık Basamak Kontrolü</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Ortalamanın çok uzun görünmemesi için
+                                <code>"%.1f".format(ortalama)</code> kullanabilirsin. Bu, 1 ondalık basamak gösterir
+                                (örn: 88.5).</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Tam kullanım:</strong>
+                                <code>Text("Ort: ${"%.1f".format(ogrenci.ortalama)}")</code> — String template içinde
+                                format kullanırken <code>${...}</code> süslü parantez gerekir çünkü nokta var.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Bonus:</strong> Geçen öğrenci için ✓, kalan için ✗ sembolü
+                                de ekleyebilirsin: <code>if(ortalama >= 50) "✓" else "✗"</code></span>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card card-success">
+                <p><span class="emoji">✅</span><strong>Başarı Kriterleri:</strong></p>
+                <ul>
+                    <li>Her kartda not ortalaması görünüyor</li>
+                    <li>Ortalama 50 altı → kırmızı renk</li>
+                    <li>Ortalama 50-70 arası → turuncu renk</li>
+                    <li>Ortalama 70 üstü → yeşil renk</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BONUS 2: Kalanlar & Geçenler Bottom Bar -->
+        <section id="bonus2">
+            <div class="bonus-header">
+                <div class="bonus-icon">📊</div>
+                <div>
+                    <div class="bonus-title">Bonus 2: Kalanlar & Geçenler (BottomBar Sekmeleri)
+                        <span class="difficulty">
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                        </span>
+                    </div>
+                </div>
+                <span class="bonus-badge">Opsiyonel</span>
+            </div>
+
+            <p>BottomBar'daki <strong>"Liste"</strong> ve <strong>"İstatistik"</strong> sekmelerine ek olarak
+                <strong>"Geçenler"</strong> ve <strong>"Kalanlar"</strong> sekmeleri ekle. Her sekmeye tıklayınca ilgili
+                öğrenciler listelensin.
+            </p>
+
+            <h4>📱 Hedef Görünüm:</h4>
+            <div class="preview-mockup">
+                <div class="phone" style="height:280px">
+                    <div class="phone-top" style="padding:20px 14px 10px"><span style="flex:1">📓 Not Defteri</span>
+                    </div>
+                    <div class="phone-body">
+                        <div class="mini-card">
+                            <h5 style="color:#16a34a">✓ Ahmet Yılmaz</h5>
+                            <div class="grades"><span class="avg">Ort: 88.5</span></div>
+                        </div>
+                        <div class="mini-card">
+                            <h5 style="color:#16a34a">✓ Can Demir</h5>
+                            <div class="grades"><span class="avg">Ort: 89.0</span></div>
+                        </div>
+                    </div>
+                    <div class="phone-bottom">
+                        <div>📋<br>Tümü</div>
+                        <div class="tab-pass">✅<br>Geçenler</div>
+                        <div class="tab-fail">❌<br>Kalanlar</div>
+                        <div class="tab-best">🏆<br>En İyi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="try-yourself">
+                <h4>🧑‍💻 Sıra Sende!</h4>
+                <p style="color:var(--text-dim)">Filtreleme ve sekme yönetimi biraz daha zor. İpuçlarını dikkatlice
+                    takip et:</p>
+            </div>
+
+            <div class="hint-box">
+                <div class="hint-title">💡 İpuçları</div>
+
+                <details>
+                    <summary>İpucu 1: Aktif Sekmeyi Nasıl Takip Edersin?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Yeni bir <strong>state</strong> tanımla:
+                                <code>var aktifSekme by remember { mutableStateOf(0) }</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Numaralandırma:</strong> 0 = Tümü, 1 = Geçenler, 2 =
+                                Kalanlar, 3 = En İyi. Bunu diğer state'lerin yanına (<code>sheetAcik</code>,
+                                <code>silinecekOgrenci</code> vb.) ekle.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>İleri seviye:</strong> Sayı yerine
+                                <code>enum class Sekme { TUMU, GECENLER, KALANLAR, EN_IYI }</code> de tanımlayabilirsin
+                                — daha okunur kod olur.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 2: NavigationBarItem'ı Nasıl Güncellersin?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Her <code>NavigationBarItem</code>'ın <code>selected</code>
+                                parametresini <code>aktifSekme == 0</code>, <code>aktifSekme == 1</code> gibi kontrol
+                                et.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle:</strong><br>
+                                <code>NavigationBarItem(</code><br>
+                                &nbsp;&nbsp;<code>selected = aktifSekme == 1,</code><br>
+                                &nbsp;&nbsp;<code>onClick = { aktifSekme = 1 },</code><br>
+                                &nbsp;&nbsp;<code>icon = { Icon(Icons.Default.CheckCircle, null) },</code><br>
+                                &nbsp;&nbsp;<code>label = { Text("Geçenler") }</code><br>
+                                <code>)</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">⚠️</span>
+                            <span class="hint-text"><strong>Dikkat:</strong> Mevcut 3 sekmeyi (Liste, İstatistik,
+                                Ayarlar) <strong>silip 4 yenisiyle değiştir.</strong> Toplam 4 item: Tümü (0), Geçenler
+                                (1), Kalanlar (2), En İyi (3).</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 3: Listeyi Nasıl Filtrelersin?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Kotlin'in <code>filter</code> fonksiyonunu düşün:
+                                <code>ogrenciler.filter { it.ortalama >= 50 }</code> geçenleri verir.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>LazyColumn'da kullanımı:</strong>
+                                <code>items(ogrenciler)</code> yerine <code>items(filtrelenmisListe)</code> yaz.
+                                Filtrelenmiş listeyi <strong>LazyColumn'dan hemen önce</strong> hesapla.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Önemli:</strong> <code>filter</code> orijinal listeyi
+                                değiştirmez, yeni bir liste döndürür. Bu yüzden <code>ogrenciler</code> state'i güvende
+                                kalır.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 4: when ile Sekmeye Göre Filtreleme</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Scaffold'un content lambda'sında, LazyColumn'dan önce filtreleme
+                                yap:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle:</strong><br>
+                                <code>val gosterilecekler = when(aktifSekme) {</code><br>
+                                &nbsp;&nbsp;<code>0 -> ogrenciler</code> <em>// Tümü</em><br>
+                                &nbsp;&nbsp;<code>1 -> ogrenciler.filter { it.ortalama >= 50 }</code><br>
+                                &nbsp;&nbsp;<code>2 -> ogrenciler.filter { it.ortalama < 50 }</code><br>
+                                &nbsp;&nbsp;<code>3 -> ogrenciler.sortedByDescending { it.ortalama }.take(3)</code><br>
+                                &nbsp;&nbsp;<code>else -> ogrenciler</code><br>
+                                <code>}</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">⚠️</span>
+                            <span class="hint-text"><strong>Dikkat:</strong> <code>when</code> kullanırken
+                                <code>else</code> dalını unutma! Kotlin <code>when</code> ifadesi tüm durumları
+                                karşılamalı.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 5: Geçme Notu Kaç?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Geçme barajı olarak <strong>50</strong> kullanabilirsin.
+                                <code>it.ortalama >= 50</code> → geçen, <code>it.ortalama < 50</code> → kalan.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Sabit tanımla:</strong> Kodun en üstüne
+                                <code>private const val GECME_NOTU = 50.0</code> ekle. Böylece geçme notu değişirse tek
+                                yerden güncelersin: <code>it.ortalama >= GECME_NOTU</code></span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 6: Icon Seçimi</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text"><strong>Her sekme için uygun icon:</strong></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📋</span>
+                            <span class="hint-text">Tümü → <code>Icons.Default.List</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">✅</span>
+                            <span class="hint-text">Geçenler → <code>Icons.Default.CheckCircle</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">⚠️</span>
+                            <span class="hint-text">Kalanlar → <code>Icons.Default.Warning</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">🏆</span>
+                            <span class="hint-text">En İyi → <code>Icons.Default.Star</code> veya
+                                <code>Icons.Default.EmojiEvents</code></span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 7: Liste Boşsa Ne Gösterilir?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Filtrelenmiş liste boş olabilir. LazyColumn'dan
+                                <strong>önce</strong> kontrol et:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle:</strong><br>
+                                <code>if (gosterilecekler.isEmpty()) {</code><br>
+                                &nbsp;&nbsp;<code>// Ekranın ortasına mesaj göster</code><br>
+                                &nbsp;&nbsp;<code>Box(Modifier.fillMaxSize(), contentAlignment = Center) {</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>Text("Bu kategoride öğrenci yok")</code><br>
+                                &nbsp;&nbsp;<code>}</code><br>
+                                <code>} else { LazyColumn(...) { ... } }</code></span>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card card-success">
+                <p><span class="emoji">✅</span><strong>Başarı Kriterleri:</strong></p>
+                <ul>
+                    <li>BottomBar'da 4 sekme var: Tümü, Geçenler, Kalanlar, En İyi</li>
+                    <li>Sekmelere tıklayınca ilgili öğrenciler filtreleniyor</li>
+                    <li>Aktif sekme görsel olarak seçili görünüyor</li>
+                    <li>Liste boşken "Öğrenci bulunamadı" gibi bir mesaj gösteriliyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BONUS 3: En İyi Öğrenciler -->
+        <section id="bonus3">
+            <div class="bonus-header">
+                <div class="bonus-icon">🏆</div>
+                <div>
+                    <div class="bonus-title">Bonus 3: En İyi 3 Öğrenci
+                        <span class="difficulty">
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star empty">★</span>
+                        </span>
+                    </div>
+                </div>
+                <span class="bonus-badge">Opsiyonel</span>
+            </div>
+
+            <p>"En İyi" sekmesine tıklayınca, en yüksek <strong>ortalamalı 3 öğrenciyi</strong> özel bir tasarımla
+                göster. Birinciyi <span style="color:#fbbf24">🥇 altın</span>, ikinciyi <span style="color:#94a3b8">🥈
+                    gümüş</span>, üçüncüyü <span style="color:#b45309">🥉 bronz</span> renkle süsle.</p>
+
+            <h4>📱 Hedef Görünüm:</h4>
+            <div class="preview-mockup">
+                <div class="phone" style="height:320px">
+                    <div class="phone-top" style="padding:20px 14px 10px;background:#f59e0b"><span style="flex:1">🏆 En
+                            İyi Öğrenciler</span></div>
+                    <div class="phone-body">
+                        <div class="mini-card" style="border-left:4px solid #fbbf24;background:#fffbeb">
+                            <h5>🥇 Ahmet Yılmaz</h5>
+                            <div class="grades"><span class="avg">Ort: 92.5</span></div>
+                        </div>
+                        <div class="mini-card" style="border-left:4px solid #94a3b8;background:#f8fafc">
+                            <h5>🥈 Can Demir</h5>
+                            <div class="grades"><span class="avg">Ort: 89.0</span></div>
+                        </div>
+                        <div class="mini-card" style="border-left:4px solid #b45309;background:#fffbeb">
+                            <h5>🥉 Zeynep Güneş</h5>
+                            <div class="grades"><span class="avg">Ort: 85.0</span></div>
+                        </div>
+                    </div>
+                    <div class="phone-bottom">
+                        <div>📋<br>Tümü</div>
+                        <div>✅<br>Geçenler</div>
+                        <div>❌<br>Kalanlar</div>
+                        <div class="tab-best">🏆<br>En İyi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="try-yourself">
+                <h4>🧑‍💻 Sıra Sende!</h4>
+                <p style="color:var(--text-dim)">Sıralama ve özel tasarım gerektiren bu özellik için ipuçları:</p>
+            </div>
+
+            <div class="hint-box">
+                <div class="hint-title">💡 İpuçları</div>
+
+                <details>
+                    <summary>İpucu 1: Listeyi Nasıl Sıralarsın?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Kotlin'de <code>sortedByDescending</code> fonksiyonu var:
+                                <code>ogrenciler.sortedByDescending { it.ortalama }</code> — Bu en yüksek ortalamalıyı
+                                başa koyar.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Farkı anla:</strong> <code>sortedBy</code> → küçükten büyüğe
+                                (ascending), <code>sortedByDescending</code> → büyükten küçüğe (descending). En iyiler
+                                için <strong>descending</strong> kullan.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Önemli:</strong> <code>sortedByDescending</code> orijinal
+                                listeyi değiştirmez, sıralanmış <strong>yeni bir liste</strong> döndürür.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 2: Sadece İlk 3'ü Nasıl Alırsın?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text"><code>.take(3)</code> fonksiyonunu zincirle:
+                                <code>ogrenciler.sortedByDescending { it.ortalama }.take(3)</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">⚠️</span>
+                            <span class="hint-text"><strong>Dikkat:</strong> Listede 3'ten az öğrenci varsa
+                                <code>take(3)</code> hata vermez, mevcut kadarını döndürür. Yani 2 öğrenci varsa 2
+                                döner. Kotlin bunu senin için halleder!</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 3: Sıra Numarasını Nasıl Bilirsin?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Normalde <code>items(liste)</code> kullanıyorduk. Sıra numarası için
+                                <code>itemsIndexed</code> kullan.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle:</strong><br>
+                                <code>itemsIndexed(enIyiler) { index, ogr -></code><br>
+                                &nbsp;&nbsp;<code>// index: 0, 1, 2</code><br>
+                                &nbsp;&nbsp;<code>// ogr: Ogrenci nesnesi</code><br>
+                                <code>}</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Hatırla:</strong> <code>index</code> 0'dan başlar! 0 =
+                                birinci (🥇), 1 = ikinci (🥈), 2 = üçüncü (🥉).</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 4: Madalya Emojisi ve Renk Atama</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text"><code>when(index)</code> ile hem madalya hem renk belirle:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle:</strong><br>
+                                <code>val (madalya, renk) = when(index) {</code><br>
+                                &nbsp;&nbsp;<code>0 -> "🥇" to Color(0xFFFBBF24)</code> <em>// Altın</em><br>
+                                &nbsp;&nbsp;<code>1 -> "🥈" to Color(0xFF94A3B8)</code> <em>// Gümüş</em><br>
+                                &nbsp;&nbsp;<code>2 -> "🥉" to Color(0xFFB45309)</code> <em>// Bronz</em><br>
+                                &nbsp;&nbsp;<code>else -> "" to Color.Gray</code><br>
+                                <code>}</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Destructuring:</strong> <code>val (a, b) = Pair</code>
+                                yapısı Kotlin'de <strong>destructuring declaration</strong> olarak bilinir.
+                                <code>to</code> operatörü <code>Pair</code> oluşturur.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 5: Özel Kart Tasarımı</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Card'ın <code>colors</code> parametresini kullan:
+                                <code>CardDefaults.cardColors(containerColor = ...)</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Arka plan renkleri:</strong><br>
+                                Altın kartı → <code>Color(0xFFFFFBEB)</code> (açık sarı)<br>
+                                Gümüş kartı → <code>Color(0xFFF8FAFC)</code> (açık gri)<br>
+                                Bronz kartı → <code>Color(0xFFFFF7ED)</code> (açık turuncu)</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Ekstra süsleme:</strong> Kartın soluna renkli çizgi eklemek
+                                için <code>Modifier.border(width = 4.dp, color = renk, shape = ...)</code> veya
+                                <code>Card</code> içine bir <code>Box</code> koyup sol kenara renkli bir şerit
+                                ekleyebilirsin.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 6: TopAppBar Başlığını Değiştirme</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Aktif sekme "En İyi" olduğunda TopAppBar başlığını da
+                                değiştirebilirsin:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı:</strong>
+                                <code>title = { Text(if(aktifSekme == 3) "🏆 En İyi Öğrenciler" else "📓 Not Defteri") }</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Bonus:</strong> TopAppBar'ın rengini de değiştirebilirsin:
+                                <code>containerColor = if(aktifSekme == 3) Color(0xFFF59E0B) else MaterialTheme.colorScheme.primaryContainer</code></span>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card card-success">
+                <p><span class="emoji">✅</span><strong>Başarı Kriterleri:</strong></p>
+                <ul>
+                    <li>En İyi sekmesinde en yüksek 3 öğrenci sıralı görünüyor</li>
+                    <li>Her sıra farklı renk/madalya ile süslenmiş</li>
+                    <li>3'ten az öğrenci varsa mevcut kadar gösteriliyor</li>
+                    <li>Yeni öğrenci eklenince sıralama otomatik güncelleniyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- BONUS 4: Öğrenci Arama -->
+        <section id="bonus4">
+            <div class="bonus-header">
+                <div class="bonus-icon">🔍</div>
+                <div>
+                    <div class="bonus-title">Bonus 4: Öğrenci Arama (Search)
+                        <span class="difficulty">
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                        </span>
+                    </div>
+                </div>
+                <span class="bonus-badge">Opsiyonel</span>
+            </div>
+
+            <p>TopAppBar'daki <strong>🔍 arama ikonuna</strong> tıklayınca bir <strong>arama çubuğu</strong> açılsın.
+                Kullanıcı isim yazarak öğrencileri <strong>filtreleyebilsin</strong>. Arama kutusundaki metni sildikçe
+                liste anlık olarak güncellensin.</p>
+
+            <h4>📱 Hedef Görünüm:</h4>
+            <div class="preview-mockup">
+                <div class="phone" style="height:300px">
+                    <div class="phone-top" style="padding:20px 14px 8px;flex-direction:column;gap:6px">
+                        <div style="display:flex;align-items:center;gap:8px;width:100%">
+                            <span>←</span>
+                            <div
+                                style="flex:1;background:rgba(255,255,255,.2);padding:4px 10px;border-radius:8px;font-size:.75rem;color:rgba(255,255,255,.8)">
+                                Ahmet...</div>
+                            <span>✕</span>
+                        </div>
+                    </div>
+                    <div class="phone-body">
+                        <div class="mini-card">
+                            <h5><strong style="background:#fef08a;padding:0 2px;border-radius:2px">Ahmet</strong> Yılmaz
+                            </h5>
+                            <div class="grades"><span class="grade">Mat: 85</span><span class="grade">Fen: 92</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phone-bottom">
+                        <div class="act">📋<br>Tümü</div>
+                        <div>✅<br>Geçenler</div>
+                        <div>❌<br>Kalanlar</div>
+                        <div>🏆<br>En İyi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="try-yourself">
+                <h4>🧑‍💻 Sıra Sende!</h4>
+                <p style="color:var(--text-dim)">Arama özelliği birden fazla state ve koşullu UI gerektiriyor.
+                    İpuçlarını sırayla takip et:</p>
+            </div>
+
+            <div class="hint-box">
+                <div class="hint-title">💡 İpuçları</div>
+
+                <details>
+                    <summary>İpucu 1: Arama State'leri</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">İki yeni state lazım:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı:</strong><br>
+                                <code>var aramaAcik by remember { mutableStateOf(false) }</code><br>
+                                <code>var aramaMetni by remember { mutableStateOf("") }</code><br>
+                                İlki arama çubuğunun açık olup olmadığını, ikincisi aranan metni tutar.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 2: Arama İkonuna onClick Ekle</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Mevcut arama ikonunun <code>onClick</code>'i boş:
+                                <code>onClick = { }</code>. Bunu <code>onClick = { aramaAcik = true }</code> yap.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>actions bloğunda:</strong><br>
+                                <code>actions = {</code><br>
+                                &nbsp;&nbsp;<code>IconButton(onClick = { aramaAcik = !aramaAcik }) {</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>Icon(Icons.Default.Search, "Ara")</code><br>
+                                &nbsp;&nbsp;<code>}</code><br>
+                                <code>}</code></span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 3: Arama Çubuğunu Nereye Koymalı?</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text"><code>aramaAcik</code> true olduğunda, LazyColumn'ın
+                                <strong>üstüne</strong> (Scaffold content içinde) bir <code>OutlinedTextField</code>
+                                göster.</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı şöyle:</strong><br>
+                                <code>Column(Modifier.padding(paddingValues)) {</code><br>
+                                &nbsp;&nbsp;<code>if (aramaAcik) {</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>OutlinedTextField(</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>value = aramaMetni,</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>onValueChange = { aramaMetni = it },</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>label = { Text("Öğrenci ara...") },</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>modifier = Modifier.fillMaxWidth().padding(16.dp)</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>)</code><br>
+                                &nbsp;&nbsp;<code>}</code><br>
+                                &nbsp;&nbsp;<code>LazyColumn(...) { ... }</code><br>
+                                <code>}</code></span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 4: İsme Göre Filtreleme</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Arama metni boş değilse listeyi filtrele:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>Yapı:</strong><br>
+                                <code>val aramaSonucu = if (aramaMetni.isBlank()) {</code><br>
+                                &nbsp;&nbsp;<code>gosterilecekler  // sekme filtresinden gelen liste</code><br>
+                                <code>} else {</code><br>
+                                &nbsp;&nbsp;<code>gosterilecekler.filter {</code><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<code>"${it.ad} ${it.soyad}".contains(aramaMetni, ignoreCase = true)</code><br>
+                                &nbsp;&nbsp;<code>}</code><br>
+                                <code>}</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>ignoreCase = true</strong> büyük/küçük harf farkını
+                                görmezden gelir. "ahmet" yazınca "Ahmet" de bulunur.</span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 5: Arama Kapatma</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">Arama kapatıldığında metni temizle:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><strong>🔍 ikona tekrar tıklayınca:</strong><br>
+                                <code>onClick = {</code><br>
+                                &nbsp;&nbsp;<code>aramaAcik = !aramaAcik</code><br>
+                                &nbsp;&nbsp;<code>if (!aramaAcik) aramaMetni = ""</code> <em>// kapatırken
+                                    temizle</em><br>
+                                <code>}</code></span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">💡</span>
+                            <span class="hint-text"><strong>Ekstra:</strong> TextField'a <code>trailingIcon</code>
+                                olarak bir ✕ (Close) ikonu ekleyebilirsin:
+                                <code>trailingIcon = { IconButton(onClick = { aramaMetni = "" }) { Icon(Icons.Default.Close, "Temizle") } }</code></span>
+                        </div>
+                    </div>
+                </details>
+
+                <details>
+                    <summary>İpucu 6: leadingIcon ile Search İkonu</summary>
+                    <div class="detail-body">
+                        <div class="hint-item">
+                            <span class="hint-icon">🔹</span>
+                            <span class="hint-text">OutlinedTextField'a sol tarafta bir 🔍 ikonu koy:</span>
+                        </div>
+                        <div class="hint-item">
+                            <span class="hint-icon">📐</span>
+                            <span class="hint-text"><code>leadingIcon = { Icon(Icons.Default.Search, null) }</code> — Bu
+                                parametre TextField'ın sol tarafına otomatik ikon koyar.</span>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="card card-success">
+                <p><span class="emoji">✅</span><strong>Başarı Kriterleri:</strong></p>
+                <ul>
+                    <li>🔍 ikonuna tıklayınca arama çubuğu açılıyor</li>
+                    <li>Yazı yazınca liste anlık filtreleniyor</li>
+                    <li>Büyük/küçük harf farkı gözetilmiyor</li>
+                    <li>Arama kapatılınca metin temizleniyor ve tam liste geri geliyor</li>
+                    <li>Arama + sekme filtreleri birlikte çalışıyor</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- GENEL İPUÇLARI -->
+        <section id="genel-ipuclari">
+            <h2 style="color:var(--accent)">🎁 Ekstra Zorluk Fikirleri</h2>
+            <div class="card card-warn">
+                <p><span class="emoji">🔥</span><strong>Bunları da deneyebilirsin (ipucu yok — tamamen sana
+                        kalmış!):</strong></p>
+                <ul>
+                    <li><strong>Sınıf Ortalaması:</strong> Tüm öğrencilerin genel ortalamasını üstte göster</li>
+                    <li><strong>Öğrenci Düzenleme:</strong> Karta uzun basınca (long press) notları düzenleme</li>
+                    <li><strong>Not Grafiği:</strong> İstatistik sekmesinde basit bir çubuk grafik</li>
+                    <li><strong>Animasyonlar:</strong> Yeni öğrenci eklenince <code>AnimatedVisibility</code> ile kart
+                        girişi</li>
+                </ul>
+            </div>
+
+            <div class="card card-accent" style="text-align:center;margin-top:24px">
+                <p style="font-size:2.5rem">🚀 💪 🎉</p>
+                <p><strong>Hepsini tamamladıysan tebrikler!</strong></p>
+                <p style="color:var(--text-dim)">Artık Jetpack Compose ile gerçek bir uygulama geliştirme becerilerine
+                    sahipsin. Her özellik seni daha iyi bir geliştirici yapıyor!</p>
+            </div>
+        </section>
+
+        <footer
+            style="text-align:center;padding:32px 0;color:var(--text-dim);font-size:.82rem;border-top:1px solid var(--surface3);margin-top:40px">
+            <p>Jetpack Compose — Öğrenci Not Defteri Projesi 📓</p>
+        </footer>
+
+    </div>
+
+    <script>
+        const links = document.querySelectorAll('.sidebar a');
+        const sections = document.querySelectorAll('section');
+        window.addEventListener('scroll', () => { let c = ''; sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) c = s.id }); links.forEach(a => { a.classList.remove('active'); if (a.getAttribute('href') === '#' + c) a.classList.add('active') }) });
+    </script>
+</body>
+
+</html>

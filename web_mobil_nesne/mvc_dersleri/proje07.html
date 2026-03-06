@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 7: Blog Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 7</span>
+            <h1>📰 Blog Yazı Sistemi</h1>
+            <p class="subtitle">Ders 1-7 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Entity Framework ile veritabanı bağlantılı blog sistemi.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • Entity Framework Core<br>
+                • DbContext ve DbSet<br>
+                • Migration<br>
+                • LINQ sorguları
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Category.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> System.Collections.Generic;
+<span class="keyword">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="keyword">public class</span> <span class="class-name">Category</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [StringLength(<span class="number">50</span>)]
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public</span> ICollection&lt;BlogPost&gt; Posts { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/BlogPost.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> System;
+<span class="keyword">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="keyword">public class</span> <span class="class-name">BlogPost</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [StringLength(<span class="number">200</span>)]
+    <span class="keyword">public string</span> Title { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    <span class="keyword">public string</span> Content { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public string</span>? Summary { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public</span> DateTime CreatedAt { <span class="keyword">get</span>; <span class="keyword">set</span>; } = DateTime.Now;
+    
+    <span class="keyword">public</span> DateTime? UpdatedAt { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public bool</span> IsPublished { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> ViewCount { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Navigation</span>
+    <span class="keyword">public int</span> CategoryId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Category Category { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>DbContext</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Data/BlogDbContext.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.EntityFrameworkCore;
+
+<span class="keyword">public class</span> <span class="class-name">BlogDbContext</span> : DbContext
+{
+    <span class="keyword">public</span> <span class="method">BlogDbContext</span>(DbContextOptions&lt;BlogDbContext&gt; options) 
+        : <span class="keyword">base</span>(options) { }
+    
+    <span class="keyword">public</span> DbSet&lt;BlogPost&gt; Posts { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> DbSet&lt;Category&gt; Categories { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">protected override void</span> <span class="method">OnModelCreating</span>(ModelBuilder modelBuilder)
+    {
+        <span class="comment">// Seed kategoriler</span>
+        modelBuilder.Entity&lt;Category&gt;().HasData(
+            <span class="keyword">new</span> Category { Id = <span class="number">1</span>, Name = <span class="string">"Teknoloji"</span> },
+            <span class="keyword">new</span> Category { Id = <span class="number">2</span>, Name = <span class="string">"Yazılım"</span> },
+            <span class="keyword">new</span> Category { Id = <span class="number">3</span>, Name = <span class="string">"Günlük"</span> }
+        );
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/PostController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+<span class="keyword">using</span> Microsoft.AspNetCore.Mvc.Rendering;
+<span class="keyword">using</span> Microsoft.EntityFrameworkCore;
+<span class="keyword">using</span> System;
+<span class="keyword">using</span> System.Linq;
+<span class="keyword">using</span> System.Threading.Tasks;
+
+<span class="keyword">public class</span> <span class="class-name">PostController</span> : Controller
+{
+    <span class="keyword">private readonly</span> BlogDbContext _context;
+    
+    <span class="keyword">public</span> <span class="method">PostController</span>(BlogDbContext context)
+    {
+        _context = context;
+    }
+    
+    <span class="comment">// Yayınlanmış yazıları listele</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Index</span>()
+    {
+        <span class="keyword">var</span> posts = <span class="keyword">await</span> _context.Posts
+            .Where(p => p.IsPublished)
+            .Include(p => p.Category)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
+        
+        <span class="keyword">return</span> View(posts);
+    }
+    
+    <span class="comment">// Yazı detayı</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> post = <span class="keyword">await</span> _context.Posts
+            .Include(p => p.Category)
+            .FirstOrDefaultAsync(p => p.Id == id);
+        
+        <span class="keyword">if</span> (post == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        
+        <span class="comment">// Görüntülenme sayısını artır</span>
+        post.ViewCount++;
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        <span class="keyword">return</span> View(post);
+    }
+    
+    <span class="comment">// Kategoriye göre filtrele</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">ByCategory</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> category = <span class="keyword">await</span> _context.Categories.FindAsync(id);
+        <span class="keyword">if</span> (category == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        
+        <span class="keyword">var</span> posts = <span class="keyword">await</span> _context.Posts
+            .Where(p => p.CategoryId == id && p.IsPublished)
+            .OrderByDescending(p => p.CreatedAt)
+            .ToListAsync();
+        
+        ViewBag.CategoryName = category.Name;
+        <span class="keyword">return</span> View(<span class="string">"Index"</span>, posts);
+    }
+    
+    <span class="comment">// Yeni yazı (GET)</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>()
+    {
+        ViewBag.Categories = <span class="keyword">new</span> SelectList(
+            <span class="keyword">await</span> _context.Categories.ToListAsync(), 
+            <span class="string">"Id"</span>, <span class="string">"Name"</span>);
+        <span class="keyword">return</span> View();
+    }
+    
+    <span class="comment">// Yeni yazı (POST)</span>
+    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(BlogPost post)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            post.CreatedAt = DateTime.Now;
+            _context.Posts.Add(post);
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            TempData[<span class="string">"Success"</span>] = <span class="string">"Yazı oluşturuldu!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+        }
+        
+        ViewBag.Categories = <span class="keyword">new</span> SelectList(
+            <span class="keyword">await</span> _context.Categories.ToListAsync(), 
+            <span class="string">"Id"</span>, <span class="string">"Name"</span>, post.CategoryId);
+        <span class="keyword">return</span> View(post);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Yazı Listesi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Post/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@model List&lt;BlogPost&gt;
+
+&lt;h1&gt;📰 @(ViewBag.CategoryName ?? "Blog Yazıları")&lt;/h1&gt;
+
+&lt;div class="row"&gt;
+    @foreach (var post in Model)
+    {
+        &lt;div class="col-md-6 mb-4"&gt;
+            &lt;div class="card h-100"&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;span class="badge bg-primary mb-2"&gt;@post.Category.Name&lt;/span&gt;
+                    &lt;h5&gt;&lt;a asp-action="Details" asp-route-id="@post.Id"&gt;@post.Title&lt;/a&gt;&lt;/h5&gt;
+                    &lt;p class="text-muted"&gt;@post.Summary&lt;/p&gt;
+                &lt;/div&gt;
+                &lt;div class="card-footer d-flex justify-content-between"&gt;
+                    &lt;small&gt;@post.CreatedAt.ToString("dd MMM yyyy")&lt;/small&gt;
+                    &lt;small&gt;👁️ @post.ViewCount&lt;/small&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    }
+&lt;/div&gt;
+
+@if (!Model.Any())
+{
+    &lt;div class="alert alert-info"&gt;Henüz yazı yok.&lt;/div&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Yorum sistemi ekleyin (Comment entity)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Popüler yazılar widget'ı ekleyin (en çok görüntülenen)</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje06.html" class="nav-btn prev">← Proje 6</a>
+            <a href="proje08.html" class="nav-btn next">Proje 8 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# Windows Forms Eğitimi</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: "🖼️";
+            font-size: 4em;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            padding: 40px;
+            background: #f8fafc;
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .feature-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .feature-item h4 {
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .feature-item p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .start-btn {
+            display: inline-block;
+            background: white;
+            color: #667eea;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <section class="hero">
+            <span class="hero-badge">🎓 10. Sınıf Bilişim Teknolojileri</span>
+            <h1>C# Windows Forms Eğitimi</h1>
+            <p>Görsel programlama dünyasına adım atın! 15 kapsamlı ders ile Windows masaüstü uygulamaları geliştirmeyi
+                öğrenin.</p>
+            <a href="ders01.html" class="start-btn">🚀 Eğitime Başla</a>
+        </section>
+
+        <nav>
+            <a href="index.html" class="active">Anasayfa</a>
+            <a href="ders01.html">Dersler</a>
+            <a href="ders15.html">Projeler</a>
+        </nav>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">📚</div>
+                <h4>15 Ders</h4>
+                <p>Başlangıçtan ileri seviyeye kapsamlı içerik</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📝</div>
+                <h4>Kod Örnekleri</h4>
+                <p>Her konuda çalışan C# kod örnekleri</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎯</div>
+                <h4>Pratik Sorular</h4>
+                <p>"Sıra Sende!" bölümleriyle uygulama</p>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">✅</div>
+                <h4>Çözümler</h4>
+                <p>Her sorunun detaylı çözümü</p>
+            </div>
+        </div>
+
+        <section class="section">
+            <h2>Ders İçeriği</h2>
+
+            <div class="lessons-grid">
+                <a href="ders01.html" class="lesson-card">
+                    <span class="lesson-number">Ders 1</span>
+                    <h3>Windows Forms'a Giriş</h3>
+                    <p>Proje oluşturma, form yapısı, temel kavramlar</p>
+                </a>
+
+                <a href="ders02.html" class="lesson-card">
+                    <span class="lesson-number">Ders 2</span>
+                    <h3>Label, TextBox, Button</h3>
+                    <p>Temel kontroller ve ilk olay işleme</p>
+                </a>
+
+                <a href="ders03.html" class="lesson-card">
+                    <span class="lesson-number">Ders 3</span>
+                    <h3>CheckBox, RadioButton, GroupBox</h3>
+                    <p>Seçim kontrolleri ve gruplama</p>
+                </a>
+
+                <a href="ders04.html" class="lesson-card">
+                    <span class="lesson-number">Ders 4</span>
+                    <h3>ListBox ve ComboBox</h3>
+                    <p>Liste kontrolleri ve veri yönetimi</p>
+                </a>
+
+                <a href="ders05.html" class="lesson-card">
+                    <span class="lesson-number">Ders 5</span>
+                    <h3>Diğer Giriş Kontrolleri</h3>
+                    <p>NumericUpDown, DateTimePicker, MaskedTextBox</p>
+                </a>
+
+                <a href="ders06.html" class="lesson-card">
+                    <span class="lesson-number">Ders 6</span>
+                    <h3>Olaylar (Events)</h3>
+                    <p>Click, TextChanged, KeyPress, Mouse olayları</p>
+                </a>
+
+                <a href="ders07.html" class="lesson-card">
+                    <span class="lesson-number">Ders 7</span>
+                    <h3>MessageBox</h3>
+                    <p>Mesaj kutuları ve kullanıcı onayı</p>
+                </a>
+
+                <a href="ders08.html" class="lesson-card">
+                    <span class="lesson-number">Ders 8</span>
+                    <h3>MenuStrip ve ToolStrip</h3>
+                    <p>Menüler ve araç çubukları</p>
+                </a>
+
+                <a href="ders09.html" class="lesson-card">
+                    <span class="lesson-number">Ders 9</span>
+                    <h3>OpenFileDialog ve SaveFileDialog</h3>
+                    <p>Dosya açma ve kaydetme dialogları</p>
+                </a>
+
+                <a href="ders10.html" class="lesson-card">
+                    <span class="lesson-number">Ders 10</span>
+                    <h3>ColorDialog, FontDialog</h3>
+                    <p>Renk ve yazı tipi seçme dialogları</p>
+                </a>
+
+                <a href="ders11.html" class="lesson-card">
+                    <span class="lesson-number">Ders 11</span>
+                    <h3>PictureBox</h3>
+                    <p>Resim görüntüleme ve işleme</p>
+                </a>
+
+                <a href="ders12.html" class="lesson-card">
+                    <span class="lesson-number">Ders 12</span>
+                    <h3>Timer</h3>
+                    <p>Zamanlayıcı ve animasyonlar</p>
+                </a>
+
+                <a href="ders13.html" class="lesson-card">
+                    <span class="lesson-number">Ders 13</span>
+                    <h3>DataGridView</h3>
+                    <p>Tablo görünümü ve veri yönetimi</p>
+                </a>
+
+                <a href="ders14.html" class="lesson-card">
+                    <span class="lesson-number">Ders 14</span>
+                    <h3>Dosya İşlemleri</h3>
+                    <p>File, Directory, StreamReader/Writer</p>
+                </a>
+
+                <a href="ders15.html" class="lesson-card">
+                    <span class="lesson-number">Ders 15</span>
+                    <h3>Proje Soruları</h3>
+                    <p>Kapsamlı proje ve alıştırmalar</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>📁 Uygulama Projeleri</h2>
+            <p style="margin-bottom: 20px;">Her proje, o derse kadar öğrenilen tüm konuları kapsar.</p>
+
+            <div class="lessons-grid">
+                <a href="proje04.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        4</span>
+                    <h3>🍕 Restoran Sipariş Sistemi</h3>
+                    <p>ListBox, ComboBox, RadioButton, CheckBox</p>
+                </a>
+
+                <a href="proje05.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        5</span>
+                    <h3>🏨 Otel Rezervasyon</h3>
+                    <p>DateTimePicker, NumericUpDown, MaskedTextBox</p>
+                </a>
+
+                <a href="proje06.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        6</span>
+                    <h3>⌨️ Hızlı Yazma Oyunu</h3>
+                    <p>KeyDown, TextChanged, Timer</p>
+                </a>
+
+                <a href="proje07.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        7</span>
+                    <h3>❓ Quiz Uygulaması</h3>
+                    <p>MessageBox, DialogResult</p>
+                </a>
+
+                <a href="proje08.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        8</span>
+                    <h3>📝 Metin Editörü</h3>
+                    <p>MenuStrip, ToolStrip, kısayol tuşları</p>
+                </a>
+
+                <a href="proje09.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        9</span>
+                    <h3>📂 Dosya Yöneticisi</h3>
+                    <p>OpenFileDialog, SaveFileDialog, FolderBrowserDialog</p>
+                </a>
+
+                <a href="proje10.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        10</span>
+                    <h3>🎨 Zengin Metin Editörü</h3>
+                    <p>ColorDialog, FontDialog, RichTextBox</p>
+                </a>
+
+                <a href="proje11.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        11</span>
+                    <h3>🖼️ Fotoğraf Galerisi</h3>
+                    <p>PictureBox, Image işlemleri</p>
+                </a>
+
+                <a href="proje12.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        12</span>
+                    <h3>🍅 Pomodoro Zamanlayıcı</h3>
+                    <p>Timer, interval, geri sayım</p>
+                </a>
+
+                <a href="proje13.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        13</span>
+                    <h3>📦 Ürün Yönetimi</h3>
+                    <p>DataGridView, CRUD işlemleri</p>
+                </a>
+
+                <a href="proje14.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Proje
+                        14</span>
+                    <h3>📔 Günlük Uygulaması</h3>
+                    <p>Dosya okuma/yazma, StreamWriter</p>
+                </a>
+
+                <a href="proje15.html" class="lesson-card" style="border-left: 4px solid #8b5cf6;">
+                    <span class="lesson-number"
+                        style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">Final</span>
+                    <h3>📒 Kişi Rehberi</h3>
+                    <p>Tüm konuları kapsayan kapsamlı proje</p>
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <p><strong>C# Windows Forms Eğitimi</strong></p>
+            <p>10. Sınıf Bilişim Teknolojileri © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

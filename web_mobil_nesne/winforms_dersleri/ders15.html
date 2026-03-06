@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 15: Final Projesi ve Çözülmemiş Problemler</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 15</span>
+            <h1>Final Projesi</h1>
+            <p class="subtitle">Kapsamlı Proje ve Çözülmemiş Problemler</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders12.html">Ders 12</a>
+            <a href="ders13.html">Ders 13</a>
+            <a href="ders14.html">Ders 14</a>
+            <a href="ders15.html" class="active">Ders 15</a>
+        </nav>
+
+        <section class="section">
+            <h2>🎓 Tebrikler!</h2>
+            <p>14 dersi tamamladınız! Bu son derste, öğrendiklerinizi pekiştirmek için kapsamlı projeler ve çözülmemiş
+                problemler bulacaksınız.</p>
+
+            <div class="info-box">
+                <strong>📌 Bu Bölümde:</strong>
+                <ul>
+                    <li>Kapsamlı Final Projesi (Rehberli)</li>
+                    <li>5 Adet Çözülmemiş Problem</li>
+                    <li>Bonus Projeler</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🚀 Final Projesi: Kişi Yönetim Sistemi</h2>
+            <p>Bu projede, tüm öğrendiklerinizi bir araya getireceksiniz.</p>
+
+            <h3>Proje Gereksinimleri:</h3>
+            <ul>
+                <li>✅ Kişi ekleme, düzenleme, silme</li>
+                <li>✅ DataGridView ile listeleme</li>
+                <li>✅ Dosyaya kaydetme ve okuma (JSON veya CSV)</li>
+                <li>✅ Arama ve filtreleme</li>
+                <li>✅ Menü ve ToolStrip</li>
+                <li>✅ Resim ekleme (profil fotoğrafı)</li>
+            </ul>
+
+            <div class="code-example">
+                <div class="code-example-title">Kisi Model Sınıfı</div>
+                <pre><code><span class="keyword">public class</span> <span class="class-name">Kisi</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Ad { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Soyad { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Telefon { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> DateTime DogumTarihi { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Adres { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> ResimYolu { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public string</span> TamAd => $<span class="string">"{Ad} {Soyad}"</span>;
+    
+    <span class="keyword">public int</span> Yas
+    {
+        <span class="keyword">get</span>
+        {
+            <span class="keyword">int</span> yas = DateTime.Now.Year - DogumTarihi.Year;
+            <span class="keyword">if</span> (DateTime.Now.DayOfYear &lt; DogumTarihi.DayOfYear) yas--;
+            <span class="keyword">return</span> yas;
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Form Yapısı</div>
+                <pre><code><span class="keyword">public partial class</span> <span class="class-name">frmKisiYonetimi</span> : Form
+{
+    <span class="keyword">private</span> List&lt;Kisi&gt; kisiler = <span class="keyword">new</span> List&lt;Kisi&gt;();
+    <span class="keyword">private string</span> dosyaYolu = <span class="string">"kisiler.json"</span>;
+    
+    <span class="keyword">public</span> <span class="method">frmKisiYonetimi</span>()
+    {
+        InitializeComponent();
+    }
+    
+    <span class="keyword">private void</span> <span class="method">frmKisiYonetimi_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+    {
+        <span class="comment">// DataGridView ayarları</span>
+        SetupDataGridView();
+        
+        <span class="comment">// Dosyadan yükle</span>
+        DosyadanYukle();
+        
+        <span class="comment">// Listeyi göster</span>
+        ListeGuncelle();
+    }
+    
+    <span class="keyword">private void</span> <span class="method">SetupDataGridView</span>()
+    {
+        dgvKisiler.AutoGenerateColumns = <span class="keyword">false</span>;
+        dgvKisiler.Columns.Add(<span class="string">"Id"</span>, <span class="string">"ID"</span>);
+        dgvKisiler.Columns.Add(<span class="string">"TamAd"</span>, <span class="string">"Ad Soyad"</span>);
+        dgvKisiler.Columns.Add(<span class="string">"Telefon"</span>, <span class="string">"Telefon"</span>);
+        dgvKisiler.Columns.Add(<span class="string">"Email"</span>, <span class="string">"E-posta"</span>);
+        dgvKisiler.Columns.Add(<span class="string">"Yas"</span>, <span class="string">"Yaş"</span>);
+        
+        dgvKisiler.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">CRUD İşlemleri</div>
+                <pre><code><span class="comment">// Kişi Ekle</span>
+<span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (!DogrulaForm()) <span class="keyword">return</span>;
+    
+    Kisi yeniKisi = <span class="keyword">new</span> Kisi
+    {
+        Id = kisiler.Count > <span class="number">0</span> ? kisiler.Max(k => k.Id) + <span class="number">1</span> : <span class="number">1</span>,
+        Ad = txtAd.Text,
+        Soyad = txtSoyad.Text,
+        Telefon = mtbTelefon.Text,
+        Email = txtEmail.Text,
+        DogumTarihi = dtpDogum.Value,
+        Adres = txtAdres.Text,
+        ResimYolu = picProfil.Tag?.ToString()
+    };
+    
+    kisiler.Add(yeniKisi);
+    ListeGuncelle();
+    FormuTemizle();
+    DosyayaKaydet();
+    
+    MessageBox.Show(<span class="string">"Kişi eklendi!"</span>, <span class="string">"Bilgi"</span>, MessageBoxButtons.OK, MessageBoxIcon.Information);
+}
+
+<span class="comment">// Kişi Güncelle</span>
+<span class="keyword">private void</span> <span class="method">btnGuncelle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dgvKisiler.CurrentRow == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    <span class="keyword">int</span> id = (<span class="keyword">int</span>)dgvKisiler.CurrentRow.Cells[<span class="string">"Id"</span>].Value;
+    Kisi kisi = kisiler.FirstOrDefault(k => k.Id == id);
+    
+    <span class="keyword">if</span> (kisi != <span class="keyword">null</span>)
+    {
+        kisi.Ad = txtAd.Text;
+        kisi.Soyad = txtSoyad.Text;
+        kisi.Telefon = mtbTelefon.Text;
+        kisi.Email = txtEmail.Text;
+        kisi.DogumTarihi = dtpDogum.Value;
+        kisi.Adres = txtAdres.Text;
+        
+        ListeGuncelle();
+        DosyayaKaydet();
+        MessageBox.Show(<span class="string">"Kişi güncellendi!"</span>);
+    }
+}
+
+<span class="comment">// Kişi Sil</span>
+<span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dgvKisiler.CurrentRow == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    DialogResult sonuc = MessageBox.Show(
+        <span class="string">"Bu kişiyi silmek istiyor musunuz?"</span>,
+        <span class="string">"Silme Onayı"</span>,
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Question,
+        MessageBoxDefaultButton.Button2);
+    
+    <span class="keyword">if</span> (sonuc == DialogResult.Yes)
+    {
+        <span class="keyword">int</span> id = (<span class="keyword">int</span>)dgvKisiler.CurrentRow.Cells[<span class="string">"Id"</span>].Value;
+        kisiler.RemoveAll(k => k.Id == id);
+        ListeGuncelle();
+        DosyayaKaydet();
+        FormuTemizle();
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">JSON ile Kaydetme/Yükleme</div>
+                <pre><code><span class="comment">// System.Text.Json kullanarak</span>
+<span class="keyword">using</span> System.Text.Json;
+
+<span class="keyword">private void</span> <span class="method">DosyayaKaydet</span>()
+{
+    <span class="keyword">try</span>
+    {
+        <span class="keyword">var</span> options = <span class="keyword">new</span> JsonSerializerOptions { WriteIndented = <span class="keyword">true</span> };
+        <span class="keyword">string</span> json = JsonSerializer.Serialize(kisiler, options);
+        File.WriteAllText(dosyaYolu, json);
+    }
+    <span class="keyword">catch</span> (Exception ex)
+    {
+        MessageBox.Show(<span class="string">"Kayıt hatası: "</span> + ex.Message);
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">DosyadanYukle</span>()
+{
+    <span class="keyword">try</span>
+    {
+        <span class="keyword">if</span> (File.Exists(dosyaYolu))
+        {
+            <span class="keyword">string</span> json = File.ReadAllText(dosyaYolu);
+            kisiler = JsonSerializer.Deserialize&lt;List&lt;Kisi&gt;&gt;(json) ?? <span class="keyword">new</span> List&lt;Kisi&gt;();
+        }
+    }
+    <span class="keyword">catch</span> (Exception ex)
+    {
+        MessageBox.Show(<span class="string">"Yükleme hatası: "</span> + ex.Message);
+        kisiler = <span class="keyword">new</span> List&lt;Kisi&gt;();
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Arama Fonksiyonu</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtArama_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span> arama = txtArama.Text.ToLower();
+    
+    <span class="keyword">var</span> filtrelenmis = kisiler.Where(k =>
+        k.Ad.ToLower().Contains(arama) ||
+        k.Soyad.ToLower().Contains(arama) ||
+        k.Telefon.Contains(arama) ||
+        k.Email.ToLower().Contains(arama)
+    ).ToList();
+    
+    dgvKisiler.DataSource = <span class="keyword">new</span> BindingList&lt;Kisi&gt;(filtrelenmis);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section project-section">
+            <h2>❓ Çözülmemiş Problemler</h2>
+            <p>Aşağıdaki projeleri kendiniz çözmeye çalışın. Her biri farklı konuları kapsar.</p>
+
+            <div class="project-card">
+                <h3>📝 Problem 1: Yapılacaklar Listesi (Todo App)</h3>
+                <p><strong>Zorluk:</strong> ⭐⭐</p>
+                <p><strong>Konular:</strong> ListBox, CheckBox, Dosya İşlemleri</p>
+                <p><strong>Gereksinimler:</strong></p>
+                <ul>
+                    <li>Görev ekleme, silme</li>
+                    <li>Görevleri tamamlandı olarak işaretleme</li>
+                    <li>Görevleri .txt dosyasına kaydetme/yükleme</li>
+                    <li>Tamamlanan görevleri gizleme/gösterme filtesi</li>
+                    <li>Öncelik seçimi (Düşük, Normal, Yüksek)</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 İpucu:</strong> CheckedListBox kontrolünü kullanabilirsiniz. Her satırı
+                    "görev|tamamlandı|öncelik" formatında kaydedin.
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>📊 Problem 2: Öğrenci Not Takip Sistemi</h3>
+                <p><strong>Zorluk:</strong> ⭐⭐⭐</p>
+                <p><strong>Konular:</strong> DataGridView, Hesaplamalar, Raporlama</p>
+                <p><strong>Gereksinimler:</strong></p>
+                <ul>
+                    <li>Öğrenci ekleme (Ad, Numara)</li>
+                    <li>Her öğrenci için Vize, Final, Ödev notları girişi</li>
+                    <li>Ortalama hesaplama (Vize %30, Final %50, Ödev %20)</li>
+                    <li>Geçti/Kaldı durumu (50 üstü geçer)</li>
+                    <li>Sınıf ortalaması ve istatistikler</li>
+                    <li>Verileri dosyaya kaydetme</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 İpucu:</strong> NumericUpDown ile not girişi yapın. DataGridView'da koşullu formatlama
+                    ile kalan öğrencileri kırmızı gösterin.
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>🧮 Problem 3: Hesap Makinesi</h3>
+                <p><strong>Zorluk:</strong> ⭐⭐</p>
+                <p><strong>Konular:</strong> Button, Event Handling, Hesaplama Mantığı</p>
+                <p><strong>Gereksinimler:</strong></p>
+                <ul>
+                    <li>0-9 rakam butonları</li>
+                    <li>+, -, *, / işlem butonları</li>
+                    <li>= (eşittir) ve C (temizle) butonları</li>
+                    <li>Ondalık sayı desteği</li>
+                    <li>İşlem geçmişi (ListBox)</li>
+                    <li>Klavye desteği (KeyPress olayı)</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 İpucu:</strong> Tüm rakam butonları için tek bir event handler kullanın, sender
+                    nesnesinden hangi butona basıldığını belirleyin.
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>🖼️ Problem 4: Resim Düzenleyici</h3>
+                <p><strong>Zorluk:</strong> ⭐⭐⭐⭐</p>
+                <p><strong>Konular:</strong> PictureBox, ColorDialog, Graphics</p>
+                <p><strong>Gereksinimler:</strong></p>
+                <ul>
+                    <li>Resim açma ve kaydetme</li>
+                    <li>Parlaklık/Kontrast ayarı (TrackBar)</li>
+                    <li>Resmi döndürme (90°, 180°, 270°)</li>
+                    <li>Resmi yatay/dikey çevirme</li>
+                    <li>Gri tonlama filtresi</li>
+                    <li>Resim boyutlandırma</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 İpucu:</strong> Bitmap sınıfını ve RotateFlip metodunu araştırın. Parlaklık için her
+                    pikselin RGB değerlerini değiştirin.
+                </div>
+            </div>
+
+            <div class="project-card">
+                <h3>🎮 Problem 5: Yılan Oyunu</h3>
+                <p><strong>Zorluk:</strong> ⭐⭐⭐⭐⭐</p>
+                <p><strong>Konular:</strong> Timer, KeyDown, Graphics, Oyun Mantığı</p>
+                <p><strong>Gereksinimler:</strong></p>
+                <ul>
+                    <li>Yön tuşları ile yılanı kontrol etme</li>
+                    <li>Timer ile hareket</li>
+                    <li>Yem yeme ve büyüme</li>
+                    <li>Duvara veya kendine çarpınca oyun sonu</li>
+                    <li>Skor takibi</li>
+                    <li>Yeniden başlat butonu</li>
+                </ul>
+                <div class="tip-box">
+                    <strong>💡 İpucu:</strong> Yılanı List&lt;Point&gt; olarak tutun. Her Tick'te listenin başına yeni
+                    kafa ekleyin, yem yenmediyse kuyruktan silin.
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🌟 Bonus Proje Fikirleri</h2>
+
+            <table>
+                <tr>
+                    <th>Proje</th>
+                    <th>Konular</th>
+                    <th>Zorluk</th>
+                </tr>
+                <tr>
+                    <td>Şifre Yöneticisi</td>
+                    <td>Şifreleme, Dosya, ListView</td>
+                    <td>⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td>Müzik Çalar</td>
+                    <td>SoundPlayer, Timer, TrackBar</td>
+                    <td>⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td>Hava Durumu Uygulaması</td>
+                    <td>API, JSON, HttpClient</td>
+                    <td>⭐⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td>Sohbet Uygulaması</td>
+                    <td>TCP/IP, Threading, Network</td>
+                    <td>⭐⭐⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td>Envanter Sistemi</td>
+                    <td>DataGridView, Veritabanı, CRUD</td>
+                    <td>⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td>Kronometre + Alarm</td>
+                    <td>Timer, NotifyIcon, Sound</td>
+                    <td>⭐⭐</td>
+                </tr>
+                <tr>
+                    <td>Çizim Programı</td>
+                    <td>Graphics, Mouse Events, PictureBox</td>
+                    <td>⭐⭐⭐</td>
+                </tr>
+                <tr>
+                    <td>Tarayıcı</td>
+                    <td>WebBrowser Control, Navigation</td>
+                    <td>⭐⭐⭐</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>📚 Sonraki Adımlar</h2>
+
+            <div class="info-box">
+                <strong>Windows Forms'tan sonra öğrenebileceğiniz konular:</strong>
+                <ul>
+                    <li><strong>WPF (Windows Presentation Foundation):</strong> Daha modern ve esnek UI framework'ü</li>
+                    <li><strong>MAUI / Xamarin:</strong> Mobil uygulama geliştirme</li>
+                    <li><strong>ASP.NET Core:</strong> Web uygulamaları</li>
+                    <li><strong>Entity Framework:</strong> Veritabanı yönetimi</li>
+                    <li><strong>Design Patterns:</strong> MVVM, MVC, Repository Pattern</li>
+                    <li><strong>Unit Testing:</strong> Test yazma</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section" style="text-align: center; padding: 3rem;">
+            <h2>🎉 Eğitimi Tamamladınız!</h2>
+            <p style="font-size: 1.2rem;">Windows Forms'un temellerini öğrendiniz. Şimdi pratik yaparak becerilerinizi
+                geliştirin!</p>
+            <p><em>"Kod yazmayı öğrenmenin en iyi yolu, kod yazmaktır."</em></p>
+            <a href="index.html" class="nav-btn" style="display: inline-block; margin-top: 1rem;">🏠 Ana Sayfaya Dön</a>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders14.html" class="nav-btn prev">← Önceki: Dosya İşlemleri</a>
+            <a href="index.html" class="nav-btn next">Ana Sayfa →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

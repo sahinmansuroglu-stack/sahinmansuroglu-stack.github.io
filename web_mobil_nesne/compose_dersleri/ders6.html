@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 6: Material Design 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 6</span>
+            <h1>🎨 Material Design 3</h1>
+            <p class="subtitle">Tema, Renk ve Material Bileşenler</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • MaterialTheme kullanımı<br>
+                • Renk şemaları<br>
+                • Typography<br>
+                • Material bileşenler (Card, TopAppBar, vb.)
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>MaterialTheme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Tema Oluşturma</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// ui/theme/Color.kt</span>
+<span class="keyword">val</span> Purple80 = Color(<span class="number">0xFFD0BCFF</span>)
+<span class="keyword">val</span> PurpleGrey80 = Color(<span class="number">0xFFCCC2DC</span>)
+<span class="keyword">val</span> Pink80 = Color(<span class="number">0xFFEFB8C8</span>)
+
+<span class="keyword">val</span> Purple40 = Color(<span class="number">0xFF6650a4</span>)
+<span class="keyword">val</span> PurpleGrey40 = Color(<span class="number">0xFF625b71</span>)
+<span class="keyword">val</span> Pink40 = Color(<span class="number">0xFF7D5260</span>)
+
+<span class="comment">// ui/theme/Theme.kt</span>
+<span class="keyword">private val</span> DarkColorScheme = darkColorScheme(
+    primary = Purple80,
+    secondary = PurpleGrey80,
+    tertiary = Pink80
+)
+
+<span class="keyword">private val</span> LightColorScheme = lightColorScheme(
+    primary = Purple40,
+    secondary = PurpleGrey40,
+    tertiary = Pink40,
+    background = Color(<span class="number">0xFFFFFBFE</span>),
+    surface = Color(<span class="number">0xFFFFFBFE</span>),
+    onPrimary = Color.White,
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = Color(<span class="number">0xFF1C1B1F</span>),
+    onSurface = Color(<span class="number">0xFF1C1B1F</span>)
+)
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">MyAppTheme</span>(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: <span class="annotation">@Composable</span> () -> Unit
+) {
+    <span class="keyword">val</span> colorScheme = <span class="keyword">if</span> (darkTheme) DarkColorScheme <span class="keyword">else</span> LightColorScheme
+    
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Renk Şeması Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">MaterialTheme Renkleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">RenkKullanimi</span>() {
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        <span class="comment">// Tema renklerini kullanma</span>
+        Box(
+            modifier = Modifier
+                .size(<span class="number">100</span>.dp)
+                .background(MaterialTheme.colorScheme.primary)
+        )
+        
+        Text(
+            <span class="string">"Primary renk"</span>,
+            color = MaterialTheme.colorScheme.primary
+        )
+        
+        Text(
+            <span class="string">"Secondary renk"</span>,
+            color = MaterialTheme.colorScheme.secondary
+        )
+        
+        Surface(
+            color = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ) {
+            Text(<span class="string">"Container içinde metin"</span>, modifier = Modifier.padding(<span class="number">8</span>.dp))
+        }
+    }
+}
+
+<span class="comment">// Tema değiştirme</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TemaSecicili</span>() {
+    <span class="keyword">var</span> karanlikTema <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    MyAppTheme(darkTheme = karanlikTema) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier.padding(<span class="number">16</span>.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(<span class="string">"Tema Seçimi"</span>, style = MaterialTheme.typography.headlineMedium)
+                
+                Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(<span class="string">"Karanlık Tema"</span>)
+                    Spacer(modifier = Modifier.width(<span class="number">8</span>.dp))
+                    Switch(
+                        checked = karanlikTema,
+                        onCheckedChange = { karanlikTema = it }
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Typography</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Tipografi Tanımlama</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// ui/theme/Type.kt</span>
+<span class="keyword">val</span> Typography = Typography(
+    displayLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = <span class="number">57</span>.sp,
+        lineHeight = <span class="number">64</span>.sp
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = <span class="number">32</span>.sp,
+        lineHeight = <span class="number">40</span>.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = <span class="number">22</span>.sp,
+        lineHeight = <span class="number">28</span>.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Normal,
+        fontSize = <span class="number">16</span>.sp,
+        lineHeight = <span class="number">24</span>.sp
+    ),
+    labelSmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Medium,
+        fontSize = <span class="number">11</span>.sp,
+        lineHeight = <span class="number">16</span>.sp
+    )
+)
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TypographyOrnekleri</span>() {
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        Text(<span class="string">"Display Large"</span>, style = MaterialTheme.typography.displayLarge)
+        Text(<span class="string">"Headline Large"</span>, style = MaterialTheme.typography.headlineLarge)
+        Text(<span class="string">"Title Large"</span>, style = MaterialTheme.typography.titleLarge)
+        Text(<span class="string">"Body Large"</span>, style = MaterialTheme.typography.bodyLarge)
+        Text(<span class="string">"Label Small"</span>, style = MaterialTheme.typography.labelSmall)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Material Bileşenler</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Card, TopAppBar, Scaffold</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">MaterialBilesenler</span>() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(<span class="string">"Uygulama Başlığı"</span>) },
+                navigationIcon = {
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.Menu, <span class="string">"Menü"</span>)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.Search, <span class="string">"Ara"</span>)
+                    }
+                    IconButton(onClick = { }) {
+                        Icon(Icons.Default.MoreVert, <span class="string">"Daha fazla"</span>)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { }) {
+                Icon(Icons.Default.Add, <span class="string">"Ekle"</span>)
+            }
+        },
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = <span class="keyword">true</span>,
+                    onClick = { },
+                    icon = { Icon(Icons.Default.Home, <span class="keyword">null</span>) },
+                    label = { Text(<span class="string">"Ana Sayfa"</span>) }
+                )
+                NavigationBarItem(
+                    selected = <span class="keyword">false</span>,
+                    onClick = { },
+                    icon = { Icon(Icons.Default.Favorite, <span class="keyword">null</span>) },
+                    label = { Text(<span class="string">"Favoriler"</span>) }
+                )
+                NavigationBarItem(
+                    selected = <span class="keyword">false</span>,
+                    onClick = { },
+                    icon = { Icon(Icons.Default.Person, <span class="keyword">null</span>) },
+                    label = { Text(<span class="string">"Profil"</span>) }
+                )
+            }
+        }
+    ) { paddingValues ->
+        <span class="comment">// İçerik alanı</span>
+        LazyColumn(
+            modifier = Modifier.padding(paddingValues),
+            contentPadding = PaddingValues(<span class="number">16</span>.dp),
+            verticalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp)
+        ) {
+            items(<span class="number">10</span>) { index ->
+                OrnekKart(index)
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">OrnekKart</span>(index: Int) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = <span class="number">4</span>.dp)
+    ) {
+        Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            Text(
+                <span class="string">"Kart Başlığı $index"</span>,
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            Text(
+                <span class="string">"Bu bir örnek kart içeriğidir."</span>,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Dialog ve BottomSheet</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Dialog Örnekleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DialogOrnek</span>() {
+    <span class="keyword">var</span> dialogAcik <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    Button(onClick = { dialogAcik = <span class="keyword">true</span> }) {
+        Text(<span class="string">"Dialog Aç"</span>)
+    }
+    
+    <span class="keyword">if</span> (dialogAcik) {
+        AlertDialog(
+            onDismissRequest = { dialogAcik = <span class="keyword">false</span> },
+            title = { Text(<span class="string">"Silme Onayı"</span>) },
+            text = { Text(<span class="string">"Bu öğeyi silmek istediğinizden emin misiniz?"</span>) },
+            confirmButton = {
+                TextButton(onClick = { dialogAcik = <span class="keyword">false</span> }) {
+                    Text(<span class="string">"Sil"</span>, color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { dialogAcik = <span class="keyword">false</span> }) {
+                    Text(<span class="string">"İptal"</span>)
+                }
+            }
+        )
+    }
+}
+
+<span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">BottomSheetOrnek</span>() {
+    <span class="keyword">var</span> sheetAcik <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    <span class="keyword">val</span> sheetState = rememberModalBottomSheetState()
+    
+    Button(onClick = { sheetAcik = <span class="keyword">true</span> }) {
+        Text(<span class="string">"Bottom Sheet Aç"</span>)
+    }
+    
+    <span class="keyword">if</span> (sheetAcik) {
+        ModalBottomSheet(
+            onDismissRequest = { sheetAcik = <span class="keyword">false</span> },
+            sheetState = sheetState
+        ) {
+            Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+                Text(<span class="string">"Paylaş"</span>, style = MaterialTheme.typography.headlineSmall)
+                Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+                
+                listOf(<span class="string">"📧 E-posta"</span>, <span class="string">"💬 Mesaj"</span>, <span class="string">"📋 Kopyala"</span>).forEach {
+                    Text(
+                        text = it,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { sheetAcik = <span class="keyword">false</span> }
+                            .padding(<span class="number">12</span>.dp)
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(<span class="number">32</span>.dp))
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Kendi renk şemanı oluştur (açık/koyu tema desteğiyle).</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>TopAppBar, FloatingActionButton ve NavigationBar içeren bir sayfa tasarla.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Silme onayı için AlertDialog kullanan bir liste yap.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders5.html" class="nav-btn prev">← Ders 5</a>
+            <a href="ders7.html" class="nav-btn next">Ders 7 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

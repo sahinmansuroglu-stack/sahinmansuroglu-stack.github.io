@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 1: ASP.NET MVC'ye Giriş</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 1</span>
+            <h1>ASP.NET MVC'ye Giriş ve Kurulum</h1>
+            <p class="subtitle">Web Geliştirme Dünyasına İlk Adım</p>
+        </header>
+
+        <section class="section">
+            <h2>Giriş</h2>
+            <p>Bu derste, modern web uygulamaları geliştirmek için kullanılan <strong>ASP.NET MVC</strong> framework'ünü tanıyacağız. HTML, CSS, JavaScript ve jQuery bilgilerinizi artık sunucu tarafında C# ile birleştireceğiz.</p>
+            <div class="info-box">
+                <strong>💡 Neden Backend?</strong><br>
+                Frontend kullanıcının gördüğü kısmı oluşturur. Ancak verilerin saklanması, kullanıcı girişi, veritabanı işlemleri için <strong>Backend</strong> gereklidir.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>ASP.NET MVC Nedir?</h2>
+            <p><strong>ASP.NET MVC</strong>, Microsoft tarafından geliştirilen web framework'üdür.</p>
+            <h3>MVC Açılımı</h3>
+            <ul>
+                <li><strong>M - Model:</strong> Verilerinizi temsil eder</li>
+                <li><strong>V - View:</strong> Kullanıcıya gösterilen arayüz</li>
+                <li><strong>C - Controller:</strong> Model ve View arasındaki köprü</li>
+            </ul>
+            <div class="diagram">
+                <div class="diagram-box model">📦 Model</div>
+                <span class="diagram-arrow">↔</span>
+                <div class="diagram-box controller">🎮 Controller</div>
+                <span class="diagram-arrow">↔</span>
+                <div class="diagram-box view">🖥️ View</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Gerekli Araçlar</h2>
+            <table>
+                <tr><th>Araç</th><th>Açıklama</th></tr>
+                <tr><td>Visual Studio 2022</td><td>Kod editörü (Community ücretsiz)</td></tr>
+                <tr><td>.NET SDK</td><td>Geliştirme kiti</td></tr>
+                <tr><td>SQL Server</td><td>Veritabanı (LocalDB yeterli)</td></tr>
+            </table>
+            <div class="warning-box">
+                <strong>⚠️ Önemli:</strong> Kurulumda <strong>"ASP.NET and web development"</strong> workload'ını seçin!
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>İlk MVC Projesi</h2>
+            <ol>
+                <li>Visual Studio → Create new project</li>
+                <li>"ASP.NET Core Web App (Model-View-Controller)" seçin</li>
+                <li>Proje adı: <code>IlkMvcProjesi</code></li>
+                <li>.NET 8.0 seçin → Create</li>
+            </ol>
+        </section>
+
+        <section class="section">
+            <h2>Proje Yapısı</h2>
+            <pre data-lang="Structure"><code>IlkMvcProjesi/
+├── Controllers/     <span class="comment">// Controller sınıfları</span>
+│   └── HomeController.cs
+├── Models/          <span class="comment">// Model sınıfları</span>
+├── Views/           <span class="comment">// Razor View dosyaları</span>
+│   ├── Home/
+│   │   └── Index.cshtml
+│   └── Shared/
+│       └── _Layout.cshtml
+├── wwwroot/         <span class="comment">// CSS, JS, resimler</span>
+└── Program.cs       <span class="comment">// Başlangıç noktası</span></code></pre>
+        </section>
+
+        <section class="section">
+            <h2>Örnek 1: Temel Controller</h2>
+            <div class="code-example">
+                <div class="code-example-title">HomeController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+<span class="keyword">public class</span> <span class="class-name">HomeController</span> : <span class="class-name">Controller</span>
+{
+    <span class="comment">// GET: /Home/Index</span>
+    <span class="keyword">public</span> <span class="class-name">IActionResult</span> <span class="method">Index</span>()
+    {
+        <span class="keyword">return</span> View();
+    }
+
+    <span class="comment">// GET: /Home/Hakkimizda</span>
+    <span class="keyword">public</span> <span class="class-name">IActionResult</span> <span class="method">Hakkimizda</span>()
+    {
+        <span class="keyword">return</span> View();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Örnek 2: Temel View</h2>
+            <div class="code-example">
+                <div class="code-example-title">Views/Home/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@{
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Ana Sayfa"</span>;
+}
+
+&lt;h1&gt;Hoş Geldiniz!&lt;/h1&gt;
+&lt;p&gt;Bugünün tarihi: <span class="keyword">@</span>DateTime.Now.ToShortDateString()&lt;/p&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>URL Yapısı (Routing)</h2>
+            <pre data-lang="URL"><code>https://localhost:5001/{controller}/{action}/{id?}
+
+/Home/Index     → HomeController.Index()
+/Home/Hakkimizda → HomeController.Hakkimizda()
+/Urun/Detay/5   → UrunController.Detay(5)</code></pre>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>MVC kısaltmasının açılımı nedir?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <strong>Model-View-Controller</strong>
+                    <ul>
+                        <li>Model: Veri ve iş mantığı</li>
+                        <li>View: Kullanıcı arayüzü</li>
+                        <li>Controller: İş akışı yönetimi</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>/Ogrenci/Listele URL'i hangi Controller ve Action'ı çağırır?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">OgrenciController</span> : Controller
+{
+    <span class="keyword">public</span> IActionResult <span class="method">Listele</span>()
+    {
+        <span class="keyword">return</span> View();
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>"Iletisim" sayfası için Controller action ve View yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <p><strong>HomeController.cs:</strong></p>
+                    <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Iletisim</span>()
+{
+    <span class="keyword">return</span> View();
+}</code></pre>
+                    <p><strong>Views/Home/Iletisim.cshtml:</strong></p>
+                    <pre data-lang="Razor"><code>@{ ViewData["Title"] = "İletişim"; }
+
+&lt;h1&gt;İletişim&lt;/h1&gt;
+&lt;p&gt;Email: info@okul.edu.tr&lt;/p&gt;</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>Controller sınıf adları hangi kurala uymalıdır?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <strong>"Controller"</strong> son eki ile bitmelidir.
+                    <ul>
+                        <li>✅ HomeController, UrunController</li>
+                        <li>❌ Home, UrunCtrl</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <span></span>
+            <a href="ders2.html" class="nav-btn next">Sonraki: MVC Mimarisi →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

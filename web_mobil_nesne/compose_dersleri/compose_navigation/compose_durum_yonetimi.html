@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose: Durum (State) Yönetimi</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        pre[class*="language-"] {
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95em;
+        }
+
+        .step-card {
+            transition: transform 0.2s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .challenge-box {
+            border-left: 4px solid #10b981;
+            background-color: #f0fdf4;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-gray-800 font-sans pb-20">
+
+    <div class="max-w-5xl mx-auto my-8 bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100">
+
+        <!-- Üst Başlık -->
+        <header class="bg-emerald-600 text-white p-10 relative overflow-hidden">
+            <div class="relative z-10">
+                <h1 class="text-4xl font-black mb-3">Jetpack Compose: State (Durum)</h1>
+                <p class="text-xl font-light opacity-90">Etkileşimli Uygulamalar: Değişkenler ve Arayüz Güncelleme</p>
+            </div>
+            <div class="absolute -right-10 -bottom-10 opacity-10">
+                <svg width="200" height="200" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
+                </svg>
+            </div>
+        </header>
+
+        <div class="p-8">
+            <!-- 1. Başlangıç Kodunuz -->
+            <section class="mb-12">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-emerald-600 text-white text-sm font-bold px-3 py-1 rounded-full">ADIM 0</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Başlangıç Senaryosu (Statik Arayüz)</h2>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 text-sm">
+                    <p class="text-blue-900 font-medium">Bu kodda butonlara bassanız da ekranda hiçbir şey değişmez.
+                        Çünkü Compose'a "ekranı güncelle" (Recomposition) demedik.</p>
+                </div>
+                <pre><code class="language-kotlin">@Composable
+fun SayacEkrani() {
+    var sayi = 0 // Bu normal bir değişkendir, Compose bunu takip etmez!
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Bu yazı 'sayi' artsa bile hep "0" kalacaktır
+        Text(text = "Sayaç: $sayi", fontSize = 30.sp)
+        
+        Button(onClick = { 
+            sayi++ // Değişken artar ama ekran yenilenmez!
+            println("Sayı şu an: $sayi") 
+        }) {
+            Text("Artır")
+        }
+    }
+}</code></pre>
+            </section>
+
+            <!-- Geliştirme Rehberi -->
+            <section class="space-y-8">
+                <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-emerald-100 pb-2">Eğitim Adımları: State
+                    Tanımlama</h2>
+
+                <div class="space-y-6">
+                    <!-- Adım 1 -->
+                    <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-gray-900 mb-2">1. remember ve mutableStateOf Kullanımı</h4>
+                        <p class="text-sm text-gray-600 mb-3">Compose'un bir değişkeni izlemesi için onu
+                            <code>mutableStateOf</code> içine almalıyız. <code>remember</code> ise ekran her
+                            yenilendiğinde değerin sıfırlanmamasını sağlar.</p>
+                        <pre><code class="language-kotlin">// KODUNU ŞUNA DÖNÜŞTÜR:
+var sayi by remember { mutableStateOf(0) } // 'by' kullanmak için importlara dikkat!</code></pre>
+                    </div>
+
+                    <!-- Adım 2 -->
+                    <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-gray-900 mb-2">2. TextField (Yazı Girişi) ile State</h4>
+                        <p class="text-sm text-gray-600 mb-3">Kullanıcının girdiği metni anlık olarak saklamak için de
+                            State kullanılır.</p>
+                        <pre><code class="language-kotlin">var isim by remember { mutableStateOf("") }
+
+TextField(
+    value = isim,
+    onValueChange = { yeniYazi -> isim = yeniYazi },
+    label = { Text("Adınızı Yazın") }
+)
+Text("Hoş geldin, $isim!")</code></pre>
+                    </div>
+
+                    <!-- Adım 3 -->
+                    <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-gray-900 mb-2">3. Liste (List) State Yönetimi</h4>
+                        <p class="text-sm text-gray-600 mb-3">Eğer bir listeye eleman ekleyip çıkaracaksanız
+                            <code>mutableStateListOf</code> kullanmalısınız.</p>
+                        <pre><code class="language-kotlin">val gorevListesi = remember { mutableStateListOf<String>() }
+
+Button(onClick = { gorevListesi.add("Yeni Görev") }) {
+    Text("Ekle")
+}
+
+LazyColumn {
+    items(gorevListesi) { gorev ->
+        Text(gorev)
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SIRA SENDE -->
+            <section class="mt-16 border-t-2 border-dashed border-gray-200 pt-10">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">🛠️</span>
+                    <h2 class="text-3xl font-bold text-emerald-600">Sıra Sende: Dinamik Uygulama</h2>
+                </div>
+
+                <p class="text-gray-700 mb-8 font-medium">Aşağıdaki kodları kullanarak projenize yeni özellikler
+                    ekleyin.</p>
+
+                <div class="space-y-8">
+
+                    <!-- Görev 1 -->
+                    <div class="challenge-box p-6 rounded-2xl shadow-sm">
+                        <h4 class="font-bold text-xl text-emerald-700 mb-4">GÖREV 1: Dinamik Başlık Değiştirme</h4>
+                        <p class="text-sm text-gray-700 mb-4">Bir butona basıldığında üstteki başlık metnini ve rengini
+                            değiştiren bir yapı kurun.</p>
+
+                        <pre><code class="language-kotlin">// Değişkenleri tanımla:
+var baslik by remember { mutableStateOf("Merhaba") }
+var baslikRengi by remember { mutableStateOf(Color.Black) }
+
+// UI içine ekle:
+Text(text = baslik, color = baslikRengi)
+Button(onClick = { 
+    baslik = "Kayıt Başarılı!"
+    baslikRengi = Color.Blue
+}) {
+    Text("Onayla")
+}</code></pre>
+                    </div>
+
+                    <!-- Görev 2 -->
+                    <div class="challenge-box p-6 rounded-2xl shadow-sm">
+                        <h4 class="font-bold text-xl text-emerald-700 mb-4">GÖREV 2: Listeden Eleman Silme</h4>
+                        <p class="text-sm text-gray-700 mb-4">Daha önce öğrendiğin <code>LazyColumn</code> içindeki her
+                            elemanın yanına bir "Sil" butonu ekle.</p>
+
+                        <pre><code class="language-kotlin">// Liste döngüsü içinde:
+Row(verticalAlignment = Alignment.CenterVertically) {
+    Text(text = item, modifier = Modifier.weight(1f))
+    IconButton(onClick = { gorevListesi.remove(item) }) {
+        Icon(Icons.Default.Delete, contentDescription = "Sil")
+    }
+}</code></pre>
+                    </div>
+
+                    <!-- Görev 3 -->
+                    <div class="challenge-box p-6 rounded-2xl shadow-sm">
+                        <h4 class="font-bold text-xl text-emerald-700 mb-4">GÖREV 3: Sayı Tahmin Kontrolü</h4>
+                        <p class="text-sm text-gray-700 mb-4">Kullanıcının girdiği sayıya göre "Yukarı" veya "Aşağı"
+                            diyen bir sistem yapın.</p>
+
+                        <pre><code class="language-kotlin">var tahmin by remember { mutableStateOf("") }
+var sonucMesaji by remember { mutableStateOf("Tahmin Et!") }
+val hedefSayi = 42
+
+TextField(value = tahmin, onValueChange = { tahmin = it })
+Button(onClick = {
+    val t = tahmin.toIntOrNull() ?: 0
+    sonucMesaji = if (t < hedefSayi) "YUKARI!" else if (t > hedefSayi) "AŞAĞI!" else "BİLDİN!"
+}) {
+    Text("Kontrol Et")
+}
+Text(sonucMesaji)</code></pre>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-100 p-6 text-center border-t border-gray-200">
+            <p class="text-sm text-gray-500 font-medium font-bold">Öğrenci Çalışma Kağıdı - Jetpack Compose State
+                (Durum)</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
+</body>
+
+</html>

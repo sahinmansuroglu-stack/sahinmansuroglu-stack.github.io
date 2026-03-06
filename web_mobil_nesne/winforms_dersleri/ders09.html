@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 9: OpenFileDialog ve SaveFileDialog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 9</span>
+            <h1>OpenFileDialog ve SaveFileDialog</h1>
+            <p class="subtitle">Dosya Açma ve Kaydetme Dialogları</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders07.html">Ders 7</a>
+            <a href="ders08.html">Ders 8</a>
+            <a href="ders09.html" class="active">Ders 9</a>
+            <a href="ders10.html">Ders 10</a>
+            <a href="ders11.html">Ders 11</a>
+        </nav>
+
+        <section class="section">
+            <h2>1. OpenFileDialog (Dosya Açma)</h2>
+            <p><strong>OpenFileDialog</strong>, kullanıcının bilgisayarından dosya seçmesini sağlayan Windows
+                dialogudur.</p>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>FileName</td>
+                    <td>Seçilen dosyanın tam yolu</td>
+                </tr>
+                <tr>
+                    <td>FileNames</td>
+                    <td>Çoklu seçimde tüm dosyalar</td>
+                </tr>
+                <tr>
+                    <td>Filter</td>
+                    <td>Gösterilecek dosya türleri</td>
+                </tr>
+                <tr>
+                    <td>FilterIndex</td>
+                    <td>Varsayılan filtre (1'den başlar)</td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td>Dialog başlığı</td>
+                </tr>
+                <tr>
+                    <td>InitialDirectory</td>
+                    <td>Başlangıç klasörü</td>
+                </tr>
+                <tr>
+                    <td>Multiselect</td>
+                    <td>Birden fazla dosya seçimi</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Filter Formatı</h2>
+            <p>Dosya filtreleri şu formatta yazılır: <code>Açıklama|uzantı</code></p>
+
+            <div class="code-example">
+                <div class="code-example-title">Filtre Örnekleri</div>
+                <pre><code><span class="comment">// Tek uzantı</span>
+dialog.Filter = <span class="string">"Metin Dosyaları|*.txt"</span>;
+
+<span class="comment">// Birden fazla filtre (| ile ayrılır)</span>
+dialog.Filter = <span class="string">"Metin Dosyaları|*.txt|Word Dosyaları|*.docx|Tüm Dosyalar|*.*"</span>;
+
+<span class="comment">// Aynı filtrede birden fazla uzantı (; ile ayrılır)</span>
+dialog.Filter = <span class="string">"Resim Dosyaları|*.jpg;*.jpeg;*.png;*.gif;*.bmp"</span>;
+
+<span class="comment">// Varsayılan filtre indeksi (1'den başlar)</span>
+dialog.FilterIndex = <span class="number">2</span>; <span class="comment">// İkinci filtre seçili gelir</span></code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>OpenFileDialog Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Metin Dosyası Açma</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnDosyaAc_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Title = <span class="string">"Dosya Seç"</span>;
+    dialog.Filter = <span class="string">"Metin Dosyaları|*.txt|Tüm Dosyalar|*.*"</span>;
+    dialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">string</span> dosyaYolu = dialog.FileName;
+        <span class="keyword">string</span> icerik = File.ReadAllText(dosyaYolu);
+        
+        txtIcerik.Text = icerik;
+        <span class="keyword">this</span>.Text = Path.GetFileName(dosyaYolu);
+        
+        lblDurum.Text = <span class="string">"Dosya yüklendi: "</span> + dosyaYolu;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Resim Dosyası Açma</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnResimSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Title = <span class="string">"Resim Seç"</span>;
+    dialog.Filter = <span class="string">"Resim Dosyaları|*.jpg;*.jpeg;*.png;*.gif;*.bmp"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        pictureBox1.Image = Image.FromFile(dialog.FileName);
+        pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Çoklu Dosya Seçimi</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnCokluSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Multiselect = <span class="keyword">true</span>; <span class="comment">// Çoklu seçim aktif</span>
+    dialog.Filter = <span class="string">"Tüm Dosyalar|*.*"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        listBox1.Items.Clear();
+        
+        <span class="keyword">foreach</span> (<span class="keyword">string</span> dosya <span class="keyword">in</span> dialog.FileNames)
+        {
+            listBox1.Items.Add(Path.GetFileName(dosya));
+        }
+        
+        lblDurum.Text = $<span class="string">"Seçilen: {dialog.FileNames.Length} dosya"</span>;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. SaveFileDialog (Dosya Kaydetme)</h2>
+            <p><strong>SaveFileDialog</strong>, kullanıcının dosya kaydetme konumu ve adını belirlemesini sağlar.</p>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>FileName</td>
+                    <td>Kaydedilecek dosya adı</td>
+                </tr>
+                <tr>
+                    <td>Filter</td>
+                    <td>Kaydetme formatları</td>
+                </tr>
+                <tr>
+                    <td>DefaultExt</td>
+                    <td>Varsayılan uzantı</td>
+                </tr>
+                <tr>
+                    <td>AddExtension</td>
+                    <td>Uzantı otomatik eklensin mi?</td>
+                </tr>
+                <tr>
+                    <td>OverwritePrompt</td>
+                    <td>Üzerine yazma uyarısı</td>
+                </tr>
+                <tr>
+                    <td>Title</td>
+                    <td>Dialog başlığı</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Metin Dosyası Kaydetme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    SaveFileDialog dialog = <span class="keyword">new</span> SaveFileDialog();
+    dialog.Title = <span class="string">"Dosyayı Kaydet"</span>;
+    dialog.Filter = <span class="string">"Metin Dosyası|*.txt|Tüm Dosyalar|*.*"</span>;
+    dialog.DefaultExt = <span class="string">"txt"</span>;
+    dialog.FileName = <span class="string">"YeniDosya"</span>; <span class="comment">// Varsayılan ad</span>
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        File.WriteAllText(dialog.FileName, txtIcerik.Text);
+        
+        MessageBox.Show(<span class="string">"Dosya kaydedildi!"</span>, <span class="string">"Bilgi"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
+        
+        <span class="keyword">this</span>.Text = Path.GetFileName(dialog.FileName);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Resim Kaydetme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnResimKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (pictureBox1.Image == <span class="keyword">null</span>)
+    {
+        MessageBox.Show(<span class="string">"Kaydedilecek resim yok!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    SaveFileDialog dialog = <span class="keyword">new</span> SaveFileDialog();
+    dialog.Filter = <span class="string">"PNG Resim|*.png|JPEG Resim|*.jpg|Bitmap|*.bmp"</span>;
+    dialog.DefaultExt = <span class="string">"png"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">string</span> uzanti = Path.GetExtension(dialog.FileName).ToLower();
+        
+        <span class="keyword">switch</span> (uzanti)
+        {
+            <span class="keyword">case</span> <span class="string">".png"</span>:
+                pictureBox1.Image.Save(dialog.FileName, ImageFormat.Png);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">".jpg"</span>:
+            <span class="keyword">case</span> <span class="string">".jpeg"</span>:
+                pictureBox1.Image.Save(dialog.FileName, ImageFormat.Jpeg);
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">".bmp"</span>:
+                pictureBox1.Image.Save(dialog.FileName, ImageFormat.Bmp);
+                <span class="keyword">break</span>;
+        }
+        
+        MessageBox.Show(<span class="string">"Resim kaydedildi!"</span>);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. FolderBrowserDialog (Klasör Seçme)</h2>
+            <p><strong>FolderBrowserDialog</strong>, kullanıcının klasör seçmesini sağlar.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Klasör Seçimi</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnKlasorSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FolderBrowserDialog dialog = <span class="keyword">new</span> FolderBrowserDialog();
+    dialog.Description = <span class="string">"Hedef klasörü seçin"</span>;
+    dialog.ShowNewFolderButton = <span class="keyword">true</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">string</span> klasorYolu = dialog.SelectedPath;
+        txtKlasor.Text = klasorYolu;
+        
+        <span class="comment">// Klasördeki dosyaları listele</span>
+        <span class="keyword">string</span>[] dosyalar = Directory.GetFiles(klasorYolu);
+        
+        listBox1.Items.Clear();
+        <span class="keyword">foreach</span> (<span class="keyword">string</span> dosya <span class="keyword">in</span> dosyalar)
+        {
+            listBox1.Items.Add(Path.GetFileName(dosya));
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Basit Metin Editörü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Metin Editörü</div>
+                <pre><code><span class="keyword">private string</span> mevcutDosya = <span class="string">""</span>;
+<span class="keyword">private bool</span> degisiklikVar = <span class="keyword">false</span>;
+
+<span class="comment">// Yeni dosya</span>
+<span class="keyword">private void</span> <span class="method">Yeni</span>()
+{
+    <span class="keyword">if</span> (degisiklikVar)
+    {
+        DialogResult sonuc = MessageBox.Show(
+            <span class="string">"Değişiklikleri kaydetmek ister misiniz?"</span>,
+            <span class="string">"Kaydet"</span>, MessageBoxButtons.YesNoCancel);
+        
+        <span class="keyword">if</span> (sonuc == DialogResult.Yes) Kaydet();
+        <span class="keyword">else if</span> (sonuc == DialogResult.Cancel) <span class="keyword">return</span>;
+    }
+    
+    txtIcerik.Clear();
+    mevcutDosya = <span class="string">""</span>;
+    degisiklikVar = <span class="keyword">false</span>;
+    <span class="keyword">this</span>.Text = <span class="string">"Yeni Belge - Metin Editörü"</span>;
+}
+
+<span class="comment">// Dosya aç</span>
+<span class="keyword">private void</span> <span class="method">Ac</span>()
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Filter = <span class="string">"Metin Dosyaları|*.txt|Tüm Dosyalar|*.*"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.Text = File.ReadAllText(dialog.FileName);
+        mevcutDosya = dialog.FileName;
+        degisiklikVar = <span class="keyword">false</span>;
+        <span class="keyword">this</span>.Text = Path.GetFileName(dialog.FileName) + <span class="string">" - Metin Editörü"</span>;
+    }
+}
+
+<span class="comment">// Kaydet</span>
+<span class="keyword">private void</span> <span class="method">Kaydet</span>()
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(mevcutDosya))
+    {
+        FarkliKaydet();
+    }
+    <span class="keyword">else</span>
+    {
+        File.WriteAllText(mevcutDosya, txtIcerik.Text);
+        degisiklikVar = <span class="keyword">false</span>;
+    }
+}
+
+<span class="comment">// Farklı kaydet</span>
+<span class="keyword">private void</span> <span class="method">FarkliKaydet</span>()
+{
+    SaveFileDialog dialog = <span class="keyword">new</span> SaveFileDialog();
+    dialog.Filter = <span class="string">"Metin Dosyası|*.txt"</span>;
+    dialog.DefaultExt = <span class="string">"txt"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        File.WriteAllText(dialog.FileName, txtIcerik.Text);
+        mevcutDosya = dialog.FileName;
+        degisiklikVar = <span class="keyword">false</span>;
+        <span class="keyword">this</span>.Text = Path.GetFileName(dialog.FileName) + <span class="string">" - Metin Editörü"</span>;
+    }
+}
+
+<span class="comment">// Değişiklik takibi</span>
+<span class="keyword">private void</span> <span class="method">txtIcerik_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    degisiklikVar = <span class="keyword">true</span>;
+    <span class="keyword">if</span> (!<span class="keyword">this</span>.Text.EndsWith(<span class="string">"*"</span>))
+        <span class="keyword">this</span>.Text += <span class="string">"*"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Bir metin dosyası açıp içeriğini TextBox'ta gösteren uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnAc_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Filter = <span class="string">"Metin Dosyaları|*.txt"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.Text = File.ReadAllText(dialog.FileName);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>TextBox içeriğini .txt dosyası olarak kaydeden uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    SaveFileDialog dialog = <span class="keyword">new</span> SaveFileDialog();
+    dialog.Filter = <span class="string">"Metin Dosyası|*.txt"</span>;
+    dialog.DefaultExt = <span class="string">"txt"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        File.WriteAllText(dialog.FileName, txtIcerik.Text);
+        MessageBox.Show(<span class="string">"Kaydedildi!"</span>);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>PictureBox'a resim yükleyen bir uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnResimSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Filter = <span class="string">"Resimler|*.jpg;*.png;*.bmp;*.gif"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        pictureBox1.Image = Image.FromFile(dialog.FileName);
+        pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders08.html" class="nav-btn prev">← Önceki: MenuStrip, ToolStrip</a>
+            <a href="ders10.html" class="nav-btn next">Sonraki: ColorDialog, FontDialog →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

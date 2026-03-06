@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 13: DataGridView</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 13</span>
+            <h1>DataGridView</h1>
+            <p class="subtitle">Tablo Görünümü ve Veri Yönetimi</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders11.html">Ders 11</a>
+            <a href="ders12.html">Ders 12</a>
+            <a href="ders13.html" class="active">Ders 13</a>
+            <a href="ders14.html">Ders 14</a>
+            <a href="ders15.html">Ders 15</a>
+        </nav>
+
+        <section class="section">
+            <h2>DataGridView Nedir?</h2>
+            <p><strong>DataGridView</strong>, verileri tablo formatında görüntülemek ve düzenlemek için kullanılan güçlü
+                bir kontroldür.</p>
+
+            <div class="control-visual">
+                <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                    <thead style="background: #667eea; color: white;">
+                        <tr>
+                            <th style="padding: 10px; border: 1px solid #ddd;">ID</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Ad</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Soyad</th>
+                            <th style="padding: 10px; border: 1px solid #ddd;">Yaş</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ddd;">1</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">Ali</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">Yılmaz</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">25</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td style="padding: 8px; border: 1px solid #ddd;">2</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">Ayşe</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">Demir</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">30</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border: 1px solid #ddd;">3</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">Mehmet</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">Kaya</td>
+                            <td style="padding: 8px; border: 1px solid #ddd;">22</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Columns</td>
+                    <td>Sütun koleksiyonu</td>
+                </tr>
+                <tr>
+                    <td>Rows</td>
+                    <td>Satır koleksiyonu</td>
+                </tr>
+                <tr>
+                    <td>DataSource</td>
+                    <td>Veri kaynağı (List, DataTable vb.)</td>
+                </tr>
+                <tr>
+                    <td>SelectedRows</td>
+                    <td>Seçili satırlar</td>
+                </tr>
+                <tr>
+                    <td>CurrentRow</td>
+                    <td>Aktif satır</td>
+                </tr>
+                <tr>
+                    <td>AllowUserToAddRows</td>
+                    <td>Kullanıcı satır ekleyebilir mi?</td>
+                </tr>
+                <tr>
+                    <td>AllowUserToDeleteRows</td>
+                    <td>Kullanıcı satır silebilir mi?</td>
+                </tr>
+                <tr>
+                    <td>ReadOnly</td>
+                    <td>Sadece okunur mu?</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Sütun Ekleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Kod ile Sütun Ekleme</div>
+                <pre><code><span class="comment">// Temel sütun ekleme</span>
+dataGridView1.Columns.Add(<span class="string">"id"</span>, <span class="string">"ID"</span>);
+dataGridView1.Columns.Add(<span class="string">"ad"</span>, <span class="string">"Ad"</span>);
+dataGridView1.Columns.Add(<span class="string">"soyad"</span>, <span class="string">"Soyad"</span>);
+dataGridView1.Columns.Add(<span class="string">"yas"</span>, <span class="string">"Yaş"</span>);
+
+<span class="comment">// TextBox sütun</span>
+DataGridViewTextBoxColumn txtSutun = <span class="keyword">new</span> DataGridViewTextBoxColumn();
+txtSutun.Name = <span class="string">"email"</span>;
+txtSutun.HeaderText = <span class="string">"E-posta"</span>;
+txtSutun.Width = <span class="number">150</span>;
+dataGridView1.Columns.Add(txtSutun);
+
+<span class="comment">// ComboBox sütun</span>
+DataGridViewComboBoxColumn cmbSutun = <span class="keyword">new</span> DataGridViewComboBoxColumn();
+cmbSutun.Name = <span class="string">"sehir"</span>;
+cmbSutun.HeaderText = <span class="string">"Şehir"</span>;
+cmbSutun.Items.AddRange(<span class="string">"İstanbul"</span>, <span class="string">"Ankara"</span>, <span class="string">"İzmir"</span>);
+dataGridView1.Columns.Add(cmbSutun);
+
+<span class="comment">// CheckBox sütun</span>
+DataGridViewCheckBoxColumn chkSutun = <span class="keyword">new</span> DataGridViewCheckBoxColumn();
+chkSutun.Name = <span class="string">"aktif"</span>;
+chkSutun.HeaderText = <span class="string">"Aktif"</span>;
+dataGridView1.Columns.Add(chkSutun);
+
+<span class="comment">// Button sütun</span>
+DataGridViewButtonColumn btnSutun = <span class="keyword">new</span> DataGridViewButtonColumn();
+btnSutun.Name = <span class="string">"sil"</span>;
+btnSutun.HeaderText = <span class="string">"İşlem"</span>;
+btnSutun.Text = <span class="string">"Sil"</span>;
+btnSutun.UseColumnTextForButtonValue = <span class="keyword">true</span>;
+dataGridView1.Columns.Add(btnSutun);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Satır Ekleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Satır İşlemleri</div>
+                <pre><code><span class="comment">// Tek satır ekle</span>
+dataGridView1.Rows.Add(<span class="number">1</span>, <span class="string">"Ali"</span>, <span class="string">"Yılmaz"</span>, <span class="number">25</span>);
+dataGridView1.Rows.Add(<span class="number">2</span>, <span class="string">"Ayşe"</span>, <span class="string">"Demir"</span>, <span class="number">30</span>);
+
+<span class="comment">// Form kontrollerinden ekle</span>
+<span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    dataGridView1.Rows.Add(
+        txtId.Text,
+        txtAd.Text,
+        txtSoyad.Text,
+        numYas.Value
+    );
+    
+    <span class="comment">// Formu temizle</span>
+    txtId.Clear();
+    txtAd.Clear();
+    txtSoyad.Clear();
+    numYas.Value = <span class="number">0</span>;
+}
+
+<span class="comment">// Son satırı sil</span>
+<span class="keyword">private void</span> <span class="method">btnSonSatirSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dataGridView1.Rows.Count > <span class="number">0</span>)
+    {
+        dataGridView1.Rows.RemoveAt(dataGridView1.Rows.Count - <span class="number">1</span>);
+    }
+}
+
+<span class="comment">// Seçili satırı sil</span>
+<span class="keyword">private void</span> <span class="method">btnSeciliSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dataGridView1.CurrentRow != <span class="keyword">null</span>)
+    {
+        dataGridView1.Rows.Remove(dataGridView1.CurrentRow);
+    }
+}
+
+<span class="comment">// Tüm satırları temizle</span>
+<span class="keyword">private void</span> <span class="method">btnTemizle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    dataGridView1.Rows.Clear();
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>DataSource Kullanımı (List ile)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">List'ten Veri Bağlama</div>
+                <pre><code><span class="comment">// Model sınıfı</span>
+<span class="keyword">public class</span> <span class="class-name">Ogrenci</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Ad { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Soyad { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Yas { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public double</span> Ortalama { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}
+
+<span class="comment">// Liste oluştur ve bağla</span>
+<span class="keyword">private</span> List&lt;Ogrenci&gt; ogrenciler = <span class="keyword">new</span> List&lt;Ogrenci&gt;();
+
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ogrenciler.Add(<span class="keyword">new</span> Ogrenci { Id = <span class="number">1</span>, Ad = <span class="string">"Ali"</span>, Soyad = <span class="string">"Yılmaz"</span>, Yas = <span class="number">20</span>, Ortalama = <span class="number">85.5</span> });
+    ogrenciler.Add(<span class="keyword">new</span> Ogrenci { Id = <span class="number">2</span>, Ad = <span class="string">"Ayşe"</span>, Soyad = <span class="string">"Kaya"</span>, Yas = <span class="number">21</span>, Ortalama = <span class="number">92.3</span> });
+    ogrenciler.Add(<span class="keyword">new</span> Ogrenci { Id = <span class="number">3</span>, Ad = <span class="string">"Mehmet"</span>, Soyad = <span class="string">"Demir"</span>, Yas = <span class="number">19</span>, Ortalama = <span class="number">78.8</span> });
+    
+    <span class="comment">// BindingList kullanarak değişikliklerin yansımasını sağla</span>
+    dataGridView1.DataSource = <span class="keyword">new</span> BindingList&lt;Ogrenci&gt;(ogrenciler);
+}
+
+<span class="comment">// Yeni öğrenci ekle</span>
+<span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ogrenciler.Add(<span class="keyword">new</span> Ogrenci
+    {
+        Id = ogrenciler.Count + <span class="number">1</span>,
+        Ad = txtAd.Text,
+        Soyad = txtSoyad.Text,
+        Yas = (<span class="keyword">int</span>)numYas.Value,
+        Ortalama = (<span class="keyword">double</span>)numOrtalama.Value
+    });
+    
+    dataGridView1.DataSource = <span class="keyword">null</span>;
+    dataGridView1.DataSource = <span class="keyword">new</span> BindingList&lt;Ogrenci&gt;(ogrenciler);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Hücre ve Satır Olayları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">DataGridView Olayları</div>
+                <pre><code><span class="comment">// Satır seçildiğinde</span>
+<span class="keyword">private void</span> <span class="method">dataGridView1_SelectionChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dataGridView1.CurrentRow != <span class="keyword">null</span>)
+    {
+        txtAd.Text = dataGridView1.CurrentRow.Cells[<span class="string">"ad"</span>].Value?.ToString();
+        txtSoyad.Text = dataGridView1.CurrentRow.Cells[<span class="string">"soyad"</span>].Value?.ToString();
+    }
+}
+
+<span class="comment">// Hücreye tıklandığında</span>
+<span class="keyword">private void</span> <span class="method">dataGridView1_CellClick</span>(<span class="keyword">object</span> sender, DataGridViewCellEventArgs e)
+{
+    <span class="keyword">if</span> (e.RowIndex >= <span class="number">0</span>)
+    {
+        DataGridViewRow row = dataGridView1.Rows[e.RowIndex];
+        lblSecili.Text = $<span class="string">"Seçili: {row.Cells["ad"].Value} {row.Cells["soyad"].Value}"</span>;
+    }
+}
+
+<span class="comment">// Button sütununa tıklandığında</span>
+<span class="keyword">private void</span> <span class="method">dataGridView1_CellContentClick</span>(<span class="keyword">object</span> sender, DataGridViewCellEventArgs e)
+{
+    <span class="keyword">if</span> (dataGridView1.Columns[e.ColumnIndex].Name == <span class="string">"sil"</span> && e.RowIndex >= <span class="number">0</span>)
+    {
+        DialogResult sonuc = MessageBox.Show(<span class="string">"Bu satırı silmek istiyor musunuz?"</span>, <span class="string">"Onay"</span>,
+            MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+        
+        <span class="keyword">if</span> (sonuc == DialogResult.Yes)
+        {
+            dataGridView1.Rows.RemoveAt(e.RowIndex);
+        }
+    }
+}
+
+<span class="comment">// Hücre düzenlendikten sonra</span>
+<span class="keyword">private void</span> <span class="method">dataGridView1_CellEndEdit</span>(<span class="keyword">object</span> sender, DataGridViewCellEventArgs e)
+{
+    <span class="keyword">var</span> deger = dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
+    lblDurum.Text = $<span class="string">"Değiştirildi: {deger}"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Görünüm Özelleştirme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Stil Ayarları</div>
+                <pre><code><span class="comment">// Başlık stili</span>
+dataGridView1.ColumnHeadersDefaultCellStyle.BackColor = Color.Navy;
+dataGridView1.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+dataGridView1.ColumnHeadersDefaultCellStyle.Font = <span class="keyword">new</span> Font(<span class="string">"Arial"</span>, <span class="number">12</span>, FontStyle.Bold);
+
+<span class="comment">// Alternatif satır rengi</span>
+dataGridView1.AlternatingRowsDefaultCellStyle.BackColor = Color.LightGray;
+
+<span class="comment">// Seçim rengi</span>
+dataGridView1.DefaultCellStyle.SelectionBackColor = Color.LightBlue;
+dataGridView1.DefaultCellStyle.SelectionForeColor = Color.Black;
+
+<span class="comment">// Sütun genişlikleri</span>
+dataGridView1.Columns[<span class="string">"ad"</span>].Width = <span class="number">150</span>;
+dataGridView1.Columns[<span class="string">"id"</span>].Width = <span class="number">50</span>;
+
+<span class="comment">// Otomatik sütun genişliği</span>
+dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+<span class="comment">// Koşullu biçimlendirme</span>
+<span class="keyword">private void</span> <span class="method">dataGridView1_CellFormatting</span>(<span class="keyword">object</span> sender, DataGridViewCellFormattingEventArgs e)
+{
+    <span class="keyword">if</span> (dataGridView1.Columns[e.ColumnIndex].Name == <span class="string">"ortalama"</span>)
+    {
+        <span class="keyword">double</span> ort;
+        <span class="keyword">if</span> (<span class="keyword">double</span>.TryParse(e.Value?.ToString(), <span class="keyword">out</span> ort))
+        {
+            <span class="keyword">if</span> (ort >= <span class="number">85</span>)
+                e.CellStyle.BackColor = Color.LightGreen;
+            <span class="keyword">else if</span> (ort >= <span class="number">70</span>)
+                e.CellStyle.BackColor = Color.LightYellow;
+            <span class="keyword">else</span>
+                e.CellStyle.BackColor = Color.LightCoral;
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Arama ve Filtreleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Basit Arama</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtArama_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span> arama = txtArama.Text.ToLower();
+    
+    <span class="keyword">foreach</span> (DataGridViewRow row <span class="keyword">in</span> dataGridView1.Rows)
+    {
+        <span class="keyword">if</span> (row.IsNewRow) <span class="keyword">continue</span>;
+        
+        <span class="keyword">bool</span> goster = <span class="keyword">false</span>;
+        
+        <span class="keyword">foreach</span> (DataGridViewCell cell <span class="keyword">in</span> row.Cells)
+        {
+            <span class="keyword">if</span> (cell.Value != <span class="keyword">null</span> && cell.Value.ToString().ToLower().Contains(arama))
+            {
+                goster = <span class="keyword">true</span>;
+                <span class="keyword">break</span>;
+            }
+        }
+        
+        row.Visible = goster;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>ID, Ad, Soyad sütunları olan bir DataGridView oluşturun ve kod ile 3 satır ekleyin.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code>dataGridView1.Columns.Add(<span class="string">"id"</span>, <span class="string">"ID"</span>);
+dataGridView1.Columns.Add(<span class="string">"ad"</span>, <span class="string">"Ad"</span>);
+dataGridView1.Columns.Add(<span class="string">"soyad"</span>, <span class="string">"Soyad"</span>);
+
+dataGridView1.Rows.Add(<span class="number">1</span>, <span class="string">"Ali"</span>, <span class="string">"Veli"</span>);
+dataGridView1.Rows.Add(<span class="number">2</span>, <span class="string">"Ayşe"</span>, <span class="string">"Fatma"</span>);
+dataGridView1.Rows.Add(<span class="number">3</span>, <span class="string">"Mehmet"</span>, <span class="string">"Kaya"</span>);</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Seçili satırın verilerini TextBox'lara aktaran kod yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">dataGridView1_SelectionChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dataGridView1.CurrentRow != <span class="keyword">null</span>)
+    {
+        txtId.Text = dataGridView1.CurrentRow.Cells[<span class="number">0</span>].Value?.ToString();
+        txtAd.Text = dataGridView1.CurrentRow.Cells[<span class="number">1</span>].Value?.ToString();
+        txtSoyad.Text = dataGridView1.CurrentRow.Cells[<span class="number">2</span>].Value?.ToString();
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Seçili satırı silen bir buton yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dataGridView1.CurrentRow != <span class="keyword">null</span> && !dataGridView1.CurrentRow.IsNewRow)
+    {
+        dataGridView1.Rows.Remove(dataGridView1.CurrentRow);
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders12.html" class="nav-btn prev">← Önceki: Timer</a>
+            <a href="ders14.html" class="nav-btn next">Sonraki: Dosya İşlemleri →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

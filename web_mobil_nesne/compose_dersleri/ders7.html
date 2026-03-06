@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 7: Navigation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 7</span>
+            <h1>🧭 Navigation</h1>
+            <p class="subtitle">Sayfalar Arası Geçiş</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • NavController ve NavHost<br>
+                • Sayfalar arası veri aktarımı<br>
+                • Bottom Navigation<br>
+                • Nested Navigation
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kurulum</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">build.gradle.kts</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">dependencies</span> {
+    implementation(<span class="string">"androidx.navigation:navigation-compose:2.7.6"</span>)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Temel Navigation</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">NavHost ve NavController</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// Route tanımları</span>
+<span class="keyword">object</span> <span class="class-name">Routes</span> {
+    <span class="keyword">const val</span> HOME = <span class="string">"home"</span>
+    <span class="keyword">const val</span> DETAIL = <span class="string">"detail"</span>
+    <span class="keyword">const val</span> PROFILE = <span class="string">"profile"</span>
+    <span class="keyword">const val</span> SETTINGS = <span class="string">"settings"</span>
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">AppNavigation</span>() {
+    <span class="keyword">val</span> navController = rememberNavController()
+    
+    NavHost(
+        navController = navController,
+        startDestination = Routes.HOME
+    ) {
+        composable(Routes.HOME) {
+            AnaSayfa(
+                onDetayaGit = { navController.navigate(Routes.DETAIL) },
+                onProfil = { navController.navigate(Routes.PROFILE) }
+            )
+        }
+        
+        composable(Routes.DETAIL) {
+            DetaySayfasi(
+                onGeriDon = { navController.popBackStack() }
+            )
+        }
+        
+        composable(Routes.PROFILE) {
+            ProfilSayfasi(navController)
+        }
+        
+        composable(Routes.SETTINGS) {
+            AyarlarSayfasi(navController)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">AnaSayfa</span>(
+    onDetayaGit: () -> Unit,
+    onProfil: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(<span class="number">16</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(<span class="string">"Ana Sayfa"</span>, style = MaterialTheme.typography.headlineLarge)
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Button(onClick = onDetayaGit) {
+            Text(<span class="string">"Detay Sayfasına Git"</span>)
+        }
+        
+        Button(onClick = onProfil) {
+            Text(<span class="string">"Profil Sayfasına Git"</span>)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DetaySayfasi</span>(onGeriDon: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(<span class="number">16</span>.dp)
+    ) {
+        IconButton(onClick = onGeriDon) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, <span class="string">"Geri"</span>)
+        }
+        
+        Text(<span class="string">"Detay Sayfası"</span>, style = MaterialTheme.typography.headlineLarge)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Parametre ile Navigation</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Veri Aktarımı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ParametreliNavigation</span>() {
+    <span class="keyword">val</span> navController = rememberNavController()
+    
+    NavHost(
+        navController = navController,
+        startDestination = <span class="string">"urunler"</span>
+    ) {
+        <span class="comment">// Ürün listesi</span>
+        composable(<span class="string">"urunler"</span>) {
+            UrunListesi(
+                onUrunTikla = { urunId ->
+                    navController.navigate(<span class="string">"urun/$urunId"</span>)
+                }
+            )
+        }
+        
+        <span class="comment">// Ürün detayı (zorunlu parametre)</span>
+        composable(
+            route = <span class="string">"urun/{urunId}"</span>,
+            arguments = listOf(
+                navArgument(<span class="string">"urunId"</span>) { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            <span class="keyword">val</span> urunId = backStackEntry.arguments?.getInt(<span class="string">"urunId"</span>) ?: <span class="number">0</span>
+            UrunDetay(
+                urunId = urunId,
+                onGeriDon = { navController.popBackStack() }
+            )
+        }
+        
+        <span class="comment">// Opsiyonel parametre</span>
+        composable(
+            route = <span class="string">"arama?query={query}"</span>,
+            arguments = listOf(
+                navArgument(<span class="string">"query"</span>) {
+                    type = NavType.StringType
+                    defaultValue = <span class="string">""</span>
+                    nullable = <span class="keyword">true</span>
+                }
+            )
+        ) { backStackEntry ->
+            <span class="keyword">val</span> query = backStackEntry.arguments?.getString(<span class="string">"query"</span>)
+            AramaSayfasi(query = query ?: <span class="string">""</span>)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">UrunListesi</span>(onUrunTikla: (Int) -> Unit) {
+    <span class="keyword">val</span> urunler = (<span class="number">1</span>..<span class="number">20</span>).map { <span class="string">"Ürün $it"</span> }
+    
+    LazyColumn(contentPadding = PaddingValues(<span class="number">16</span>.dp)) {
+        itemsIndexed(urunler) { index, urun ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = <span class="number">4</span>.dp)
+                    .clickable { onUrunTikla(index + <span class="number">1</span>) }
+            ) {
+                Text(
+                    text = urun,
+                    modifier = Modifier.padding(<span class="number">16</span>.dp)
+                )
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">UrunDetay</span>(urunId: Int, onGeriDon: () -> Unit) {
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        IconButton(onClick = onGeriDon) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, <span class="string">"Geri"</span>)
+        }
+        
+        Text(
+            <span class="string">"Ürün Detayı"</span>,
+            style = MaterialTheme.typography.headlineLarge
+        )
+        Text(
+            <span class="string">"Ürün ID: $urunId"</span>,
+            style = MaterialTheme.typography.titleLarge
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Bottom Navigation</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Alt Navigasyon Çubuğu</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">sealed class</span> <span class="class-name">BottomNavItem</span>(
+    <span class="keyword">val</span> route: String,
+    <span class="keyword">val</span> title: String,
+    <span class="keyword">val</span> icon: ImageVector
+) {
+    <span class="keyword">object</span> <span class="class-name">Home</span> : BottomNavItem(<span class="string">"home"</span>, <span class="string">"Ana Sayfa"</span>, Icons.Default.Home)
+    <span class="keyword">object</span> <span class="class-name">Search</span> : BottomNavItem(<span class="string">"search"</span>, <span class="string">"Ara"</span>, Icons.Default.Search)
+    <span class="keyword">object</span> <span class="class-name">Favorites</span> : BottomNavItem(<span class="string">"favorites"</span>, <span class="string">"Favoriler"</span>, Icons.Default.Favorite)
+    <span class="keyword">object</span> <span class="class-name">Profile</span> : BottomNavItem(<span class="string">"profile"</span>, <span class="string">"Profil"</span>, Icons.Default.Person)
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">MainScreen</span>() {
+    <span class="keyword">val</span> navController = rememberNavController()
+    <span class="keyword">val</span> items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Search,
+        BottomNavItem.Favorites,
+        BottomNavItem.Profile
+    )
+    
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                <span class="keyword">val</span> navBackStackEntry <span class="keyword">by</span> navController.currentBackStackEntryAsState()
+                <span class="keyword">val</span> currentRoute = navBackStackEntry?.destination?.route
+                
+                items.forEach { item ->
+                    NavigationBarItem(
+                        icon = { Icon(item.icon, contentDescription = item.title) },
+                        label = { Text(item.title) },
+                        selected = currentRoute == item.route,
+                        onClick = {
+                            navController.navigate(item.route) {
+                                <span class="comment">// Pop up to the start destination</span>
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = <span class="keyword">true</span>
+                                }
+                                <span class="comment">// Avoid multiple copies</span>
+                                launchSingleTop = <span class="keyword">true</span>
+                                <span class="comment">// Restore state</span>
+                                restoreState = <span class="keyword">true</span>
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
+        NavHost(
+            navController = navController,
+            startDestination = BottomNavItem.Home.route,
+            modifier = Modifier.padding(paddingValues)
+        ) {
+            composable(BottomNavItem.Home.route) { HomePage() }
+            composable(BottomNavItem.Search.route) { SearchPage() }
+            composable(BottomNavItem.Favorites.route) { FavoritesPage() }
+            composable(BottomNavItem.Profile.route) { ProfilePage() }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">HomePage</span>() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(<span class="string">"🏠 Ana Sayfa"</span>, style = MaterialTheme.typography.headlineLarge)
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SearchPage</span>() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(<span class="string">"🔍 Arama"</span>, style = MaterialTheme.typography.headlineLarge)
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">FavoritesPage</span>() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(<span class="string">"❤️ Favoriler"</span>, style = MaterialTheme.typography.headlineLarge)
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ProfilePage</span>() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text(<span class="string">"👤 Profil"</span>, style = MaterialTheme.typography.headlineLarge)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Navigation Animasyonları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Geçiş Animasyonları</div>
+                <pre data-lang="Kotlin"><code>composable(
+    route = <span class="string">"detail/{id}"</span>,
+    enterTransition = {
+        slideInHorizontally(
+            initialOffsetX = { <span class="number">1000</span> },
+            animationSpec = tween(<span class="number">300</span>)
+        )
+    },
+    exitTransition = {
+        slideOutHorizontally(
+            targetOffsetX = { -<span class="number">1000</span> },
+            animationSpec = tween(<span class="number">300</span>)
+        )
+    },
+    popEnterTransition = {
+        slideInHorizontally(
+            initialOffsetX = { -<span class="number">1000</span> },
+            animationSpec = tween(<span class="number">300</span>)
+        )
+    },
+    popExitTransition = {
+        slideOutHorizontally(
+            targetOffsetX = { <span class="number">1000</span> },
+            animationSpec = tween(<span class="number">300</span>)
+        )
+    }
+) { backStackEntry ->
+    DetaySayfasi(...)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>3 sayfalık basit bir navigation uygulaması yap.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Parametre ile ürün detayına giden bir liste yap.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Bottom Navigation ile 4 sekmeli uygulama oluştur.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders6.html" class="nav-btn prev">← Ders 6</a>
+            <a href="ders8.html" class="nav-btn next">Ders 8 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

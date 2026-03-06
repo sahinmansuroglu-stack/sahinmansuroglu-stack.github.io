@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 9: E-Ticaret Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 9</span>
+            <h1>🛍️ E-Ticaret Dashboard</h1>
+            <p class="subtitle">Ders 1-9 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Layout, Partial View ve ViewComponent kullanarak yönetim paneli.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • _Layout.cshtml<br>
+                • Partial Views<br>
+                • ViewComponent<br>
+                • Sections (@section)
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Layout</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Shared/_AdminLayout.cshtml</div>
+                <pre data-lang="Razor"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="tr"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;@ViewData["Title"] - Admin Panel&lt;/title&gt;
+    &lt;link href="~/css/admin.css" rel="stylesheet" /&gt;
+    @RenderSection(<span class="string">"Styles"</span>, required: <span class="keyword">false</span>)
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class="admin-wrapper"&gt;
+        <span class="comment">&lt;!-- Sidebar --&gt;</span>
+        &lt;aside class="sidebar"&gt;
+            &lt;div class="logo"&gt;🛍️ E-Shop Admin&lt;/div&gt;
+            &lt;nav class="nav-menu"&gt;
+                &lt;a asp-controller="Dashboard" asp-action="Index"&gt;📊 Dashboard&lt;/a&gt;
+                &lt;a asp-controller="Product" asp-action="Index"&gt;📦 Ürünler&lt;/a&gt;
+                &lt;a asp-controller="Order" asp-action="Index"&gt;🧾 Siparişler&lt;/a&gt;
+                &lt;a asp-controller="Customer" asp-action="Index"&gt;👥 Müşteriler&lt;/a&gt;
+                &lt;a asp-controller="Report" asp-action="Index"&gt;📈 Raporlar&lt;/a&gt;
+            &lt;/nav&gt;
+        &lt;/aside&gt;
+        
+        <span class="comment">&lt;!-- Main Content --&gt;</span>
+        &lt;main class="main-content"&gt;
+            <span class="comment">&lt;!-- Header --&gt;</span>
+            &lt;partial name="_AdminHeader" /&gt;
+            
+            <span class="comment">&lt;!-- Alerts --&gt;</span>
+            @if (TempData[<span class="string">"Success"</span>] != <span class="keyword">null</span>)
+            {
+                &lt;div class="alert alert-success"&gt;@TempData[<span class="string">"Success"</span>]&lt;/div&gt;
+            }
+            
+            <span class="comment">&lt;!-- Page Content --&gt;</span>
+            &lt;div class="content-area"&gt;
+                @RenderBody()
+            &lt;/div&gt;
+        &lt;/main&gt;
+    &lt;/div&gt;
+    
+    &lt;script src="~/js/admin.js"&gt;&lt;/script&gt;
+    @RenderSection(<span class="string">"Scripts"</span>, required: <span class="keyword">false</span>)
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>ViewComponent</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">ViewComponents/StatCardViewComponent.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StatCardViewComponent</span> : ViewComponent
+{
+    <span class="keyword">private readonly</span> ShopDbContext _context;
+    
+    <span class="keyword">public</span> <span class="method">StatCardViewComponent</span>(ShopDbContext context)
+    {
+        _context = context;
+    }
+    
+    <span class="keyword">public async</span> Task&lt;IViewComponentResult&gt; <span class="method">InvokeAsync</span>(<span class="keyword">string</span> type)
+    {
+        <span class="keyword">var</span> model = <span class="keyword">new</span> StatCardModel();
+        
+        <span class="keyword">switch</span> (type)
+        {
+            <span class="keyword">case</span> <span class="string">"orders"</span>:
+                model.Title = <span class="string">"Toplam Sipariş"</span>;
+                model.Value = (<span class="keyword">await</span> _context.Orders.CountAsync()).ToString();
+                model.Icon = <span class="string">"🧾"</span>;
+                model.Color = <span class="string">"primary"</span>;
+                <span class="keyword">break</span>;
+                
+            <span class="keyword">case</span> <span class="string">"revenue"</span>:
+                <span class="keyword">var</span> revenue = <span class="keyword">await</span> _context.Orders
+                    .Where(o => o.Status == <span class="string">"Completed"</span>)
+                    .SumAsync(o => o.TotalAmount);
+                model.Title = <span class="string">"Toplam Gelir"</span>;
+                model.Value = revenue.ToString(<span class="string">"C"</span>);
+                model.Icon = <span class="string">"💰"</span>;
+                model.Color = <span class="string">"success"</span>;
+                <span class="keyword">break</span>;
+                
+            <span class="keyword">case</span> <span class="string">"products"</span>:
+                model.Title = <span class="string">"Ürün Sayısı"</span>;
+                model.Value = (<span class="keyword">await</span> _context.Products.CountAsync()).ToString();
+                model.Icon = <span class="string">"📦"</span>;
+                model.Color = <span class="string">"info"</span>;
+                <span class="keyword">break</span>;
+                
+            <span class="keyword">case</span> <span class="string">"customers"</span>:
+                model.Title = <span class="string">"Müşteri Sayısı"</span>;
+                model.Value = (<span class="keyword">await</span> _context.Customers.CountAsync()).ToString();
+                model.Icon = <span class="string">"👥"</span>;
+                model.Color = <span class="string">"warning"</span>;
+                <span class="keyword">break</span>;
+        }
+        
+        <span class="keyword">return</span> View(model);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Shared/Components/StatCard/Default.cshtml</div>
+                <pre data-lang="Razor"><code>@model StatCardModel
+
+&lt;div class="stat-card stat-card-@Model.Color"&gt;
+    &lt;div class="stat-icon"&gt;@Model.Icon&lt;/div&gt;
+    &lt;div class="stat-info"&gt;
+        &lt;span class="stat-value"&gt;@Model.Value&lt;/span&gt;
+        &lt;span class="stat-title"&gt;@Model.Title&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Dashboard View</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Dashboard/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@{
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Dashboard"</span>;
+    Layout = <span class="string">"_AdminLayout"</span>;
+}
+
+&lt;h1&gt;📊 Dashboard&lt;/h1&gt;
+
+<span class="comment">&lt;!-- İstatistik Kartları --&gt;</span>
+&lt;div class="row mb-4"&gt;
+    &lt;div class="col-md-3"&gt;
+        @await Component.InvokeAsync(<span class="string">"StatCard"</span>, <span class="keyword">new</span> { type = <span class="string">"orders"</span> })
+    &lt;/div&gt;
+    &lt;div class="col-md-3"&gt;
+        @await Component.InvokeAsync(<span class="string">"StatCard"</span>, <span class="keyword">new</span> { type = <span class="string">"revenue"</span> })
+    &lt;/div&gt;
+    &lt;div class="col-md-3"&gt;
+        @await Component.InvokeAsync(<span class="string">"StatCard"</span>, <span class="keyword">new</span> { type = <span class="string">"products"</span> })
+    &lt;/div&gt;
+    &lt;div class="col-md-3"&gt;
+        @await Component.InvokeAsync(<span class="string">"StatCard"</span>, <span class="keyword">new</span> { type = <span class="string">"customers"</span> })
+    &lt;/div&gt;
+&lt;/div&gt;
+
+<span class="comment">&lt;!-- Son Siparişler --&gt;</span>
+&lt;div class="row"&gt;
+    &lt;div class="col-md-8"&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="card-header"&gt;Son Siparişler&lt;/div&gt;
+            &lt;div class="card-body"&gt;
+                &lt;partial name="_RecentOrders" model="@ViewBag.RecentOrders" /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-4"&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="card-header"&gt;Popüler Ürünler&lt;/div&gt;
+            &lt;div class="card-body"&gt;
+                &lt;partial name="_PopularProducts" model="@ViewBag.PopularProducts" /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+@section Scripts {
+    &lt;script src="~/js/dashboard-charts.js"&gt;&lt;/script&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Partial View</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Shared/_RecentOrders.cshtml</div>
+                <pre data-lang="Razor"><code>@model List&lt;Order&gt;
+
+&lt;table class="table table-sm"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;#&lt;/th&gt;
+            &lt;th&gt;Müşteri&lt;/th&gt;
+            &lt;th&gt;Tutar&lt;/th&gt;
+            &lt;th&gt;Durum&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        @foreach (var order in Model)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;#@order.Id&lt;/td&gt;
+                &lt;td&gt;@order.Customer.Name&lt;/td&gt;
+                &lt;td&gt;@order.TotalAmount.ToString("C")&lt;/td&gt;
+                &lt;td&gt;&lt;span class="badge bg-@GetStatusColor(order.Status)"&gt;@order.Status&lt;/span&gt;&lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+@functions {
+    string GetStatusColor(string status) => status switch
+    {
+        "Pending" => "warning",
+        "Processing" => "info",
+        "Completed" => "success",
+        "Cancelled" => "danger",
+        _ => "secondary"
+    };
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Satış grafiği ViewComponent'ı ekleyin</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Bildirim dropdown'ı için Partial View oluşturun</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje08.html" class="nav-btn prev">← Proje 8</a>
+            <a href="proje10.html" class="nav-btn next">Proje 10 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

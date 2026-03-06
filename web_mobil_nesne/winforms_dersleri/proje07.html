@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 7: Quiz Uygulaması</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 7</span>
+            <h1>❓ Quiz Uygulaması</h1>
+            <p class="subtitle">Ders 1-7 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders07.html">Ders 7</a>
+            <a href="proje07.html" class="active">Proje 7</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Çoktan seçmeli sorular içeren quiz. MessageBox ile geri bildirim ve sonuç gösterimi.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Konular (Ders 7):</strong> MessageBox.Show, MessageBoxButtons, MessageBoxIcon,
+                DialogResult
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Kontrolleri</h2>
+            <table>
+                <tr>
+                    <th>Kontrol</th>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblSoru</td>
+                </tr>
+                <tr>
+                    <td>RadioButton</td>
+                    <td>rbA, rbB, rbC, rbD</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnCevapla, btnSonraki</td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblPuan, lblSoruNo</td>
+                </tr>
+                <tr>
+                    <td>ProgressBar</td>
+                    <td>progressBar1</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Kod Çözümü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Soru Yapısı ve Veriler</div>
+                <pre><code><span class="keyword">class</span> <span class="class-name">Soru</span>
+{
+    <span class="keyword">public string</span> Metin { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span>[] Secenekler { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> DogruIndex { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}
+
+<span class="keyword">private</span> List&lt;Soru&gt; sorular = <span class="keyword">new</span> List&lt;Soru&gt;
+{
+    <span class="keyword">new</span> Soru { 
+        Metin = <span class="string">"C#'ta string tanımlamak için hangi keyword kullanılır?"</span>,
+        Secenekler = <span class="keyword">new</span>[] { <span class="string">"int"</span>, <span class="string">"string"</span>, <span class="string">"bool"</span>, <span class="string">"char"</span> },
+        DogruIndex = <span class="number">1</span>
+    },
+    <span class="keyword">new</span> Soru { 
+        Metin = <span class="string">"Windows Forms'ta buton tıklaması hangi olayla yakalanır?"</span>,
+        Secenekler = <span class="keyword">new</span>[] { <span class="string">"TextChanged"</span>, <span class="string">"Click"</span>, <span class="string">"Load"</span>, <span class="string">"Shown"</span> },
+        DogruIndex = <span class="number">1</span>
+    },
+    <span class="keyword">new</span> Soru { 
+        Metin = <span class="string">"Hangi kontrol listeden tek seçim yapmayı sağlar?"</span>,
+        Secenekler = <span class="keyword">new</span>[] { <span class="string">"CheckBox"</span>, <span class="string">"TextBox"</span>, <span class="string">"RadioButton"</span>, <span class="string">"Label"</span> },
+        DogruIndex = <span class="number">2</span>
+    }
+};
+
+<span class="keyword">private int</span> mevcutIndex = <span class="number">0</span>;
+<span class="keyword">private int</span> puan = <span class="number">0</span>;
+<span class="keyword">private int</span> dogru = <span class="number">0</span>, yanlis = <span class="number">0</span>;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Soru Gösterme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    progressBar1.Maximum = sorular.Count;
+    SoruGoster();
+}
+
+<span class="keyword">private void</span> <span class="method">SoruGoster</span>()
+{
+    Soru s = sorular[mevcutIndex];
+    
+    lblSoruNo.Text = $<span class="string">"Soru {mevcutIndex + 1}/{sorular.Count}"</span>;
+    lblSoru.Text = s.Metin;
+    
+    rbA.Text = <span class="string">"A) "</span> + s.Secenekler[<span class="number">0</span>];
+    rbB.Text = <span class="string">"B) "</span> + s.Secenekler[<span class="number">1</span>];
+    rbC.Text = <span class="string">"C) "</span> + s.Secenekler[<span class="number">2</span>];
+    rbD.Text = <span class="string">"D) "</span> + s.Secenekler[<span class="number">3</span>];
+    
+    <span class="comment">// Seçimleri temizle</span>
+    rbA.Checked = rbB.Checked = rbC.Checked = rbD.Checked = <span class="keyword">false</span>;
+    progressBar1.Value = mevcutIndex;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Cevap Kontrolü - MessageBox Kullanımı</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnCevapla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Seçim kontrolü</span>
+    <span class="keyword">if</span> (!rbA.Checked && !rbB.Checked && !rbC.Checked && !rbD.Checked)
+    {
+        MessageBox.Show(<span class="string">"Lütfen bir seçenek işaretleyin!"</span>, <span class="string">"Uyarı"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// Seçilen cevabı bul</span>
+    <span class="keyword">int</span> secilen = rbA.Checked ? <span class="number">0</span> : rbB.Checked ? <span class="number">1</span> : rbC.Checked ? <span class="number">2</span> : <span class="number">3</span>;
+    Soru s = sorular[mevcutIndex];
+    
+    <span class="keyword">if</span> (secilen == s.DogruIndex)
+    {
+        dogru++;
+        puan += <span class="number">10</span>;
+        MessageBox.Show(<span class="string">"Doğru cevap! 🎉\n+10 puan"</span>, <span class="string">"Tebrikler"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+    <span class="keyword">else</span>
+    {
+        yanlis++;
+        <span class="keyword">string</span> dogruCevap = s.Secenekler[s.DogruIndex];
+        MessageBox.Show($<span class="string">"Yanlış! 😞\n\nDoğru cevap: {dogruCevap}"</span>, <span class="string">"Üzgünüm"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+    
+    lblPuan.Text = <span class="string">"Puan: "</span> + puan;
+    
+    <span class="comment">// Sonraki soruya geç veya bitir</span>
+    mevcutIndex++;
+    
+    <span class="keyword">if</span> (mevcutIndex >= sorular.Count)
+    {
+        QuizBitir();
+    }
+    <span class="keyword">else</span>
+    {
+        SoruGoster();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">QuizBitir</span>()
+{
+    progressBar1.Value = sorular.Count;
+    
+    <span class="keyword">double</span> basari = (<span class="keyword">double</span>)dogru / sorular.Count * <span class="number">100</span>;
+    <span class="keyword">string</span> mesaj = $<span class="string">@"
+Quiz Tamamlandı!
+
+Toplam Soru: {sorular.Count}
+Doğru: {dogru}
+Yanlış: {yanlis}
+Puan: {puan}
+Başarı: %{basari:N0}
+
+Tekrar oynamak ister misiniz?"</span>;
+
+    DialogResult sonuc = MessageBox.Show(mesaj, <span class="string">"Sonuçlar"</span>,
+        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+    
+    <span class="keyword">if</span> (sonuc == DialogResult.Yes)
+    {
+        <span class="comment">// Sıfırla</span>
+        mevcutIndex = <span class="number">0</span>;
+        puan = <span class="number">0</span>;
+        dogru = <span class="number">0</span>;
+        yanlis = <span class="number">0</span>;
+        lblPuan.Text = <span class="string">"Puan: 0"</span>;
+        SoruGoster();
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="keyword">this</span>.Close();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Süre sınırı ekleyin</strong>
+                <p>Her soru için 15 saniye süre verin, süre dolunca otomatik geçsin.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Kategori seçimi</strong>
+                <p>ComboBox ile farklı kategoriler sunun (Genel Kültür, Bilim, vb.)</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje06.html" class="nav-btn prev">← Proje 6</a>
+            <a href="proje08.html" class="nav-btn next">Proje 8 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

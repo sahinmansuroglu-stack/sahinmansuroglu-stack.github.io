@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 1: Windows Forms'a Giriş</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 1</span>
+            <h1>Windows Forms'a Giriş</h1>
+            <p class="subtitle">Proje Oluşturma ve Temel Kavramlar</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders01.html" class="active">Ders 1</a>
+            <a href="ders02.html">Ders 2</a>
+            <a href="ders03.html">Ders 3</a>
+            <a href="ders04.html">Ders 4</a>
+            <a href="ders05.html">Ders 5</a>
+        </nav>
+
+        <section class="section">
+            <h2>Windows Forms Nedir?</h2>
+            <p><strong>Windows Forms (WinForms)</strong>, Microsoft .NET Framework üzerinde çalışan, grafiksel kullanıcı
+                arayüzü (GUI) oluşturmak için kullanılan bir teknolojidir.</p>
+
+            <div class="info-box">
+                <strong>📌 Önemli:</strong> Windows Forms ile masaüstü uygulamaları geliştirebilir, formlar üzerine
+                butonlar, metin kutuları ve diğer kontrolleri sürükle-bırak yöntemiyle yerleştirebilirsiniz.
+            </div>
+
+            <h3>Windows Forms'un Avantajları</h3>
+            <ul>
+                <li><strong>Kolay Kullanım:</strong> Sürükle-bırak ile hızlı tasarım</li>
+                <li><strong>Zengin Kontrol Seti:</strong> 50'den fazla hazır kontrol</li>
+                <li><strong>Olay Tabanlı Programlama:</strong> Click, KeyPress gibi olaylarla çalışma</li>
+                <li><strong>Hızlı Geliştirme:</strong> Visual Studio ile entegre çalışma</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>Proje Oluşturma</h2>
+
+            <h3>Adımlar:</h3>
+            <ol>
+                <li><strong>Visual Studio</strong>'yu açın</li>
+                <li><strong>"Create a new project"</strong> seçin</li>
+                <li>Arama kutusuna <strong>"Windows Forms App"</strong> yazın</li>
+                <li><strong>"Windows Forms App (.NET Framework)"</strong> şablonunu seçin</li>
+                <li>Proje adını girin ve <strong>"Create"</strong> butonuna tıklayın</li>
+            </ol>
+
+            <div class="diagram">
+                <div class="diagram-box">Visual Studio Aç</div>
+                <span class="diagram-arrow">→</span>
+                <div class="diagram-box">New Project</div>
+                <span class="diagram-arrow">→</span>
+                <div class="diagram-box">Windows Forms App</div>
+                <span class="diagram-arrow">→</span>
+                <div class="diagram-box">Create</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Proje Yapısı</h2>
+
+            <table>
+                <tr>
+                    <th>Dosya/Klasör</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td><code>Form1.cs</code></td>
+                    <td>Formun C# kod dosyası (olaylar burada yazılır)</td>
+                </tr>
+                <tr>
+                    <td><code>Form1.Designer.cs</code></td>
+                    <td>Tasarımcı tarafından otomatik oluşturulan kod</td>
+                </tr>
+                <tr>
+                    <td><code>Program.cs</code></td>
+                    <td>Uygulamanın başlangıç noktası (Main metodu)</td>
+                </tr>
+                <tr>
+                    <td><code>Properties</code></td>
+                    <td>Proje ayarları ve kaynaklar</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Program.cs - Başlangıç Noktası</div>
+                <pre><code><span class="keyword">using</span> System;
+<span class="keyword">using</span> System.Windows.Forms;
+
+<span class="keyword">namespace</span> WindowsFormsApp1
+{
+    <span class="keyword">static class</span> <span class="class-name">Program</span>
+    {
+        [STAThread]
+        <span class="keyword">static void</span> <span class="method">Main</span>()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(<span class="keyword">false</span>);
+            Application.Run(<span class="keyword">new</span> <span class="class-name">Form1</span>()); <span class="comment">// Ana form başlatılır</span>
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Özellikleri (Properties)</h2>
+            <p>Properties panelinden formun görünümünü ve davranışını değiştirebilirsiniz:</p>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                    <th>Örnek Değer</th>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>Formun kod içindeki adı</td>
+                    <td>frmAna</td>
+                </tr>
+                <tr>
+                    <td>Text</td>
+                    <td>Başlık çubuğundaki yazı</td>
+                    <td>"Hesap Makinesi"</td>
+                </tr>
+                <tr>
+                    <td>Size</td>
+                    <td>Formun boyutu (Genişlik, Yükseklik)</td>
+                    <td>800, 600</td>
+                </tr>
+                <tr>
+                    <td>StartPosition</td>
+                    <td>Açılış konumu</td>
+                    <td>CenterScreen</td>
+                </tr>
+                <tr>
+                    <td>BackColor</td>
+                    <td>Arka plan rengi</td>
+                    <td>White</td>
+                </tr>
+                <tr>
+                    <td>FormBorderStyle</td>
+                    <td>Kenarlık stili</td>
+                    <td>FixedSingle</td>
+                </tr>
+                <tr>
+                    <td>MaximizeBox</td>
+                    <td>Büyütme butonu aktif mi</td>
+                    <td>True / False</td>
+                </tr>
+                <tr>
+                    <td>Icon</td>
+                    <td>Formun ikonu</td>
+                    <td>myicon.ico</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Form Özelliklerini Kod ile Ayarlama</div>
+                <pre><code><span class="keyword">public</span> <span class="method">Form1</span>()
+{
+    InitializeComponent();
+    
+    <span class="comment">// Form özelliklerini kod ile ayarlama</span>
+    <span class="keyword">this</span>.Text = <span class="string">"Benim Uygulamam"</span>;
+    <span class="keyword">this</span>.Size = <span class="keyword">new</span> Size(<span class="number">800</span>, <span class="number">600</span>);
+    <span class="keyword">this</span>.StartPosition = FormStartPosition.CenterScreen;
+    <span class="keyword">this</span>.BackColor = Color.LightBlue;
+    <span class="keyword">this</span>.FormBorderStyle = FormBorderStyle.FixedSingle;
+    <span class="keyword">this</span>.MaximizeBox = <span class="keyword">false</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Olayları (Events)</h2>
+
+            <table>
+                <tr>
+                    <th>Olay</th>
+                    <th>Ne Zaman Tetiklenir?</th>
+                </tr>
+                <tr>
+                    <td><code>Load</code></td>
+                    <td>Form yüklendiğinde (açılmadan hemen önce)</td>
+                </tr>
+                <tr>
+                    <td><code>Shown</code></td>
+                    <td>Form ilk kez gösterildiğinde</td>
+                </tr>
+                <tr>
+                    <td><code>FormClosing</code></td>
+                    <td>Form kapatılmak üzereyken</td>
+                </tr>
+                <tr>
+                    <td><code>FormClosed</code></td>
+                    <td>Form kapandıktan sonra</td>
+                </tr>
+                <tr>
+                    <td><code>Resize</code></td>
+                    <td>Form boyutu değiştiğinde</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Form Olayları Örneği</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    MessageBox.Show(<span class="string">"Form yükleniyor..."</span>);
+}
+
+<span class="keyword">private void</span> <span class="method">Form1_FormClosing</span>(<span class="keyword">object</span> sender, FormClosingEventArgs e)
+{
+    DialogResult sonuc = MessageBox.Show(
+        <span class="string">"Çıkmak istediğinizden emin misiniz?"</span>,
+        <span class="string">"Çıkış"</span>,
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Question);
+    
+    <span class="keyword">if</span> (sonuc == DialogResult.No)
+    {
+        e.Cancel = <span class="keyword">true</span>; <span class="comment">// Kapanmayı iptal et</span>
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Yeni bir Windows Forms projesi oluşturun ve formun başlığını "İlk Uygulamam" olarak
+                    değiştirin.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">public</span> <span class="method">Form1</span>()
+{
+    InitializeComponent();
+    <span class="keyword">this</span>.Text = <span class="string">"İlk Uygulamam"</span>;
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Formu ekranın ortasında açılacak şekilde ayarlayın ve boyutunu 500x400 yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">this</span>.StartPosition = FormStartPosition.CenterScreen;
+<span class="keyword">this</span>.Size = <span class="keyword">new</span> Size(<span class="number">500</span>, <span class="number">400</span>);</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Form kapanırken kullanıcıya onay sorun.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">private void</span> <span class="method">Form1_FormClosing</span>(<span class="keyword">object</span> sender, FormClosingEventArgs e)
+{
+    <span class="keyword">var</span> sonuc = MessageBox.Show(<span class="string">"Çıkmak istiyor musunuz?"</span>, 
+        <span class="string">"Çıkış"</span>, MessageBoxButtons.YesNo);
+    
+    <span class="keyword">if</span> (sonuc == DialogResult.No)
+        e.Cancel = <span class="keyword">true</span>;
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="index.html" class="nav-btn prev">← Anasayfa</a>
+            <a href="ders02.html" class="nav-btn next">Sonraki: Label, TextBox, Button →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

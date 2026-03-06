@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 13: Arama, Filtreleme ve Sayfalama</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 13</span>
+            <h1>Arama, Filtreleme ve Sayfalama</h1>
+            <p class="subtitle">Kullanıcı Deneyimini İyileştirme</p>
+        </header>
+
+        <section class="section">
+            <h2>Arama ve Filtreleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controller - Arama ve Filtre</div>
+                <pre data-lang="C#"><code><span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Index</span>(
+    <span class="keyword">string</span> search, 
+    <span class="keyword">int</span>? classroomId,
+    <span class="keyword">bool</span>? isActive,
+    <span class="keyword">string</span> sortBy = <span class="string">"name"</span>)
+{
+    <span class="keyword">var</span> query = _context.Students
+        .Include(s => s.Classroom)
+        .AsQueryable();
+    
+    <span class="comment">// Metin araması</span>
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(search))
+    {
+        search = search.ToLower();
+        query = query.Where(s => 
+            s.FirstName.ToLower().Contains(search) || 
+            s.LastName.ToLower().Contains(search) ||
+            s.Email.ToLower().Contains(search));
+    }
+    
+    <span class="comment">// Sınıf filtresi</span>
+    <span class="keyword">if</span> (classroomId.HasValue)
+    {
+        query = query.Where(s => s.ClassroomId == classroomId);
+    }
+    
+    <span class="comment">// Aktiflik filtresi</span>
+    <span class="keyword">if</span> (isActive.HasValue)
+    {
+        query = query.Where(s => s.IsActive == isActive);
+    }
+    
+    <span class="comment">// Sıralama</span>
+    query = sortBy <span class="keyword">switch</span>
+    {
+        <span class="string">"name"</span> => query.OrderBy(s => s.LastName).ThenBy(s => s.FirstName),
+        <span class="string">"name_desc"</span> => query.OrderByDescending(s => s.LastName),
+        <span class="string">"classroom"</span> => query.OrderBy(s => s.Classroom.Name),
+        <span class="string">"date"</span> => query.OrderByDescending(s => s.Id),
+        _ => query.OrderBy(s => s.LastName)
+    };
+    
+    <span class="comment">// ViewBag değerleri</span>
+    ViewBag.Search = search;
+    ViewBag.ClassroomId = classroomId;
+    ViewBag.IsActive = isActive;
+    ViewBag.SortBy = sortBy;
+    ViewBag.Classrooms = <span class="keyword">new</span> SelectList(
+        <span class="keyword">await</span> _context.Classrooms.ToListAsync(), 
+        <span class="string">"Id"</span>, <span class="string">"Name"</span>, classroomId);
+    
+    <span class="keyword">return</span> View(<span class="keyword">await</span> query.ToListAsync());
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Arama Formu (View)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Student/Index.cshtml</div>
+                <pre data-lang="Razor"><code>&lt;form method="get" class="row g-3 mb-4"&gt;
+    &lt;div class="col-md-3"&gt;
+        &lt;input type="text" name="search" value="@ViewBag.Search" 
+               class="form-control" placeholder="Ad, soyad veya e-posta..." /&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;select name="classroomId" class="form-select" asp-items="ViewBag.Classrooms"&gt;
+            &lt;option value=""&gt;Tüm Sınıflar&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;select name="isActive" class="form-select"&gt;
+            &lt;option value=""&gt;Tüm Durum&lt;/option&gt;
+            &lt;option value="true" @(ViewBag.IsActive == true ? "selected" : "")&gt;Aktif&lt;/option&gt;
+            &lt;option value="false" @(ViewBag.IsActive == false ? "selected" : "")&gt;Pasif&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;select name="sortBy" class="form-select"&gt;
+            &lt;option value="name" @(ViewBag.SortBy == "name" ? "selected" : "")&gt;Ada Göre&lt;/option&gt;
+            &lt;option value="name_desc" @(ViewBag.SortBy == "name_desc" ? "selected" : "")&gt;Ada Göre (Z-A)&lt;/option&gt;
+            &lt;option value="classroom" @(ViewBag.SortBy == "classroom" ? "selected" : "")&gt;Sınıfa Göre&lt;/option&gt;
+            &lt;option value="date" @(ViewBag.SortBy == "date" ? "selected" : "")&gt;En Yeni&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-1"&gt;
+        &lt;button type="submit" class="btn btn-primary w-100"&gt;🔍&lt;/button&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;a asp-action="Index" class="btn btn-outline-secondary w-100"&gt;Temizle&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Sayfalama (Pagination)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">ViewModel/PagedResult.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">PagedResult</span>&lt;T&gt;
+{
+    <span class="keyword">public</span> List&lt;T&gt; Items { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> CurrentPage { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> TotalPages { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> PageSize { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> TotalCount { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public bool</span> HasPrevious => CurrentPage > <span class="number">1</span>;
+    <span class="keyword">public bool</span> HasNext => CurrentPage &lt; TotalPages;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Controller - Sayfalama</div>
+                <pre data-lang="C#"><code><span class="keyword">private const int</span> PageSize = <span class="number">10</span>;
+
+<span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Index</span>(
+    <span class="keyword">string</span> search, 
+    <span class="keyword">int</span>? classroomId,
+    <span class="keyword">int</span> page = <span class="number">1</span>)
+{
+    <span class="keyword">var</span> query = _context.Students
+        .Include(s => s.Classroom)
+        .AsQueryable();
+    
+    <span class="comment">// Filtreler...</span>
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(search))
+    {
+        query = query.Where(s => s.FirstName.Contains(search) || 
+                                 s.LastName.Contains(search));
+    }
+    
+    <span class="comment">// Toplam kayıt sayısı</span>
+    <span class="keyword">var</span> totalCount = <span class="keyword">await</span> query.CountAsync();
+    <span class="keyword">var</span> totalPages = (<span class="keyword">int</span>)Math.Ceiling(totalCount / (<span class="keyword">double</span>)PageSize);
+    
+    <span class="comment">// Sayfalama uygula</span>
+    <span class="keyword">var</span> students = <span class="keyword">await</span> query
+        .OrderBy(s => s.LastName)
+        .Skip((page - <span class="number">1</span>) * PageSize)
+        .Take(PageSize)
+        .ToListAsync();
+    
+    <span class="keyword">var</span> result = <span class="keyword">new</span> PagedResult&lt;Student&gt;
+    {
+        Items = students,
+        CurrentPage = page,
+        TotalPages = totalPages,
+        PageSize = PageSize,
+        TotalCount = totalCount
+    };
+    
+    ViewBag.Search = search;
+    ViewBag.ClassroomId = classroomId;
+    
+    <span class="keyword">return</span> View(result);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Sayfalama Bileşeni (View)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Pagination Component</div>
+                <pre data-lang="Razor"><code>@model PagedResult&lt;Student&gt;
+
+<span class="comment">&lt;!-- Sonuç bilgisi --&gt;</span>
+&lt;p class="text-muted"&gt;
+    Toplam @Model.TotalCount kayıt, Sayfa @Model.CurrentPage / @Model.TotalPages
+&lt;/p&gt;
+
+<span class="comment">&lt;!-- Sayfalama --&gt;</span>
+@if (Model.TotalPages > 1)
+{
+    &lt;nav&gt;
+        &lt;ul class="pagination justify-content-center"&gt;
+            <span class="comment">&lt;!-- Önceki --&gt;</span>
+            &lt;li class="page-item @(!Model.HasPrevious ? "disabled" : "")"&gt;
+                &lt;a class="page-link" 
+                   href="?page=@(Model.CurrentPage - 1)&amp;search=@ViewBag.Search&amp;classroomId=@ViewBag.ClassroomId"&gt;
+                    « Önceki
+                &lt;/a&gt;
+            &lt;/li&gt;
+            
+            <span class="comment">&lt;!-- Sayfa numaraları --&gt;</span>
+            @for (int i = 1; i &lt;= Model.TotalPages; i++)
+            {
+                &lt;li class="page-item @(i == Model.CurrentPage ? "active" : "")"&gt;
+                    &lt;a class="page-link" 
+                       href="?page=@i&amp;search=@ViewBag.Search&amp;classroomId=@ViewBag.ClassroomId"&gt;
+                        @i
+                    &lt;/a&gt;
+                &lt;/li&gt;
+            }
+            
+            <span class="comment">&lt;!-- Sonraki --&gt;</span>
+            &lt;li class="page-item @(!Model.HasNext ? "disabled" : "")"&gt;
+                &lt;a class="page-link" 
+                   href="?page=@(Model.CurrentPage + 1)&amp;search=@ViewBag.Search&amp;classroomId=@ViewBag.ClassroomId"&gt;
+                    Sonraki »
+                &lt;/a&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/nav&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Sayfa boyutunu kullanıcının seçmesini sağlayan dropdown ekleyin.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre data-lang="Razor"><code>&lt;select name="pageSize" class="form-select" style="width: 100px;"&gt;
+    &lt;option value="10" @(Model.PageSize == 10 ? "selected" : "")&gt;10&lt;/option&gt;
+    &lt;option value="25" @(Model.PageSize == 25 ? "selected" : "")&gt;25&lt;/option&gt;
+    &lt;option value="50" @(Model.PageSize == 50 ? "selected" : "")&gt;50&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Çok sayfalı listelerde sayfa numaralarını kısaltın (1 ... 5 6 7 ... 20).</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="comment">// Gösterilecek sayfa numaralarını hesapla</span>
+<span class="keyword">var</span> start = Math.Max(<span class="number">1</span>, Model.CurrentPage - <span class="number">2</span>);
+<span class="keyword">var</span> end = Math.Min(Model.TotalPages, Model.CurrentPage + <span class="number">2</span>);
+
+@if (start > <span class="number">1</span>)
+{
+    &lt;li class="page-item"&gt;&lt;a class="page-link" href="?page=1"&gt;1&lt;/a&gt;&lt;/li&gt;
+    @if (start > <span class="number">2</span>)
+    {
+        &lt;li class="page-item disabled"&gt;&lt;span class="page-link"&gt;...&lt;/span&gt;&lt;/li&gt;
+    }
+}
+
+@for (<span class="keyword">int</span> i = start; i &lt;= end; i++)
+{
+    &lt;li class="page-item @(i == Model.CurrentPage ? "active" : "")"&gt;
+        &lt;a class="page-link" href="?page=@i"&gt;@i&lt;/a&gt;
+    &lt;/li&gt;
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders12.html" class="nav-btn prev">← Önceki: İlişkisel Tablolar</a>
+            <a href="ders14.html" class="nav-btn next">Sonraki: Dosya Yükleme →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

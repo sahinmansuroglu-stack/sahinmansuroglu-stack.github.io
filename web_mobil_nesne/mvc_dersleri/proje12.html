@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 12: Üniversite Ders Seçim Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 12</span>
+            <h1>🎓 Üniversite Ders Seçim Sistemi</h1>
+            <p class="subtitle">Ders 1-12 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Many-to-Many ilişkiler ile ders kayıt sistemi.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Kapsanan Konular:</strong><br>
+                • One-to-Many ilişkiler<br>
+                • Many-to-Many ilişkiler<br>
+                • Ara tablo (StudentCourse)<br>
+                • Include ve ThenInclude
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Models</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> StudentNumber { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> FirstName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> LastName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// One-to-Many: Öğrenci -> Bölüm</span>
+    <span class="keyword">public int</span> DepartmentId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Department Department { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Many-to-Many: Öğrenci <-> Ders</span>
+    <span class="keyword">public</span> ICollection&lt;StudentCourse&gt; StudentCourses { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public string</span> FullName => $<span class="string">"{FirstName} {LastName}"</span>;
+    <span class="keyword">public int</span> TotalCredits => StudentCourses?.Sum(sc => sc.Course?.Credit ?? <span class="number">0</span>) ?? <span class="number">0</span>;
+}
+
+<span class="keyword">public class</span> <span class="class-name">Course</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Code { <span class="keyword">get</span>; <span class="keyword">set</span>; }  <span class="comment">// BIL101, MAT201</span>
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Credit { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Capacity { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// One-to-Many: Ders -> Öğretim Üyesi</span>
+    <span class="keyword">public int</span> InstructorId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Instructor Instructor { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Many-to-Many</span>
+    <span class="keyword">public</span> ICollection&lt;StudentCourse&gt; StudentCourses { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> EnrolledCount => StudentCourses?.Count ?? <span class="number">0</span>;
+    <span class="keyword">public int</span> RemainingCapacity => Capacity - EnrolledCount;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/StudentCourse.cs (Ara Tablo)</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentCourse</span>
+{
+    <span class="comment">// Composite Key</span>
+    <span class="keyword">public int</span> StudentId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Student Student { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> CourseId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Course Course { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Ek bilgiler</span>
+    <span class="keyword">public</span> DateTime EnrollmentDate { <span class="keyword">get</span>; <span class="keyword">set</span>; } = DateTime.Now;
+    <span class="keyword">public</span> decimal? MidtermGrade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> decimal? FinalGrade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> decimal? AverageGrade => (MidtermGrade * <span class="number">0.4m</span>) + (FinalGrade * <span class="number">0.6m</span>);
+    <span class="keyword">public string</span> LetterGrade => AverageGrade <span class="keyword">switch</span>
+    {
+        >= <span class="number">90</span> => <span class="string">"AA"</span>,
+        >= <span class="number">85</span> => <span class="string">"BA"</span>,
+        >= <span class="number">80</span> => <span class="string">"BB"</span>,
+        >= <span class="number">75</span> => <span class="string">"CB"</span>,
+        >= <span class="number">70</span> => <span class="string">"CC"</span>,
+        >= <span class="number">60</span> => <span class="string">"DC"</span>,
+        >= <span class="number">50</span> => <span class="string">"DD"</span>,
+        _ => <span class="string">"FF"</span>
+    };
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>DbContext</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Data/UniversityDbContext.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">protected override void</span> <span class="method">OnModelCreating</span>(ModelBuilder modelBuilder)
+{
+    <span class="comment">// Composite Primary Key</span>
+    modelBuilder.Entity&lt;StudentCourse&gt;()
+        .HasKey(sc => <span class="keyword">new</span> { sc.StudentId, sc.CourseId });
+    
+    <span class="comment">// Many-to-Many ilişkiler</span>
+    modelBuilder.Entity&lt;StudentCourse&gt;()
+        .HasOne(sc => sc.Student)
+        .WithMany(s => s.StudentCourses)
+        .HasForeignKey(sc => sc.StudentId);
+    
+    modelBuilder.Entity&lt;StudentCourse&gt;()
+        .HasOne(sc => sc.Course)
+        .WithMany(c => c.StudentCourses)
+        .HasForeignKey(sc => sc.CourseId);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Servis</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Services/EnrollmentService.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">EnrollmentService</span> : <span class="class-name">IEnrollmentService</span>
+{
+    <span class="keyword">private readonly</span> UniversityDbContext _context;
+    <span class="keyword">private const int</span> MaxCredits = <span class="number">30</span>;
+    
+    <span class="keyword">public async</span> Task&lt;EnrollmentResult&gt; <span class="method">EnrollAsync</span>(<span class="keyword">int</span> studentId, <span class="keyword">int</span> courseId)
+    {
+        <span class="comment">// Öğrenciyi derslerle birlikte getir</span>
+        <span class="keyword">var</span> student = <span class="keyword">await</span> _context.Students
+            .Include(s => s.StudentCourses)
+                .ThenInclude(sc => sc.Course)
+            .FirstOrDefaultAsync(s => s.Id == studentId);
+        
+        <span class="keyword">var</span> course = <span class="keyword">await</span> _context.Courses
+            .Include(c => c.StudentCourses)
+            .FirstOrDefaultAsync(c => c.Id == courseId);
+        
+        <span class="comment">// Kontrol: Zaten kayıtlı mı?</span>
+        <span class="keyword">if</span> (student.StudentCourses.Any(sc => sc.CourseId == courseId))
+        {
+            <span class="keyword">return new</span> EnrollmentResult 
+            { 
+                Success = <span class="keyword">false</span>, 
+                Message = <span class="string">"Bu derse zaten kayıtlısınız!"</span> 
+            };
+        }
+        
+        <span class="comment">// Kontrol: Kontenjan dolu mu?</span>
+        <span class="keyword">if</span> (course.RemainingCapacity <= <span class="number">0</span>)
+        {
+            <span class="keyword">return new</span> EnrollmentResult 
+            { 
+                Success = <span class="keyword">false</span>, 
+                Message = <span class="string">"Ders kontenjanı dolu!"</span> 
+            };
+        }
+        
+        <span class="comment">// Kontrol: Kredi limiti aşılıyor mu?</span>
+        <span class="keyword">if</span> (student.TotalCredits + course.Credit > MaxCredits)
+        {
+            <span class="keyword">return new</span> EnrollmentResult 
+            { 
+                Success = <span class="keyword">false</span>, 
+                Message = $<span class="string">"Maksimum {MaxCredits} kredi alabilirsiniz!"</span> 
+            };
+        }
+        
+        <span class="comment">// Kayıt yap</span>
+        <span class="keyword">var</span> enrollment = <span class="keyword">new</span> StudentCourse
+        {
+            StudentId = studentId,
+            CourseId = courseId,
+            EnrollmentDate = DateTime.Now
+        };
+        
+        _context.StudentCourses.Add(enrollment);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        <span class="keyword">return new</span> EnrollmentResult 
+        { 
+            Success = <span class="keyword">true</span>, 
+            Message = $<span class="string">"{course.Name} dersine kayıt yapıldı!"</span> 
+        };
+    }
+    
+    <span class="keyword">public async</span> Task&lt;List&lt;Course&gt;&gt; <span class="method">GetAvailableCoursesAsync</span>(<span class="keyword">int</span> studentId)
+    {
+        <span class="keyword">var</span> enrolledCourseIds = <span class="keyword">await</span> _context.StudentCourses
+            .Where(sc => sc.StudentId == studentId)
+            .Select(sc => sc.CourseId)
+            .ToListAsync();
+        
+        <span class="keyword">return await</span> _context.Courses
+            .Include(c => c.Instructor)
+            .Include(c => c.StudentCourses)
+            .Where(c => !enrolledCourseIds.Contains(c.Id))
+            .Where(c => c.StudentCourses.Count &lt; c.Capacity)
+            .ToListAsync();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Ders Seçimi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Enrollment/AvailableCourses.cshtml</div>
+                <pre data-lang="Razor"><code>@model List&lt;Course&gt;
+
+&lt;h1&gt;🎓 Ders Seçimi&lt;/h1&gt;
+&lt;p&gt;Mevcut Krediniz: @ViewBag.CurrentCredits / 30&lt;/p&gt;
+
+&lt;div class="row"&gt;
+    @foreach (var course in Model)
+    {
+        &lt;div class="col-md-4 mb-4"&gt;
+            &lt;div class="card"&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;h5&gt;@course.Code - @course.Name&lt;/h5&gt;
+                    &lt;p class="text-muted"&gt;@course.Instructor.FullName&lt;/p&gt;
+                    
+                    &lt;div class="d-flex justify-content-between mb-2"&gt;
+                        &lt;span&gt;Kredi: @course.Credit&lt;/span&gt;
+                        &lt;span&gt;
+                            Kalan: @course.RemainingCapacity / @course.Capacity
+                        &lt;/span&gt;
+                    &lt;/div&gt;
+                    
+                    <span class="comment">&lt;!-- Kapasite durumu --&gt;</span>
+                    &lt;div class="progress mb-3"&gt;
+                        @{
+                            var percentage = (course.EnrolledCount * 100) / course.Capacity;
+                            var color = percentage > 80 ? "danger" : (percentage > 50 ? "warning" : "success");
+                        }
+                        &lt;div class="progress-bar bg-@color" style="width: @percentage%"&gt;&lt;/div&gt;
+                    &lt;/div&gt;
+                    
+                    &lt;form asp-action="Enroll" method="post"&gt;
+                        &lt;input type="hidden" name="courseId" value="@course.Id" /&gt;
+                        &lt;button type="submit" class="btn btn-primary w-100"&gt;
+                            Dersi Al
+                        &lt;/button&gt;
+                    &lt;/form&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    }
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Ön koşul dersi kontrolü ekleyin (Prerequisite)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Ders programı çakışma kontrolü ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje11.html" class="nav-btn prev">← Proje 11</a>
+            <a href="proje13.html" class="nav-btn next">Proje 13 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

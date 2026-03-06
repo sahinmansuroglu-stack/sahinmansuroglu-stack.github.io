@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 12: Custom Composable</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 12</span>
+            <h1>🎨 Custom Composable</h1>
+            <p class="subtitle">Yeniden Kullanılabilir UI Bileşenleri</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • Custom Composable oluşturma<br>
+                • Slot API pattern<br>
+                • Modifier parametreleri<br>
+                • Best practices
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Basit Custom Composable</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Özelleştirilmiş Buton</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">GradientButton</span>(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = <span class="keyword">true</span>,
+    colors: List&lt;Color&gt; = listOf(Color(<span class="number">0xFF6366F1</span>), Color(<span class="number">0xFF8B5CF6</span>))
+) {
+    <span class="keyword">val</span> gradient = Brush.horizontalGradient(colors)
+    
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(<span class="number">12</span>.dp))
+            .background(<span class="keyword">if</span> (enabled) gradient <span class="keyword">else</span> Brush.horizontalGradient(
+                listOf(Color.Gray, Color.LightGray)
+            ))
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = <span class="number">24</span>.dp, vertical = <span class="number">12</span>.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            color = Color.White,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}
+
+<span class="comment">// Kullanım</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">GradientButtonKullanimi</span>() {
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+    ) {
+        GradientButton(
+            text = <span class="string">"Kaydet"</span>,
+            onClick = { },
+            modifier = Modifier.fillMaxWidth()
+        )
+        
+        GradientButton(
+            text = <span class="string">"Özel Renkler"</span>,
+            onClick = { },
+            colors = listOf(Color.Red, Color.Orange),
+            modifier = Modifier.fillMaxWidth()
+        )
+        
+        GradientButton(
+            text = <span class="string">"Devre Dışı"</span>,
+            onClick = { },
+            enabled = <span class="keyword">false</span>,
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Custom Card Bileşeni</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Özelleştirilmiş Kart</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">InfoCard</span>(
+    title: String,
+    description: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    iconTint: Color = MaterialTheme.colorScheme.primary,
+    onClick: (() -> Unit)? = <span class="keyword">null</span>
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                <span class="keyword">if</span> (onClick != <span class="keyword">null</span>) Modifier.clickable { onClick() }
+                <span class="keyword">else</span> Modifier
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = <span class="number">4</span>.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(<span class="number">16</span>.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(<span class="number">48</span>.dp)
+                    .clip(CircleShape)
+                    .background(iconTint.copy(alpha = <span class="number">0.1f</span>)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = <span class="keyword">null</span>,
+                    tint = iconTint,
+                    modifier = Modifier.size(<span class="number">24</span>.dp)
+                )
+            }
+            
+            Spacer(modifier = Modifier.width(<span class="number">16</span>.dp))
+            
+            Column(modifier = Modifier.weight(<span class="number">1f</span>)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(<span class="number">4</span>.dp))
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            
+            <span class="keyword">if</span> (onClick != <span class="keyword">null</span>) {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = <span class="keyword">null</span>,
+                    tint = Color.Gray
+                )
+            }
+        }
+    }
+}
+
+<span class="comment">// Kullanım</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">InfoCardKullanimi</span>() {
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp)
+    ) {
+        InfoCard(
+            title = <span class="string">"Bildirimler"</span>,
+            description = <span class="string">"Bildirim ayarlarını yönetin"</span>,
+            icon = Icons.Default.Notifications,
+            onClick = { }
+        )
+        
+        InfoCard(
+            title = <span class="string">"Gizlilik"</span>,
+            description = <span class="string">"Gizlilik ve güvenlik ayarları"</span>,
+            icon = Icons.Default.Lock,
+            iconTint = Color.Green,
+            onClick = { }
+        )
+        
+        InfoCard(
+            title = <span class="string">"Hakkında"</span>,
+            description = <span class="string">"Uygulama sürümü: 1.0.0"</span>,
+            icon = Icons.Default.Info
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Slot API Pattern</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Esnek İçerik Alanları</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">CustomCard</span>(
+    modifier: Modifier = Modifier,
+    header: <span class="annotation">@Composable</span> () -> Unit = {},
+    content: <span class="annotation">@Composable</span> () -> Unit,
+    footer: <span class="annotation">@Composable</span> () -> Unit = {}
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = <span class="number">4</span>.dp)
+    ) {
+        Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            <span class="comment">// Header slot</span>
+            header()
+            
+            <span class="comment">// Content slot (zorunlu)</span>
+            content()
+            
+            <span class="comment">// Footer slot</span>
+            footer()
+        }
+    }
+}
+
+<span class="comment">// Kullanım örnekleri</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SlotAPIKullanimi</span>() {
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">16</span>.dp)
+    ) {
+        <span class="comment">// Sadece content</span>
+        CustomCard {
+            Text(<span class="string">"Basit içerik"</span>)
+        }
+        
+        <span class="comment">// Header + Content</span>
+        CustomCard(
+            header = {
+                Text(
+                    <span class="string">"Başlık"</span>,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            }
+        ) {
+            Text(<span class="string">"Bu kartın bir başlığı var."</span>)
+        }
+        
+        <span class="comment">// Header + Content + Footer</span>
+        CustomCard(
+            header = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Star, <span class="keyword">null</span>, tint = Color.Yellow)
+                    Spacer(modifier = Modifier.width(<span class="number">8</span>.dp))
+                    Text(<span class="string">"Önemli"</span>, fontWeight = FontWeight.Bold)
+                }
+                HorizontalDivider(modifier = Modifier.padding(vertical = <span class="number">8</span>.dp))
+            },
+            footer = {
+                HorizontalDivider(modifier = Modifier.padding(vertical = <span class="number">8</span>.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(onClick = { }) { Text(<span class="string">"İptal"</span>) }
+                    Button(onClick = { }) { Text(<span class="string">"Kaydet"</span>) }
+                }
+            }
+        ) {
+            Text(<span class="string">"Tam donanımlı kart içeriği..."</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Stateful ve Stateless Bileşenler</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Rating Component</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// Stateless (önerilen)</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">RatingBar</span>(
+    rating: Int,
+    onRatingChange: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    maxRating: Int = <span class="number">5</span>,
+    activeColor: Color = Color.Yellow,
+    inactiveColor: Color = Color.Gray
+) {
+    Row(modifier = modifier) {
+        (<span class="number">1</span>..maxRating).forEach { index ->
+            Icon(
+                imageVector = <span class="keyword">if</span> (index <= rating) 
+                    Icons.Default.Star <span class="keyword">else</span> Icons.Default.StarBorder,
+                contentDescription = <span class="string">"Rate $index"</span>,
+                tint = <span class="keyword">if</span> (index <= rating) activeColor <span class="keyword">else</span> inactiveColor,
+                modifier = Modifier
+                    .size(<span class="number">32</span>.dp)
+                    .clickable { onRatingChange(index) }
+            )
+        }
+    }
+}
+
+<span class="comment">// Stateful wrapper (state içerir)</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">StatefulRatingBar</span>(
+    modifier: Modifier = Modifier,
+    initialRating: Int = <span class="number">0</span>,
+    onRatingSelected: (Int) -> Unit = {}
+) {
+    <span class="keyword">var</span> rating <span class="keyword">by</span> remember { mutableIntStateOf(initialRating) }
+    
+    RatingBar(
+        rating = rating,
+        onRatingChange = { newRating ->
+            rating = newRating
+            onRatingSelected(newRating)
+        },
+        modifier = modifier
+    )
+}
+
+<span class="comment">// Kullanım</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">RatingKullanimi</span>() {
+    <span class="keyword">var</span> myRating <span class="keyword">by</span> remember { mutableIntStateOf(<span class="number">3</span>) }
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        Text(<span class="string">"Bu ürünü değerlendirin:"</span>)
+        
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        
+        <span class="comment">// Stateless kullanım (daha kontrollü)</span>
+        RatingBar(
+            rating = myRating,
+            onRatingChange = { myRating = it }
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        
+        Text(<span class="string">"Seçilen puan: $myRating"</span>)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Custom Input Component</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Özelleştirilmiş Text Field</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">CustomTextField</span>(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String = <span class="string">""</span>,
+    placeholder: String = <span class="string">""</span>,
+    leadingIcon: ImageVector? = <span class="keyword">null</span>,
+    trailingIcon: <span class="annotation">@Composable</span> (() -> Unit)? = <span class="keyword">null</span>,
+    isError: Boolean = <span class="keyword">false</span>,
+    errorMessage: String? = <span class="keyword">null</span>,
+    isPassword: Boolean = <span class="keyword">false</span>,
+    enabled: Boolean = <span class="keyword">true</span>
+) {
+    <span class="keyword">var</span> passwordVisible <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    Column(modifier = modifier) {
+        <span class="keyword">if</span> (label.isNotEmpty()) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelMedium,
+                color = <span class="keyword">if</span> (isError) MaterialTheme.colorScheme.error 
+                        <span class="keyword">else</span> MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(bottom = <span class="number">4</span>.dp)
+            )
+        }
+        
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text(placeholder) },
+            leadingIcon = leadingIcon?.let {
+                { Icon(it, contentDescription = <span class="keyword">null</span>) }
+            },
+            trailingIcon = trailingIcon ?: <span class="keyword">if</span> (isPassword) {
+                {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            <span class="keyword">if</span> (passwordVisible) Icons.Default.VisibilityOff 
+                            <span class="keyword">else</span> Icons.Default.Visibility,
+                            contentDescription = <span class="string">"Toggle password visibility"</span>
+                        )
+                    }
+                }
+            } <span class="keyword">else</span> <span class="keyword">null</span>,
+            visualTransformation = <span class="keyword">if</span> (isPassword && !passwordVisible) 
+                PasswordVisualTransformation() <span class="keyword">else</span> VisualTransformation.None,
+            isError = isError,
+            enabled = enabled,
+            singleLine = <span class="keyword">true</span>,
+            shape = RoundedCornerShape(<span class="number">12</span>.dp)
+        )
+        
+        <span class="keyword">if</span> (isError && errorMessage != <span class="keyword">null</span>) {
+            Text(
+                text = errorMessage,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = <span class="number">4</span>.dp, start = <span class="number">4</span>.dp)
+            )
+        }
+    }
+}
+
+<span class="comment">// Kullanım</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">CustomTextFieldKullanimi</span>() {
+    <span class="keyword">var</span> email <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> password <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">val</span> isEmailError = email.isNotEmpty() && !email.contains(<span class="string">"@"</span>)
+    
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">16</span>.dp)
+    ) {
+        CustomTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = <span class="string">"E-posta"</span>,
+            placeholder = <span class="string">"ornek@email.com"</span>,
+            leadingIcon = Icons.Default.Email,
+            isError = isEmailError,
+            errorMessage = <span class="keyword">if</span> (isEmailError) <span class="string">"Geçersiz e-posta"</span> <span class="keyword">else</span> <span class="keyword">null</span>
+        )
+        
+        CustomTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = <span class="string">"Şifre"</span>,
+            placeholder = <span class="string">"********"</span>,
+            leadingIcon = Icons.Default.Lock,
+            isPassword = <span class="keyword">true</span>
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Badge gösterimi olan özel Avatar composable yap.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Slot API ile esnek Header-Content-Footer card oluştur.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Sayfa göstergesi (page indicator) composable yap.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders11.html" class="nav-btn prev">← Ders 11</a>
+            <a href="ders13.html" class="nav-btn next">Ders 13 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

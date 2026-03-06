@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose: En Basit Parametre Aktarımı</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        pre[class*="language-"] {
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95em;
+        }
+
+        .step-card {
+            border-left: 4px solid #ef4444;
+            padding-left: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .code-label {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800 font-sans pb-20">
+
+    <div class="max-w-4xl mx-auto my-12 bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-200">
+
+        <!-- Header -->
+        <header class="bg-red-500 text-white p-8">
+            <h1 class="text-3xl font-black mb-2">En Basit Haliyle: Parametre Gönderme</h1>
+            <p class="text-lg opacity-90">Sadece 3 Adımda Veri Transferini Öğren</p>
+        </header>
+
+        <div class="p-8">
+
+            <!-- 1. Temel Yapı -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">0. Başlangıç (Sadece Butonlar)</h2>
+                <p class="text-gray-600 mb-4">Kodun en saf hali budur. Bir butona basınca diğer sayfaya geçer ama hiçbir
+                    bilgi götürmez.</p>
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4 text-sm font-medium text-red-800">
+                    Önce bu iskeleti oluşturun.
+                </div>
+                <pre><code class="language-kotlin">@Composable
+fun BasitUygulama() {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "giris") {
+        composable("giris") { 
+            GirisEkrani(tiklandi = { navController.navigate("selam") }) 
+        }
+        composable("selam") { 
+            SelamEkrani() 
+        }
+    }
+}
+
+@Composable
+fun GirisEkrani(tiklandi: () -> Unit) {
+    Button(onClick = tiklandi) { Text("Selam Gönder") }
+}
+
+@Composable
+fun SelamEkrani() {
+    Text("Merhaba!")
+}</code></pre>
+            </section>
+
+            <!-- Adımlar -->
+            <section class="space-y-10">
+                <h2 class="text-2xl font-bold text-gray-900 border-b-2 border-red-100 pb-2 italic">Görevin: "Merhaba"
+                    Yerine "Merhaba [İsim]" Yazdır</h2>
+
+                <!-- Adım 1 -->
+                <div class="step-card">
+                    <span class="code-label bg-blue-100 text-blue-700">YOLU TANIMLA</span>
+                    <h3 class="text-lg font-bold">1. Rota Adresini Güncelle</h3>
+                    <p class="text-sm text-gray-600 mb-2"><b>Nereye:</b> <code>NavHost</code> içindeki
+                        <code>"selam"</code> yazan yere.</p>
+                    <pre><code class="language-kotlin">// "selam" olan yeri şu yap:
+"selam/{isim}"</code></pre>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="step-card">
+                    <span class="code-label bg-green-100 text-green-700">VERİYİ YOLLA</span>
+                    <h3 class="text-lg font-bold">2. Butona Değer Ekle</h3>
+                    <p class="text-sm text-gray-600 mb-2"><b>Nereye:</b> <code>GirisEkrani</code>'ndaki navigate
+                        kısmına.</p>
+                    <pre><code class="language-kotlin">// Veriyi adrese ekleyerek gönder:
+navController.navigate("selam/Ahmet")</code></pre>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="step-card">
+                    <span class="code-label bg-purple-100 text-purple-700">VERİYİ YAKALA</span>
+                    <h3 class="text-lg font-bold">3. Veriyi Oku ve Ekrana Bas</h3>
+                    <p class="text-sm text-gray-600 mb-2"><b>Nereye:</b> <code>NavHost</code> içindeki
+                        <code>composable("selam/...")</code> bloğuna.</p>
+                    <pre><code class="language-kotlin">composable("selam/{isim}") { backStackEntry ->
+    // 1. Kutuyu aç ve içinden "isim" olanı al
+    val gelenIsim = backStackEntry.arguments?.getString("isim") ?: "Yabancı"
+    
+    // 2. Bu ismi ekrana gönder
+    SelamEkrani(isim = gelenIsim)
+}
+
+// SelamEkrani'nı da güncellemeyi unutma:
+@Composable
+fun SelamEkrani(isim: String) {
+    Text("Merhaba $isim!")
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- SIRA SENDE -->
+            <section class="mt-12 bg-slate-900 text-white rounded-2xl p-8 shadow-2xl">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl text-yellow-400">🔥</span>
+                    <h2 class="text-2xl font-bold">SIRA SENDE: Hemen Uygula</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="border-l-2 border-gray-600 pl-4">
+                        <h4 class="font-bold text-yellow-400">Görev 1: Farklı İsimler</h4>
+                        <p class="text-gray-300 text-sm">Giriş ekranına 2. bir buton ekle ve bu sefer "Mehmet" ismine
+                            selam gönder.</p>
+                    </div>
+
+                    <div class="border-l-2 border-gray-600 pl-4">
+                        <h4 class="font-bold text-yellow-400">Görev 2: Arka Plan Rengi Değiştir</h4>
+                        <p class="text-gray-300 text-sm mb-3">Selam sayfasına bir <code>Surface</code> ekle ve rengini
+                            gelen isme göre değiştir.</p>
+                        <pre><code class="language-kotlin">// SelamEkrani içine kopyala:
+val renk = if(isim == "Ahmet") Color.Blue else Color.Red
+Surface(color = renk, modifier = Modifier.fillMaxSize()) {
+    Text("Merhaba $isim", color = Color.White)
+}</code></pre>
+                    </div>
+
+                    <div class="border-l-2 border-gray-600 pl-4">
+                        <h4 class="font-bold text-yellow-400">Görev 3: Sayı Gönder</h4>
+                        <p class="text-sm text-gray-300">Bu sefer bir isim değil, bir yaş (Int) gönderip ekrana
+                            yazdırabilir misin?</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="bg-gray-50 p-6 text-center border-t border-gray-200">
+            <p class="text-xs text-gray-500 uppercase tracking-widest font-bold">Öğrenci Pratik Kartı #01</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
+</body>
+
+</html>

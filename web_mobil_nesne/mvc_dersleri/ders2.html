@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 2: MVC Mimarisi Detaylı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 2</span>
+            <h1>MVC Mimarisi Detaylı</h1>
+            <p class="subtitle">Model, View ve Controller Derinlemesine</p>
+        </header>
+
+        <section class="section">
+            <h2>MVC Akış Şeması</h2>
+            <p>Bir kullanıcı isteği geldiğinde MVC'de şu adımlar gerçekleşir:</p>
+            <ol>
+                <li>Kullanıcı tarayıcıdan bir URL'e istek gönderir</li>
+                <li><strong>Router</strong> isteği uygun Controller'a yönlendirir</li>
+                <li><strong>Controller</strong> gerekli verileri Model'den alır</li>
+                <li>Controller, verileri <strong>View</strong>'e gönderir</li>
+                <li>View, HTML oluşturup kullanıcıya döner</li>
+            </ol>
+            <div class="info-box">
+                <strong>💡 Separation of Concerns:</strong> MVC'nin temel prensibi, her katmanın kendi işine
+                odaklanmasıdır. Bu sayede kod daha okunabilir ve bakımı kolaydır.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller Detaylı</h2>
+            <p>Controller, uygulamanın "beyni"dir. İstekleri karşılar ve ne yapılacağına karar verir.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Örnek: ProductController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+<span class="keyword">public class</span> <span class="class-name">ProductController</span> : <span class="class-name">Controller</span>
+{
+    <span class="comment">// GET: /Product/Index</span>
+    <span class="keyword">public</span> <span class="class-name">IActionResult</span> <span class="method">Index</span>()
+    {
+        <span class="comment">// Tüm ürünleri listele</span>
+        <span class="keyword">return</span> View();
+    }
+
+    <span class="comment">// GET: /Product/Details/5</span>
+    <span class="keyword">public</span> <span class="class-name">IActionResult</span> <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="comment">// id=5 olan ürünün detaylarını göster</span>
+        ViewBag.ProductId = id;
+        <span class="keyword">return</span> View();
+    }
+
+    <span class="comment">// GET: /Product/Create</span>
+    <span class="keyword">public</span> <span class="class-name">IActionResult</span> <span class="method">Create</span>()
+    {
+        <span class="comment">// Yeni ürün ekleme formu</span>
+        <span class="keyword">return</span> View();
+    }
+}</code></pre>
+            </div>
+
+            <h3>Action Metodları ve Dönüş Tipleri</h3>
+            <table>
+                <tr>
+                    <th>Dönüş Tipi</th>
+                    <th>Açıklama</th>
+                    <th>Kullanım</th>
+                </tr>
+                <tr>
+                    <td><code>View()</code></td>
+                    <td>Razor View döner</td>
+                    <td>HTML sayfa</td>
+                </tr>
+                <tr>
+                    <td><code>RedirectToAction()</code></td>
+                    <td>Başka action'a yönlendir</td>
+                    <td>Form sonrası</td>
+                </tr>
+                <tr>
+                    <td><code>Json()</code></td>
+                    <td>JSON veri döner</td>
+                    <td>API çağrıları</td>
+                </tr>
+                <tr>
+                    <td><code>Content()</code></td>
+                    <td>Düz metin döner</td>
+                    <td>Basit yanıtlar</td>
+                </tr>
+                <tr>
+                    <td><code>NotFound()</code></td>
+                    <td>404 hatası döner</td>
+                    <td>Kayıt bulunamadı</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Model Detaylı</h2>
+            <p>Model, uygulamanın veri yapısını temsil eder. Genellikle veritabanı tablolarına karşılık gelir.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Örnek: Product.cs (Model)</div>
+                <pre data-lang="C#"><code><span class="keyword">namespace</span> MyApp.Models
+{
+    <span class="keyword">public class</span> <span class="class-name">Product</span>
+    {
+        <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public string</span> Description { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public int</span> Stock { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public bool</span> IsActive { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Örnek: Student.cs (Model)</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> FirstName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> LastName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Grade { <span class="keyword">get</span>; <span class="keyword">set</span>; }  <span class="comment">// Sınıf</span>
+    <span class="keyword">public string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Hesaplanmış property</span>
+    <span class="keyword">public string</span> FullName => $<span class="string">"{FirstName} {LastName}"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller'dan View'e Veri Gönderme</h2>
+
+            <h3>1. ViewBag Kullanımı</h3>
+            <div class="code-example">
+                <div class="code-example-title">Controller</div>
+                <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+{
+    ViewBag.Message = <span class="string">"Hoş Geldiniz!"</span>;
+    ViewBag.CurrentDate = DateTime.Now;
+    ViewBag.StudentCount = <span class="number">35</span>;
+    <span class="keyword">return</span> View();
+}</code></pre>
+            </div>
+            <div class="code-example">
+                <div class="code-example-title">View (Index.cshtml)</div>
+                <pre data-lang="Razor"><code>&lt;h1&gt;@ViewBag.Message&lt;/h1&gt;
+&lt;p&gt;Tarih: @ViewBag.CurrentDate&lt;/p&gt;
+&lt;p&gt;Öğrenci Sayısı: @ViewBag.StudentCount&lt;/p&gt;</code></pre>
+            </div>
+
+            <h3>2. ViewData Kullanımı</h3>
+            <div class="code-example">
+                <div class="code-example-title">Controller</div>
+                <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Details</span>()
+{
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Ürün Detayı"</span>;
+    ViewData[<span class="string">"Price"</span>] = <span class="number">99.99</span>;
+    <span class="keyword">return</span> View();
+}</code></pre>
+            </div>
+            <div class="code-example">
+                <div class="code-example-title">View</div>
+                <pre data-lang="Razor"><code>&lt;h1&gt;@ViewData["Title"]&lt;/h1&gt;
+&lt;p&gt;Fiyat: @ViewData["Price"] TL&lt;/p&gt;</code></pre>
+            </div>
+
+            <h3>3. Model Kullanımı (Önerilen)</h3>
+            <div class="code-example">
+                <div class="code-example-title">Controller</div>
+                <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> product = <span class="keyword">new</span> Product
+    {
+        Id = id,
+        Name = <span class="string">"Laptop"</span>,
+        Price = <span class="number">15000</span>,
+        Stock = <span class="number">10</span>
+    };
+    <span class="keyword">return</span> View(product);
+}</code></pre>
+            </div>
+            <div class="code-example">
+                <div class="code-example-title">View (Details.cshtml)</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> Product
+
+&lt;h1&gt;@Model.Name&lt;/h1&gt;
+&lt;p&gt;Fiyat: @Model.Price TL&lt;/p&gt;
+&lt;p&gt;Stok: @Model.Stock adet&lt;/p&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Tam Örnek: Öğrenci Listesi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Grade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/StudentController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentController</span> : <span class="class-name">Controller</span>
+{
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">var</span> students = <span class="keyword">new</span> List&lt;Student&gt;
+        {
+            <span class="keyword">new</span> Student { Id = <span class="number">1</span>, Name = <span class="string">"Ali"</span>, Grade = <span class="number">11</span> },
+            <span class="keyword">new</span> Student { Id = <span class="number">2</span>, Name = <span class="string">"Ayşe"</span>, Grade = <span class="number">11</span> },
+            <span class="keyword">new</span> Student { Id = <span class="number">3</span>, Name = <span class="string">"Mehmet"</span>, Grade = <span class="number">11</span> }
+        };
+        <span class="keyword">return</span> View(students);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Student/Index.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> List&lt;Student&gt;
+
+&lt;h1&gt;Öğrenci Listesi&lt;/h1&gt;
+&lt;table class="table"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;ID&lt;/th&gt;
+            &lt;th&gt;Ad&lt;/th&gt;
+            &lt;th&gt;Sınıf&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        <span class="keyword">@foreach</span> (var student <span class="keyword">in</span> Model)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;@student.Id&lt;/td&gt;
+                &lt;td&gt;@student.Name&lt;/td&gt;
+                &lt;td&gt;@student.Grade&lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>ViewBag ve Model arasındaki fark nedir? Hangisi tercih edilmeli?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <p><strong>ViewBag:</strong> Dinamik, tip güvenliği yok, küçük veriler için uygun</p>
+                    <p><strong>Model:</strong> Tip güvenli, IntelliSense desteği, büyük/karmaşık veriler için ideal</p>
+                    <p><strong>Öneri:</strong> Her zaman Model kullanın, tip hatalarını compile-time'da yakalar.</p>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>"Book" adında Id, Title, Author, Price özellikleri olan bir Model sınıfı yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Book</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Title { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Author { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>BookController'da 3 kitap içeren bir liste oluşturup View'e gönderen Index action'ı
+                    yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">BookController</span> : Controller
+{
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">var</span> books = <span class="keyword">new</span> List&lt;Book&gt;
+        {
+            <span class="keyword">new</span> Book { Id = <span class="number">1</span>, Title = <span class="string">"C# Temelleri"</span>, Author = <span class="string">"Ahmet Yılmaz"</span>, Price = <span class="number">75</span> },
+            <span class="keyword">new</span> Book { Id = <span class="number">2</span>, Title = <span class="string">"ASP.NET MVC"</span>, Author = <span class="string">"Fatma Kaya"</span>, Price = <span class="number">95</span> },
+            <span class="keyword">new</span> Book { Id = <span class="number">3</span>, Title = <span class="string">"SQL Server"</span>, Author = <span class="string">"Can Demir"</span>, Price = <span class="number">85</span> }
+        };
+        <span class="keyword">return</span> View(books);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>Yukarıdaki kitap listesini tablo olarak gösteren View yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <pre data-lang="Razor"><code><span class="keyword">@model</span> List&lt;Book&gt;
+
+&lt;h1&gt;Kitap Listesi&lt;/h1&gt;
+&lt;table class="table table-striped"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;ID&lt;/th&gt;
+            &lt;th&gt;Başlık&lt;/th&gt;
+            &lt;th&gt;Yazar&lt;/th&gt;
+            &lt;th&gt;Fiyat&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        <span class="keyword">@foreach</span> (var book <span class="keyword">in</span> Model)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;@book.Id&lt;/td&gt;
+                &lt;td&gt;@book.Title&lt;/td&gt;
+                &lt;td&gt;@book.Author&lt;/td&gt;
+                &lt;td&gt;@book.Price TL&lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders1.html" class="nav-btn prev">← Önceki: Giriş ve Kurulum</a>
+            <a href="ders3.html" class="nav-btn next">Sonraki: Controller ve Routing →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 4: View ve Razor Syntax</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 4</span>
+            <h1>View ve Razor Syntax</h1>
+            <p class="subtitle">HTML ve C# Birleşimi</p>
+        </header>
+
+        <section class="section">
+            <h2>Razor Nedir?</h2>
+            <p>Razor, HTML içinde C# kodu yazmamızı sağlayan bir view engine'dir. <code>@</code> sembolü ile C#
+                kodlarını HTML'e gömeriz.</p>
+
+            <div class="info-box">
+                <strong>💡 Razor Dosyaları:</strong> .cshtml uzantılıdır ve Views klasöründe bulunur.
+            </div>
+        </section>
+
+        <!-- ===================== MODEL TANIMLAMA ===================== -->
+        <section class="section">
+            <h2>📦 Modeller (Models)</h2>
+            <p>View'larda kullandığımız <code>Model.Name</code>, <code>Model.Stock</code> gibi ifadeler birer C#
+                sınıfından gelir.
+                Bu sınıflara <strong>Model</strong> denir ve genellikle <code>Models/</code> klasöründe tanımlanır.</p>
+
+            <div class="info-box">
+                <strong>📁 Dosya Konumu:</strong> Models/Product.cs &nbsp;|&nbsp; Models/Student.cs
+            </div>
+
+            <h3>Product Modeli</h3>
+            <div class="code-example">
+                <div class="code-example-title">Models/Product.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">namespace</span> MyApp.Models
+{
+    <span class="keyword">public class</span> Product
+    {
+        <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public int</span> Stock { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public string</span> Description { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    }
+}</code></pre>
+            </div>
+
+            <h3>Student Modeli</h3>
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">namespace</span> MyApp.Models
+{
+    <span class="keyword">public class</span> Student
+    {
+        <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public int</span> Grade { <span class="keyword">get</span>; <span class="keyword">set</span>; }   <span class="comment">// Sınıf numarası (9, 10, 11, 12)</span>
+        <span class="keyword">public int</span> Score { <span class="keyword">get</span>; <span class="keyword">set</span>; }   <span class="comment">// Not (0–100)</span>
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ===================== CONTROLLER ===================== -->
+        <section class="section">
+            <h2>🎮 Controller'lar</h2>
+            <p>Controller'lar, kullanıcıdan gelen isteği karşılar, gerekli veriyi hazırlar ve View'a gönderir.
+                <code>View(model)</code> çağrısı, veriyi Razor View'a iletir.
+            </p>
+
+            <div class="info-box">
+                <strong>📁 Dosya Konumu:</strong> Controllers/ProductController.cs &nbsp;|&nbsp;
+                Controllers/StudentController.cs
+            </div>
+
+            <h3>ProductController</h3>
+            <div class="code-example">
+                <div class="code-example-title">Controllers/ProductController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+<span class="keyword">using</span> MyApp.Models;
+
+<span class="keyword">namespace</span> MyApp.Controllers
+{
+    <span class="keyword">public class</span> ProductController : Controller
+    {
+        <span class="comment">// Örnek statik veri listesi — gerçek projede veritabanından gelir</span>
+        <span class="keyword">private static</span> List&lt;Product&gt; _products = <span class="keyword">new</span>()
+        {
+            <span class="keyword">new</span> Product { Id = <span class="number">1</span>, Name = <span class="string">"Laptop"</span>,  Price = <span class="number">25000</span>, Stock = <span class="number">15</span>, Description = <span class="string">"Güçlü iş laptopu"</span> },
+            <span class="keyword">new</span> Product { Id = <span class="number">2</span>, Name = <span class="string">"Mouse"</span>,   Price = <span class="number">350</span>,   Stock = <span class="number">5</span>,  Description = <span class="string">"Kablosuz mouse"</span> },
+            <span class="keyword">new</span> Product { Id = <span class="number">3</span>, Name = <span class="string">"Monitor"</span>, Price = <span class="number">8500</span>,  Stock = <span class="number">0</span>,  Description = <span class="string">"27 inç 4K ekran"</span> },
+        };
+
+        <span class="comment">// GET /Product/Index → tüm ürün listesini View'a gönderir</span>
+        <span class="keyword">public</span> IActionResult Index()
+        {
+            <span class="keyword">return</span> View(_products);
+        }
+
+        <span class="comment">// GET /Product/Details/1 → sadece o id'ye ait ürünü gönderir</span>
+        <span class="keyword">public</span> IActionResult Details(<span class="keyword">int</span> id)
+        {
+            <span class="keyword">var</span> product = _products.FirstOrDefault(p => p.Id == id);
+            <span class="keyword">if</span> (product == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+            <span class="keyword">return</span> View(product);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <h3>StudentController</h3>
+            <div class="code-example">
+                <div class="code-example-title">Controllers/StudentController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+<span class="keyword">using</span> MyApp.Models;
+
+<span class="keyword">namespace</span> MyApp.Controllers
+{
+    <span class="keyword">public class</span> StudentController : Controller
+    {
+        <span class="keyword">private static</span> List&lt;Student&gt; _students = <span class="keyword">new</span>()
+        {
+            <span class="keyword">new</span> Student { Id = <span class="number">1</span>, Name = <span class="string">"Ayşe Demir"</span>,  Grade = <span class="number">10</span>, Score = <span class="number">88</span> },
+            <span class="keyword">new</span> Student { Id = <span class="number">2</span>, Name = <span class="string">"Mehmet Kaya"</span>, Grade = <span class="number">11</span>, Score = <span class="number">45</span> },
+            <span class="keyword">new</span> Student { Id = <span class="number">3</span>, Name = <span class="string">"Zeynep Arslan"</span>, Grade = <span class="number">9</span>, Score = <span class="number">72</span> },
+        };
+
+        <span class="comment">// GET /Student/Index → öğrenci listesini View'a gönderir</span>
+        <span class="keyword">public</span> IActionResult Index()
+        {
+            <span class="keyword">return</span> View(_students);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="info-box">
+                <strong>🔗 Controller → View bağlantısı:</strong> <code>ProductController.Index()</code> metodu
+                <code>View(_products)</code> döndürünce, ASP.NET <code>Views/Product/Index.cshtml</code> dosyasını
+                otomatik bulur ve
+                modeli oraya gönderir.
+            </div>
+        </section>
+
+        <!-- ===================== TEMEL RAZOR SYNTAX ===================== -->
+        <section class="section">
+            <h2>Temel Razor Söz Dizimi</h2>
+
+            <h3>1. Tek Satır İfadeler</h3>
+            <div class="code-example">
+                <div class="code-example-title">Basit İfadeler</div>
+                <pre data-lang="Razor"><code><span class="comment">&lt;!-- Değişken yazdırma --&gt;</span>
+&lt;p&gt;Merhaba, <span class="keyword">@</span>Model.Name&lt;/p&gt;
+
+<span class="comment">&lt;!-- Tarih yazdırma --&gt;</span>
+&lt;p&gt;Bugün: <span class="keyword">@</span>DateTime.Now.ToShortDateString()&lt;/p&gt;
+
+<span class="comment">&lt;!-- Hesaplama --&gt;</span>
+&lt;p&gt;Toplam: <span class="keyword">@</span>(5 + 3)&lt;/p&gt;
+
+<span class="comment">&lt;!-- ViewBag kullanımı --&gt;</span>
+&lt;h1&gt;<span class="keyword">@</span>ViewBag.Title&lt;/h1&gt;</code></pre>
+            </div>
+
+            <h3>2. Kod Blokları</h3>
+            <div class="code-example">
+                <div class="code-example-title">Çok Satırlı Kod</div>
+                <pre data-lang="Razor"><code><span class="keyword">@{</span>
+    <span class="keyword">var</span> isim = <span class="string">"Ahmet"</span>;
+    <span class="keyword">var</span> yas = <span class="number">17</span>;
+    <span class="keyword">var</span> tarih = DateTime.Now;
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Ana Sayfa"</span>;
+<span class="keyword">}</span>
+
+&lt;p&gt;Ad: <span class="keyword">@</span>isim, Yaş: <span class="keyword">@</span>yas&lt;/p&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Koşullu İfadeler (if-else)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">If-Else Kullanımı</div>
+                <pre data-lang="Razor"><code><span class="keyword">@if</span> (Model.Stock &gt; <span class="number">0</span>)
+{
+    &lt;span class="badge bg-success"&gt;Stokta Var&lt;/span&gt;
+}
+<span class="keyword">else</span>
+{
+    &lt;span class="badge bg-danger"&gt;Tükendi&lt;/span&gt;
+}
+
+<span class="comment">&lt;!-- Örnek 2: Kullanıcı kontrolü --&gt;</span>
+<span class="keyword">@if</span> (User.Identity.IsAuthenticated)
+{
+    &lt;p&gt;Hoş geldin, <span class="keyword">@</span>User.Identity.Name&lt;/p&gt;
+    &lt;a href="/Account/Logout"&gt;Çıkış&lt;/a&gt;
+}
+<span class="keyword">else</span>
+{
+    &lt;a href="/Account/Login"&gt;Giriş Yap&lt;/a&gt;
+}
+
+<span class="comment">&lt;!-- Örnek 3: Çoklu koşul --&gt;</span>
+<span class="keyword">@if</span> (Model.Grade &gt;= <span class="number">90</span>)
+{
+    &lt;p class="text-success"&gt;Pekiyi&lt;/p&gt;
+}
+<span class="keyword">else if</span> (Model.Grade &gt;= <span class="number">70</span>)
+{
+    &lt;p class="text-primary"&gt;İyi&lt;/p&gt;
+}
+<span class="keyword">else</span>
+{
+    &lt;p class="text-warning"&gt;Geçer&lt;/p&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Döngüler</h2>
+
+            <h3>foreach Döngüsü</h3>
+            <div class="code-example">
+                <div class="code-example-title">Liste Döngüsü</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> List&lt;Student&gt;
+
+&lt;ul&gt;
+    <span class="keyword">@foreach</span> (<span class="keyword">var</span> student <span class="keyword">in</span> Model)
+    {
+        &lt;li&gt;<span class="keyword">@</span>student.Name - <span class="keyword">@</span>student.Grade. Sınıf&lt;/li&gt;
+    }
+&lt;/ul&gt;</code></pre>
+            </div>
+
+            <h3>for Döngüsü</h3>
+            <div class="code-example">
+                <div class="code-example-title">Index ile Döngü</div>
+                <pre data-lang="Razor"><code>&lt;table class="table"&gt;
+    <span class="keyword">@for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; Model.Count; i++)
+    {
+        &lt;tr&gt;
+            &lt;td&gt;<span class="keyword">@</span>(i + <span class="number">1</span>)&lt;/td&gt;
+            &lt;td&gt;<span class="keyword">@</span>Model[i].Name&lt;/td&gt;
+            &lt;td&gt;<span class="keyword">@</span>Model[i].Price TL&lt;/td&gt;
+        &lt;/tr&gt;
+    }
+&lt;/table&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>HTML Helpers (Tag Helpers)</h2>
+
+            <h3>Link Oluşturma</h3>
+            <div class="code-example">
+                <div class="code-example-title">asp-* Attributes</div>
+                <pre data-lang="Razor"><code><span class="comment">&lt;!-- Controller/Action'a link --&gt;</span>
+&lt;a <span class="attribute">asp-controller</span>=<span class="string">"Product"</span> 
+   <span class="attribute">asp-action</span>=<span class="string">"Details"</span> 
+   <span class="attribute">asp-route-id</span>=<span class="string">"5"</span>&gt;Detay&lt;/a&gt;
+<span class="comment">&lt;!-- Çıktı: &lt;a href="/Product/Details/5"&gt;Detay&lt;/a&gt; --&gt;</span>
+
+<span class="comment">&lt;!-- Aynı controller'da --&gt;</span>
+&lt;a <span class="attribute">asp-action</span>=<span class="string">"Edit"</span> 
+   <span class="attribute">asp-route-id</span>=<span class="string">"@item.Id"</span>&gt;Düzenle&lt;/a&gt;</code></pre>
+            </div>
+
+            <h3>Form Oluşturma</h3>
+            <div class="code-example">
+                <div class="code-example-title">Form Tag Helper</div>
+                <pre data-lang="Razor"><code>&lt;form <span class="attribute">asp-controller</span>=<span class="string">"Student"</span> 
+      <span class="attribute">asp-action</span>=<span class="string">"Create"</span> 
+      <span class="attribute">method</span>=<span class="string">"post"</span>&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Name"</span>&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Name"</span> class="form-control" /&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-primary"&gt;Kaydet&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Tam Örnek: Ürün Listesi Sayfası</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Product/Index.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> List&lt;Product&gt;
+<span class="keyword">@{</span>
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Ürünler"</span>;
+<span class="keyword">}</span>
+
+&lt;div class="d-flex justify-content-between align-items-center mb-4"&gt;
+    &lt;h1&gt;Ürün Listesi&lt;/h1&gt;
+    &lt;a <span class="attribute">asp-action</span>=<span class="string">"Create"</span> class="btn btn-primary"&gt;
+        + Yeni Ürün
+    &lt;/a&gt;
+&lt;/div&gt;
+
+<span class="keyword">@if</span> (Model.Count == <span class="number">0</span>)
+{
+    &lt;div class="alert alert-info"&gt;Henüz ürün eklenmemiş.&lt;/div&gt;
+}
+<span class="keyword">else</span>
+{
+    &lt;table class="table table-striped"&gt;
+        &lt;thead&gt;
+            &lt;tr&gt;
+                &lt;th&gt;ID&lt;/th&gt;
+                &lt;th&gt;Ürün Adı&lt;/th&gt;
+                &lt;th&gt;Fiyat&lt;/th&gt;
+                &lt;th&gt;Stok&lt;/th&gt;
+                &lt;th&gt;İşlemler&lt;/th&gt;
+            &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+            <span class="keyword">@foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> Model)
+            {
+                &lt;tr&gt;
+                    &lt;td&gt;<span class="keyword">@</span>item.Id&lt;/td&gt;
+                    &lt;td&gt;<span class="keyword">@</span>item.Name&lt;/td&gt;
+                    &lt;td&gt;<span class="keyword">@</span>item.Price.ToString(<span class="string">"C2"</span>)&lt;/td&gt;
+                    &lt;td&gt;
+                        <span class="keyword">@if</span> (item.Stock &gt; <span class="number">10</span>)
+                        {
+                            &lt;span class="badge bg-success"&gt;<span class="keyword">@</span>item.Stock&lt;/span&gt;
+                        }
+                        <span class="keyword">else if</span> (item.Stock &gt; <span class="number">0</span>)
+                        {
+                            &lt;span class="badge bg-warning"&gt;<span class="keyword">@</span>item.Stock&lt;/span&gt;
+                        }
+                        <span class="keyword">else</span>
+                        {
+                            &lt;span class="badge bg-danger"&gt;Tükendi&lt;/span&gt;
+                        }
+                    &lt;/td&gt;
+                    &lt;td&gt;
+                        &lt;a <span class="attribute">asp-action</span>=<span class="string">"Details"</span> 
+                           <span class="attribute">asp-route-id</span>=<span class="string">"@item.Id"</span> 
+                           class="btn btn-sm btn-info"&gt;Detay&lt;/a&gt;
+                        &lt;a <span class="attribute">asp-action</span>=<span class="string">"Edit"</span> 
+                           <span class="attribute">asp-route-id</span>=<span class="string">"@item.Id"</span> 
+                           class="btn btn-sm btn-warning"&gt;Düzenle&lt;/a&gt;
+                    &lt;/td&gt;
+                &lt;/tr&gt;
+            }
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+    
+    &lt;p&gt;Toplam: &lt;strong&gt;<span class="keyword">@</span>Model.Count&lt;/strong&gt; ürün&lt;/p&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Örnek: Detay Sayfası</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Product/Details.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> Product
+<span class="keyword">@{</span>
+    ViewData[<span class="string">"Title"</span>] = Model.Name;
+<span class="keyword">}</span>
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header"&gt;
+        &lt;h2&gt;<span class="keyword">@</span>Model.Name&lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div class="card-body"&gt;
+        &lt;dl class="row"&gt;
+            &lt;dt class="col-sm-3"&gt;ID:&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.Id&lt;/dd&gt;
+            
+            &lt;dt class="col-sm-3"&gt;Fiyat:&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.Price TL&lt;/dd&gt;
+            
+            &lt;dt class="col-sm-3"&gt;Açıklama:&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.Description&lt;/dd&gt;
+            
+            &lt;dt class="col-sm-3"&gt;Stok:&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.Stock adet&lt;/dd&gt;
+        &lt;/dl&gt;
+    &lt;/div&gt;
+    &lt;div class="card-footer"&gt;
+        &lt;a <span class="attribute">asp-action</span>=<span class="string">"Edit"</span> <span class="attribute">asp-route-id</span>=<span class="string">"@Model.Id"</span> 
+           class="btn btn-warning"&gt;Düzenle&lt;/a&gt;
+        &lt;a <span class="attribute">asp-action</span>=<span class="string">"Index"</span> class="btn btn-secondary"&gt;Listeye Dön&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <!-- ===================== SIRA SENDE ===================== -->
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <!-- SORU 1 -->
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Aşağıdaki <code>Book</code> modelini oluşturun: <code>Id</code>, <code>Title</code> (kitap adı),
+                    <code>Author</code> (yazar), <code>PageCount</code> (sayfa sayısı) alanları.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre data-lang="C#"><code><span class="keyword">namespace</span> MyApp.Models
+{
+    <span class="keyword">public class</span> Book
+    {
+        <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public string</span> Title { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public string</span> Author { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public int</span> PageCount { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- SORU 2 -->
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>
+                    <code>BookController</code> oluşturun. <code>Index()</code> action'ı 3 kitap içeren bir
+                    <code>List&lt;Book&gt;</code> hazırlayıp View'a göndersin.
+                </strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> BookController : Controller
+{
+    <span class="keyword">public</span> IActionResult Index()
+    {
+        <span class="keyword">var</span> books = <span class="keyword">new</span> List&lt;Book&gt;
+        {
+            <span class="keyword">new</span> Book { Id = <span class="number">1</span>, Title = <span class="string">"Küçük Prens"</span>,    Author = <span class="string">"Antoine de Saint-Exupéry"</span>, PageCount = <span class="number">96</span>  },
+            <span class="keyword">new</span> Book { Id = <span class="number">2</span>, Title = <span class="string">"1984"</span>,            Author = <span class="string">"George Orwell"</span>,              PageCount = <span class="number">352</span> },
+            <span class="keyword">new</span> Book { Id = <span class="number">3</span>, Title = <span class="string">"Suç ve Ceza"</span>,    Author = <span class="string">"Fyodor Dostoyevski"</span>,         PageCount = <span class="number">671</span> },
+        };
+        <span class="keyword">return</span> View(books);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- SORU 3 -->
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>
+                    <code>Views/Book/Index.cshtml</code> sayfasında kitapları tablo olarak listeleyin.
+                    Sayfa sayısı 300'den fazlaysa "<span style="color:green">Uzun Kitap</span>", değilse "<span
+                        style="color:gray">Kısa Kitap</span>" badge'ini görüntüleyin.
+                </strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre
+                        data-lang="Razor"><code><span class="keyword">@model</span> List&lt;Book&gt;
+<span class="keyword">@{</span>
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Kitap Listesi"</span>;
+<span class="keyword">}</span>
+
+&lt;h1&gt;Kitap Listesi&lt;/h1&gt;
+
+&lt;table class="table table-bordered"&gt;
+    &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th&gt;Kitap Adı&lt;/th&gt;
+            &lt;th&gt;Yazar&lt;/th&gt;
+            &lt;th&gt;Sayfa&lt;/th&gt;
+            &lt;th&gt;Tür&lt;/th&gt;
+        &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+        <span class="keyword">@foreach</span> (<span class="keyword">var</span> book <span class="keyword">in</span> Model)
+        {
+            &lt;tr&gt;
+                &lt;td&gt;<span class="keyword">@</span>book.Title&lt;/td&gt;
+                &lt;td&gt;<span class="keyword">@</span>book.Author&lt;/td&gt;
+                &lt;td&gt;<span class="keyword">@</span>book.PageCount&lt;/td&gt;
+                &lt;td&gt;
+                    <span class="keyword">@if</span> (book.PageCount &gt; <span class="number">300</span>)
+                    {
+                        &lt;span class="badge bg-success"&gt;Uzun Kitap&lt;/span&gt;
+                    }
+                    <span class="keyword">else</span>
+                    {
+                        &lt;span class="badge bg-secondary"&gt;Kısa Kitap&lt;/span&gt;
+                    }
+                &lt;/td&gt;
+            &lt;/tr&gt;
+        }
+    &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Toplam &lt;strong&gt;<span class="keyword">@</span>Model.Count&lt;/strong&gt; kitap listeleniyor.&lt;/p&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- SORU 4 -->
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>
+                    <code>BookController</code>'a <code>Details(int id)</code> action'ını ekleyin. Bu action verilen
+                    id'ye sahip kitabı bulup View'a göndersin; bulunamazsa <code>NotFound()</code> döndürsün.
+                </strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <pre data-lang="C#"><code><span class="comment">// BookController içine ekle</span>
+<span class="keyword">private static</span> List&lt;Book&gt; _books = <span class="keyword">new</span>()
+{
+    <span class="keyword">new</span> Book { Id = <span class="number">1</span>, Title = <span class="string">"Küçük Prens"</span>, Author = <span class="string">"Antoine de Saint-Exupéry"</span>, PageCount = <span class="number">96</span>  },
+    <span class="keyword">new</span> Book { Id = <span class="number">2</span>, Title = <span class="string">"1984"</span>,          Author = <span class="string">"George Orwell"</span>,              PageCount = <span class="number">352</span> },
+    <span class="keyword">new</span> Book { Id = <span class="number">3</span>, Title = <span class="string">"Suç ve Ceza"</span>,  Author = <span class="string">"Fyodor Dostoyevski"</span>,         PageCount = <span class="number">671</span> },
+};
+
+<span class="keyword">public</span> IActionResult Details(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> book = _books.FirstOrDefault(b => b.Id == id);
+    <span class="keyword">if</span> (book == <span class="keyword">null</span>)
+        <span class="keyword">return</span> NotFound();
+
+    <span class="keyword">return</span> View(book);
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- SORU 5 -->
+            <div class="soru">
+                <span class="soru-no">5</span>
+                <strong>
+                    <code>Views/Book/Details.cshtml</code> sayfasını yazın. Kitabın adı, yazarı ve sayfa sayısı
+                    gösterilsin.
+                    Altta hem "Detayı Düzenle" linki (<code>Edit</code> action'a) hem de "Listeye Dön" linki
+                    (<code>Index</code> action'a) bulunsun.
+                </strong>
+                <button class="cozum-toggle" onclick="toggleCozum(5)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-5">
+                    <pre data-lang="Razor"><code><span class="keyword">@model</span> Book
+<span class="keyword">@{</span>
+    ViewData[<span class="string">"Title"</span>] = Model.Title;
+<span class="keyword">}</span>
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header"&gt;
+        &lt;h2&gt;<span class="keyword">@</span>Model.Title&lt;/h2&gt;
+    &lt;/div&gt;
+    &lt;div class="card-body"&gt;
+        &lt;dl class="row"&gt;
+            &lt;dt class="col-sm-3"&gt;Yazar:&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.Author&lt;/dd&gt;
+
+            &lt;dt class="col-sm-3"&gt;Sayfa Sayısı:&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.PageCount sayfa&lt;/dd&gt;
+        &lt;/dl&gt;
+    &lt;/div&gt;
+    &lt;div class="card-footer"&gt;
+        &lt;a <span class="attribute">asp-action</span>=<span class="string">"Edit"</span>
+           <span class="attribute">asp-route-id</span>=<span class="string">"@Model.Id"</span>
+           class="btn btn-warning"&gt;Detayı Düzenle&lt;/a&gt;
+        &lt;a <span class="attribute">asp-action</span>=<span class="string">"Index"</span>
+           class="btn btn-secondary"&gt;Listeye Dön&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+
+        </section>
+
+        <nav class="navigation">
+            <a href="ders3.html" class="nav-btn prev">← Önceki: Controller ve Routing</a>
+            <a href="ders5.html" class="nav-btn next">Sonraki: Model ve Validation →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

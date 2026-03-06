@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 11: Hastane Randevu Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 11</span>
+            <h1>🏥 Hastane Randevu Sistemi</h1>
+            <p class="subtitle">Ders 1-11 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Dependency Injection ve servis katmanı ile randevu sistemi.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Kapsanan Konular:</strong><br>
+                • Interface ve Service Layer<br>
+                • Dependency Injection<br>
+                • AddScoped ile servis kaydı<br>
+                • Constructor Injection
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Servis Interface'leri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Services/IAppointmentService.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public interface</span> <span class="class-name">IAppointmentService</span>
+{
+    Task&lt;List&lt;Appointment&gt;&gt; <span class="method">GetAllAsync</span>();
+    Task&lt;Appointment&gt; <span class="method">GetByIdAsync</span>(<span class="keyword">int</span> id);
+    Task&lt;List&lt;Appointment&gt;&gt; <span class="method">GetByDoctorAsync</span>(<span class="keyword">int</span> doctorId, DateTime date);
+    Task&lt;List&lt;Appointment&gt;&gt; <span class="method">GetByPatientAsync</span>(<span class="keyword">int</span> patientId);
+    Task&lt;<span class="keyword">bool</span>&gt; <span class="method">IsSlotAvailableAsync</span>(<span class="keyword">int</span> doctorId, DateTime dateTime);
+    Task <span class="method">CreateAsync</span>(Appointment appointment);
+    Task <span class="method">CancelAsync</span>(<span class="keyword">int</span> id, <span class="keyword">string</span> reason);
+    Task <span class="method">CompleteAsync</span>(<span class="keyword">int</span> id, <span class="keyword">string</span> notes);
+}
+
+<span class="keyword">public interface</span> <span class="class-name">IDoctorService</span>
+{
+    Task&lt;List&lt;Doctor&gt;&gt; <span class="method">GetAllAsync</span>();
+    Task&lt;Doctor&gt; <span class="method">GetByIdAsync</span>(<span class="keyword">int</span> id);
+    Task&lt;List&lt;Doctor&gt;&gt; <span class="method">GetByDepartmentAsync</span>(<span class="keyword">int</span> departmentId);
+    Task&lt;List&lt;TimeSlot&gt;&gt; <span class="method">GetAvailableSlotsAsync</span>(<span class="keyword">int</span> doctorId, DateTime date);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Servis Implementasyonu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Services/AppointmentService.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">AppointmentService</span> : <span class="class-name">IAppointmentService</span>
+{
+    <span class="keyword">private readonly</span> HospitalDbContext _context;
+    <span class="keyword">private readonly</span> INotificationService _notificationService;
+    
+    <span class="keyword">public</span> <span class="method">AppointmentService</span>(
+        HospitalDbContext context,
+        INotificationService notificationService)
+    {
+        _context = context;
+        _notificationService = notificationService;
+    }
+    
+    <span class="keyword">public async</span> Task&lt;List&lt;Appointment&gt;&gt; <span class="method">GetByDoctorAsync</span>(<span class="keyword">int</span> doctorId, DateTime date)
+    {
+        <span class="keyword">return await</span> _context.Appointments
+            .Include(a => a.Patient)
+            .Where(a => a.DoctorId == doctorId && 
+                       a.DateTime.Date == date.Date &&
+                       a.Status != AppointmentStatus.Cancelled)
+            .OrderBy(a => a.DateTime)
+            .ToListAsync();
+    }
+    
+    <span class="keyword">public async</span> Task&lt;<span class="keyword">bool</span>&gt; <span class="method">IsSlotAvailableAsync</span>(<span class="keyword">int</span> doctorId, DateTime dateTime)
+    {
+        <span class="keyword">return</span> !<span class="keyword">await</span> _context.Appointments
+            .AnyAsync(a => a.DoctorId == doctorId && 
+                          a.DateTime == dateTime &&
+                          a.Status != AppointmentStatus.Cancelled);
+    }
+    
+    <span class="keyword">public async</span> Task <span class="method">CreateAsync</span>(Appointment appointment)
+    {
+        <span class="comment">// Slot kontrolü</span>
+        <span class="keyword">if</span> (!<span class="keyword">await</span> IsSlotAvailableAsync(appointment.DoctorId, appointment.DateTime))
+        {
+            <span class="keyword">throw new</span> InvalidOperationException(<span class="string">"Bu saat dolu!"</span>);
+        }
+        
+        appointment.Status = AppointmentStatus.Scheduled;
+        appointment.CreatedAt = DateTime.Now;
+        
+        _context.Appointments.Add(appointment);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        
+        <span class="comment">// Bildirim gönder</span>
+        <span class="keyword">await</span> _notificationService.SendAppointmentConfirmationAsync(appointment);
+    }
+    
+    <span class="keyword">public async</span> Task <span class="method">CancelAsync</span>(<span class="keyword">int</span> id, <span class="keyword">string</span> reason)
+    {
+        <span class="keyword">var</span> appointment = <span class="keyword">await</span> _context.Appointments.FindAsync(id);
+        <span class="keyword">if</span> (appointment != <span class="keyword">null</span>)
+        {
+            appointment.Status = AppointmentStatus.Cancelled;
+            appointment.CancellationReason = reason;
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            <span class="keyword">await</span> _notificationService.SendCancellationNoticeAsync(appointment);
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Program.cs Kayıtları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Program.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+<span class="comment">// DbContext</span>
+builder.Services.AddDbContext&lt;HospitalDbContext&gt;(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="string">"DefaultConnection"</span>)));
+
+<span class="comment">// Servisleri kaydet</span>
+builder.Services.AddScoped&lt;IAppointmentService, AppointmentService&gt;();
+builder.Services.AddScoped&lt;IDoctorService, DoctorService&gt;();
+builder.Services.AddScoped&lt;IPatientService, PatientService&gt;();
+builder.Services.AddScoped&lt;INotificationService, EmailNotificationService&gt;();
+
+builder.Services.AddControllersWithViews();</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/AppointmentController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">AppointmentController</span> : Controller
+{
+    <span class="keyword">private readonly</span> IAppointmentService _appointmentService;
+    <span class="keyword">private readonly</span> IDoctorService _doctorService;
+    <span class="keyword">private readonly</span> IPatientService _patientService;
+    
+    <span class="keyword">public</span> <span class="method">AppointmentController</span>(
+        IAppointmentService appointmentService,
+        IDoctorService doctorService,
+        IPatientService patientService)
+    {
+        _appointmentService = appointmentService;
+        _doctorService = doctorService;
+        _patientService = patientService;
+    }
+    
+    [HttpGet]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(<span class="keyword">int</span>? doctorId)
+    {
+        ViewBag.Doctors = <span class="keyword">await</span> _doctorService.GetAllAsync();
+        ViewBag.SelectedDoctor = doctorId;
+        
+        <span class="keyword">if</span> (doctorId.HasValue)
+        {
+            ViewBag.AvailableSlots = <span class="keyword">await</span> _doctorService
+                .GetAvailableSlotsAsync(doctorId.Value, DateTime.Today.AddDays(<span class="number">1</span>));
+        }
+        
+        <span class="keyword">return</span> View();
+    }
+    
+    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(AppointmentViewModel model)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            <span class="keyword">try</span>
+            {
+                <span class="keyword">var</span> appointment = <span class="keyword">new</span> Appointment
+                {
+                    DoctorId = model.DoctorId,
+                    PatientId = model.PatientId,
+                    DateTime = model.DateTime,
+                    Complaint = model.Complaint
+                };
+                
+                <span class="keyword">await</span> _appointmentService.CreateAsync(appointment);
+                TempData[<span class="string">"Success"</span>] = <span class="string">"Randevunuz oluşturuldu!"</span>;
+                <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Confirmation), <span class="keyword">new</span> { id = appointment.Id });
+            }
+            <span class="keyword">catch</span> (InvalidOperationException ex)
+            {
+                ModelState.AddModelError(<span class="string">""</span>, ex.Message);
+            }
+        }
+        
+        ViewBag.Doctors = <span class="keyword">await</span> _doctorService.GetAllAsync();
+        <span class="keyword">return</span> View(model);
+    }
+    
+    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Cancel</span>(<span class="keyword">int</span> id, <span class="keyword">string</span> reason)
+    {
+        <span class="keyword">await</span> _appointmentService.CancelAsync(id, reason);
+        TempData[<span class="string">"Success"</span>] = <span class="string">"Randevu iptal edildi."</span>;
+        <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>SMS bildirimi için ISmsService ekleyin</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Unit test için mock service yazın</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje10.html" class="nav-btn prev">← Proje 10</a>
+            <a href="proje12.html" class="nav-btn next">Proje 12 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

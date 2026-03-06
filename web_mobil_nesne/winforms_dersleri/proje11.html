@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 11: Fotoğraf Galerisi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 11</span>
+            <h1>🖼️ Fotoğraf Galerisi</h1>
+            <p class="subtitle">Ders 1-11 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders11.html">Ders 11</a>
+            <a href="proje11.html" class="active">Proje 11</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Klasör seçerek resimleri gösteren galeri uygulaması. Önceki/Sonraki, zoom ve kaydetme özellikleri.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Konular (Ders 11):</strong> PictureBox, SizeMode, Image.FromFile, Image.Save
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Kontrolleri</h2>
+            <table>
+                <tr>
+                    <th>Kontrol</th>
+                    <th>Name</th>
+                    <th>Özellik</th>
+                </tr>
+                <tr>
+                    <td>PictureBox</td>
+                    <td>picResim</td>
+                    <td>SizeMode: Zoom</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnKlasorSec</td>
+                    <td>📁 Klasör Seç</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnOnceki, btnSonraki</td>
+                    <td>◀ ▶</td>
+                </tr>
+                <tr>
+                    <td>TrackBar</td>
+                    <td>trkZoom</td>
+                    <td>Min:50, Max:200, Value:100</td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblDurum</td>
+                    <td>1/10</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Kod Çözümü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Değişkenler ve Klasör Seçimi</div>
+                <pre><code><span class="keyword">private string</span>[] resimler;
+<span class="keyword">private int</span> mevcutIndex = <span class="number">0</span>;
+
+<span class="keyword">private void</span> <span class="method">btnKlasorSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FolderBrowserDialog fbd = <span class="keyword">new</span> FolderBrowserDialog();
+    
+    <span class="keyword">if</span> (fbd.ShowDialog() == DialogResult.OK)
+    {
+        resimler = Directory.GetFiles(fbd.SelectedPath)
+            .Where(f => f.EndsWith(<span class="string">".jpg"</span>) || f.EndsWith(<span class="string">".png"</span>) || 
+                       f.EndsWith(<span class="string">".bmp"</span>) || f.EndsWith(<span class="string">".gif"</span>))
+            .ToArray();
+        
+        <span class="keyword">if</span> (resimler.Length > <span class="number">0</span>)
+        {
+            mevcutIndex = <span class="number">0</span>;
+            ResimGoster();
+            btnOnceki.Enabled = <span class="keyword">true</span>;
+            btnSonraki.Enabled = <span class="keyword">true</span>;
+        }
+        <span class="keyword">else</span>
+        {
+            MessageBox.Show(<span class="string">"Klasörde resim bulunamadı!"</span>);
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Resim Gösterme ve Navigasyon</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">ResimGoster</span>()
+{
+    <span class="keyword">if</span> (resimler == <span class="keyword">null</span> || resimler.Length == <span class="number">0</span>) <span class="keyword">return</span>;
+    
+    <span class="comment">// Önceki resmi temizle</span>
+    <span class="keyword">if</span> (picResim.Image != <span class="keyword">null</span>)
+    {
+        picResim.Image.Dispose();
+    }
+    
+    picResim.Image = Image.FromFile(resimler[mevcutIndex]);
+    lblDurum.Text = $<span class="string">"{mevcutIndex + 1} / {resimler.Length}"</span>;
+    lblDosyaAdi.Text = Path.GetFileName(resimler[mevcutIndex]);
+    
+    <span class="comment">// Resim bilgisi</span>
+    FileInfo fi = <span class="keyword">new</span> FileInfo(resimler[mevcutIndex]);
+    lblBoyut.Text = $<span class="string">"{fi.Length / 1024} KB | {picResim.Image.Width}x{picResim.Image.Height}"</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">btnOnceki_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (mevcutIndex > <span class="number">0</span>)
+    {
+        mevcutIndex--;
+        ResimGoster();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">btnSonraki_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (mevcutIndex &lt; resimler.Length - <span class="number">1</span>)
+    {
+        mevcutIndex++;
+        ResimGoster();
+    }
+}
+
+<span class="comment">// Klavye ile gezinme</span>
+<span class="keyword">private void</span> <span class="method">Form1_KeyDown</span>(<span class="keyword">object</span> sender, KeyEventArgs e)
+{
+    <span class="keyword">if</span> (e.KeyCode == Keys.Left) btnOnceki_Click(<span class="keyword">null</span>, <span class="keyword">null</span>);
+    <span class="keyword">if</span> (e.KeyCode == Keys.Right) btnSonraki_Click(<span class="keyword">null</span>, <span class="keyword">null</span>);
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Zoom ve Kaydetme</div>
+                <pre><code><span class="comment">// Zoom kontrolü</span>
+<span class="keyword">private void</span> <span class="method">trkZoom_Scroll</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">double</span> oran = trkZoom.Value / <span class="number">100.0</span>;
+    
+    <span class="keyword">int</span> yeniGenislik = (<span class="keyword">int</span>)(panelResim.Width * oran);
+    <span class="keyword">int</span> yeniYukseklik = (<span class="keyword">int</span>)(panelResim.Height * oran);
+    
+    picResim.Width = yeniGenislik;
+    picResim.Height = yeniYukseklik;
+    
+    lblZoom.Text = $<span class="string">"%{trkZoom.Value}"</span>;
+}
+
+<span class="comment">// Resmi farklı kaydet</span>
+<span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (picResim.Image == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    SaveFileDialog sfd = <span class="keyword">new</span> SaveFileDialog();
+    sfd.Filter = <span class="string">"PNG|*.png|JPEG|*.jpg|Bitmap|*.bmp"</span>;
+    sfd.FileName = Path.GetFileNameWithoutExtension(resimler[mevcutIndex]);
+    
+    <span class="keyword">if</span> (sfd.ShowDialog() == DialogResult.OK)
+    {
+        ImageFormat format = sfd.FileName.EndsWith(<span class="string">".png"</span>) ? ImageFormat.Png :
+                            sfd.FileName.EndsWith(<span class="string">".jpg"</span>) ? ImageFormat.Jpeg :
+                            ImageFormat.Bmp;
+        
+        picResim.Image.Save(sfd.FileName, format);
+        MessageBox.Show(<span class="string">"Resim kaydedildi!"</span>);
+    }
+}
+
+<span class="comment">// Çift tıklayınca tam ekran</span>
+<span class="keyword">private void</span> <span class="method">picResim_DoubleClick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    Form tamEkran = <span class="keyword">new</span> Form();
+    tamEkran.WindowState = FormWindowState.Maximized;
+    tamEkran.BackColor = Color.Black;
+    tamEkran.KeyPreview = <span class="keyword">true</span>;
+    tamEkran.KeyDown += (s, args) => { <span class="keyword">if</span> (args.KeyCode == Keys.Escape) tamEkran.Close(); };
+    
+    PictureBox pb = <span class="keyword">new</span> PictureBox();
+    pb.Dock = DockStyle.Fill;
+    pb.SizeMode = PictureBoxSizeMode.Zoom;
+    pb.Image = picResim.Image;
+    pb.Click += (s, args) => tamEkran.Close();
+    
+    tamEkran.Controls.Add(pb);
+    tamEkran.ShowDialog();
+}</code></pre>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje10.html" class="nav-btn prev">← Proje 10</a>
+            <a href="proje12.html" class="nav-btn next">Proje 12 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

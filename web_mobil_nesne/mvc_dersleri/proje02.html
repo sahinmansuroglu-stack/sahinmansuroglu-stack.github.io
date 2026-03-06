@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 2: Kişisel Blog Sayfası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 2</span>
+            <h1>📝 Kişisel Blog Sayfası</h1>
+            <p class="subtitle">Ders 1-2 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>MVC yapısını kullanarak basit bir kişisel blog sayfası oluşturuyoruz.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • MVC mimarisi<br>
+                • Controller ve Action metotları<br>
+                • View oluşturma<br>
+                • ViewData ile veri aktarımı<br>
+                • Razor syntax temelleri
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>1. HomeController</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/HomeController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+<span class="keyword">public class</span> <span class="class-name">HomeController</span> : Controller
+{
+    <span class="comment">// Ana sayfa</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        ViewData[<span class="string">"Title"</span>] = <span class="string">"Ana Sayfa"</span>;
+        ViewData[<span class="string">"BlogName"</span>] = <span class="string">"Teknoloji Günlüğü"</span>;
+        ViewData[<span class="string">"Description"</span>] = <span class="string">"Yazılım ve teknoloji hakkında yazılarım"</span>;
+        
+        <span class="keyword">return</span> View();
+    }
+    
+    <span class="comment">// Hakkımda sayfası</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Hakkimda</span>()
+    {
+        ViewData[<span class="string">"Title"</span>] = <span class="string">"Hakkımda"</span>;
+        ViewData[<span class="string">"Author"</span>] = <span class="string">"Ahmet Yılmaz"</span>;
+        ViewData[<span class="string">"Bio"</span>] = <span class="string">"11. sınıf öğrencisi, yazılım meraklısı"</span>;
+        
+        <span class="keyword">return</span> View();
+    }
+    
+    <span class="comment">// İletişim sayfası</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Iletisim</span>()
+    {
+        ViewData[<span class="string">"Title"</span>] = <span class="string">"İletişim"</span>;
+        ViewData[<span class="string">"Email"</span>] = <span class="string">"ahmet@example.com"</span>;
+        
+        <span class="keyword">return</span> View();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. View Dosyaları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Home/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@{
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Ana Sayfa"</span>;
+}
+
+&lt;div class="hero"&gt;
+    &lt;h1&gt;@ViewData[<span class="string">"BlogName"</span>]&lt;/h1&gt;
+    &lt;p&gt;@ViewData[<span class="string">"Description"</span>]&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;div class="posts"&gt;
+    &lt;h2&gt;Son Yazılar&lt;/h2&gt;
+    
+    &lt;article class="post"&gt;
+        &lt;h3&gt;ASP.NET MVC Nedir?&lt;/h3&gt;
+        &lt;p class="date"&gt;@DateTime.Now.ToString(<span class="string">"dd MMMM yyyy"</span>)&lt;/p&gt;
+        &lt;p&gt;MVC, Model-View-Controller tasarım kalıbını kullanan bir web framework'üdür...&lt;/p&gt;
+        &lt;a href="#"&gt;Devamını Oku →&lt;/a&gt;
+    &lt;/article&gt;
+    
+    &lt;article class="post"&gt;
+        &lt;h3&gt;C# ile Programlamaya Giriş&lt;/h3&gt;
+        &lt;p class="date"&gt;@DateTime.Now.AddDays(-3).ToString(<span class="string">"dd MMMM yyyy"</span>)&lt;/p&gt;
+        &lt;p&gt;C# modern ve güçlü bir programlama dilidir...&lt;/p&gt;
+        &lt;a href="#"&gt;Devamını Oku →&lt;/a&gt;
+    &lt;/article&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Home/Hakkimda.cshtml</div>
+                <pre data-lang="Razor"><code>@{
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Hakkımda"</span>;
+}
+
+&lt;div class="about-page"&gt;
+    &lt;h1&gt;👋 Merhaba, ben @ViewData[<span class="string">"Author"</span>]&lt;/h1&gt;
+    
+    &lt;p&gt;@ViewData[<span class="string">"Bio"</span>]&lt;/p&gt;
+    
+    &lt;h2&gt;İlgi Alanlarım&lt;/h2&gt;
+    &lt;ul&gt;
+        &lt;li&gt;Web Geliştirme&lt;/li&gt;
+        &lt;li&gt;Oyun Programlama&lt;/li&gt;
+        &lt;li&gt;Yapay Zeka&lt;/li&gt;
+    &lt;/ul&gt;
+    
+    &lt;h2&gt;Kullandığım Teknolojiler&lt;/h2&gt;
+    &lt;div class="tech-badges"&gt;
+        &lt;span class="badge"&gt;C#&lt;/span&gt;
+        &lt;span class="badge"&gt;ASP.NET&lt;/span&gt;
+        &lt;span class="badge"&gt;HTML/CSS&lt;/span&gt;
+        &lt;span class="badge"&gt;JavaScript&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Home/Iletisim.cshtml</div>
+                <pre data-lang="Razor"><code>@{
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"İletişim"</span>;
+}
+
+&lt;h1&gt;📧 İletişim&lt;/h1&gt;
+
+&lt;div class="contact-info"&gt;
+    &lt;p&gt;&lt;strong&gt;E-posta:&lt;/strong&gt; @ViewData[<span class="string">"Email"</span>]&lt;/p&gt;
+    &lt;p&gt;&lt;strong&gt;GitHub:&lt;/strong&gt; github.com/ahmetyilmaz&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;h2&gt;Mesaj Gönder&lt;/h2&gt;
+&lt;form&gt;
+    &lt;div class="mb-3"&gt;
+        &lt;label&gt;Adınız&lt;/label&gt;
+        &lt;input type="text" class="form-control" /&gt;
+    &lt;/div&gt;
+    &lt;div class="mb-3"&gt;
+        &lt;label&gt;E-posta&lt;/label&gt;
+        &lt;input type="email" class="form-control" /&gt;
+    &lt;/div&gt;
+    &lt;div class="mb-3"&gt;
+        &lt;label&gt;Mesajınız&lt;/label&gt;
+        &lt;textarea class="form-control" rows="4"&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    &lt;button type="submit" class="btn btn-primary"&gt;Gönder&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Projeler sayfası ekleyin (Projects action)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>ViewData yerine ViewBag kullanarak aynı işlemleri yapın</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders2.html" class="nav-btn prev">← Ders 2</a>
+            <a href="proje03.html" class="nav-btn next">Proje 3 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

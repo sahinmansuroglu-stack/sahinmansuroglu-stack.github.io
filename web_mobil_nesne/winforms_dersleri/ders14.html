@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 14: Dosya İşlemleri</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 14</span>
+            <h1>Dosya İşlemleri</h1>
+            <p class="subtitle">Okuma, Yazma ve Klasör İşlemleri</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders12.html">Ders 12</a>
+            <a href="ders13.html">Ders 13</a>
+            <a href="ders14.html" class="active">Ders 14</a>
+            <a href="ders15.html">Ders 15</a>
+        </nav>
+
+        <section class="section">
+            <h2>System.IO Namespace</h2>
+            <p>Dosya işlemleri için <code>System.IO</code> namespace'ini kullanırız. En önemli sınıflar:</p>
+
+            <table>
+                <tr>
+                    <th>Sınıf</th>
+                    <th>Kullanım</th>
+                </tr>
+                <tr>
+                    <td>File</td>
+                    <td>Dosya oluşturma, okuma, yazma, silme</td>
+                </tr>
+                <tr>
+                    <td>Directory</td>
+                    <td>Klasör oluşturma, silme, listeleme</td>
+                </tr>
+                <tr>
+                    <td>Path</td>
+                    <td>Dosya yolu işlemleri</td>
+                </tr>
+                <tr>
+                    <td>FileInfo</td>
+                    <td>Dosya bilgileri</td>
+                </tr>
+                <tr>
+                    <td>DirectoryInfo</td>
+                    <td>Klasör bilgileri</td>
+                </tr>
+                <tr>
+                    <td>StreamReader</td>
+                    <td>Metin okuma (büyük dosyalar)</td>
+                </tr>
+                <tr>
+                    <td>StreamWriter</td>
+                    <td>Metin yazma (büyük dosyalar)</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>📌 using System.IO;</strong> dosyanızın başına eklemeyi unutmayın!
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>1. Dosya Okuma</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Dosya Okuma Yöntemleri</div>
+                <pre><code><span class="comment">// Tüm içeriği string olarak oku</span>
+<span class="keyword">string</span> icerik = File.ReadAllText(<span class="string">@"C:\dosya.txt"</span>);
+txtIcerik.Text = icerik;
+
+<span class="comment">// Encoding belirterek oku (Türkçe karakterler için)</span>
+<span class="keyword">string</span> icerik = File.ReadAllText(<span class="string">@"C:\dosya.txt"</span>, Encoding.UTF8);
+
+<span class="comment">// Satır satır oku (dizi olarak)</span>
+<span class="keyword">string</span>[] satirlar = File.ReadAllLines(<span class="string">@"C:\dosya.txt"</span>);
+<span class="keyword">foreach</span> (<span class="keyword">string</span> satir <span class="keyword">in</span> satirlar)
+{
+    listBox1.Items.Add(satir);
+}
+
+<span class="comment">// Byte olarak oku (binary dosyalar)</span>
+<span class="keyword">byte</span>[] byteler = File.ReadAllBytes(<span class="string">@"C:\resim.jpg"</span>);</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">StreamReader ile Okuma (Büyük Dosyalar)</div>
+                <pre><code><span class="comment">// Büyük dosyalar için StreamReader</span>
+<span class="keyword">using</span> (StreamReader sr = <span class="keyword">new</span> StreamReader(<span class="string">@"C:\buyukdosya.txt"</span>))
+{
+    <span class="keyword">string</span> satir;
+    <span class="keyword">while</span> ((satir = sr.ReadLine()) != <span class="keyword">null</span>)
+    {
+        listBox1.Items.Add(satir);
+    }
+}
+
+<span class="comment">// Tüm içeriği oku</span>
+<span class="keyword">using</span> (StreamReader sr = <span class="keyword">new</span> StreamReader(<span class="string">@"C:\dosya.txt"</span>, Encoding.UTF8))
+{
+    txtIcerik.Text = sr.ReadToEnd();
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. Dosya Yazma</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Dosya Yazma Yöntemleri</div>
+                <pre><code><span class="comment">// Tüm içeriği yaz (dosya varsa üzerine yazar)</span>
+File.WriteAllText(<span class="string">@"C:\dosya.txt"</span>, txtIcerik.Text);
+
+<span class="comment">// Encoding ile yaz</span>
+File.WriteAllText(<span class="string">@"C:\dosya.txt"</span>, txtIcerik.Text, Encoding.UTF8);
+
+<span class="comment">// Satır dizisi yaz</span>
+<span class="keyword">string</span>[] satirlar = { <span class="string">"Satır 1"</span>, <span class="string">"Satır 2"</span>, <span class="string">"Satır 3"</span> };
+File.WriteAllLines(<span class="string">@"C:\dosya.txt"</span>, satirlar);
+
+<span class="comment">// Dosyanın sonuna ekle (append)</span>
+File.AppendAllText(<span class="string">@"C:\log.txt"</span>, <span class="string">"Yeni satır\n"</span>);
+File.AppendAllLines(<span class="string">@"C:\log.txt"</span>, <span class="keyword">new</span>[] { <span class="string">"Satır 1"</span>, <span class="string">"Satır 2"</span> });</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">StreamWriter ile Yazma</div>
+                <pre><code><span class="comment">// Yeni dosya oluştur ve yaz</span>
+<span class="keyword">using</span> (StreamWriter sw = <span class="keyword">new</span> StreamWriter(<span class="string">@"C:\yeni.txt"</span>))
+{
+    sw.WriteLine(<span class="string">"Birinci satır"</span>);
+    sw.WriteLine(<span class="string">"İkinci satır"</span>);
+    sw.Write(<span class="string">"Satır sonu olmadan"</span>);
+}
+
+<span class="comment">// Dosyanın sonuna ekle (append: true)</span>
+<span class="keyword">using</span> (StreamWriter sw = <span class="keyword">new</span> StreamWriter(<span class="string">@"C:\log.txt"</span>, <span class="keyword">true</span>, Encoding.UTF8))
+{
+    sw.WriteLine(DateTime.Now + <span class="string">": Log mesajı"</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. Dosya İşlemleri (Kontrol, Kopyala, Taşı, Sil)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Dosya Kontrolleri</div>
+                <pre><code><span class="keyword">string</span> dosya = <span class="string">@"C:\test.txt"</span>;
+
+<span class="comment">// Dosya var mı?</span>
+<span class="keyword">if</span> (File.Exists(dosya))
+{
+    MessageBox.Show(<span class="string">"Dosya mevcut"</span>);
+}
+
+<span class="comment">// Dosya bilgileri</span>
+FileInfo fi = <span class="keyword">new</span> FileInfo(dosya);
+lblDosyaAdi.Text = fi.Name;
+lblBoyut.Text = fi.Length + <span class="string">" byte"</span>;
+lblOlusturma.Text = fi.CreationTime.ToString();
+lblSonDeğişiklik.Text = fi.LastWriteTime.ToString();
+lblUzanti.Text = fi.Extension;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Kopyala, Taşı, Sil</div>
+                <pre><code><span class="comment">// Dosya kopyala</span>
+File.Copy(<span class="string">@"C:\kaynak.txt"</span>, <span class="string">@"D:\hedef.txt"</span>);
+
+<span class="comment">// Üzerine yazarak kopyala</span>
+File.Copy(<span class="string">@"C:\kaynak.txt"</span>, <span class="string">@"D:\hedef.txt"</span>, <span class="keyword">true</span>);
+
+<span class="comment">// Dosya taşı (aynı sürücüde hızlı)</span>
+File.Move(<span class="string">@"C:\eski.txt"</span>, <span class="string">@"C:\yeni.txt"</span>);
+
+<span class="comment">// Dosya sil</span>
+<span class="keyword">if</span> (File.Exists(<span class="string">@"C:\silinecek.txt"</span>))
+{
+    File.Delete(<span class="string">@"C:\silinecek.txt"</span>);
+}
+
+<span class="comment">// Dosya adını değiştir</span>
+File.Move(<span class="string">@"C:\eski_ad.txt"</span>, <span class="string">@"C:\yeni_ad.txt"</span>);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. Klasör İşlemleri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Directory Sınıfı</div>
+                <pre><code><span class="comment">// Klasör var mı?</span>
+<span class="keyword">if</span> (Directory.Exists(<span class="string">@"C:\Belgeler"</span>))
+{
+    MessageBox.Show(<span class="string">"Klasör mevcut"</span>);
+}
+
+<span class="comment">// Klasör oluştur</span>
+Directory.CreateDirectory(<span class="string">@"C:\YeniKlasor"</span>);
+Directory.CreateDirectory(<span class="string">@"C:\Klasor1\Klasor2\Klasor3"</span>); <span class="comment">// İç içe</span>
+
+<span class="comment">// Klasör sil (boş olmalı)</span>
+Directory.Delete(<span class="string">@"C:\BosKlasor"</span>);
+
+<span class="comment">// Klasör sil (içindekilerle birlikte)</span>
+Directory.Delete(<span class="string">@"C:\DoluKlasor"</span>, <span class="keyword">true</span>);
+
+<span class="comment">// Klasördeki dosyaları listele</span>
+<span class="keyword">string</span>[] dosyalar = Directory.GetFiles(<span class="string">@"C:\Belgeler"</span>);
+<span class="keyword">foreach</span> (<span class="keyword">string</span> dosya <span class="keyword">in</span> dosyalar)
+{
+    listBox1.Items.Add(Path.GetFileName(dosya));
+}
+
+<span class="comment">// Belirli uzantıdaki dosyalar</span>
+<span class="keyword">string</span>[] txtDosyalar = Directory.GetFiles(<span class="string">@"C:\Belgeler"</span>, <span class="string">"*.txt"</span>);
+
+<span class="comment">// Alt klasörler dahil</span>
+<span class="keyword">string</span>[] tumDosyalar = Directory.GetFiles(<span class="string">@"C:\Belgeler"</span>, <span class="string">"*.*"</span>, SearchOption.AllDirectories);
+
+<span class="comment">// Alt klasörleri listele</span>
+<span class="keyword">string</span>[] altKlasorler = Directory.GetDirectories(<span class="string">@"C:\Belgeler"</span>);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>5. Path Sınıfı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Yol İşlemleri</div>
+                <pre><code><span class="keyword">string</span> dosyaYolu = <span class="string">@"C:\Belgeler\rapor.txt"</span>;
+
+<span class="comment">// Dosya adı (uzantıyla)</span>
+<span class="keyword">string</span> dosyaAdi = Path.GetFileName(dosyaYolu); <span class="comment">// "rapor.txt"</span>
+
+<span class="comment">// Dosya adı (uzantısız)</span>
+<span class="keyword">string</span> isim = Path.GetFileNameWithoutExtension(dosyaYolu); <span class="comment">// "rapor"</span>
+
+<span class="comment">// Uzantı</span>
+<span class="keyword">string</span> uzanti = Path.GetExtension(dosyaYolu); <span class="comment">// ".txt"</span>
+
+<span class="comment">// Klasör yolu</span>
+<span class="keyword">string</span> klasor = Path.GetDirectoryName(dosyaYolu); <span class="comment">// "C:\Belgeler"</span>
+
+<span class="comment">// Yolları birleştir</span>
+<span class="keyword">string</span> tamYol = Path.Combine(<span class="string">@"C:\Belgeler"</span>, <span class="string">"alt"</span>, <span class="string">"dosya.txt"</span>);
+<span class="comment">// "C:\Belgeler\alt\dosya.txt"</span>
+
+<span class="comment">// Geçici dosya yolu</span>
+<span class="keyword">string</span> geciciDosya = Path.GetTempFileName();
+
+<span class="comment">// Geçici klasör</span>
+<span class="keyword">string</span> geciciKlasor = Path.GetTempPath();
+
+<span class="comment">// Özel klasörler</span>
+<span class="keyword">string</span> masaustu = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+<span class="keyword">string</span> belgeler = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Not Defteri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Basit Not Defteri</div>
+                <pre><code><span class="keyword">private string</span> mevcutDosya = <span class="string">""</span>;
+
+<span class="keyword">private void</span> <span class="method">Yeni</span>()
+{
+    txtIcerik.Clear();
+    mevcutDosya = <span class="string">""</span>;
+    <span class="keyword">this</span>.Text = <span class="string">"Yeni - Not Defteri"</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">Ac</span>()
+{
+    OpenFileDialog ofd = <span class="keyword">new</span> OpenFileDialog();
+    ofd.Filter = <span class="string">"Metin Dosyaları|*.txt|Tüm Dosyalar|*.*"</span>;
+    
+    <span class="keyword">if</span> (ofd.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">try</span>
+        {
+            txtIcerik.Text = File.ReadAllText(ofd.FileName, Encoding.UTF8);
+            mevcutDosya = ofd.FileName;
+            <span class="keyword">this</span>.Text = Path.GetFileName(ofd.FileName) + <span class="string">" - Not Defteri"</span>;
+        }
+        <span class="keyword">catch</span> (Exception ex)
+        {
+            MessageBox.Show(<span class="string">"Dosya açılamadı: "</span> + ex.Message,
+                <span class="string">"Hata"</span>, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">Kaydet</span>()
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(mevcutDosya))
+    {
+        FarkliKaydet();
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="keyword">try</span>
+        {
+            File.WriteAllText(mevcutDosya, txtIcerik.Text, Encoding.UTF8);
+            MessageBox.Show(<span class="string">"Kaydedildi!"</span>);
+        }
+        <span class="keyword">catch</span> (Exception ex)
+        {
+            MessageBox.Show(<span class="string">"Kayıt hatası: "</span> + ex.Message);
+        }
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">FarkliKaydet</span>()
+{
+    SaveFileDialog sfd = <span class="keyword">new</span> SaveFileDialog();
+    sfd.Filter = <span class="string">"Metin Dosyası|*.txt"</span>;
+    sfd.DefaultExt = <span class="string">"txt"</span>;
+    
+    <span class="keyword">if</span> (sfd.ShowDialog() == DialogResult.OK)
+    {
+        File.WriteAllText(sfd.FileName, txtIcerik.Text, Encoding.UTF8);
+        mevcutDosya = sfd.FileName;
+        <span class="keyword">this</span>.Text = Path.GetFileName(sfd.FileName) + <span class="string">" - Not Defteri"</span>;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Bir metin dosyası oluşturup içine 3 satır yazan uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnYaz_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span>[] satirlar = { <span class="string">"Satır 1"</span>, <span class="string">"Satır 2"</span>, <span class="string">"Satır 3"</span> };
+    
+    <span class="keyword">string</span> dosya = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+        <span class="string">"deneme.txt"</span>);
+    
+    File.WriteAllLines(dosya, satirlar, Encoding.UTF8);
+    MessageBox.Show(<span class="string">"Dosya oluşturuldu!"</span>);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Bir klasördeki tüm .txt dosyalarını listeleyen uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnListele_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FolderBrowserDialog fbd = <span class="keyword">new</span> FolderBrowserDialog();
+    
+    <span class="keyword">if</span> (fbd.ShowDialog() == DialogResult.OK)
+    {
+        listBox1.Items.Clear();
+        <span class="keyword">string</span>[] dosyalar = Directory.GetFiles(fbd.SelectedPath, <span class="string">"*.txt"</span>);
+        
+        <span class="keyword">foreach</span> (<span class="keyword">string</span> dosya <span class="keyword">in</span> dosyalar)
+        {
+            listBox1.Items.Add(Path.GetFileName(dosya));
+        }
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Dosya okuyup içeriğini TextBox'ta gösteren, sonra kaydedebilen uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">string</span> dosyaYolu;
+
+<span class="keyword">private void</span> <span class="method">btnAc_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog ofd = <span class="keyword">new</span> OpenFileDialog();
+    ofd.Filter = <span class="string">"Text|*.txt"</span>;
+    
+    <span class="keyword">if</span> (ofd.ShowDialog() == DialogResult.OK)
+    {
+        dosyaYolu = ofd.FileName;
+        txtIcerik.Text = File.ReadAllText(dosyaYolu);
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(dosyaYolu))
+    {
+        File.WriteAllText(dosyaYolu, txtIcerik.Text);
+        MessageBox.Show(<span class="string">"Kaydedildi!"</span>);
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders13.html" class="nav-btn prev">← Önceki: DataGridView</a>
+            <a href="ders15.html" class="nav-btn next">Sonraki: Final Projesi →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

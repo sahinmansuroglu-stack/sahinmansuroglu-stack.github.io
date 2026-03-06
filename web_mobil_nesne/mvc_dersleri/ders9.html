@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 9: Layout, Partial View ve ViewBag/ViewData</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 9</span>
+            <h1>Layout, Partial View ve ViewBag/ViewData</h1>
+            <p class="subtitle">Kod Tekrarını Azaltma ve Şablonlar</p>
+        </header>
+
+        <section class="section">
+            <h2>Layout Nedir?</h2>
+            <p><strong>Layout</strong>, tüm sayfalarda tekrar eden HTML yapısını (header, footer, menü) tek bir yerde
+                tanımlamamızı sağlar. Ana şablon dosyasıdır.</p>
+
+            <div class="info-box">
+                <strong>💡 Avantajları:</strong><br>
+                • Kod tekrarını önler<br>
+                • Tutarlı tasarım sağlar<br>
+                • Bakımı kolaylaştırır
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>_Layout.cshtml Yapısı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Shared/_Layout.cshtml</div>
+                <pre data-lang="Razor"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="tr"&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;<span class="keyword">@</span>ViewData[<span class="string">"Title"</span>] - Okul Yönetim&lt;/title&gt;
+    
+    <span class="comment">&lt;!-- Bootstrap CSS --&gt;</span>
+    &lt;link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" /&gt;
+    &lt;link href="~/css/site.css" rel="stylesheet" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    <span class="comment">&lt;!-- Navbar --&gt;</span>
+    &lt;nav class="navbar navbar-expand-lg navbar-dark bg-dark"&gt;
+        &lt;div class="container"&gt;
+            &lt;a class="navbar-brand" <span class="attribute">asp-controller</span>=<span class="string">"Home"</span> <span class="attribute">asp-action</span>=<span class="string">"Index"</span>&gt;
+                🏫 Okul Yönetim
+            &lt;/a&gt;
+            &lt;button class="navbar-toggler" type="button" 
+                    data-bs-toggle="collapse" data-bs-target="#navbarNav"&gt;
+                &lt;span class="navbar-toggler-icon"&gt;&lt;/span&gt;
+            &lt;/button&gt;
+            
+            &lt;div class="collapse navbar-collapse" id="navbarNav"&gt;
+                &lt;ul class="navbar-nav me-auto"&gt;
+                    &lt;li class="nav-item"&gt;
+                        &lt;a class="nav-link" <span class="attribute">asp-controller</span>=<span class="string">"Home"</span> 
+                           <span class="attribute">asp-action</span>=<span class="string">"Index"</span>&gt;Ana Sayfa&lt;/a&gt;
+                    &lt;/li&gt;
+                    &lt;li class="nav-item"&gt;
+                        &lt;a class="nav-link" <span class="attribute">asp-controller</span>=<span class="string">"Student"</span> 
+                           <span class="attribute">asp-action</span>=<span class="string">"Index"</span>&gt;Öğrenciler&lt;/a&gt;
+                    &lt;/li&gt;
+                    &lt;li class="nav-item"&gt;
+                        &lt;a class="nav-link" <span class="attribute">asp-controller</span>=<span class="string">"Product"</span> 
+                           <span class="attribute">asp-action</span>=<span class="string">"Index"</span>&gt;Ürünler&lt;/a&gt;
+                    &lt;/li&gt;
+                &lt;/ul&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/nav&gt;
+    
+    <span class="comment">&lt;!-- Ana İçerik --&gt;</span>
+    &lt;main class="container mt-4"&gt;
+        <span class="keyword">@RenderBody()</span>  <span class="comment">&lt;!-- Sayfa içeriği buraya gelir --&gt;</span>
+    &lt;/main&gt;
+    
+    <span class="comment">&lt;!-- Footer --&gt;</span>
+    &lt;footer class="bg-dark text-white text-center py-3 mt-4"&gt;
+        &lt;p&gt;&amp;copy; <span class="keyword">@</span>DateTime.Now.Year - Okul Yönetim Sistemi&lt;/p&gt;
+    &lt;/footer&gt;
+    
+    <span class="comment">&lt;!-- Scripts --&gt;</span>
+    &lt;script src="~/lib/jquery/dist/jquery.min.js"&gt;&lt;/script&gt;
+    &lt;script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;
+    
+    <span class="comment">&lt;!-- Sayfa özel scriptleri --&gt;</span>
+    <span class="keyword">@await RenderSectionAsync("Scripts", required: false)</span>
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View'lerde Layout Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/_ViewStart.cshtml (Tüm View'ler için)</div>
+                <pre data-lang="Razor"><code><span class="keyword">@{</span>
+    Layout = <span class="string">"_Layout"</span>;
+<span class="keyword">}</span></code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Sayfa içeriği (Index.cshtml)</div>
+                <pre data-lang="Razor"><code><span class="keyword">@{</span>
+    ViewData[<span class="string">"Title"</span>] = <span class="string">"Ana Sayfa"</span>;
+<span class="keyword">}</span>
+
+&lt;h1&gt;Hoş Geldiniz!&lt;/h1&gt;
+&lt;p&gt;Bu içerik @RenderBody() yerine yerleşir.&lt;/p&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Layout'suz sayfa</div>
+                <pre data-lang="Razor"><code><span class="keyword">@{</span>
+    Layout = <span class="keyword">null</span>;  <span class="comment">// Layout kullanma</span>
+<span class="keyword">}</span>
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Bağımsız Sayfa&lt;/h1&gt;
+    &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Sections (Bölümler)</h2>
+            <p>Layout'ta belirli yerlere sayfa özel içerik eklemek için Section kullanılır.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Layout'ta Section tanımı</div>
+                <pre data-lang="Razor"><code><span class="comment">&lt;!-- _Layout.cshtml --&gt;</span>
+&lt;head&gt;
+    ...
+    <span class="keyword">@await RenderSectionAsync("Styles", required: false)</span>
+&lt;/head&gt;
+&lt;body&gt;
+    ...
+    <span class="keyword">@await RenderSectionAsync("Scripts", required: false)</span>
+&lt;/body&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">View'de Section kullanımı</div>
+                <pre data-lang="Razor"><code><span class="keyword">@section</span> Styles {
+    &lt;link href="~/css/custom-page.css" rel="stylesheet" /&gt;
+}
+
+&lt;h1&gt;Sayfa İçeriği&lt;/h1&gt;
+
+<span class="keyword">@section</span> Scripts {
+    &lt;script src="~/js/custom-page.js"&gt;&lt;/script&gt;
+    &lt;script&gt;
+        console.log(<span class="string">"Sayfa yüklendi!"</span>);
+    &lt;/script&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Partial View Nedir?</h2>
+            <p><strong>Partial View</strong>, tekrar kullanılabilir küçük view parçalarıdır. Örneğin: ürün kartı,
+                kullanıcı bilgi kutusu.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Shared/_ProductCard.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> Product
+
+&lt;div class="card h-100"&gt;
+    &lt;div class="card-body"&gt;
+        &lt;h5 class="card-title"&gt;<span class="keyword">@</span>Model.Name&lt;/h5&gt;
+        &lt;p class="card-text text-muted"&gt;<span class="keyword">@</span>Model.Description&lt;/p&gt;
+        &lt;p class="card-text"&gt;
+            &lt;strong&gt;<span class="keyword">@</span>Model.Price.ToString(<span class="string">"C2"</span>)&lt;/strong&gt;
+        &lt;/p&gt;
+        <span class="keyword">@if</span> (Model.Stock > <span class="number">0</span>)
+        {
+            &lt;span class="badge bg-success"&gt;Stokta&lt;/span&gt;
+        }
+        <span class="keyword">else</span>
+        {
+            &lt;span class="badge bg-danger"&gt;Tükendi&lt;/span&gt;
+        }
+    &lt;/div&gt;
+    &lt;div class="card-footer"&gt;
+        &lt;a <span class="attribute">asp-action</span>=<span class="string">"Details"</span> <span class="attribute">asp-route-id</span>=<span class="string">"@Model.Id"</span> 
+           class="btn btn-primary btn-sm"&gt;Detay&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Partial View Kullanımı</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> List&lt;Product&gt;
+
+&lt;div class="row"&gt;
+    <span class="keyword">@foreach</span> (<span class="keyword">var</span> product <span class="keyword">in</span> Model)
+    {
+        &lt;div class="col-md-4 mb-3"&gt;
+            <span class="comment">&lt;!-- Partial view çağırma --&gt;</span>
+            <span class="keyword">@await Html.PartialAsync("_ProductCard", product)</span>
+            
+            <span class="comment">&lt;!-- veya Tag Helper ile --&gt;</span>
+            &lt;partial name="_ProductCard" model="product" /&gt;
+        &lt;/div&gt;
+    }
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Örnek: Alert Partial</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Shared/_Alert.cshtml</div>
+                <pre data-lang="Razor"><code><span class="comment">&lt;!-- TempData mesajlarını göster --&gt;</span>
+<span class="keyword">@if</span> (TempData[<span class="string">"Success"</span>] != <span class="keyword">null</span>)
+{
+    &lt;div class="alert alert-success alert-dismissible fade show"&gt;
+        &lt;i class="bi bi-check-circle"&gt;&lt;/i&gt; <span class="keyword">@</span>TempData[<span class="string">"Success"</span>]
+        &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
+    &lt;/div&gt;
+}
+
+<span class="keyword">@if</span> (TempData[<span class="string">"Error"</span>] != <span class="keyword">null</span>)
+{
+    &lt;div class="alert alert-danger alert-dismissible fade show"&gt;
+        &lt;i class="bi bi-x-circle"&gt;&lt;/i&gt; <span class="keyword">@</span>TempData[<span class="string">"Error"</span>]
+        &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
+    &lt;/div&gt;
+}
+
+<span class="keyword">@if</span> (TempData[<span class="string">"Warning"</span>] != <span class="keyword">null</span>)
+{
+    &lt;div class="alert alert-warning alert-dismissible fade show"&gt;
+        &lt;i class="bi bi-exclamation-triangle"&gt;&lt;/i&gt; <span class="keyword">@</span>TempData[<span class="string">"Warning"</span>]
+        &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
+    &lt;/div&gt;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Layout'ta kullanımı</div>
+                <pre data-lang="Razor"><code>&lt;main class="container mt-4"&gt;
+    <span class="keyword">&lt;partial name="_Alert" /&gt;</span>
+    <span class="keyword">@RenderBody()</span>
+&lt;/main&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>ViewBag vs ViewData vs TempData</h2>
+
+            <table>
+                <tr>
+                    <th>Özellik</th>
+                    <th>ViewBag</th>
+                    <th>ViewData</th>
+                    <th>TempData</th>
+                </tr>
+                <tr>
+                    <td>Tip</td>
+                    <td>dynamic</td>
+                    <td>Dictionary</td>
+                    <td>Dictionary</td>
+                </tr>
+                <tr>
+                    <td>Ömür</td>
+                    <td>Tek istek</td>
+                    <td>Tek istek</td>
+                    <td>Sonraki isteğe kadar</td>
+                </tr>
+                <tr>
+                    <td>Kullanım</td>
+                    <td>Controller → View</td>
+                    <td>Controller → View</td>
+                    <td>Redirect sonrası mesaj</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Kullanım Örnekleri</div>
+                <pre data-lang="C#"><code><span class="comment">// Controller'da</span>
+
+<span class="comment">// ViewBag - dinamik</span>
+ViewBag.Title = <span class="string">"Ana Sayfa"</span>;
+ViewBag.StudentCount = <span class="number">35</span>;
+
+<span class="comment">// ViewData - dictionary</span>
+ViewData[<span class="string">"Message"</span>] = <span class="string">"Hoş geldiniz"</span>;
+
+<span class="comment">// TempData - redirect sonrası</span>
+TempData[<span class="string">"Success"</span>] = <span class="string">"Kayıt başarıyla eklendi!"</span>;
+<span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">View'de</div>
+                <pre data-lang="Razor"><code>&lt;h1&gt;<span class="keyword">@</span>ViewBag.Title&lt;/h1&gt;
+&lt;p&gt;Öğrenci Sayısı: <span class="keyword">@</span>ViewBag.StudentCount&lt;/p&gt;
+
+&lt;p&gt;<span class="keyword">@</span>ViewData[<span class="string">"Message"</span>]&lt;/p&gt;
+
+<span class="keyword">@if</span> (TempData[<span class="string">"Success"</span>] != <span class="keyword">null</span>)
+{
+    &lt;div class="alert alert-success"&gt;<span class="keyword">@</span>TempData[<span class="string">"Success"</span>]&lt;/div&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>_ViewImports.cshtml</h2>
+            <p>Tüm View'lerde ortak using ifadelerini ve Tag Helper'ları tanımlar.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/_ViewImports.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@using</span> MyApp
+<span class="keyword">@using</span> MyApp.Models
+<span class="keyword">@addTagHelper</span> *, Microsoft.AspNetCore.Mvc.TagHelpers</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Layout'un amacı nedir? @RenderBody() ne işe yarar?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <p><strong>Layout:</strong> Tüm sayfalarda ortak olan HTML yapısını (header, footer, menü) tek yerde
+                        tanımlar.</p>
+                    <p><strong>@RenderBody():</strong> Her sayfanın kendine özel içeriğinin yerleştirileceği noktayı
+                        belirtir.</p>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>_StudentCard adında öğrenci bilgilerini gösteren bir Partial View yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="Razor"><code><span class="comment">&lt;!-- Views/Shared/_StudentCard.cshtml --&gt;</span>
+<span class="keyword">@model</span> Student
+
+&lt;div class="card"&gt;
+    &lt;div class="card-body"&gt;
+        &lt;h5 class="card-title"&gt;@Model.FirstName @Model.LastName&lt;/h5&gt;
+        &lt;p class="card-text"&gt;Sınıf: @Model.Grade&lt;/p&gt;
+        &lt;p class="card-text"&gt;Email: @Model.Email&lt;/p&gt;
+        &lt;a asp-action="Details" asp-route-id="@Model.Id" 
+           class="btn btn-primary btn-sm"&gt;Detay&lt;/a&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>ViewBag ve TempData arasındaki fark nedir?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <p><strong>ViewBag:</strong></p>
+                    <ul>
+                        <li>Sadece tek istek için geçerli</li>
+                        <li>Controller'dan View'e veri taşır</li>
+                        <li>Redirect sonrası kaybolur</li>
+                    </ul>
+                    <p><strong>TempData:</strong></p>
+                    <ul>
+                        <li>Bir sonraki isteğe kadar saklanır</li>
+                        <li>Redirect sonrası mesaj göstermek için ideal</li>
+                        <li>Okunduktan sonra silinir</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>Sayfa özel JavaScript eklemek için Section nasıl kullanılır?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <pre data-lang="Razor"><code><span class="comment">&lt;!-- Sayfa içeriği --&gt;</span>
+&lt;h1&gt;Ürünler&lt;/h1&gt;
+
+<span class="comment">&lt;!-- Sayfa özel scriptler --&gt;</span>
+<span class="keyword">@section</span> Scripts {
+    &lt;script&gt;
+        $(document).ready(<span class="keyword">function</span>() {
+            console.log(<span class="string">"Sayfa hazır!"</span>);
+        });
+    &lt;/script&gt;
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">5</span>
+                <strong>Partial view'i sayfada nasıl çağırırsınız? (2 yöntem)</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(5)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-5">
+                    <pre data-lang="Razor"><code><span class="comment">&lt;!-- Yöntem 1: Html.PartialAsync --&gt;</span>
+<span class="keyword">@await Html.PartialAsync("_ProductCard", product)</span>
+
+<span class="comment">&lt;!-- Yöntem 2: Tag Helper --&gt;</span>
+&lt;partial name="_ProductCard" model="product" /&gt;
+
+<span class="comment">&lt;!-- Model olmadan --&gt;</span>
+&lt;partial name="_Alert" /&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders8.html" class="nav-btn prev">← Önceki: CRUD İşlemleri</a>
+            <a href="ders10.html" class="nav-btn next">Sonraki: Kapsamlı Proje →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

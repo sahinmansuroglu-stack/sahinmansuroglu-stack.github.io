@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bottom Navigation + Scaffold</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface2: #16213e;
+            --card: #1e1e36;
+            --border: #2a2a4a;
+            --text: #e0e0f0;
+            --text2: #a0a0c0;
+            --accent: #7c3aed;
+            --accent2: #a78bfa;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a0533 0%, #0f0f1a 40%, #0a1628 100%);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate
+        }
+
+        @keyframes heroGlow {
+            0% {
+                transform: translate(0, 0)
+            }
+
+            100% {
+                transform: translate(-2%, 1%)
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            margin-bottom: 8px
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+            transition: border-color .3s
+        }
+
+        .card:hover {
+            border-color: var(--accent)
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .card p,
+        .card li {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.8
+        }
+
+        .card ul,
+        .card ol {
+            padding-left: 20px;
+            margin: 8px 0
+        }
+
+        pre {
+            background: #12121f;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+            position: relative
+        }
+
+        pre .label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7
+        }
+
+        .kw {
+            color: #c792ea
+        }
+
+        .fn {
+            color: #82aaff
+        }
+
+        .str {
+            color: #c3e88d
+        }
+
+        .cm {
+            color: #546e7a
+        }
+
+        .tp {
+            color: #ffcb6b
+        }
+
+        .num {
+            color: #f78c6c
+        }
+
+        .an {
+            color: #89ddff
+        }
+
+        .pr {
+            color: #f07178
+        }
+
+        .inline-code {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--accent2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.83rem
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1>📐 Bottom Navigation + Scaffold</h1>
+        <p class="subtitle">Menüyü Ekranın Altına Sabitleyelim</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h3>💬 Açıklama</h3>
+            <p>Bir önceki konuda özelliklerini tanımladığımız "Alt Menü"yü ekranda doğru yere yani <strong>en alta
+                    sabitlemek</strong> için <strong>Scaffold</strong> kullanırız.</p>
+            <p>Scaffold, uygulamamız için ana şablondur. Scaffold'un bize sunduğu <span
+                    class="inline-code">bottomBar</span> alanına alt menümüzü, gövdesine (<span
+                    class="inline-code">content</span>) sayfalarımızın haritası olan NavHost'u yerleştiririz.</p>
+        </div>
+
+        <div class="card">
+            <h3>🛠️ Nasıl Kurulur?</h3>
+            <pre><code><span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">AnaUygulamaEkrani</span>() {
+    <span class="kw">val</span> sofor = <span class="fn">rememberNavController</span>()
+    <span class="cm">// Oluşturduğumuz sekmeleri bir listeye koyduk.</span>
+    <span class="kw">val</span> sekmeler = <span class="fn">listOf</span>(<span class="tp">AltMenu</span>.Ev, <span class="tp">AltMenu</span>.Ara, <span class="tp">AltMenu</span>.Profil)
+    
+    <span class="fn">Scaffold</span>(
+        bottomBar = {
+            <span class="cm">// Alt çubuğu (NavigationBar) burada oluştururuz</span>
+            <span class="fn">NavigationBar</span> {
+                <span class="cm">// Şu an hangi sayfada olduğumuzu anla</span>
+                <span class="kw">val</span> aktifSayfaGecmisi <span class="kw">by</span> sofor.<span class="fn">currentBackStackEntryAsState</span>()
+                <span class="kw">val</span> guncelAdres = aktifSayfaGecmisi?.destination?.route
+                
+                <span class="cm">// Her sekme için döngü oluşturarak çubuğa ekliyoruz</span>
+                sekmeler.<span class="fn">forEach</span> { sekme ->
+                    <span class="fn">NavigationBarItem</span>(
+                        icon = { <span class="fn">Icon</span>(sekme.ikon, sekme.baslik) },
+                        label = { <span class="fn">Text</span>(sekme.baslik) },
+                        selected = guncelAdres == sekme.route, <span class="cm">// Seçiliyse parlasın</span>
+                        onClick = {
+                            sofor.<span class="fn">navigate</span>(sekme.route) {
+                                <span class="cm">// Bu ayarlar, geri tuşuna basınca uygulamanın mantıklı döngüye girmesi içindir</span>
+                                <span class="fn">popUpTo</span>(sofor.graph.<span class="fn">findStartDestination</span>().id) { saveState = <span class="kw">true</span> }
+                                launchSingleTop = <span class="kw">true</span> <span class="cm">// Üst üste iki sayfa açılmasını önler</span>
+                                restoreState = <span class="kw">true</span>    <span class="cm">// Sekmeler arası geçişte durumu korur</span>
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) { icBosluk ->
+        <span class="cm">// Gövdemize tüm rotaların haritasını yerleştiririz</span>
+        <span class="fn">NavHost</span>(
+            navController = sofor,
+            startDestination = <span class="tp">AltMenu</span>.Ev.route,
+            modifier = <span class="tp">Modifier</span>.<span class="fn">padding</span>(icBosluk) <span class="cm">// Scaffold'un sağladığı boşluğa saygı göster</span>
+        ) {
+            <span class="fn">composable</span>(<span class="tp">AltMenu</span>.Ev.route) { <span class="fn">AnaSayfam</span>() }
+            <span class="fn">composable</span>(<span class="tp">AltMenu</span>.Ara.route) { <span class="fn">AramaSayfam</span>() }
+            <span class="fn">composable</span>(<span class="tp">AltMenu</span>.Profil.route) { <span class="fn">ProfilSayfam</span>() }
+        }
+    }
+}</code><span class="label">Kotlin</span></pre>
+        </div>
+
+        <div class="card">
+            <h3>🎯 Senin Sıran: Koda Özellik Ekle!</h3>
+            <p>Scaffold şablonumuza yeni sayfalar ekleyelim:</p>
+            <ul>
+                <li>
+                    <strong>Özellik 1: Yeni Eklenen Ayarlar Sekmesini Haritaya (NavHost) Dahil Et</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Eğer bir önceki konuda Ayarlar sekmesi
+                        eklediyseniz, buna tıklandığında boş bir "Ayarlar Sayfası" açılsın.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong> <code>sekmeler</code>
+                        listene `AltMenu.Ayarlar` dahil edip, <code>NavHost</code> içerisine
+                        <code>composable(AltMenu.Ayarlar.route) { AyarlarSayfam() }</code> kodunu eklemelisin.</span>
+                </li>
+                <br>
+                <li>
+                    <strong>Özellik 2: Profil İçerisinden Ana Sayfaya Kısayol</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Bazen alt menü haricinde, sayfanın ortasındaki bir
+                        butona tıklayarak da sekmeler arasında gezebiliriz. Profil sayfasına bir buton koy ve oradan Ana
+                        Sayfa'ya atlat.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong> Profil fonksiyonuna
+                        parametre olarak lambda geçebilir veya <code>sofor.navigate(AltMenu.Ev.route)</code>
+                        çağırabilirsin. Scaffold alt barı bunu otomatik algılar!</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

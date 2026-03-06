@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose: Adım Adım Parametreli Navigation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        pre[class*="language-"] {
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95em;
+        }
+
+        .tutorial-step {
+            border-left: 4px solid #3b82f6;
+            padding-left: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .hint-box {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-gray-800 font-sans pb-20">
+
+    <div class="max-w-5xl mx-auto my-8 bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100">
+
+        <!-- Üst Başlık -->
+        <header class="bg-blue-700 text-white p-10 relative overflow-hidden">
+            <div class="relative z-10">
+                <h1 class="text-4xl font-black mb-3">Sıra Sende: Parametreli Navigasyon</h1>
+                <p class="text-xl font-light opacity-90">Başlangıç Kodunu Adım Adım Geliştiriyoruz</p>
+            </div>
+        </header>
+
+        <div class="p-8">
+
+            <!-- Başlangıç Kodu -->
+            <section class="mb-12 border-b-2 border-dashed border-gray-200 pb-10">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="bg-gray-200 p-2 rounded-lg text-gray-700 text-sm">TEMPLATE</span>
+                    Öğrencilere Verilecek Başlangıç Kodu
+                </h2>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 text-sm font-medium text-yellow-800">
+                    Öğrenciler ders başında bu kodu kopyalayacak. Bu kodda navigasyon var ancak veri transferi yok.
+                    Hedefimiz bu kodu çalışır hale getirmek!
+                </div>
+                <pre><code class="language-kotlin">object Adresler {
+    const val ANA_SAYFA = "anaEkran"
+    const val DETAY = "detayEkran"
+}
+
+@Preview
+@Composable
+fun UygulamaGecisleri() {
+    val sofor = rememberNavController()
+
+    NavHost(
+        navController = sofor,
+        startDestination = Adresler.ANA_SAYFA
+    ) {
+        composable(Adresler.ANA_SAYFA) {
+            AnaEkran(
+                detayaGit = { sofor.navigate(Adresler.DETAY) }
+            )
+        }
+
+        composable(Adresler.DETAY) {
+            DetayEkran(
+                geriDon = { sofor.popBackStack() }
+            )
+        }
+    }
+}
+
+@Composable
+fun AnaEkran(detayaGit: () -> Unit) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("Öğrenci Listesi")
+        
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(ogrenciListesi) { ogrenci ->
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    Text("Ad Soyad: ${ogrenci.adSoyad}")
+                    Text("Okul: ${ogrenci.okul}")
+                    Text("Puanlar: ${ogrenci.puan1}, ${ogrenci.puan2}")
+                    HorizontalDivider()
+                }
+            }
+        }
+
+        Button(onClick = detayaGit) {
+            Text("Detaya İlerle")
+        }
+    }
+}
+
+@Composable
+fun DetayEkran(geriDon: () -> Unit) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("Burası Detay Sayfası")
+        Button(onClick = geriDon) {
+            Text("Geri Dön")
+        }
+    }
+}
+
+data class Ogrenci(val adSoyad: String, val okul: String, val puan1: Int, val puan2: Int)
+
+val ogrenciListesi = listOf(
+    Ogrenci("Ahmet Yılmaz", "Atatürk Lisesi", 85, 90),
+    Ogrenci("Ayşe Kaya", "Fen Lisesi", 95, 100),
+    Ogrenci("Mehmet Demir", "Anadolu Lisesi", 70, 80),
+    Ogrenci("Fatma Şahin", "Cumhuriyet Lisesi", 88, 92)
+)</code></pre>
+            </section>
+
+            <!-- Adımlar -->
+            <section>
+                <h2
+                    class="text-3xl font-bold text-gray-900 mb-8 underline decoration-blue-500 decoration-4 underline-offset-8">
+                    Görevi Tamamlama Adımları</h2>
+
+                <!-- Adım 1 -->
+                <div class="tutorial-step">
+                    <h3 class="text-xl font-bold text-blue-800">1. Rotayı Parametreli Hale Getirin</h3>
+                    <p class="text-gray-700 mt-2"><strong>Nereye:</strong> En tepedeki <code>Adresler</code> nesnesine.
+                    </p>
+                    <p class="text-sm text-gray-600 italic mt-1">Neden: Navigasyonun bir veri beklediğini yolu (path)
+                        üzerinden tanımlamamız gerekir.</p>
+                    <div class="hint-box">
+                        <pre style="box-shadow: none; margin: 0;"><code class="language-kotlin">// "detayEkran" olan kısmı şununla değiştir:
+const val DETAY = "detay/{index}"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Adım 2 -->
+                <div class="tutorial-step">
+                    <h3 class="text-xl font-bold text-blue-800">2. Ana Sayfada Tıklananın Sırasını Gönderin</h3>
+                    <p class="text-gray-700 mt-2"><strong>Nereye:</strong> <code>AnaEkran</code> fonksiyonundaki
+                        <code>LazyColumn</code> içine.</p>
+                    <p class="text-sm text-gray-600 italic mt-1">Neden: Herhangi bir satıra tıklandığında hangi
+                        öğrenciye tıklandığını (index) dışarıya bildirmeliyiz.</p>
+                    <div class="hint-box">
+                        <pre style="box-shadow: none; margin: 0;"><code class="language-kotlin">// 1. Fonksiyon parametresini değiştir:
+fun AnaEkran(detayaGit: (index: Int) -> Unit)
+
+// 2. Loop içindeki Text'e tıklanma ekle (items yerine itemsIndexed kullan):
+itemsIndexed(ogrenciListesi) { index, ogrenci ->
+    Text(
+        text = ogrenci.adSoyad, 
+        modifier = Modifier
+            .clickable { detayaGit(index) } 
+            .padding(8.dp)
+            .fillMaxWidth()
+    )
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Adım 3 -->
+                <div class="tutorial-step">
+                    <h3 class="text-xl font-bold text-blue-800">3. NavHost'u Bu Değişikliğe Göre Ayarlayın</h3>
+                    <p class="text-gray-700 mt-2"><strong>Nereye:</strong> <code>UygulamaGecisleri</code> içindeki
+                        <code>NavHost</code> bloğuna.</p>
+                    <p class="text-sm text-gray-600 italic mt-1">Neden: Gelen index'i kutudan çıkarıp (bundle) diğer
+                        sayfaya elden teslim edeceğiz.</p>
+                    <div class="hint-box">
+                        <pre style="box-shadow: none; margin: 0;"><code class="language-kotlin">// 1. AnaEkran çağrısını güncelle:
+composable(Adresler.ANA_SAYFA) {
+    AnaEkran(detayaGit = { index -> sofor.navigate("detay/$index") })
+}
+
+// 2. Detay sayfasını parametreyi okuyacak hale getir:
+composable(
+    route = Adresler.DETAY,
+    arguments = listOf(navArgument("index") { type = NavType.IntType })
+) { yigin ->
+    val secilenIndex = yigin.arguments?.getInt("index") ?: 0
+    DetayEkran(gelenIndex = secilenIndex, geriDon = { sofor.popBackStack() })
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Adım 4 -->
+                <div class="tutorial-step">
+                    <h3 class="text-xl font-bold text-blue-800">4. Detay Sayfasında Veriyi Gösterin</h3>
+                    <p class="text-gray-700 mt-2"><strong>Nereye:</strong> <code>DetayEkran</code> fonksiyonuna.</p>
+                    <p class="text-sm text-gray-600 italic mt-1">Neden: Gelen sayıya göre listedeki gerçek öğrenci
+                        bilgilerine ulaşıp ekrana yazdırmak için.</p>
+                    <div class="hint-box">
+                        <pre style="box-shadow: none; margin: 0;"><code class="language-kotlin">// Fonksiyonu ve içeriğini güncelle:
+@Composable
+fun DetayEkran(gelenIndex: Int, geriDon: () -> Unit) {
+    val ogrenci = ogrenciListesi.getOrElse(gelenIndex) { null }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        if (ogrenci != null) {
+            Text("Seçilen: ${ogrenci.adSoyad}", style = MaterialTheme.typography.headlineMedium)
+            Text("Okul: ${ogrenci.okul}")
+            Text("Not Ortalaması: ${(ogrenci.puan1 + ogrenci.puan2) / 2}")
+        }
+        Button(onClick = geriDon) { Text("Geri Dön") }
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SIRA SENDE - FİNAL GÖREVLER -->
+            <section class="mt-12 bg-orange-50 border-2 border-orange-200 rounded-2xl p-8 shadow-inner">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-4xl text-orange-600">🏆</span>
+                    <h2 class="text-3xl font-extrabold text-orange-800">Sıra Sende: Extra Görevler</h2>
+                </div>
+
+                <p class="text-orange-900 mb-6 font-medium">İnternet kullanmadan, öğrendiğin bu mantığı pekiştirmek için
+                    aşağıdaki mini özellikleri ekle:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-orange-100">
+                        <h4 class="font-bold text-orange-700 mb-2">1. Tasarımı Güzelleştir</h4>
+                        <p class="text-sm text-gray-600 mb-3">Ana ekrandaki her ismin etrafına bir çerçeve veya renkli
+                            arka plan ekle.</p>
+                        <code
+                            class="text-xs font-mono text-pink-600">Modifier.background(Color.Cyan, RoundedCornerShape(10.dp))</code>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-orange-100">
+                        <h4 class="font-bold text-orange-700 mb-2">2. Koşullu Renk</h4>
+                        <p class="text-sm text-gray-600 mb-3">Detayda, eğer öğrencinin puan ortalaması 50'den düşükse
+                            puanı <b>Kırmızı</b>, yüksekse <b>Yeşil</b> yazdır.</p>
+                        <code class="text-xs font-mono text-pink-600">if(ort < 50) Color.Red else Color.Green</code>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-orange-100 md:col-span-2">
+                        <h4 class="font-bold text-orange-700 mb-2">3. Yeni Liste Elemanı</h4>
+                        <p class="text-sm text-gray-600 mb-3">`ogrenciListesi` içine kendi adını ve okulunu içeren yeni
+                            bir <code>Ogrenci</code> ekle ve programda butonun çıkıp çıkmadığını kontrol et.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="bg-gray-800 text-gray-400 p-6 text-center text-sm">
+            © 2024 - Jetpack Compose Eğitim Materyali - Parametreli Navigasyon
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose: Bottom Navigation Animasyonları</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <style>
+        pre[class*="language-"] {
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        code[class*="language-"] {
+            font-family: 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95em;
+        }
+
+        .step-card {
+            transition: transform 0.2s;
+        }
+
+        .step-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .challenge-box {
+            border-left: 4px solid #8b5cf6;
+            background-color: #f5f3ff;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-gray-800 font-sans pb-20">
+
+    <div class="max-w-5xl mx-auto my-8 bg-white shadow-2xl rounded-3xl overflow-hidden border border-gray-100">
+
+        <!-- Üst Başlık -->
+        <header class="bg-violet-600 text-white p-10 relative overflow-hidden">
+            <div class="relative z-10">
+                <h1 class="text-4xl font-black mb-3">Bottom Navigation & Animation</h1>
+                <p class="text-xl font-light opacity-90">Sayfa Geçişlerinde Göz Alıcı Animasyonlar Eklemek</p>
+            </div>
+            <div class="absolute -right-10 -bottom-10 opacity-10">
+                <svg width="200" height="200" fill="white" viewBox="0 0 24 24">
+                    <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z" />
+                </svg>
+            </div>
+        </header>
+
+        <div class="p-8">
+            <!-- 1. Başlangıç Kodunuz -->
+            <section class="mb-12">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-violet-600 text-white text-sm font-bold px-3 py-1 rounded-full">ADIM 0</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Başlangıç Senaryosu (Sert Geçişli Menü)</h2>
+                </div>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 text-sm">
+                    <p class="text-blue-900 font-medium">Bu kodda Bottom Navigation çalışıyor ancak sayfalar arası geçiş
+                        çok "sert" ve anidir. Animasyon yoktur.</p>
+                </div>
+                <pre><code class="language-kotlin">// Alt Menü Öğeleri Seçenekleri
+sealed class Sayfalar(val rota: String, val isim: String) {
+    object Anasayfa : Sayfalar("home", "Ana Sayfa")
+    object Profil : Sayfalar("profile", "Profil")
+}
+
+@Composable
+fun MainScreen() {
+    val navController = rememberNavController()
+    Scaffold(
+        bottomBar = {
+            BottomNavigation(backgroundColor = Color.White) {
+                val backStackEntry by navController.currentBackStackEntryAsState()
+                val currentRoute = backStackEntry?.destination?.route
+
+                BottomNavigationItem(
+                    selected = currentRoute == Sayfalar.Anasayfa.rota,
+                    onClick = { navController.navigate(Sayfalar.Anasayfa.rota) },
+                    label = { Text(Sayfalar.Anasayfa.isim) },
+                    icon = { Icon(Icons.Default.Home, "") }
+                )
+                BottomNavigationItem(
+                    selected = currentRoute == Sayfalar.Profil.rota,
+                    onClick = { navController.navigate(Sayfalar.Profil.rota) },
+                    label = { Text(Sayfalar.Profil.isim) },
+                    icon = { Icon(Icons.Default.Person, "") }
+                )
+            }
+        }
+    ) { padding ->
+        NavHost(navController, startDestination = "home", Modifier.padding(padding)) {
+            composable("home") { Text("Ana Sayfa İçeriği", fontSize = 30.sp) }
+            composable("profile") { Text("Profil Sayfası İçeriği", fontSize = 30.sp) }
+        }
+    }
+}</code></pre>
+            </section>
+
+            <!-- Geliştirme Rehberi -->
+            <section class="space-y-8">
+                <h2 class="text-2xl font-bold text-gray-800 border-b-2 border-violet-100 pb-2">Eğitim Adımları:
+                    Animasyon Ekleme</h2>
+
+                <div class="space-y-6">
+                    <!-- Adım 1 -->
+                    <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-gray-900 mb-2">1. Composable İçinde Giriş/Çıkış Belirleme</h4>
+                        <p class="text-sm text-gray-600 mb-3">Yeni Compose versiyonlarında <code>composable</code>
+                            fonksiyonu içine <b>enterTransition</b> ve <b>exitTransition</b> ekleyebiliriz.</p>
+                        <pre><code class="language-kotlin">composable(
+    route = "home",
+    enterTransition = { fadeIn(animationSpec = tween(700)) }, // Yavaşça belirsin
+    exitTransition = { fadeOut(animationSpec = tween(700)) }  // Yavaşça kaybolsun
+) { 
+    Anasayfa() 
+}</code></pre>
+                    </div>
+
+                    <!-- Adım 2 -->
+                    <div class="p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+                        <h4 class="font-bold text-gray-900 mb-2">2. Kayma (Slide) Efekti Vermek</h4>
+                        <p class="text-sm text-gray-600 mb-3">Sayfanın yan taraftan kayarak gelmesini istiyorsak
+                            <code>slideInHorizontally</code> kullanırız.</p>
+                        <pre><code class="language-kotlin">enterTransition = {
+    slideInHorizontally(initialOffsetX = { it }) + fadeIn()
+},
+exitTransition = {
+    slideOutHorizontally(targetOffsetX = { -it }) + fadeOut()
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SIRA SENDE -->
+            <section class="mt-16 border-t-2 border-dashed border-gray-200 pt-10">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">✨</span>
+                    <h2 class="text-3xl font-bold text-violet-600">Sıra Sende: Profesyonel Geçişler</h2>
+                </div>
+
+                <p class="text-gray-700 mb-8 font-medium">Aşağıdaki kodları NavHost içindeki <code>composable</code>
+                    bloklarına uygulayarak farklı animasyon türlerini dene.</p>
+
+                <div class="space-y-8">
+
+                    <!-- Görev 1 -->
+                    <div class="challenge-box p-6 rounded-2xl shadow-sm">
+                        <h4 class="font-bold text-xl text-violet-700 mb-4">GÖREV 1: Aşağıdan Yukarı Kayma (Pop-up
+                            Etkisi)</h4>
+                        <p class="text-sm text-gray-700 mb-4">Detay sayfasının veya profilin bir pencere gibi aşağıdan
+                            yukarı açılmasını sağla.</p>
+
+                        <pre><code class="language-kotlin">// Bunu "profile" composable'ına ekle:
+enterTransition = {
+    slideInVertically(initialOffsetY = { it }) + fadeIn()
+},
+exitTransition = {
+    slideOutVertically(targetOffsetY = { it }) + fadeOut()
+}</code></pre>
+                    </div>
+
+                    <!-- Görev 2 -->
+                    <div class="challenge-box p-6 rounded-2xl shadow-sm">
+                        <h4 class="font-bold text-xl text-violet-700 mb-4">GÖREV 2: Ölçeklenme (Zoom) Animasyonu</h4>
+                        <p class="text-sm text-gray-700 mb-4">Sayfanın küçükten büyüğe gelerek açılmasını (Büyüme
+                            efekti) sağlar.</p>
+
+                        <pre><code class="language-kotlin">enterTransition = {
+    scaleIn(initialScale = 0.8f) + fadeIn()
+},
+exitTransition = {
+    scaleOut(targetScale = 0.8f) + fadeOut()
+}</code></pre>
+                    </div>
+
+                    <!-- Görev 3 -->
+                    <div class="challenge-box p-6 rounded-2xl shadow-sm">
+                        <h4 class="font-bold text-xl text-violet-700 mb-4">GÖREV 3: Yaylanma (Spring) Efekti</h4>
+                        <p class="text-sm text-gray-700 mb-4">Animasyonun daha doğal ve "canlı" görünmesi için sert
+                            hareketler yerine yaylanma (spring) ekle.</p>
+
+                        <pre><code class="language-kotlin">// Tween yerine spring kullanarak daha yumuşak geçiş sağla
+enterTransition = {
+    slideInHorizontally(
+        animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy)
+    )
+}</code></pre>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-gray-100 p-6 text-center border-t border-gray-200">
+            <p class="text-sm text-gray-500 font-bold">Öğrenci Çalışma Kağıdı - Bottom Navigation Animasyonları</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-kotlin.min.js"></script>
+</body>
+
+</html>

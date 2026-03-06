@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 2: Temel Composable'lar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 2</span>
+            <h1>📦 Temel Composable'lar</h1>
+            <p class="subtitle">Text, Button, Image ve Temel Bileşenler</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • Text composable ve styling<br>
+                • Button türleri<br>
+                • Image ve Icon kullanımı<br>
+                • TextField bileşeni
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Text Composable</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Text Örnekleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TextOrnekleri</span>() {
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        <span class="comment">// Basit text</span>
+        Text(text = <span class="string">"Merhaba Compose!"</span>)
+        
+        <span class="comment">// Özelleştirilmiş text</span>
+        Text(
+            text = <span class="string">"Büyük Başlık"</span>,
+            fontSize = <span class="number">28</span>.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Blue
+        )
+        
+        <span class="comment">// Material Typography kullanımı</span>
+        Text(
+            text = <span class="string">"Material Başlık"</span>,
+            style = MaterialTheme.typography.headlineMedium
+        )
+        
+        <span class="comment">// Çok satırlı text</span>
+        Text(
+            text = <span class="string">"Bu uzun bir metin örneği. Birden fazla satıra yayılabilir."</span>,
+            maxLines = <span class="number">2</span>,
+            overflow = TextOverflow.Ellipsis
+        )
+        
+        <span class="comment">// Annotated String (Zengin metin)</span>
+        Text(
+            buildAnnotatedString {
+                withStyle(SpanStyle(color = Color.Red)) {
+                    append(<span class="string">"Kırmızı"</span>)
+                }
+                append(<span class="string">" ve "</span>)
+                withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(<span class="string">"Kalın"</span>)
+                }
+                append(<span class="string">" metin"</span>)
+            }
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Button Türleri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Farklı Button Çeşitleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ButtonOrnekleri</span>() {
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+    ) {
+        <span class="comment">// Standart Button</span>
+        Button(onClick = { <span class="comment">/* tıklama işlemi */</span> }) {
+            Text(<span class="string">"Standart Buton"</span>)
+        }
+        
+        <span class="comment">// Filled Tonal Button</span>
+        FilledTonalButton(onClick = { }) {
+            Text(<span class="string">"Tonal Buton"</span>)
+        }
+        
+        <span class="comment">// Outlined Button</span>
+        OutlinedButton(onClick = { }) {
+            Text(<span class="string">"Outlined Buton"</span>)
+        }
+        
+        <span class="comment">// Text Button</span>
+        TextButton(onClick = { }) {
+            Text(<span class="string">"Text Buton"</span>)
+        }
+        
+        <span class="comment">// Elevated Button</span>
+        ElevatedButton(onClick = { }) {
+            Text(<span class="string">"Elevated Buton"</span>)
+        }
+        
+        <span class="comment">// Icon ile Button</span>
+        Button(onClick = { }) {
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = <span class="keyword">null</span>,
+                modifier = Modifier.size(<span class="number">18</span>.dp)
+            )
+            Spacer(Modifier.width(<span class="number">8</span>.dp))
+            Text(<span class="string">"Beğen"</span>)
+        }
+        
+        <span class="comment">// Floating Action Button</span>
+        FloatingActionButton(onClick = { }) {
+            Icon(Icons.Default.Add, contentDescription = <span class="string">"Ekle"</span>)
+        }
+        
+        <span class="comment">// Extended FAB</span>
+        ExtendedFloatingActionButton(
+            onClick = { },
+            icon = { Icon(Icons.Default.Edit, <span class="keyword">null</span>) },
+            text = { Text(<span class="string">"Düzenle"</span>) }
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Image ve Icon</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Görsel Kullanımı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ImageOrnekleri</span>() {
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        <span class="comment">// Drawable'dan resim</span>
+        Image(
+            painter = painterResource(id = R.drawable.ic_launcher_foreground),
+            contentDescription = <span class="string">"Logo"</span>,
+            modifier = Modifier.size(<span class="number">100</span>.dp)
+        )
+        
+        <span class="comment">// Yuvarlak resim</span>
+        Image(
+            painter = painterResource(id = R.drawable.profile),
+            contentDescription = <span class="string">"Profil"</span>,
+            modifier = Modifier
+                .size(<span class="number">80</span>.dp)
+                .clip(CircleShape)
+                .border(<span class="number">2</span>.dp, Color.Gray, CircleShape),
+            contentScale = ContentScale.Crop
+        )
+        
+        <span class="comment">// Material Icon</span>
+        Icon(
+            imageVector = Icons.Default.Person,
+            contentDescription = <span class="string">"Kullanıcı"</span>,
+            modifier = Modifier.size(<span class="number">48</span>.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        
+        <span class="comment">// Outlined Icon</span>
+        Icon(
+            imageVector = Icons.Outlined.Settings,
+            contentDescription = <span class="string">"Ayarlar"</span>,
+            tint = Color.Gray
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>TextField</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Metin Girişi</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TextFieldOrnekleri</span>() {
+    <span class="keyword">var</span> text <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> password <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">16</span>.dp)
+    ) {
+        <span class="comment">// Basit TextField</span>
+        TextField(
+            value = text,
+            onValueChange = { text = it },
+            label = { Text(<span class="string">"İsim"</span>) },
+            placeholder = { Text(<span class="string">"Adınızı girin"</span>) }
+        )
+        
+        <span class="comment">// Outlined TextField</span>
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it },
+            label = { Text(<span class="string">"E-posta"</span>) },
+            leadingIcon = { Icon(Icons.Default.Email, <span class="keyword">null</span>) },
+            singleLine = <span class="keyword">true</span>
+        )
+        
+        <span class="comment">// Şifre alanı</span>
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text(<span class="string">"Şifre"</span>) },
+            leadingIcon = { Icon(Icons.Default.Lock, <span class="keyword">null</span>) },
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
+        
+        <span class="comment">// Hata durumlu TextField</span>
+        OutlinedTextField(
+            value = text,
+            onValueChange = { text = it },
+            label = { Text(<span class="string">"Kullanıcı Adı"</span>) },
+            isError = text.length < <span class="number">3</span>,
+            supportingText = {
+                <span class="keyword">if</span> (text.length < <span class="number">3</span>) {
+                    Text(<span class="string">"En az 3 karakter giriniz"</span>)
+                }
+            }
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Diğer Temel Bileşenler</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Checkbox, Switch, Slider</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DigerBilesenler</span>() {
+    <span class="keyword">var</span> checked <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    <span class="keyword">var</span> switched <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    <span class="keyword">var</span> sliderValue <span class="keyword">by</span> remember { mutableFloatStateOf(<span class="number">0.5f</span>) }
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        <span class="comment">// Checkbox</span>
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Checkbox(
+                checked = checked,
+                onCheckedChange = { checked = it }
+            )
+            Text(<span class="string">"Şartları kabul ediyorum"</span>)
+        }
+        
+        <span class="comment">// Switch</span>
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(<span class="string">"Bildirimler"</span>, modifier = Modifier.weight(<span class="number">1f</span>))
+            Switch(
+                checked = switched,
+                onCheckedChange = { switched = it }
+            )
+        }
+        
+        <span class="comment">// Slider</span>
+        Text(<span class="string">"Ses: ${(sliderValue * 100).toInt()}%"</span>)
+        Slider(
+            value = sliderValue,
+            onValueChange = { sliderValue = it },
+            valueRange = <span class="number">0f</span>..<span class="number">1f</span>
+        )
+        
+        <span class="comment">// CircularProgressIndicator</span>
+        CircularProgressIndicator()
+        
+        <span class="comment">// LinearProgressIndicator</span>
+        LinearProgressIndicator(
+            progress = { sliderValue },
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>5 farklı button türünü alt alta gösteren bir ekran oluştur.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Kullanıcı adı ve şifre girişi olan bir login formu tasarla.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>AnnotatedString ile "Kotlin" kelimesini mor, "Compose" kelimesini yeşil renkte yazdır.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders1.html" class="nav-btn prev">← Ders 1</a>
+            <a href="ders3.html" class="nav-btn next">Ders 3 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 3: Layout ve Modifier</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 3</span>
+            <h1>📐 Layout ve Modifier</h1>
+            <p class="subtitle">Column, Row, Box ve Modifier Zinciri</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • Column - Dikey yerleşim<br>
+                • Row - Yatay yerleşim<br>
+                • Box - Üst üste yerleşim<br>
+                • Modifier kullanımı
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Column - Dikey Yerleşim</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Column Örnekleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ColumnOrnekleri</span>() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(<span class="number">16</span>.dp),
+        verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(<span class="string">"Birinci"</span>)
+        Text(<span class="string">"İkinci"</span>)
+        Text(<span class="string">"Üçüncü"</span>)
+    }
+}
+
+<span class="comment">// verticalArrangement seçenekleri:</span>
+<span class="comment">// - Arrangement.Top (varsayılan)</span>
+<span class="comment">// - Arrangement.Center</span>
+<span class="comment">// - Arrangement.Bottom</span>
+<span class="comment">// - Arrangement.SpaceBetween</span>
+<span class="comment">// - Arrangement.SpaceAround</span>
+<span class="comment">// - Arrangement.SpaceEvenly</span>
+<span class="comment">// - Arrangement.spacedBy(8.dp)</span>
+
+<span class="comment">// horizontalAlignment seçenekleri:</span>
+<span class="comment">// - Alignment.Start</span>
+<span class="comment">// - Alignment.CenterHorizontally</span>
+<span class="comment">// - Alignment.End</span></code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Row - Yatay Yerleşim</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Row Örnekleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">RowOrnekleri</span>() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(<span class="number">16</span>.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(Icons.Default.Home, contentDescription = <span class="keyword">null</span>)
+        Text(<span class="string">"Ana Sayfa"</span>)
+        Icon(Icons.Default.ArrowForward, contentDescription = <span class="keyword">null</span>)
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">KartvizitSatiri</span>() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(<span class="number">12</span>.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        <span class="comment">// Profil resmi</span>
+        Image(
+            painter = painterResource(R.drawable.avatar),
+            contentDescription = <span class="keyword">null</span>,
+            modifier = Modifier
+                .size(<span class="number">48</span>.dp)
+                .clip(CircleShape)
+        )
+        
+        Spacer(modifier = Modifier.width(<span class="number">12</span>.dp))
+        
+        <span class="comment">// İsim ve bilgi (weight ile esnek genişlik)</span>
+        Column(modifier = Modifier.weight(<span class="number">1f</span>)) {
+            Text(<span class="string">"Ahmet Yılmaz"</span>, fontWeight = FontWeight.Bold)
+            Text(<span class="string">"Android Geliştirici"</span>, color = Color.Gray)
+        }
+        
+        <span class="comment">// Sağdaki ikon</span>
+        IconButton(onClick = { }) {
+            Icon(Icons.Default.MoreVert, <span class="keyword">null</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Box - Üst Üste Yerleşim</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Box Örnekleri</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">BoxOrnekleri</span>() {
+    Box(
+        modifier = Modifier
+            .size(<span class="number">200</span>.dp)
+            .background(Color.LightGray)
+    ) {
+        <span class="comment">// Arka plandaki resim</span>
+        Image(
+            painter = painterResource(R.drawable.background),
+            contentDescription = <span class="keyword">null</span>,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+        
+        <span class="comment">// Üstteki metin</span>
+        Text(
+            text = <span class="string">"Overlay Metin"</span>,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .background(Color.Black.copy(alpha = <span class="number">0.5f</span>))
+                .padding(<span class="number">8</span>.dp)
+        )
+        
+        <span class="comment">// Köşedeki badge</span>
+        Badge(
+            modifier = Modifier.align(Alignment.TopEnd)
+        ) {
+            Text(<span class="string">"3"</span>)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ProfilKarti</span>() {
+    Box(
+        modifier = Modifier.fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) {
+        <span class="comment">// Arka plan kartı</span>
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = <span class="number">40</span>.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(
+                    top = <span class="number">50</span>.dp,
+                    bottom = <span class="number">16</span>.dp
+                ),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(<span class="string">"Mehmet Demir"</span>, style = MaterialTheme.typography.titleLarge)
+                Text(<span class="string">"@mehmetd"</span>, color = Color.Gray)
+            }
+        }
+        
+        <span class="comment">// Üstteki profil resmi</span>
+        Image(
+            painter = painterResource(R.drawable.avatar),
+            contentDescription = <span class="keyword">null</span>,
+            modifier = Modifier
+                .size(<span class="number">80</span>.dp)
+                .clip(CircleShape)
+                .border(<span class="number">3</span>.dp, MaterialTheme.colorScheme.primary, CircleShape)
+                .align(Alignment.TopCenter)
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Modifier Zinciri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Modifier Kullanımı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ModifierOrnekleri</span>() {
+    Text(
+        text = <span class="string">"Modifier Örneği"</span>,
+        modifier = Modifier
+            <span class="comment">// Boyut modifierleri</span>
+            .fillMaxWidth()           <span class="comment">// Genişliği doldur</span>
+            .height(<span class="number">60</span>.dp)            <span class="comment">// Sabit yükseklik</span>
+            <span class="comment">// .size(100.dp)          // Hem genişlik hem yükseklik</span>
+            <span class="comment">// .wrapContentSize()     // İçeriğe göre boyut</span>
+            
+            <span class="comment">// Padding (iç boşluk)</span>
+            .padding(<span class="number">16</span>.dp)            <span class="comment">// Tüm kenarlar</span>
+            <span class="comment">// .padding(horizontal = 16.dp, vertical = 8.dp)</span>
+            <span class="comment">// .padding(start = 8.dp, end = 8.dp)</span>
+            
+            <span class="comment">// Arka plan</span>
+            .background(
+                color = Color.Blue,
+                shape = RoundedCornerShape(<span class="number">8</span>.dp)
+            )
+            
+            <span class="comment">// Kenarlık</span>
+            .border(
+                width = <span class="number">2</span>.dp,
+                color = Color.Red,
+                shape = RoundedCornerShape(<span class="number">8</span>.dp)
+            )
+            
+            <span class="comment">// Tıklanabilirlik</span>
+            .clickable { <span class="comment">/* onClick */</span> }
+    )
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ModifierSirasi</span>() {
+    <span class="comment">// Sıra önemli! Padding ve background sırası sonucu etkiler</span>
+    
+    Row {
+        <span class="comment">// Önce padding, sonra background</span>
+        Box(
+            modifier = Modifier
+                .padding(<span class="number">16</span>.dp)
+                .background(Color.Red)
+                .size(<span class="number">50</span>.dp)
+        )
+        
+        <span class="comment">// Önce background, sonra padding</span>
+        Box(
+            modifier = Modifier
+                .background(Color.Blue)
+                .padding(<span class="number">16</span>.dp)
+                .size(<span class="number">50</span>.dp)
+        )
+    }
+}</code></pre>
+            </div>
+
+            <div class="info-box warning">
+                <strong>⚠️ Modifier Sırası Önemli!</strong><br>
+                Modifier'lar yukarıdan aşağıya sırayla uygulanır. Örneğin:<br>
+                • <code>.padding().background()</code> → İç boşluk arka planın dışında<br>
+                • <code>.background().padding()</code> → İç boşluk arka planın içinde
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Yaygın Modifier'lar</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Sık Kullanılan Modifier'lar</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// Boyut</span>
+Modifier.fillMaxSize()
+Modifier.fillMaxWidth()
+Modifier.fillMaxHeight()
+Modifier.size(<span class="number">100</span>.dp)
+Modifier.width(<span class="number">100</span>.dp)
+Modifier.height(<span class="number">100</span>.dp)
+Modifier.wrapContentSize()
+Modifier.aspectRatio(<span class="number">16f/9f</span>)
+
+<span class="comment">// Boşluk</span>
+Modifier.padding(<span class="number">16</span>.dp)
+Modifier.padding(horizontal = <span class="number">16</span>.dp)
+Modifier.offset(x = <span class="number">10</span>.dp, y = <span class="number">5</span>.dp)
+
+<span class="comment">// Görünüm</span>
+Modifier.background(Color.Red)
+Modifier.border(<span class="number">1</span>.dp, Color.Black)
+Modifier.clip(RoundedCornerShape(<span class="number">8</span>.dp))
+Modifier.shadow(<span class="number">4</span>.dp)
+Modifier.alpha(<span class="number">0.5f</span>)
+
+<span class="comment">// Etkileşim</span>
+Modifier.clickable { }
+Modifier.selectable(selected = <span class="keyword">true</span>) { }
+Modifier.toggleable(value = <span class="keyword">true</span>) { }
+Modifier.scrollable(state, Orientation.Vertical)
+
+<span class="comment">// Kaydırma</span>
+Modifier.horizontalScroll(rememberScrollState())
+Modifier.verticalScroll(rememberScrollState())</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Row içinde 3 eşit genişlikte buton yan yana yerleştir (weight kullan).</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Box kullanarak bir resmin üzerine yarı saydam başlık ekle.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Profil kartı tasarla: Yuvarlak avatar + İsim + Alt başlık + Buton.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders2.html" class="nav-btn prev">← Ders 2</a>
+            <a href="ders4.html" class="nav-btn next">Ders 4 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

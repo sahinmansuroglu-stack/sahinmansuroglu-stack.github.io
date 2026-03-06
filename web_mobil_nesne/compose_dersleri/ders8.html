@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 8: ViewModel ve MVVM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 8</span>
+            <h1>🏗️ ViewModel ve MVVM</h1>
+            <p class="subtitle">Mimari ve State Management</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • MVVM mimarisi<br>
+                • ViewModel kullanımı<br>
+                • StateFlow ve collectAsState<br>
+                • UI State yönetimi
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kurulum</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">build.gradle.kts</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">dependencies</span> {
+    <span class="comment">// ViewModel</span>
+    implementation(<span class="string">"androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"</span>)
+    implementation(<span class="string">"androidx.lifecycle:lifecycle-runtime-compose:2.7.0"</span>)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>MVVM Mimarisi</h2>
+
+            <div class="info-box">
+                <strong>📐 MVVM Katmanları:</strong><br>
+                • <strong>Model</strong>: Veri sınıfları ve repository<br>
+                • <strong>View</strong>: Composable fonksiyonlar (UI)<br>
+                • <strong>ViewModel</strong>: UI state ve business logic
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Basit ViewModel Örneği</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// Model</span>
+<span class="keyword">data class</span> <span class="class-name">Todo</span>(
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> baslik: String,
+    <span class="keyword">val</span> tamamlandi: Boolean = <span class="keyword">false</span>
+)
+
+<span class="comment">// UI State</span>
+<span class="keyword">data class</span> <span class="class-name">TodoUiState</span>(
+    <span class="keyword">val</span> todoList: List&lt;Todo&gt; = emptyList(),
+    <span class="keyword">val</span> yukleniyor: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> hata: String? = <span class="keyword">null</span>
+)
+
+<span class="comment">// ViewModel</span>
+<span class="keyword">class</span> <span class="class-name">TodoViewModel</span> : ViewModel() {
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(TodoUiState())
+    <span class="keyword">val</span> uiState: StateFlow&lt;TodoUiState&gt; = _uiState.asStateFlow()
+    
+    <span class="keyword">private var</span> nextId = <span class="number">1</span>
+    
+    <span class="keyword">fun</span> <span class="method">todoEkle</span>(baslik: String) {
+        <span class="keyword">val</span> yeniTodo = Todo(id = nextId++, baslik = baslik)
+        _uiState.update { currentState ->
+            currentState.copy(
+                todoList = currentState.todoList + yeniTodo
+            )
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">todoSil</span>(todoId: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                todoList = currentState.todoList.filter { it.id != todoId }
+            )
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">todoTamamla</span>(todoId: Int) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                todoList = currentState.todoList.map { todo ->
+                    <span class="keyword">if</span> (todo.id == todoId) {
+                        todo.copy(tamamlandi = !todo.tamamlandi)
+                    } <span class="keyword">else</span> {
+                        todo
+                    }
+                }
+            )
+        }
+    }
+}
+
+<span class="comment">// Composable (View)</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TodoScreen</span>(
+    viewModel: TodoViewModel = viewModel()
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsState()
+    <span class="keyword">var</span> yeniTodo <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        <span class="comment">// Yeni todo ekleme</span>
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            OutlinedTextField(
+                value = yeniTodo,
+                onValueChange = { yeniTodo = it },
+                label = { Text(<span class="string">"Yeni görev"</span>) },
+                modifier = Modifier.weight(<span class="number">1f</span>)
+            )
+            
+            Spacer(modifier = Modifier.width(<span class="number">8</span>.dp))
+            
+            Button(
+                onClick = {
+                    <span class="keyword">if</span> (yeniTodo.isNotBlank()) {
+                        viewModel.todoEkle(yeniTodo)
+                        yeniTodo = <span class="string">""</span>
+                    }
+                }
+            ) {
+                Icon(Icons.Default.Add, <span class="keyword">null</span>)
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        <span class="comment">// Todo listesi</span>
+        LazyColumn {
+            items(uiState.todoList, key = { it.id }) { todo ->
+                TodoItem(
+                    todo = todo,
+                    onTamamla = { viewModel.todoTamamla(todo.id) },
+                    onSil = { viewModel.todoSil(todo.id) }
+                )
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TodoItem</span>(
+    todo: Todo,
+    onTamamla: () -> Unit,
+    onSil: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = <span class="number">4</span>.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(<span class="number">12</span>.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = todo.tamamlandi,
+                onCheckedChange = { onTamamla() }
+            )
+            
+            Text(
+                text = todo.baslik,
+                modifier = Modifier.weight(<span class="number">1f</span>),
+                textDecoration = <span class="keyword">if</span> (todo.tamamlandi) 
+                    TextDecoration.LineThrough <span class="keyword">else</span> TextDecoration.None
+            )
+            
+            IconButton(onClick = onSil) {
+                Icon(Icons.Default.Delete, <span class="string">"Sil"</span>, tint = Color.Red)
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Asenkron İşlemler</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Loading ve Hata Durumları</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">class</span> <span class="class-name">UrunViewModel</span> : ViewModel() {
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(UrunUiState())
+    <span class="keyword">val</span> uiState: StateFlow&lt;UrunUiState&gt; = _uiState.asStateFlow()
+    
+    <span class="keyword">init</span> {
+        urunleriYukle()
+    }
+    
+    <span class="keyword">fun</span> <span class="method">urunleriYukle</span>() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(yukleniyor = <span class="keyword">true</span>) }
+            
+            <span class="keyword">try</span> {
+                <span class="comment">// Simüle edilmiş API çağrısı</span>
+                delay(<span class="number">2000</span>)
+                <span class="keyword">val</span> urunler = listOf(
+                    Urun(<span class="number">1</span>, <span class="string">"Laptop"</span>, <span class="number">15000.0</span>),
+                    Urun(<span class="number">2</span>, <span class="string">"Telefon"</span>, <span class="number">8000.0</span>),
+                    Urun(<span class="number">3</span>, <span class="string">"Tablet"</span>, <span class="number">5000.0</span>)
+                )
+                
+                _uiState.update { 
+                    it.copy(
+                        urunler = urunler,
+                        yukleniyor = <span class="keyword">false</span>
+                    ) 
+                }
+            } <span class="keyword">catch</span> (e: Exception) {
+                _uiState.update { 
+                    it.copy(
+                        hata = e.message,
+                        yukleniyor = <span class="keyword">false</span>
+                    ) 
+                }
+            }
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">hataTemizle</span>() {
+        _uiState.update { it.copy(hata = <span class="keyword">null</span>) }
+    }
+}
+
+<span class="keyword">data class</span> <span class="class-name">UrunUiState</span>(
+    <span class="keyword">val</span> urunler: List&lt;Urun&gt; = emptyList(),
+    <span class="keyword">val</span> yukleniyor: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> hata: String? = <span class="keyword">null</span>
+)
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">UrunScreen</span>(viewModel: UrunViewModel = viewModel()) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsState()
+    
+    Box(modifier = Modifier.fillMaxSize()) {
+        <span class="keyword">when</span> {
+            uiState.yukleniyor -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            uiState.hata != <span class="keyword">null</span> -> {
+                Column(
+                    modifier = Modifier.align(Alignment.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(<span class="string">"Hata: ${uiState.hata}"</span>)
+                    Button(onClick = { viewModel.urunleriYukle() }) {
+                        Text(<span class="string">"Tekrar Dene"</span>)
+                    }
+                }
+            }
+            <span class="keyword">else</span> -> {
+                LazyColumn(contentPadding = PaddingValues(<span class="number">16</span>.dp)) {
+                    items(uiState.urunler) { urun ->
+                        UrunKart(urun)
+                    }
+                }
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Sealed Class ile Event Handling</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">One-Time Events</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">sealed class</span> <span class="class-name">LoginEvent</span> {
+    <span class="keyword">data class</span> <span class="class-name">Success</span>(<span class="keyword">val</span> userId: Int) : LoginEvent()
+    <span class="keyword">data class</span> <span class="class-name">Error</span>(<span class="keyword">val</span> message: String) : LoginEvent()
+    <span class="keyword">object</span> <span class="class-name">Loading</span> : LoginEvent()
+}
+
+<span class="keyword">class</span> <span class="class-name">LoginViewModel</span> : ViewModel() {
+    <span class="keyword">private val</span> _loginState = MutableStateFlow&lt;LoginEvent?&gt;(<span class="keyword">null</span>)
+    <span class="keyword">val</span> loginState: StateFlow&lt;LoginEvent?&gt; = _loginState.asStateFlow()
+    
+    <span class="keyword">var</span> email <span class="keyword">by</span> mutableStateOf(<span class="string">""</span>)
+        <span class="keyword">private set</span>
+    
+    <span class="keyword">var</span> sifre <span class="keyword">by</span> mutableStateOf(<span class="string">""</span>)
+        <span class="keyword">private set</span>
+    
+    <span class="keyword">fun</span> <span class="method">emailGuncelle</span>(yeniEmail: String) {
+        email = yeniEmail
+    }
+    
+    <span class="keyword">fun</span> <span class="method">sifreGuncelle</span>(yeniSifre: String) {
+        sifre = yeniSifre
+    }
+    
+    <span class="keyword">fun</span> <span class="method">girisYap</span>() {
+        viewModelScope.launch {
+            _loginState.value = LoginEvent.Loading
+            
+            delay(<span class="number">1500</span>) <span class="comment">// Simüle</span>
+            
+            <span class="keyword">if</span> (email == <span class="string">"test@test.com"</span> && sifre == <span class="string">"123456"</span>) {
+                _loginState.value = LoginEvent.Success(userId = <span class="number">1</span>)
+            } <span class="keyword">else</span> {
+                _loginState.value = LoginEvent.Error(<span class="string">"Geçersiz kullanıcı adı veya şifre"</span>)
+            }
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">eventTemizle</span>() {
+        _loginState.value = <span class="keyword">null</span>
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">LoginScreen</span>(
+    viewModel: LoginViewModel = viewModel(),
+    onLoginSuccess: (Int) -> Unit
+) {
+    <span class="keyword">val</span> loginState <span class="keyword">by</span> viewModel.loginState.collectAsState()
+    <span class="keyword">val</span> snackbarHostState = remember { SnackbarHostState() }
+    
+    <span class="comment">// Event handling</span>
+    LaunchedEffect(loginState) {
+        <span class="keyword">when</span> (<span class="keyword">val</span> state = loginState) {
+            <span class="keyword">is</span> LoginEvent.Success -> {
+                onLoginSuccess(state.userId)
+                viewModel.eventTemizle()
+            }
+            <span class="keyword">is</span> LoginEvent.Error -> {
+                snackbarHostState.showSnackbar(state.message)
+                viewModel.eventTemizle()
+            }
+            <span class="keyword">else</span> -> {}
+        }
+    }
+    
+    Scaffold(snackbarHost = { SnackbarHost(snackbarHostState) }) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(<span class="number">16</span>.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
+            OutlinedTextField(
+                value = viewModel.email,
+                onValueChange = { viewModel.emailGuncelle(it) },
+                label = { Text(<span class="string">"E-posta"</span>) },
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            
+            OutlinedTextField(
+                value = viewModel.sifre,
+                onValueChange = { viewModel.sifreGuncelle(it) },
+                label = { Text(<span class="string">"Şifre"</span>) },
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth()
+            )
+            
+            Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+            
+            Button(
+                onClick = { viewModel.girisYap() },
+                modifier = Modifier.fillMaxWidth(),
+                enabled = loginState != LoginEvent.Loading
+            ) {
+                <span class="keyword">if</span> (loginState == LoginEvent.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(<span class="number">24</span>.dp),
+                        color = Color.White
+                    )
+                } <span class="keyword">else</span> {
+                    Text(<span class="string">"Giriş Yap"</span>)
+                }
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Sayaç uygulamasını ViewModel ile yeniden yaz.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Todo uygulamasına filtreleme özelliği ekle (Tümü/Tamamlanan/Bekleyen).</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Loading, Error ve Success durumlarını gösteren bir ürün listesi yap.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders7.html" class="nav-btn prev">← Ders 7</a>
+            <a href="ders9.html" class="nav-btn next">Ders 9 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

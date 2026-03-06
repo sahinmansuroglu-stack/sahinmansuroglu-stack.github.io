@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 14: Kapsamlı Proje</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 14</span>
+            <h1>🎓 Kapsamlı Proje</h1>
+            <p class="subtitle">Tüm Konuları Kapsayan Not Defteri Uygulaması</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Özeti</h2>
+            <div class="info-box">
+                <strong>📱 Not Defteri Uygulaması:</strong><br>
+                Bu derste tüm öğrendiklerimizi birleştirerek kapsamlı bir not defteri uygulaması geliştireceğiz.<br><br>
+                <strong>Kullanılan Konular:</strong><br>
+                • Composable bileşenler<br>
+                • State yönetimi<br>
+                • Navigation<br>
+                • ViewModel + MVVM<br>
+                • Room Database<br>
+                • Material Design 3<br>
+                • Animasyonlar<br>
+                • Side Effects<br>
+                • Custom Composable
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Proje Yapısı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Klasör Yapısı</div>
+                <pre data-lang="Text"><code>app/
+├── src/main/java/com/example/notdefteri/
+│   ├── data/
+│   │   ├── local/
+│   │   │   ├── NotDao.kt
+│   │   │   ├── NotDatabase.kt
+│   │   │   └── entity/
+│   │   │       └── Not.kt
+│   │   └── repository/
+│   │       └── NotRepository.kt
+│   ├── ui/
+│   │   ├── components/
+│   │   │   ├── NotCard.kt
+│   │   │   ├── SearchBar.kt
+│   │   │   └── EmptyState.kt
+│   │   ├── navigation/
+│   │   │   └── AppNavigation.kt
+│   │   ├── screens/
+│   │   │   ├── home/
+│   │   │   │   ├── HomeScreen.kt
+│   │   │   │   └── HomeViewModel.kt
+│   │   │   └── detail/
+│   │   │       ├── DetailScreen.kt
+│   │   │       └── DetailViewModel.kt
+│   │   └── theme/
+│   │       ├── Color.kt
+│   │       ├── Theme.kt
+│   │       └── Type.kt
+│   └── MainActivity.kt
+└── build.gradle.kts</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Data Layer</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Not Entity</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Entity</span>(tableName = <span class="string">"notlar"</span>)
+<span class="keyword">data class</span> <span class="class-name">Not</span>(
+    <span class="annotation">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)
+    <span class="keyword">val</span> id: Int = <span class="number">0</span>,
+    <span class="keyword">val</span> baslik: String,
+    <span class="keyword">val</span> icerik: String,
+    <span class="keyword">val</span> renk: Int = <span class="number">0</span>,  <span class="comment">// Renk indeksi</span>
+    <span class="keyword">val</span> favori: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> olusturmaTarihi: Long = System.currentTimeMillis(),
+    <span class="keyword">val</span> guncellemeTarihi: Long = System.currentTimeMillis()
+)</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">NotDao</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Dao</span>
+<span class="keyword">interface</span> <span class="class-name">NotDao</span> {
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar ORDER BY guncellemeTarihi DESC"</span>)
+    <span class="keyword">fun</span> <span class="method">tumNotlar</span>(): Flow&lt;List&lt;Not&gt;&gt;
+    
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar WHERE favori = 1 ORDER BY guncellemeTarihi DESC"</span>)
+    <span class="keyword">fun</span> <span class="method">favoriNotlar</span>(): Flow&lt;List&lt;Not&gt;&gt;
+    
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar WHERE baslik LIKE '%' || :sorgu || '%' OR icerik LIKE '%' || :sorgu || '%'"</span>)
+    <span class="keyword">fun</span> <span class="method">araNotlar</span>(sorgu: String): Flow&lt;List&lt;Not&gt;&gt;
+    
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar WHERE id = :notId"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">getirNot</span>(notId: Int): Not?
+    
+    <span class="annotation">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)
+    <span class="keyword">suspend fun</span> <span class="method">ekle</span>(not: Not): Long
+    
+    <span class="annotation">@Update</span>
+    <span class="keyword">suspend fun</span> <span class="method">guncelle</span>(not: Not)
+    
+    <span class="annotation">@Delete</span>
+    <span class="keyword">suspend fun</span> <span class="method">sil</span>(not: Not)
+    
+    <span class="annotation">@Query</span>(<span class="string">"UPDATE notlar SET favori = NOT favori WHERE id = :notId"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">favoriToggle</span>(notId: Int)
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Repository</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">class</span> <span class="class-name">NotRepository</span>(<span class="keyword">private val</span> dao: NotDao) {
+    <span class="keyword">val</span> tumNotlar = dao.tumNotlar()
+    <span class="keyword">val</span> favoriNotlar = dao.favoriNotlar()
+    
+    <span class="keyword">fun</span> <span class="method">ara</span>(sorgu: String) = dao.araNotlar(sorgu)
+    
+    <span class="keyword">suspend fun</span> <span class="method">getir</span>(id: Int) = dao.getirNot(id)
+    <span class="keyword">suspend fun</span> <span class="method">ekle</span>(not: Not) = dao.ekle(not)
+    <span class="keyword">suspend fun</span> <span class="method">guncelle</span>(not: Not) = dao.guncelle(not)
+    <span class="keyword">suspend fun</span> <span class="method">sil</span>(not: Not) = dao.sil(not)
+    <span class="keyword">suspend fun</span> <span class="method">favoriToggle</span>(id: Int) = dao.favoriToggle(id)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Custom Components</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">NotCard</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">val</span> notRenkleri = listOf(
+    Color(<span class="number">0xFFFFAB91</span>),  <span class="comment">// Turuncu</span>
+    Color(<span class="number">0xFFFFCC80</span>),  <span class="comment">// Sarı</span>
+    Color(<span class="number">0xFFE6EE9C</span>),  <span class="comment">// Yeşil</span>
+    Color(<span class="number">0xFF80DEEA</span>),  <span class="comment">// Mavi</span>
+    Color(<span class="number">0xFFCF94DA</span>),  <span class="comment">// Mor</span>
+    Color(<span class="number">0xFFFFFFFF</span>)   <span class="comment">// Beyaz</span>
+)
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">NotCard</span>(
+    not: Not,
+    onClick: () -> Unit,
+    onFavoriClick: () -> Unit,
+    onSilClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = notRenkleri.getOrElse(not.renk) { Color.White }
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = <span class="number">2</span>.dp)
+    ) {
+        Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = not.baslik,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = <span class="number">1</span>,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(<span class="number">1f</span>)
+                )
+                
+                IconButton(onClick = onFavoriClick) {
+                    Icon(
+                        imageVector = <span class="keyword">if</span> (not.favori) 
+                            Icons.Default.Favorite <span class="keyword">else</span> Icons.Default.FavoriteBorder,
+                        contentDescription = <span class="string">"Favori"</span>,
+                        tint = <span class="keyword">if</span> (not.favori) Color.Red <span class="keyword">else</span> Color.Gray
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            
+            Text(
+                text = not.icerik,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = <span class="number">4</span>,
+                overflow = TextOverflow.Ellipsis,
+                color = Color.DarkGray
+            )
+            
+            Spacer(modifier = Modifier.height(<span class="number">12</span>.dp))
+            
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = formatTarih(not.guncellemeTarihi),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+                
+                IconButton(
+                    onClick = onSilClick,
+                    modifier = Modifier.size(<span class="number">24</span>.dp)
+                ) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = <span class="string">"Sil"</span>,
+                        tint = Color.Gray,
+                        modifier = Modifier.size(<span class="number">18</span>.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+<span class="keyword">fun</span> <span class="method">formatTarih</span>(timestamp: Long): String {
+    <span class="keyword">val</span> sdf = SimpleDateFormat(<span class="string">"dd MMM yyyy, HH:mm"</span>, Locale(<span class="string">"tr"</span>))
+    <span class="keyword">return</span> sdf.format(Date(timestamp))
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Home Screen</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">HomeViewModel</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">data class</span> <span class="class-name">HomeUiState</span>(
+    <span class="keyword">val</span> notlar: List&lt;Not&gt; = emptyList(),
+    <span class="keyword">val</span> aramaSorgusu: String = <span class="string">""</span>,
+    <span class="keyword">val</span> sadecesFavoriler: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> yukleniyor: Boolean = <span class="keyword">false</span>
+)
+
+<span class="keyword">class</span> <span class="class-name">HomeViewModel</span>(
+    <span class="keyword">private val</span> repository: NotRepository
+) : ViewModel() {
+    
+    <span class="keyword">private val</span> _aramaSorgusu = MutableStateFlow(<span class="string">""</span>)
+    <span class="keyword">private val</span> _sadeceFavoriler = MutableStateFlow(<span class="keyword">false</span>)
+    
+    <span class="keyword">val</span> uiState: StateFlow&lt;HomeUiState&gt; = combine(
+        _aramaSorgusu,
+        _sadeceFavoriler,
+        _aramaSorgusu.flatMapLatest { sorgu ->
+            <span class="keyword">if</span> (sorgu.isEmpty()) repository.tumNotlar
+            <span class="keyword">else</span> repository.ara(sorgu)
+        }
+    ) { sorgu, favoriler, notlar ->
+        HomeUiState(
+            notlar = <span class="keyword">if</span> (favoriler) notlar.filter { it.favori } <span class="keyword">else</span> notlar,
+            aramaSorgusu = sorgu,
+            sadecesFavoriler = favoriler
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(<span class="number">5000</span>),
+        initialValue = HomeUiState(yukleniyor = <span class="keyword">true</span>)
+    )
+    
+    <span class="keyword">fun</span> <span class="method">aramaGuncelle</span>(sorgu: String) {
+        _aramaSorgusu.value = sorgu
+    }
+    
+    <span class="keyword">fun</span> <span class="method">favoriFiltresiToggle</span>() {
+        _sadeceFavoriler.value = !_sadeceFavoriler.value
+    }
+    
+    <span class="keyword">fun</span> <span class="method">favoriToggle</span>(notId: Int) {
+        viewModelScope.launch {
+            repository.favoriToggle(notId)
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">notSil</span>(not: Not) {
+        viewModelScope.launch {
+            repository.sil(not)
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">HomeScreen</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">HomeScreen</span>(
+    viewModel: HomeViewModel,
+    onNotTikla: (Int) -> Unit,
+    onYeniNot: () -> Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsState()
+    <span class="keyword">var</span> silinecekNot <span class="keyword">by</span> remember { mutableStateOf&lt;Not?&gt;(<span class="keyword">null</span>) }
+    
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(<span class="string">"📝 Notlarım"</span>) },
+                actions = {
+                    IconButton(onClick = { viewModel.favoriFiltresiToggle() }) {
+                        Icon(
+                            <span class="keyword">if</span> (uiState.sadecesFavoriler) Icons.Default.Favorite 
+                            <span class="keyword">else</span> Icons.Default.FavoriteBorder,
+                            contentDescription = <span class="string">"Favoriler"</span>,
+                            tint = <span class="keyword">if</span> (uiState.sadecesFavoriler) Color.Red <span class="keyword">else</span> Color.Gray
+                        )
+                    }
+                }
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = onYeniNot,
+                icon = { Icon(Icons.Default.Add, <span class="keyword">null</span>) },
+                text = { Text(<span class="string">"Yeni Not"</span>) }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
+            <span class="comment">// Arama çubuğu</span>
+            OutlinedTextField(
+                value = uiState.aramaSorgusu,
+                onValueChange = { viewModel.aramaGuncelle(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(<span class="number">16</span>.dp),
+                placeholder = { Text(<span class="string">"Notlarda ara..."</span>) },
+                leadingIcon = { Icon(Icons.Default.Search, <span class="keyword">null</span>) },
+                trailingIcon = {
+                    <span class="keyword">if</span> (uiState.aramaSorgusu.isNotEmpty()) {
+                        IconButton(onClick = { viewModel.aramaGuncelle(<span class="string">""</span>) }) {
+                            Icon(Icons.Default.Clear, <span class="string">"Temizle"</span>)
+                        }
+                    }
+                },
+                singleLine = <span class="keyword">true</span>,
+                shape = RoundedCornerShape(<span class="number">12</span>.dp)
+            )
+            
+            <span class="comment">// Not listesi</span>
+            <span class="keyword">if</span> (uiState.notlar.isEmpty()) {
+                EmptyState(
+                    message = <span class="keyword">if</span> (uiState.aramaSorgusu.isNotEmpty()) 
+                        <span class="string">"Sonuç bulunamadı"</span> <span class="keyword">else</span> <span class="string">"Henüz not yok"</span>,
+                    icon = Icons.Default.Note
+                )
+            } <span class="keyword">else</span> {
+                LazyVerticalStaggeredGrid(
+                    columns = StaggeredGridCells.Fixed(<span class="number">2</span>),
+                    contentPadding = PaddingValues(<span class="number">16</span>.dp),
+                    horizontalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp),
+                    verticalItemSpacing = <span class="number">12</span>.dp
+                ) {
+                    items(uiState.notlar, key = { it.id }) { not ->
+                        NotCard(
+                            not = not,
+                            onClick = { onNotTikla(not.id) },
+                            onFavoriClick = { viewModel.favoriToggle(not.id) },
+                            onSilClick = { silinecekNot = not },
+                            modifier = Modifier.animateItemPlacement()
+                        )
+                    }
+                }
+            }
+        }
+    }
+    
+    <span class="comment">// Silme onay dialog</span>
+    silinecekNot?.let { not ->
+        AlertDialog(
+            onDismissRequest = { silinecekNot = <span class="keyword">null</span> },
+            title = { Text(<span class="string">"Notu Sil"</span>) },
+            text = { Text(<span class="string">"\"${not.baslik}\" notunu silmek istediğinize emin misiniz?"</span>) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.notSil(not)
+                        silinecekNot = <span class="keyword">null</span>
+                    }
+                ) {
+                    Text(<span class="string">"Sil"</span>, color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { silinecekNot = <span class="keyword">null</span> }) {
+                    Text(<span class="string">"İptal"</span>)
+                }
+            }
+        )
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Detail Screen</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">DetailScreen (Ekleme/Düzenleme)</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DetailScreen</span>(
+    notId: Int?,  <span class="comment">// null ise yeni not</span>
+    viewModel: DetailViewModel,
+    onGeriDon: () -> Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsState()
+    
+    <span class="comment">// Not yükle (düzenleme modunda)</span>
+    LaunchedEffect(notId) {
+        notId?.let { viewModel.notYukle(it) }
+    }
+    
+    <span class="comment">// Kaydetme başarılı olunca geri dön</span>
+    LaunchedEffect(uiState.kaydedildi) {
+        <span class="keyword">if</span> (uiState.kaydedildi) {
+            onGeriDon()
+        }
+    }
+    
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { 
+                    Text(<span class="keyword">if</span> (notId == <span class="keyword">null</span>) <span class="string">"Yeni Not"</span> <span class="keyword">else</span> <span class="string">"Notu Düzenle"</span>) 
+                },
+                navigationIcon = {
+                    IconButton(onClick = onGeriDon) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, <span class="string">"Geri"</span>)
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = { viewModel.kaydet() },
+                        enabled = uiState.baslik.isNotBlank()
+                    ) {
+                        Icon(Icons.Default.Check, <span class="string">"Kaydet"</span>)
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(<span class="number">16</span>.dp)
+        ) {
+            <span class="comment">// Başlık</span>
+            OutlinedTextField(
+                value = uiState.baslik,
+                onValueChange = { viewModel.baslikGuncelle(it) },
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text(<span class="string">"Başlık"</span>) },
+                textStyle = MaterialTheme.typography.titleLarge,
+                singleLine = <span class="keyword">true</span>
+            )
+            
+            Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+            
+            <span class="comment">// Renk seçici</span>
+            Text(<span class="string">"Renk Seçin:"</span>, style = MaterialTheme.typography.labelMedium)
+            
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+            ) {
+                itemsIndexed(notRenkleri) { index, renk ->
+                    Box(
+                        modifier = Modifier
+                            .size(<span class="number">40</span>.dp)
+                            .clip(CircleShape)
+                            .background(renk)
+                            .border(
+                                width = <span class="keyword">if</span> (uiState.secilenRenk == index) <span class="number">3</span>.dp <span class="keyword">else</span> <span class="number">1</span>.dp,
+                                color = <span class="keyword">if</span> (uiState.secilenRenk == index) 
+                                    MaterialTheme.colorScheme.primary <span class="keyword">else</span> Color.Gray,
+                                shape = CircleShape
+                            )
+                            .clickable { viewModel.renkSec(index) }
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+            
+            <span class="comment">// İçerik</span>
+            OutlinedTextField(
+                value = uiState.icerik,
+                onValueChange = { viewModel.icerikGuncelle(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(<span class="number">1f</span>),
+                placeholder = { Text(<span class="string">"Not içeriği..."</span>) },
+                textStyle = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Navigation</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">AppNavigation</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">AppNavigation</span>(
+    repository: NotRepository
+) {
+    <span class="keyword">val</span> navController = rememberNavController()
+    
+    NavHost(
+        navController = navController,
+        startDestination = <span class="string">"home"</span>
+    ) {
+        composable(<span class="string">"home"</span>) {
+            <span class="keyword">val</span> viewModel: HomeViewModel = viewModel(
+                factory = HomeViewModelFactory(repository)
+            )
+            
+            HomeScreen(
+                viewModel = viewModel,
+                onNotTikla = { notId ->
+                    navController.navigate(<span class="string">"detail/$notId"</span>)
+                },
+                onYeniNot = {
+                    navController.navigate(<span class="string">"detail/new"</span>)
+                }
+            )
+        }
+        
+        composable(
+            route = <span class="string">"detail/{notId}"</span>,
+            arguments = listOf(
+                navArgument(<span class="string">"notId"</span>) { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            <span class="keyword">val</span> notIdStr = backStackEntry.arguments?.getString(<span class="string">"notId"</span>)
+            <span class="keyword">val</span> notId = <span class="keyword">if</span> (notIdStr == <span class="string">"new"</span>) <span class="keyword">null</span> <span class="keyword">else</span> notIdStr?.toIntOrNull()
+            
+            <span class="keyword">val</span> viewModel: DetailViewModel = viewModel(
+                factory = DetailViewModelFactory(repository)
+            )
+            
+            DetailScreen(
+                notId = notId,
+                viewModel = viewModel,
+                onGeriDon = { navController.popBackStack() }
+            )
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Proje Özellikleri</h2>
+            <div class="info-box">
+                <strong>✅ Tamamlanan Özellikler:</strong><br>
+                • Not ekleme, düzenleme ve silme<br>
+                • Farklı renklerle notları kişiselleştirme<br>
+                • Favori notları işaretleme ve filtreleme<br>
+                • Notlarda arama yapma<br>
+                • Staggered grid görünümü<br>
+                • Animasyonlu liste öğeleri<br>
+                • Silme onay dialogu<br>
+                • Tarih gösterimi
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Notlara kategori/etiket sistemi ekle.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Dark/Light tema geçişi ekle.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Notları JSON olarak dışa/içe aktarma özelliği ekle.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <p>Hatırlatıcı/alarm özelliği ekle.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders13.html" class="nav-btn prev">← Ders 13</a>
+            <a href="index.html" class="nav-btn next">Ana Sayfa →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

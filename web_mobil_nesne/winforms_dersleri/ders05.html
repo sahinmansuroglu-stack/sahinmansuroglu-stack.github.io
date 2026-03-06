@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 5: Diğer Giriş Kontrolleri</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 5</span>
+            <h1>Diğer Giriş Kontrolleri</h1>
+            <p class="subtitle">NumericUpDown, DateTimePicker, MaskedTextBox</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders03.html">Ders 3</a>
+            <a href="ders04.html">Ders 4</a>
+            <a href="ders05.html" class="active">Ders 5</a>
+            <a href="ders06.html">Ders 6</a>
+            <a href="ders07.html">Ders 7</a>
+        </nav>
+
+        <section class="section">
+            <h2>1. NumericUpDown</h2>
+            <p><strong>NumericUpDown</strong>, sayısal değer girişi için kullanılır. Ok tuşlarıyla veya yazarak değer
+                girilebilir.</p>
+
+            <div class="control-visual">
+                <input type="number" value="25" min="0" max="100" style="padding: 8px; width: 100px;">
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Value</td>
+                    <td>Mevcut değer (decimal)</td>
+                </tr>
+                <tr>
+                    <td>Minimum</td>
+                    <td>En küçük değer</td>
+                </tr>
+                <tr>
+                    <td>Maximum</td>
+                    <td>En büyük değer</td>
+                </tr>
+                <tr>
+                    <td>Increment</td>
+                    <td>Artış/azalış miktarı</td>
+                </tr>
+                <tr>
+                    <td>DecimalPlaces</td>
+                    <td>Ondalık basamak sayısı</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">NumericUpDown Kullanımı</div>
+                <pre><code><span class="comment">// Özellikleri ayarlama</span>
+numYas.Minimum = <span class="number">0</span>;
+numYas.Maximum = <span class="number">120</span>;
+numYas.Value = <span class="number">18</span>;
+numYas.Increment = <span class="number">1</span>;
+
+<span class="comment">// Fiyat için ondalıklı kullanım</span>
+numFiyat.Minimum = <span class="number">0</span>;
+numFiyat.Maximum = <span class="number">10000</span>;
+numFiyat.DecimalPlaces = <span class="number">2</span>;
+numFiyat.Increment = <span class="number">0.50M</span>;
+
+<span class="comment">// Değeri okuma</span>
+<span class="keyword">int</span> yas = (<span class="keyword">int</span>)numYas.Value;
+<span class="keyword">decimal</span> fiyat = numFiyat.Value;
+
+<span class="comment">// Değer değiştiğinde</span>
+<span class="keyword">private void</span> <span class="method">numAdet_ValueChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">decimal</span> toplam = numAdet.Value * numFiyat.Value;
+    lblToplam.Text = toplam.ToString(<span class="string">"C"</span>); <span class="comment">// Para formatı</span>
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. DateTimePicker</h2>
+            <p><strong>DateTimePicker</strong>, tarih ve saat seçimi için kullanılır. Takvim görünümü sunar.</p>
+
+            <div class="control-visual">
+                <input type="date" style="padding: 8px; width: 200px;">
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Value</td>
+                    <td>Seçili tarih (DateTime)</td>
+                </tr>
+                <tr>
+                    <td>MinDate</td>
+                    <td>Seçilebilecek en eski tarih</td>
+                </tr>
+                <tr>
+                    <td>MaxDate</td>
+                    <td>Seçilebilecek en yeni tarih</td>
+                </tr>
+                <tr>
+                    <td>Format</td>
+                    <td>Short, Long, Time, Custom</td>
+                </tr>
+                <tr>
+                    <td>CustomFormat</td>
+                    <td>Özel format dizesi</td>
+                </tr>
+                <tr>
+                    <td>ShowUpDown</td>
+                    <td>Takvim yerine ok tuşları</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">DateTimePicker Kullanımı</div>
+                <pre><code><span class="comment">// Bugünün tarihini ayarla</span>
+dtpTarih.Value = DateTime.Now;
+
+<span class="comment">// Sınırları belirleme</span>
+dtpDogum.MinDate = <span class="keyword">new</span> DateTime(<span class="number">1900</span>, <span class="number">1</span>, <span class="number">1</span>);
+dtpDogum.MaxDate = DateTime.Today;
+
+<span class="comment">// Format ayarlama</span>
+dtpTarih.Format = DateTimePickerFormat.Short; <span class="comment">// 05.02.2024</span>
+dtpTarih.Format = DateTimePickerFormat.Long;  <span class="comment">// 5 Şubat 2024 Pazartesi</span>
+
+<span class="comment">// Özel format</span>
+dtpTarih.Format = DateTimePickerFormat.Custom;
+dtpTarih.CustomFormat = <span class="string">"dd/MM/yyyy"</span>;
+
+<span class="comment">// Sadece saat için</span>
+dtpSaat.Format = DateTimePickerFormat.Custom;
+dtpSaat.CustomFormat = <span class="string">"HH:mm"</span>;
+dtpSaat.ShowUpDown = <span class="keyword">true</span>;
+
+<span class="comment">// Değeri okuma</span>
+DateTime secilen = dtpTarih.Value;
+lblTarih.Text = secilen.ToString(<span class="string">"dd MMMM yyyy"</span>);
+
+<span class="comment">// Yaş hesaplama</span>
+<span class="keyword">int</span> yas = DateTime.Now.Year - dtpDogum.Value.Year;
+<span class="keyword">if</span> (DateTime.Now.DayOfYear < dtpDogum.Value.DayOfYear)
+    yas--;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Tarih Formatları</div>
+                <pre><code>DateTime tarih = DateTime.Now;
+
+tarih.ToString(<span class="string">"dd/MM/yyyy"</span>)      <span class="comment">// 05/02/2024</span>
+tarih.ToString(<span class="string">"dd.MM.yyyy"</span>)      <span class="comment">// 05.02.2024</span>
+tarih.ToString(<span class="string">"yyyy-MM-dd"</span>)      <span class="comment">// 2024-02-05</span>
+tarih.ToString(<span class="string">"dd MMMM yyyy"</span>)    <span class="comment">// 05 Şubat 2024</span>
+tarih.ToString(<span class="string">"dddd"</span>)            <span class="comment">// Pazartesi</span>
+tarih.ToString(<span class="string">"HH:mm:ss"</span>)        <span class="comment">// 14:30:00</span>
+tarih.ToString(<span class="string">"hh:mm tt"</span>)        <span class="comment">// 02:30 PM</span></code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. MaskedTextBox</h2>
+            <p><strong>MaskedTextBox</strong>, belirli bir formatta veri girişi zorlar (telefon, TC no, tarih vb.).</p>
+
+            <div class="control-visual">
+                <input type="text" placeholder="(5__) ___ __ __" style="padding: 8px; width: 200px;">
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Mask</td>
+                    <td>Giriş formatını belirleyen maske</td>
+                </tr>
+                <tr>
+                    <td>Text</td>
+                    <td>Görünen metin (maskeli)</td>
+                </tr>
+                <tr>
+                    <td>TextMaskFormat</td>
+                    <td>Maske/literal dahil mi?</td>
+                </tr>
+            </table>
+
+            <h3>Maske Karakterleri</h3>
+            <table>
+                <tr>
+                    <th>Karakter</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>0</td>
+                    <td>Rakam (zorunlu)</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Rakam veya boşluk (opsiyonel)</td>
+                </tr>
+                <tr>
+                    <td>L</td>
+                    <td>Harf (zorunlu)</td>
+                </tr>
+                <tr>
+                    <td>?</td>
+                    <td>Harf (opsiyonel)</td>
+                </tr>
+                <tr>
+                    <td>A</td>
+                    <td>Alfanumerik (zorunlu)</td>
+                </tr>
+                <tr>
+                    <td>&amp;</td>
+                    <td>Herhangi karakter (zorunlu)</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">MaskedTextBox Örnekleri</div>
+                <pre><code><span class="comment">// Telefon numarası</span>
+mtbTelefon.Mask = <span class="string">"(000) 000 00 00"</span>;
+
+<span class="comment">// TC Kimlik No</span>
+mtbTCNo.Mask = <span class="string">"00000000000"</span>;
+
+<span class="comment">// Tarih</span>
+mtbTarih.Mask = <span class="string">"00/00/0000"</span>;
+
+<span class="comment">// Saat</span>
+mtbSaat.Mask = <span class="string">"00:00"</span>;
+
+<span class="comment">// Posta Kodu</span>
+mtbPostaKodu.Mask = <span class="string">"00000"</span>;
+
+<span class="comment">// Plaka</span>
+mtbPlaka.Mask = <span class="string">"00 L 0000"</span>;
+
+<span class="comment">// Kredi Kartı</span>
+mtbKart.Mask = <span class="string">"0000-0000-0000-0000"</span>;
+
+<span class="comment">// Sadece rakamları alma</span>
+<span class="keyword">string</span> telefon = mtbTelefon.Text.Replace(<span class="string">"("</span>, <span class="string">""</span>)
+                                 .Replace(<span class="string">")"</span>, <span class="string">""</span>)
+                                 .Replace(<span class="string">" "</span>, <span class="string">""</span>);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. ProgressBar</h2>
+            <p><strong>ProgressBar</strong>, bir işlemin ilerleme durumunu görsel olarak gösterir.</p>
+
+            <div class="control-visual">
+                <progress value="65" max="100" style="width: 300px; height: 25px;"></progress>
+                <p>%65 Tamamlandı</p>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">ProgressBar Kullanımı</div>
+                <pre><code><span class="comment">// Temel ayarlar</span>
+progressBar1.Minimum = <span class="number">0</span>;
+progressBar1.Maximum = <span class="number">100</span>;
+progressBar1.Value = <span class="number">0</span>;
+
+<span class="comment">// İlerleme güncelleme</span>
+progressBar1.Value = <span class="number">50</span>;
+
+<span class="comment">// Artırma</span>
+progressBar1.Value += <span class="number">10</span>;
+
+<span class="comment">// Sonsuz animasyon (belirsiz süre)</span>
+progressBar1.Style = ProgressBarStyle.Marquee;
+
+<span class="comment">// Dosya kopyalama örneği</span>
+<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= <span class="number">100</span>; i++)
+{
+    progressBar1.Value = i;
+    lblYuzde.Text = i + <span class="string">"%"</span>;
+    Application.DoEvents(); <span class="comment">// UI'ın güncellenmesini sağla</span>
+    Thread.Sleep(<span class="number">50</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Kayıt Formu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Üyelik Kayıt Formu</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Doğrulama</span>
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(txtAd.Text))
+    {
+        MessageBox.Show(<span class="string">"Ad boş olamaz!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="keyword">if</span> (!mtbTelefon.MaskCompleted)
+    {
+        MessageBox.Show(<span class="string">"Telefon numarasını eksiksiz girin!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// Yaş kontrolü</span>
+    <span class="keyword">int</span> yas = DateTime.Now.Year - dtpDogum.Value.Year;
+    <span class="keyword">if</span> (yas &lt; <span class="number">18</span>)
+    {
+        MessageBox.Show(<span class="string">"18 yaşından küçükler kayıt olamaz!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// Kayıt özeti</span>
+    <span class="keyword">string</span> ozet = $<span class="string">@"
+=== KAYIT BİLGİLERİ ===
+Ad: {txtAd.Text}
+Telefon: {mtbTelefon.Text}
+Doğum Tarihi: {dtpDogum.Value:dd.MM.yyyy}
+Yaş: {yas}
+Adet: {numAdet.Value}
+"</span>;
+
+    MessageBox.Show(ozet, <span class="string">"Kayıt Başarılı"</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Doğum tarihi seçildiğinde yaşı otomatik hesaplayan bir uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">dtpDogum_ValueChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">int</span> yas = DateTime.Now.Year - dtpDogum.Value.Year;
+    <span class="keyword">if</span> (DateTime.Now.DayOfYear &lt; dtpDogum.Value.DayOfYear)
+        yas--;
+    
+    lblYas.Text = <span class="string">"Yaşınız: "</span> + yas;
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Adet ve birim fiyat girilerek toplam tutarı hesaplayan uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">Hesapla</span>()
+{
+    <span class="keyword">decimal</span> adet = numAdet.Value;
+    <span class="keyword">decimal</span> fiyat = numFiyat.Value;
+    <span class="keyword">decimal</span> toplam = adet * fiyat;
+    
+    lblToplam.Text = <span class="string">"Toplam: "</span> + toplam.ToString(<span class="string">"C"</span>);
+}
+
+<span class="keyword">private void</span> <span class="method">numAdet_ValueChanged</span>(<span class="keyword">object</span> sender, EventArgs e) => Hesapla();
+<span class="keyword">private void</span> <span class="method">numFiyat_ValueChanged</span>(<span class="keyword">object</span> sender, EventArgs e) => Hesapla();</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>TC Kimlik No ve telefon girişi için MaskedTextBox kullanan bir form yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="comment">// Form_Load'da</span>
+mtbTCNo.Mask = <span class="string">"00000000000"</span>;
+mtbTelefon.Mask = <span class="string">"(000) 000 00 00"</span>;
+
+<span class="comment">// Kaydet butonunda</span>
+<span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (!mtbTCNo.MaskCompleted || !mtbTelefon.MaskCompleted)
+    {
+        MessageBox.Show(<span class="string">"Tüm alanları doldurun!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    MessageBox.Show($<span class="string">"TC: {mtbTCNo.Text}\nTel: {mtbTelefon.Text}"</span>);
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders04.html" class="nav-btn prev">← Önceki: ListBox, ComboBox</a>
+            <a href="ders06.html" class="nav-btn next">Sonraki: Olaylar (Events) →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

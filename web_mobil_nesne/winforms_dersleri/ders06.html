@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 6: Olaylar (Events)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 6</span>
+            <h1>Olaylar (Events)</h1>
+            <p class="subtitle">Click, TextChanged, KeyPress ve Daha Fazlası</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders04.html">Ders 4</a>
+            <a href="ders05.html">Ders 5</a>
+            <a href="ders06.html" class="active">Ders 6</a>
+            <a href="ders07.html">Ders 7</a>
+            <a href="ders08.html">Ders 8</a>
+        </nav>
+
+        <section class="section">
+            <h2>Olay (Event) Nedir?</h2>
+            <p>Olaylar, kullanıcı etkileşimleri veya sistem değişiklikleri sonucu tetiklenen aksiyonlardır. Windows
+                Forms'ta her kontrol çeşitli olaylar sunnar.</p>
+
+            <div class="diagram">
+                <div class="diagram-box">Kullanıcı Eylemi<br>(Tıklama, Yazma)</div>
+                <span class="diagram-arrow">→</span>
+                <div class="diagram-box">Olay Tetiklenir<br>(Click, KeyPress)</div>
+                <span class="diagram-arrow">→</span>
+                <div class="diagram-box">Event Handler<br>Çalışır</div>
+            </div>
+
+            <div class="info-box">
+                <strong>📌 Event Handler Oluşturma:</strong>
+                <ul>
+                    <li>Properties panelinde ⚡ (Events) simgesine tıklayın</li>
+                    <li>İstediğiniz olaya çift tıklayın</li>
+                    <li>Kod dosyasında metot otomatik oluşturulur</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>1. Click Olayı</h2>
+            <p>Kontrole tıklandığında tetiklenir. En çok kullanılan olaydır.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Click Olayı</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">button1_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    MessageBox.Show(<span class="string">"Butona tıklandı!"</span>);
+}
+
+<span class="comment">// Birden fazla buton için tek handler</span>
+<span class="keyword">private void</span> <span class="method">Hesapla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    Button tiklanilan = (Button)sender;
+    
+    <span class="keyword">switch</span> (tiklanilan.Name)
+    {
+        <span class="keyword">case</span> <span class="string">"btnTopla"</span>:
+            lblSonuc.Text = (sayi1 + sayi2).ToString();
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">"btnCikar"</span>:
+            lblSonuc.Text = (sayi1 - sayi2).ToString();
+            <span class="keyword">break</span>;
+        <span class="keyword">case</span> <span class="string">"btnCarp"</span>:
+            lblSonuc.Text = (sayi1 * sayi2).ToString();
+            <span class="keyword">break</span>;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. TextChanged Olayı</h2>
+            <p>TextBox içeriği değiştiğinde (her tuşa basıldığında) tetiklenir.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">TextChanged - Anlık Arama</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtArama_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span> arama = txtArama.Text.ToLower();
+    
+    listBox1.Items.Clear();
+    
+    <span class="keyword">foreach</span> (<span class="keyword">string</span> urun <span class="keyword">in</span> tumUrunler)
+    {
+        <span class="keyword">if</span> (urun.ToLower().Contains(arama))
+        {
+            listBox1.Items.Add(urun);
+        }
+    }
+    
+    lblSonuc.Text = $<span class="string">"Bulunan: {listBox1.Items.Count}"</span>;
+}
+
+<span class="comment">// Karakter sayacı</span>
+<span class="keyword">private void</span> <span class="method">txtMesaj_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">int</span> kalan = <span class="number">280</span> - txtMesaj.Text.Length;
+    lblKarakter.Text = $<span class="string">"Kalan: {kalan}"</span>;
+    
+    <span class="keyword">if</span> (kalan < <span class="number">0</span>)
+        lblKarakter.ForeColor = Color.Red;
+    <span class="keyword">else</span>
+        lblKarakter.ForeColor = Color.Black;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. KeyPress ve KeyDown Olayları</h2>
+            <p>Klavye tuşlarına basıldığında tetiklenir.</p>
+
+            <table>
+                <tr>
+                    <th>Olay</th>
+                    <th>Açıklama</th>
+                    <th>Parametre</th>
+                </tr>
+                <tr>
+                    <td>KeyPress</td>
+                    <td>Karakter tuşlarında</td>
+                    <td>e.KeyChar</td>
+                </tr>
+                <tr>
+                    <td>KeyDown</td>
+                    <td>Tüm tuşlarda (basıldığında)</td>
+                    <td>e.KeyCode</td>
+                </tr>
+                <tr>
+                    <td>KeyUp</td>
+                    <td>Tuş bırakıldığında</td>
+                    <td>e.KeyCode</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">KeyPress - Sadece Rakam Girişi</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtSayi_KeyPress</span>(<span class="keyword">object</span> sender, KeyPressEventArgs e)
+{
+    <span class="comment">// Sadece rakam ve backspace izin ver</span>
+    <span class="keyword">if</span> (!<span class="keyword">char</span>.IsDigit(e.KeyChar) && e.KeyChar != (<span class="keyword">char</span>)Keys.Back)
+    {
+        e.Handled = <span class="keyword">true</span>; <span class="comment">// Tuş basımını iptal et</span>
+    }
+}
+
+<span class="comment">// Sadece harf girişi</span>
+<span class="keyword">private void</span> <span class="method">txtAd_KeyPress</span>(<span class="keyword">object</span> sender, KeyPressEventArgs e)
+{
+    <span class="keyword">if</span> (!<span class="keyword">char</span>.IsLetter(e.KeyChar) && !<span class="keyword">char</span>.IsWhiteSpace(e.KeyChar) 
+        && e.KeyChar != (<span class="keyword">char</span>)Keys.Back)
+    {
+        e.Handled = <span class="keyword">true</span>;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">KeyDown - Özel Tuşlar</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtMesaj_KeyDown</span>(<span class="keyword">object</span> sender, KeyEventArgs e)
+{
+    <span class="comment">// Enter ile gönder</span>
+    <span class="keyword">if</span> (e.KeyCode == Keys.Enter)
+    {
+        btnGonder.PerformClick(); <span class="comment">// Butona tıklamış gibi davran</span>
+        e.SuppressKeyPress = <span class="keyword">true</span>; <span class="comment">// Bip sesini engelle</span>
+    }
+    
+    <span class="comment">// Ctrl+S ile kaydet</span>
+    <span class="keyword">if</span> (e.Control && e.KeyCode == Keys.S)
+    {
+        Kaydet();
+        e.SuppressKeyPress = <span class="keyword">true</span>;
+    }
+    
+    <span class="comment">// Escape ile temizle</span>
+    <span class="keyword">if</span> (e.KeyCode == Keys.Escape)
+    {
+        txtMesaj.Clear();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. Mouse Olayları</h2>
+
+            <table>
+                <tr>
+                    <th>Olay</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>MouseEnter</td>
+                    <td>Fare kontrolün üzerine geldiğinde</td>
+                </tr>
+                <tr>
+                    <td>MouseLeave</td>
+                    <td>Fare kontrolden ayrıldığında</td>
+                </tr>
+                <tr>
+                    <td>MouseMove</td>
+                    <td>Fare hareket ettiğinde</td>
+                </tr>
+                <tr>
+                    <td>MouseDown</td>
+                    <td>Fare tuşu basıldığında</td>
+                </tr>
+                <tr>
+                    <td>MouseUp</td>
+                    <td>Fare tuşu bırakıldığında</td>
+                </tr>
+                <tr>
+                    <td>MouseDoubleClick</td>
+                    <td>Çift tıklamada</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Mouse Olayları</div>
+                <pre><code><span class="comment">// Hover efekti</span>
+<span class="keyword">private void</span> <span class="method">button1_MouseEnter</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    button1.BackColor = Color.LightBlue;
+    button1.Cursor = Cursors.Hand;
+}
+
+<span class="keyword">private void</span> <span class="method">button1_MouseLeave</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    button1.BackColor = SystemColors.Control;
+    button1.Cursor = Cursors.Default;
+}
+
+<span class="comment">// Fare koordinatları</span>
+<span class="keyword">private void</span> <span class="method">panel1_MouseMove</span>(<span class="keyword">object</span> sender, MouseEventArgs e)
+{
+    lblKoordinat.Text = $<span class="string">"X: {e.X}, Y: {e.Y}"</span>;
+}
+
+<span class="comment">// Sağ tıklama menüsü</span>
+<span class="keyword">private void</span> <span class="method">listBox1_MouseDown</span>(<span class="keyword">object</span> sender, MouseEventArgs e)
+{
+    <span class="keyword">if</span> (e.Button == MouseButtons.Right)
+    {
+        contextMenuStrip1.Show(listBox1, e.Location);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>5. Form Olayları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Form Yaşam Döngüsü</div>
+                <pre><code><span class="comment">// Form yüklenirken</span>
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Başlangıç ayarları</span>
+    cmbSehirler.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"İstanbul"</span>, <span class="string">"Ankara"</span>, <span class="string">"İzmir"</span> });
+    dtpTarih.Value = DateTime.Today;
+}
+
+<span class="comment">// Form gösterildiğinde</span>
+<span class="keyword">private void</span> <span class="method">Form1_Shown</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtKullaniciAdi.Focus();
+}
+
+<span class="comment">// Form kapanmadan önce</span>
+<span class="keyword">private void</span> <span class="method">Form1_FormClosing</span>(<span class="keyword">object</span> sender, FormClosingEventArgs e)
+{
+    <span class="keyword">if</span> (degisiklikVar)
+    {
+        DialogResult sonuc = MessageBox.Show(
+            <span class="string">"Kaydedilmemiş değişiklikler var. Çıkmak istiyor musunuz?"</span>,
+            <span class="string">"Uyarı"</span>,
+            MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning);
+        
+        <span class="keyword">if</span> (sonuc == DialogResult.No)
+        {
+            e.Cancel = <span class="keyword">true</span>; <span class="comment">// Kapanmayı iptal et</span>
+        }
+    }
+}
+
+<span class="comment">// Form boyutu değiştiğinde</span>
+<span class="keyword">private void</span> <span class="method">Form1_Resize</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    lblBoyut.Text = $<span class="string">"Boyut: {this.Width}x{this.Height}"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>6. Kod ile Event Bağlama</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Dinamik Event Handler</div>
+                <pre><code><span class="comment">// Form_Load'da event bağlama</span>
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    button1.Click += Button1_Click;
+    textBox1.TextChanged += TextBox1_TextChanged;
+    
+    <span class="comment">// Lambda ile kısa yazım</span>
+    button2.Click += (s, args) => MessageBox.Show(<span class="string">"Tıklandı!"</span>);
+}
+
+<span class="comment">// Dinamik butonlar için ortak handler</span>
+<span class="keyword">private void</span> <span class="method">DinamikButonlarOlustur</span>()
+{
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++)
+    {
+        Button btn = <span class="keyword">new</span> Button();
+        btn.Text = i.ToString();
+        btn.Tag = i; <span class="comment">// Veri taşımak için Tag kullan</span>
+        btn.Click += Rakam_Click; <span class="comment">// Aynı handler'ı bağla</span>
+        
+        flowLayoutPanel1.Controls.Add(btn);
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">Rakam_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    Button btn = (Button)sender;
+    <span class="keyword">int</span> rakam = (<span class="keyword">int</span>)btn.Tag;
+    txtSonuc.Text += rakam.ToString();
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>TextBox'a sadece rakam girişine izin veren bir uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">txtSayi_KeyPress</span>(<span class="keyword">object</span> sender, KeyPressEventArgs e)
+{
+    <span class="keyword">if</span> (!<span class="keyword">char</span>.IsDigit(e.KeyChar) && e.KeyChar != (<span class="keyword">char</span>)Keys.Back)
+    {
+        e.Handled = <span class="keyword">true</span>;
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Butona fare geldiğinde renk değiştiren hover efekti yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btn_MouseEnter</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ((Button)sender).BackColor = Color.LightGreen;
+}
+
+<span class="keyword">private void</span> <span class="method">btn_MouseLeave</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ((Button)sender).BackColor = SystemColors.Control;
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Enter tuşuyla TextBox'tan ListBox'a eleman ekleyen uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">private void</span> <span class="method">txtEleman_KeyDown</span>(<span class="keyword">object</span> sender, KeyEventArgs e)
+{
+    <span class="keyword">if</span> (e.KeyCode == Keys.Enter && !<span class="keyword">string</span>.IsNullOrWhiteSpace(txtEleman.Text))
+    {
+        listBox1.Items.Add(txtEleman.Text);
+        txtEleman.Clear();
+        e.SuppressKeyPress = <span class="keyword">true</span>;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders05.html" class="nav-btn prev">← Önceki: Diğer Kontroller</a>
+            <a href="ders07.html" class="nav-btn next">Sonraki: MessageBox →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

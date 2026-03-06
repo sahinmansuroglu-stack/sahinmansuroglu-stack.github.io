@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 10: Personel Yönetim Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 10</span>
+            <h1>👥 Personel Yönetim Sistemi</h1>
+            <p class="subtitle">Ders 1-10 Konularını Kapsayan Proje (Önceki Final Projesi)</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Tüm temel konuları kapsayan kapsamlı personel yönetim sistemi.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • MVC mimarisi tamamı<br>
+                • Entity Framework ve ilişkiler<br>
+                • CRUD işlemleri<br>
+                • Layout ve Partial View<br>
+                • Validation ve form işlemleri
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Models</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Employee.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Employee</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required, Display(Name = <span class="string">"Ad"</span>)]
+    <span class="keyword">public string</span> FirstName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required, Display(Name = <span class="string">"Soyad"</span>)]
+    <span class="keyword">public string</span> LastName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [EmailAddress, Display(Name = <span class="string">"E-posta"</span>)]
+    <span class="keyword">public string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Telefon"</span>)]
+    <span class="keyword">public string</span>? Phone { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"İşe Başlama"</span>)]
+    <span class="keyword">public</span> DateTime HireDate { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Maaş"</span>)]
+    [Range(<span class="number">0</span>, <span class="number">1000000</span>)]
+    <span class="keyword">public decimal</span> Salary { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public bool</span> IsActive { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">true</span>;
+    
+    <span class="comment">// Navigation</span>
+    <span class="keyword">public int</span> DepartmentId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Department Department { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span>? ManagerId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Employee? Manager { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Computed</span>
+    <span class="keyword">public string</span> FullName => $<span class="string">"{FirstName} {LastName}"</span>;
+}
+
+<span class="keyword">public class</span> <span class="class-name">Department</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> ICollection&lt;Employee&gt; Employees { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/EmployeeController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">EmployeeController</span> : Controller
+{
+    <span class="keyword">private readonly</span> HRDbContext _context;
+    
+    <span class="keyword">public</span> <span class="method">EmployeeController</span>(HRDbContext context)
+    {
+        _context = context;
+    }
+    
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Index</span>(<span class="keyword">string</span> search, <span class="keyword">int</span>? departmentId)
+    {
+        <span class="keyword">var</span> query = _context.Employees
+            .Include(e => e.Department)
+            .Where(e => e.IsActive)
+            .AsQueryable();
+        
+        <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(search))
+        {
+            query = query.Where(e => 
+                e.FirstName.Contains(search) || 
+                e.LastName.Contains(search));
+        }
+        
+        <span class="keyword">if</span> (departmentId.HasValue)
+        {
+            query = query.Where(e => e.DepartmentId == departmentId);
+        }
+        
+        ViewBag.Departments = <span class="keyword">new</span> SelectList(
+            <span class="keyword">await</span> _context.Departments.ToListAsync(), 
+            <span class="string">"Id"</span>, <span class="string">"Name"</span>, departmentId);
+        ViewBag.Search = search;
+        ViewBag.DepartmentId = departmentId;
+        
+        <span class="keyword">return</span> View(<span class="keyword">await</span> query.ToListAsync());
+    }
+    
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> employee = <span class="keyword">await</span> _context.Employees
+            .Include(e => e.Department)
+            .Include(e => e.Manager)
+            .FirstOrDefaultAsync(e => e.Id == id);
+        
+        <span class="keyword">if</span> (employee == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        
+        <span class="comment">// Ekip üyeleri</span>
+        ViewBag.TeamMembers = <span class="keyword">await</span> _context.Employees
+            .Where(e => e.ManagerId == id && e.IsActive)
+            .ToListAsync();
+        
+        <span class="keyword">return</span> View(employee);
+    }
+    
+    [HttpGet]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>()
+    {
+        <span class="keyword">await</span> PopulateDropdownsAsync();
+        <span class="keyword">return</span> View();
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(Employee employee)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            _context.Employees.Add(employee);
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            TempData[<span class="string">"Success"</span>] = $<span class="string">"{employee.FullName} personel olarak eklendi!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+        }
+        
+        <span class="keyword">await</span> PopulateDropdownsAsync(employee);
+        <span class="keyword">return</span> View(employee);
+    }
+    
+    [HttpGet]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Edit</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> employee = <span class="keyword">await</span> _context.Employees.FindAsync(id);
+        <span class="keyword">if</span> (employee == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        
+        <span class="keyword">await</span> PopulateDropdownsAsync(employee);
+        <span class="keyword">return</span> View(employee);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Edit</span>(<span class="keyword">int</span> id, Employee employee)
+    {
+        <span class="keyword">if</span> (id != employee.Id) <span class="keyword">return</span> NotFound();
+        
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            _context.Update(employee);
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            TempData[<span class="string">"Success"</span>] = <span class="string">"Personel bilgileri güncellendi!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+        }
+        
+        <span class="keyword">await</span> PopulateDropdownsAsync(employee);
+        <span class="keyword">return</span> View(employee);
+    }
+    
+    <span class="keyword">private async</span> Task <span class="method">PopulateDropdownsAsync</span>(Employee? employee = <span class="keyword">null</span>)
+    {
+        ViewBag.Departments = <span class="keyword">new</span> SelectList(
+            <span class="keyword">await</span> _context.Departments.ToListAsync(),
+            <span class="string">"Id"</span>, <span class="string">"Name"</span>, employee?.DepartmentId);
+        
+        ViewBag.Managers = <span class="keyword">new</span> SelectList(
+            <span class="keyword">await</span> _context.Employees
+                .Where(e => e.IsActive && e.Id != employee?.Id)
+                .Select(e => <span class="keyword">new</span> { e.Id, Name = e.FirstName + <span class="string">" "</span> + e.LastName })
+                .ToListAsync(),
+            <span class="string">"Id"</span>, <span class="string">"Name"</span>, employee?.ManagerId);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Dashboard</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Dashboard/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@{
+    Layout = <span class="string">"_AdminLayout"</span>;
+}
+
+&lt;h1&gt;👥 Personel Dashboard&lt;/h1&gt;
+
+&lt;div class="row mb-4"&gt;
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-primary"&gt;
+            &lt;div class="stat-icon"&gt;👥&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@ViewBag.TotalEmployees&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Toplam Personel&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-success"&gt;
+            &lt;div class="stat-icon"&gt;🏢&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@ViewBag.TotalDepartments&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Departman&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-info"&gt;
+            &lt;div class="stat-icon"&gt;🆕&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@ViewBag.NewThisMonth&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Bu Ay Yeni&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-warning"&gt;
+            &lt;div class="stat-icon"&gt;💰&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@ViewBag.AvgSalary.ToString("C0")&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Ort. Maaş&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+<span class="comment">&lt;!-- Departman Dağılımı --&gt;</span>
+&lt;div class="row"&gt;
+    &lt;div class="col-md-6"&gt;
+        &lt;partial name="_DepartmentStats" model="@ViewBag.DepartmentStats" /&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-6"&gt;
+        &lt;partial name="_RecentEmployees" model="@ViewBag.RecentEmployees" /&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>İzin yönetimi modülü ekleyin (Leave entity)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Performans değerlendirme sistemi ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje09.html" class="nav-btn prev">← Proje 9</a>
+            <a href="proje11.html" class="nav-btn next">Proje 11 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

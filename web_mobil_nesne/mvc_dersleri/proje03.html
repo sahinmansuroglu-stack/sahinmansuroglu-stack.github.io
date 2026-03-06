@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 3: Ürün Kataloğu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 3</span>
+            <h1>🛍️ Ürün Kataloğu</h1>
+            <p class="subtitle">Ders 1-3 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Routing ve parametreli action'lar kullanarak ürün kataloğu sayfaları oluşturuyoruz.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • URL Routing<br>
+                • Attribute Routing<br>
+                • Route parametreleri<br>
+                • Query string parametreleri
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>ProductController</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/ProductController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+<span class="keyword">public class</span> <span class="class-name">ProductController</span> : Controller
+{
+    <span class="comment">// Statik ürün listesi (demo amaçlı)</span>
+    <span class="keyword">private static</span> List&lt;Product&gt; _products = <span class="keyword">new</span>()
+    {
+        <span class="keyword">new</span> Product { Id = <span class="number">1</span>, Name = <span class="string">"Laptop"</span>, Category = <span class="string">"Elektronik"</span>, Price = <span class="number">15000</span> },
+        <span class="keyword">new</span> Product { Id = <span class="number">2</span>, Name = <span class="string">"Telefon"</span>, Category = <span class="string">"Elektronik"</span>, Price = <span class="number">8000</span> },
+        <span class="keyword">new</span> Product { Id = <span class="number">3</span>, Name = <span class="string">"Kulaklık"</span>, Category = <span class="string">"Aksesuar"</span>, Price = <span class="number">500</span> },
+        <span class="keyword">new</span> Product { Id = <span class="number">4</span>, Name = <span class="string">"Mouse"</span>, Category = <span class="string">"Aksesuar"</span>, Price = <span class="number">200</span> }
+    };
+    
+    <span class="comment">// GET: /Product</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">return</span> View(_products);
+    }
+    
+    <span class="comment">// GET: /Product/Details/3</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> product = _products.FirstOrDefault(p => p.Id == id);
+        
+        <span class="keyword">if</span> (product == <span class="keyword">null</span>)
+        {
+            <span class="keyword">return</span> NotFound();
+        }
+        
+        <span class="keyword">return</span> View(product);
+    }
+    
+    <span class="comment">// GET: /Product/Category/Elektronik</span>
+    [Route(<span class="string">"Product/Category/{categoryName}"</span>)]
+    <span class="keyword">public</span> IActionResult <span class="method">ByCategory</span>(<span class="keyword">string</span> categoryName)
+    {
+        <span class="keyword">var</span> filtered = _products
+            .Where(p => p.Category.ToLower() == categoryName.ToLower())
+            .ToList();
+        
+        ViewBag.Category = categoryName;
+        <span class="keyword">return</span> View(filtered);
+    }
+    
+    <span class="comment">// GET: /Product/Search?q=laptop&minPrice=1000</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Search</span>(<span class="keyword">string</span> q, <span class="keyword">decimal</span>? minPrice, <span class="keyword">decimal</span>? maxPrice)
+    {
+        <span class="keyword">var</span> query = _products.AsQueryable();
+        
+        <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(q))
+        {
+            query = query.Where(p => p.Name.ToLower().Contains(q.ToLower()));
+        }
+        
+        <span class="keyword">if</span> (minPrice.HasValue)
+        {
+            query = query.Where(p => p.Price >= minPrice);
+        }
+        
+        <span class="keyword">if</span> (maxPrice.HasValue)
+        {
+            query = query.Where(p => p.Price <= maxPrice);
+        }
+        
+        ViewBag.SearchTerm = q;
+        ViewBag.MinPrice = minPrice;
+        ViewBag.MaxPrice = maxPrice;
+        
+        <span class="keyword">return</span> View(query.ToList());
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Product.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Product</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Category { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View Dosyaları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Product/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@model List&lt;Product&gt;
+
+&lt;h1&gt;🛍️ Ürünler&lt;/h1&gt;
+
+&lt;div class="categories mb-4"&gt;
+    &lt;a href="/Product/Category/Elektronik" class="btn btn-outline-primary"&gt;Elektronik&lt;/a&gt;
+    &lt;a href="/Product/Category/Aksesuar" class="btn btn-outline-primary"&gt;Aksesuar&lt;/a&gt;
+&lt;/div&gt;
+
+&lt;div class="row"&gt;
+    @foreach (var product in Model)
+    {
+        &lt;div class="col-md-3 mb-4"&gt;
+            &lt;div class="card"&gt;
+                &lt;div class="card-body"&gt;
+                    &lt;h5&gt;@product.Name&lt;/h5&gt;
+                    &lt;p class="text-muted"&gt;@product.Category&lt;/p&gt;
+                    &lt;p class="h4 text-success"&gt;@product.Price.ToString("C")&lt;/p&gt;
+                    &lt;a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary"&gt;
+                        Detay
+                    &lt;/a&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    }
+&lt;/div&gt;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Product/Search.cshtml</div>
+                <pre data-lang="Razor"><code>@model List&lt;Product&gt;
+
+&lt;h1&gt;🔍 Ürün Ara&lt;/h1&gt;
+
+&lt;form method="get" class="row g-3 mb-4"&gt;
+    &lt;div class="col-md-4"&gt;
+        &lt;input type="text" name="q" value="@ViewBag.SearchTerm" 
+               class="form-control" placeholder="Ürün adı..." /&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-2"&gt;
+        &lt;input type="number" name="minPrice" value="@ViewBag.MinPrice" 
+               class="form-control" placeholder="Min fiyat" /&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-2"&gt;
+        &lt;input type="number" name="maxPrice" value="@ViewBag.MaxPrice" 
+               class="form-control" placeholder="Max fiyat" /&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-2"&gt;
+        &lt;button type="submit" class="btn btn-primary w-100"&gt;Ara&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;
+
+@if (Model.Any())
+{
+    &lt;p&gt;@Model.Count sonuç bulundu.&lt;/p&gt;
+    @foreach (var product in Model)
+    {
+        &lt;div class="card mb-2"&gt;
+            &lt;div class="card-body d-flex justify-content-between"&gt;
+                &lt;span&gt;@product.Name&lt;/span&gt;
+                &lt;span class="text-success"&gt;@product.Price.ToString("C")&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    }
+}
+else
+{
+    &lt;div class="alert alert-info"&gt;Sonuç bulunamadı.&lt;/div&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Fiyata göre sıralama özelliği ekleyin</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Ürün resmi için imageUrl özelliği ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje02.html" class="nav-btn prev">← Proje 2</a>
+            <a href="proje04.html" class="nav-btn next">Proje 4 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

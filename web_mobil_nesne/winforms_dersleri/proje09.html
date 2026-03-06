@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 9: Dosya Yöneticisi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 9</span>
+            <h1>📂 Dosya Yöneticisi</h1>
+            <p class="subtitle">Ders 1-9 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders09.html">Ders 9</a>
+            <a href="proje09.html" class="active">Proje 9</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Klasör seçerek dosyaları listeleyen, kopyalama ve taşıma işlemleri yapabilen dosya yöneticisi.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Konular (Ders 9):</strong> OpenFileDialog, SaveFileDialog, FolderBrowserDialog
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Kontrolleri</h2>
+            <table>
+                <tr>
+                    <th>Kontrol</th>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <td>TextBox</td>
+                    <td>txtKlasorYolu</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnKlasorSec</td>
+                </tr>
+                <tr>
+                    <td>ListBox</td>
+                    <td>lstDosyalar</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnKopyala, btnTasi, btnSil</td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblDosyaBilgi</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Kod Çözümü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Klasör Seçme ve Dosya Listeleme</div>
+                <pre><code><span class="keyword">private string</span> mevcutKlasor = <span class="string">""</span>;
+
+<span class="keyword">private void</span> <span class="method">btnKlasorSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FolderBrowserDialog fbd = <span class="keyword">new</span> FolderBrowserDialog();
+    fbd.Description = <span class="string">"Klasör seçin"</span>;
+    
+    <span class="keyword">if</span> (fbd.ShowDialog() == DialogResult.OK)
+    {
+        mevcutKlasor = fbd.SelectedPath;
+        txtKlasorYolu.Text = mevcutKlasor;
+        DosyalariListele();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">DosyalariListele</span>()
+{
+    lstDosyalar.Items.Clear();
+    
+    <span class="keyword">try</span>
+    {
+        <span class="comment">// Klasörleri ekle</span>
+        <span class="keyword">foreach</span> (<span class="keyword">string</span> klasor <span class="keyword">in</span> Directory.GetDirectories(mevcutKlasor))
+        {
+            lstDosyalar.Items.Add(<span class="string">"📁 "</span> + Path.GetFileName(klasor));
+        }
+        
+        <span class="comment">// Dosyaları ekle</span>
+        <span class="keyword">foreach</span> (<span class="keyword">string</span> dosya <span class="keyword">in</span> Directory.GetFiles(mevcutKlasor))
+        {
+            <span class="keyword">string</span> uzanti = Path.GetExtension(dosya).ToLower();
+            <span class="keyword">string</span> ikon = uzanti <span class="keyword">switch</span>
+            {
+                <span class="string">".txt"</span> => <span class="string">"📄"</span>,
+                <span class="string">".jpg"</span> or <span class="string">".png"</span> => <span class="string">"🖼️"</span>,
+                <span class="string">".mp3"</span> => <span class="string">"🎵"</span>,
+                <span class="string">".mp4"</span> => <span class="string">"🎬"</span>,
+                _ => <span class="string">"📋"</span>
+            };
+            lstDosyalar.Items.Add(ikon + <span class="string">" "</span> + Path.GetFileName(dosya));
+        }
+        
+        lblDurum.Text = $<span class="string">"{lstDosyalar.Items.Count} öğe"</span>;
+    }
+    <span class="keyword">catch</span> (Exception ex)
+    {
+        MessageBox.Show(<span class="string">"Hata: "</span> + ex.Message);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Dosya Bilgisi Gösterme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">lstDosyalar_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (lstDosyalar.SelectedItem == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    <span class="keyword">string</span> secili = lstDosyalar.SelectedItem.ToString().Substring(<span class="number">2</span>).Trim();
+    <span class="keyword">string</span> tamYol = Path.Combine(mevcutKlasor, secili);
+    
+    <span class="keyword">if</span> (File.Exists(tamYol))
+    {
+        FileInfo fi = <span class="keyword">new</span> FileInfo(tamYol);
+        lblDosyaBilgi.Text = $<span class="string">"Boyut: {fi.Length / 1024.0:N1} KB\n"</span> +
+                            $<span class="string">"Oluşturma: {fi.CreationTime:dd.MM.yyyy}\n"</span> +
+                            $<span class="string">"Değişiklik: {fi.LastWriteTime:dd.MM.yyyy}"</span>;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Kopyala ve Taşı İşlemleri</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnKopyala_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (lstDosyalar.SelectedItem == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    <span class="keyword">string</span> dosyaAdi = lstDosyalar.SelectedItem.ToString().Substring(<span class="number">2</span>).Trim();
+    <span class="keyword">string</span> kaynakYol = Path.Combine(mevcutKlasor, dosyaAdi);
+    
+    <span class="keyword">if</span> (!File.Exists(kaynakYol)) <span class="keyword">return</span>;
+    
+    FolderBrowserDialog fbd = <span class="keyword">new</span> FolderBrowserDialog();
+    fbd.Description = <span class="string">"Hedef klasörü seçin"</span>;
+    
+    <span class="keyword">if</span> (fbd.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">string</span> hedefYol = Path.Combine(fbd.SelectedPath, dosyaAdi);
+        
+        <span class="keyword">try</span>
+        {
+            File.Copy(kaynakYol, hedefYol, <span class="keyword">true</span>);
+            MessageBox.Show(<span class="string">"Dosya kopyalandı!"</span>, <span class="string">"Başarılı"</span>);
+        }
+        <span class="keyword">catch</span> (Exception ex)
+        {
+            MessageBox.Show(<span class="string">"Hata: "</span> + ex.Message);
+        }
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">btnTasi_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (lstDosyalar.SelectedItem == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    <span class="keyword">string</span> dosyaAdi = lstDosyalar.SelectedItem.ToString().Substring(<span class="number">2</span>).Trim();
+    <span class="keyword">string</span> kaynakYol = Path.Combine(mevcutKlasor, dosyaAdi);
+    
+    <span class="keyword">if</span> (!File.Exists(kaynakYol)) <span class="keyword">return</span>;
+    
+    FolderBrowserDialog fbd = <span class="keyword">new</span> FolderBrowserDialog();
+    
+    <span class="keyword">if</span> (fbd.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">string</span> hedefYol = Path.Combine(fbd.SelectedPath, dosyaAdi);
+        
+        <span class="keyword">try</span>
+        {
+            File.Move(kaynakYol, hedefYol);
+            MessageBox.Show(<span class="string">"Dosya taşındı!"</span>);
+            DosyalariListele();
+        }
+        <span class="keyword">catch</span> (Exception ex)
+        {
+            MessageBox.Show(<span class="string">"Hata: "</span> + ex.Message);
+        }
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (lstDosyalar.SelectedItem == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    DialogResult onay = MessageBox.Show(<span class="string">"Silmek istediğinize emin misiniz?"</span>,
+        <span class="string">"Onay"</span>, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+    
+    <span class="keyword">if</span> (onay == DialogResult.Yes)
+    {
+        <span class="keyword">string</span> dosyaAdi = lstDosyalar.SelectedItem.ToString().Substring(<span class="number">2</span>).Trim();
+        <span class="keyword">string</span> tamYol = Path.Combine(mevcutKlasor, dosyaAdi);
+        
+        <span class="keyword">try</span>
+        {
+            File.Delete(tamYol);
+            DosyalariListele();
+        }
+        <span class="keyword">catch</span> (Exception ex)
+        {
+            MessageBox.Show(<span class="string">"Hata: "</span> + ex.Message);
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje08.html" class="nav-btn prev">← Proje 8</a>
+            <a href="proje10.html" class="nav-btn next">Proje 10 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

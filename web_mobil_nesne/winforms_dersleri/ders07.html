@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 7: MessageBox</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 7</span>
+            <h1>MessageBox</h1>
+            <p class="subtitle">Mesaj Kutuları ve Kullanıcı Onayı</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders05.html">Ders 5</a>
+            <a href="ders06.html">Ders 6</a>
+            <a href="ders07.html" class="active">Ders 7</a>
+            <a href="ders08.html">Ders 8</a>
+            <a href="ders09.html">Ders 9</a>
+        </nav>
+
+        <section class="section">
+            <h2>MessageBox Nedir?</h2>
+            <p><strong>MessageBox</strong>, kullanıcıya bilgi, uyarı, hata mesajları göstermek veya onay almak için
+                kullanılan modal dialog kutusudur.</p>
+
+            <div class="info-box">
+                <strong>📌 Modal Dialog:</strong> Kullanıcı mesaj kutusunu kapatmadan uygulamaya devam edemez.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>1. Basit Mesaj</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">En Basit Kullanım</div>
+                <pre><code><span class="comment">// Sadece mesaj</span>
+MessageBox.Show(<span class="string">"İşlem başarılı!"</span>);
+
+<span class="comment">// Mesaj ve başlık</span>
+MessageBox.Show(<span class="string">"Dosya kaydedildi."</span>, <span class="string">"Bilgi"</span>);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. Butonlar (MessageBoxButtons)</h2>
+
+            <table>
+                <tr>
+                    <th>Değer</th>
+                    <th>Butonlar</th>
+                </tr>
+                <tr>
+                    <td>OK</td>
+                    <td>Tamam</td>
+                </tr>
+                <tr>
+                    <td>OKCancel</td>
+                    <td>Tamam, İptal</td>
+                </tr>
+                <tr>
+                    <td>YesNo</td>
+                    <td>Evet, Hayır</td>
+                </tr>
+                <tr>
+                    <td>YesNoCancel</td>
+                    <td>Evet, Hayır, İptal</td>
+                </tr>
+                <tr>
+                    <td>RetryCancel</td>
+                    <td>Yeniden Dene, İptal</td>
+                </tr>
+                <tr>
+                    <td>AbortRetryIgnore</td>
+                    <td>Durdur, Yeniden Dene, Yoksay</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Butonlu Mesajlar</div>
+                <pre><code><span class="comment">// Tamam / İptal</span>
+MessageBox.Show(<span class="string">"Devam edilsin mi?"</span>, <span class="string">"Onay"</span>, 
+    MessageBoxButtons.OKCancel);
+
+<span class="comment">// Evet / Hayır</span>
+MessageBox.Show(<span class="string">"Silmek istiyor musunuz?"</span>, <span class="string">"Silme"</span>, 
+    MessageBoxButtons.YesNo);
+
+<span class="comment">// Evet / Hayır / İptal</span>
+MessageBox.Show(<span class="string">"Değişiklikleri kaydet?"</span>, <span class="string">"Kaydet"</span>, 
+    MessageBoxButtons.YesNoCancel);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. İkonlar (MessageBoxIcon)</h2>
+
+            <table>
+                <tr>
+                    <th>Değer</th>
+                    <th>Görünüm</th>
+                    <th>Kullanım</th>
+                </tr>
+                <tr>
+                    <td>Information</td>
+                    <td>ℹ️ Mavi bilgi</td>
+                    <td>Bilgilendirme</td>
+                </tr>
+                <tr>
+                    <td>Warning</td>
+                    <td>⚠️ Sarı uyarı</td>
+                    <td>Dikkat gerektiren durumlar</td>
+                </tr>
+                <tr>
+                    <td>Error</td>
+                    <td>❌ Kırmızı hata</td>
+                    <td>Hatalar</td>
+                </tr>
+                <tr>
+                    <td>Question</td>
+                    <td>❓ Soru işareti</td>
+                    <td>Kullanıcıya soru</td>
+                </tr>
+                <tr>
+                    <td>None</td>
+                    <td>İkonsuz</td>
+                    <td>Basit mesajlar</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">İkonlu Mesajlar</div>
+                <pre><code><span class="comment">// Bilgi mesajı</span>
+MessageBox.Show(<span class="string">"Kayıt başarılı!"</span>, <span class="string">"Bilgi"</span>, 
+    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+<span class="comment">// Uyarı mesajı</span>
+MessageBox.Show(<span class="string">"Bu işlem geri alınamaz!"</span>, <span class="string">"Uyarı"</span>, 
+    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+<span class="comment">// Hata mesajı</span>
+MessageBox.Show(<span class="string">"Dosya bulunamadı!"</span>, <span class="string">"Hata"</span>, 
+    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+<span class="comment">// Soru</span>
+MessageBox.Show(<span class="string">"Devam etmek istiyor musunuz?"</span>, <span class="string">"Onay"</span>, 
+    MessageBoxButtons.YesNo, MessageBoxIcon.Question);</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>4. Cevabı Kontrol Etme (DialogResult)</h2>
+            <p>Kullanıcının hangi butona tıkladığını <code>DialogResult</code> ile öğrenebilirsiniz.</p>
+
+            <table>
+                <tr>
+                    <th>Değer</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>DialogResult.OK</td>
+                    <td>Tamam tıklandı</td>
+                </tr>
+                <tr>
+                    <td>DialogResult.Cancel</td>
+                    <td>İptal tıklandı</td>
+                </tr>
+                <tr>
+                    <td>DialogResult.Yes</td>
+                    <td>Evet tıklandı</td>
+                </tr>
+                <tr>
+                    <td>DialogResult.No</td>
+                    <td>Hayır tıklandı</td>
+                </tr>
+                <tr>
+                    <td>DialogResult.Retry</td>
+                    <td>Yeniden Dene tıklandı</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Cevaba Göre İşlem</div>
+                <pre><code><span class="comment">// Silme onayı</span>
+DialogResult sonuc = MessageBox.Show(
+    <span class="string">"Bu kaydı silmek istediğinizden emin misiniz?"</span>,
+    <span class="string">"Silme Onayı"</span>,
+    MessageBoxButtons.YesNo,
+    MessageBoxIcon.Question);
+
+<span class="keyword">if</span> (sonuc == DialogResult.Yes)
+{
+    <span class="comment">// Silme işlemi</span>
+    listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+    MessageBox.Show(<span class="string">"Kayıt silindi."</span>, <span class="string">"Bilgi"</span>);
+}
+<span class="keyword">else</span>
+{
+    MessageBox.Show(<span class="string">"Silme işlemi iptal edildi."</span>, <span class="string">"İptal"</span>);
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Kaydetme - Üç Seçenek</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">Form1_FormClosing</span>(<span class="keyword">object</span> sender, FormClosingEventArgs e)
+{
+    <span class="keyword">if</span> (degisiklikVar)
+    {
+        DialogResult sonuc = MessageBox.Show(
+            <span class="string">"Değişiklikler kaydedilsin mi?"</span>,
+            <span class="string">"Kaydet"</span>,
+            MessageBoxButtons.YesNoCancel,
+            MessageBoxIcon.Question);
+        
+        <span class="keyword">switch</span> (sonuc)
+        {
+            <span class="keyword">case</span> DialogResult.Yes:
+                Kaydet();
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> DialogResult.No:
+                <span class="comment">// Kaydetmeden çık</span>
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> DialogResult.Cancel:
+                e.Cancel = <span class="keyword">true</span>; <span class="comment">// Kapanmayı iptal et</span>
+                <span class="keyword">break</span>;
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>5. Varsayılan Buton</h2>
+            <p>Enter'a basıldığında hangi butonun seçileceğini belirler.</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Varsayılan Buton Ayarlama</div>
+                <pre><code><span class="comment">// "Hayır" varsayılan olsun (yanlışlıkla silmeyi engeller)</span>
+DialogResult sonuc = MessageBox.Show(
+    <span class="string">"Dosyayı silmek istiyor musunuz?"</span>,
+    <span class="string">"Silme"</span>,
+    MessageBoxButtons.YesNo,
+    MessageBoxIcon.Warning,
+    MessageBoxDefaultButton.Button2); <span class="comment">// "Hayır" butonu</span>
+
+<span class="comment">// Button1 = Evet, Button2 = Hayır, Button3 = İptal</span></code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnekler</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Giriş Doğrulama</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnGiris_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span> kullanici = txtKullanici.Text;
+    <span class="keyword">string</span> sifre = txtSifre.Text;
+    
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(kullanici))
+    {
+        MessageBox.Show(<span class="string">"Kullanıcı adı boş olamaz!"</span>, <span class="string">"Hata"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        txtKullanici.Focus();
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="keyword">if</span> (sifre.Length &lt; <span class="number">6</span>)
+    {
+        MessageBox.Show(<span class="string">"Şifre en az 6 karakter olmalı!"</span>, <span class="string">"Hata"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        txtSifre.Focus();
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// Giriş kontrolü</span>
+    <span class="keyword">if</span> (kullanici == <span class="string">"admin"</span> && sifre == <span class="string">"123456"</span>)
+    {
+        MessageBox.Show(<span class="string">"Giriş başarılı!"</span>, <span class="string">"Hoş Geldiniz"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+    <span class="keyword">else</span>
+    {
+        MessageBox.Show(<span class="string">"Kullanıcı adı veya şifre hatalı!"</span>, <span class="string">"Hata"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Hata Yönetimi ile Birlikte</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnHesapla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">try</span>
+    {
+        <span class="keyword">int</span> sayi1 = <span class="keyword">int</span>.Parse(txtSayi1.Text);
+        <span class="keyword">int</span> sayi2 = <span class="keyword">int</span>.Parse(txtSayi2.Text);
+        
+        <span class="keyword">if</span> (sayi2 == <span class="number">0</span>)
+        {
+            MessageBox.Show(<span class="string">"Sıfıra bölme yapılamaz!"</span>, <span class="string">"Hata"</span>,
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            <span class="keyword">return</span>;
+        }
+        
+        <span class="keyword">double</span> sonuc = (<span class="keyword">double</span>)sayi1 / sayi2;
+        lblSonuc.Text = sonuc.ToString(<span class="string">"F2"</span>);
+    }
+    <span class="keyword">catch</span> (FormatException)
+    {
+        MessageBox.Show(<span class="string">"Lütfen geçerli sayılar girin!"</span>, <span class="string">"Format Hatası"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    }
+    <span class="keyword">catch</span> (Exception ex)
+    {
+        MessageBox.Show(<span class="string">"Beklenmeyen hata: "</span> + ex.Message, <span class="string">"Hata"</span>,
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Bir butona tıklandığında "Hoş geldiniz!" mesajı gösteren uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnMerhaba_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    MessageBox.Show(<span class="string">"Hoş geldiniz!"</span>, <span class="string">"Karşılama"</span>,
+        MessageBoxButtons.OK, MessageBoxIcon.Information);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Silme işlemi için Evet/Hayır onayı isteyen ve sonuca göre işlem yapan kod yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    DialogResult sonuc = MessageBox.Show(
+        <span class="string">"Silmek istiyor musunuz?"</span>, <span class="string">"Onay"</span>,
+        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+    
+    <span class="keyword">if</span> (sonuc == DialogResult.Yes)
+    {
+        <span class="comment">// Silme işlemi</span>
+        MessageBox.Show(<span class="string">"Silindi!"</span>);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Form kapanırken kaydetme hatırlatması yapan uygulama yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">private void</span> <span class="method">Form1_FormClosing</span>(<span class="keyword">object</span> sender, FormClosingEventArgs e)
+{
+    DialogResult sonuc = MessageBox.Show(
+        <span class="string">"Çıkmadan önce kaydetmek ister misiniz?"</span>,
+        <span class="string">"Çıkış"</span>,
+        MessageBoxButtons.YesNoCancel,
+        MessageBoxIcon.Question);
+    
+    <span class="keyword">if</span> (sonuc == DialogResult.Yes)
+        Kaydet();
+    <span class="keyword">else if</span> (sonuc == DialogResult.Cancel)
+        e.Cancel = <span class="keyword">true</span>;
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders06.html" class="nav-btn prev">← Önceki: Olaylar</a>
+            <a href="ders08.html" class="nav-btn next">Sonraki: MenuStrip, ToolStrip →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

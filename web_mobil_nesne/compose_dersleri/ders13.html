@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 13: Side Effects</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 13</span>
+            <h1>⚡ Side Effects</h1>
+            <p class="subtitle">LaunchedEffect, DisposableEffect ve daha fazlası</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • LaunchedEffect<br>
+                • DisposableEffect<br>
+                • SideEffect<br>
+                • rememberCoroutineScope
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Side Effect Nedir?</h2>
+            <p>Side effect, Composable fonksiyonun kapsamı dışında gerçekleşen işlemlerdir. Örneğin: API çağrıları,
+                analitik olayları, timer'lar vb.</p>
+
+            <div class="info-box warning">
+                <strong>⚠️ Önemli Kurallar:</strong><br>
+                • Composable'lar herhangi bir zamanda yeniden çalışabilir (recomposition)<br>
+                • Side effect'ler kontrollü bir şekilde yönetilmeli<br>
+                • Compose kendi yaşam döngüsü API'lerini sağlar
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>LaunchedEffect</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Coroutine ile Side Effect</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">LaunchedEffectOrnekleri</span>() {
+    <span class="keyword">var</span> mesaj <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    
+    <span class="comment">// Sadece bir kez çalışır (composition'da)</span>
+    LaunchedEffect(Unit) {
+        <span class="comment">// Bu kod sadece composable ilk kez compose edildiğinde çalışır</span>
+        delay(<span class="number">2000</span>)
+        mesaj = <span class="string">"2 saniye sonra yüklendi!"</span>
+    }
+    
+    Text(mesaj.ifEmpty { <span class="string">"Yükleniyor..."</span> })
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">KeyIleLaunchedEffect</span>(userId: Int) {
+    <span class="keyword">var</span> kullanici <span class="keyword">by</span> remember { mutableStateOf&lt;String?&gt;(<span class="keyword">null</span>) }
+    
+    <span class="comment">// userId değiştiğinde yeniden çalışır</span>
+    LaunchedEffect(userId) {
+        kullanici = <span class="keyword">null</span>  <span class="comment">// Reset</span>
+        delay(<span class="number">1000</span>)  <span class="comment">// Simulated API call</span>
+        kullanici = <span class="string">"Kullanıcı $userId"</span>
+    }
+    
+    Text(kullanici ?: <span class="string">"Kullanıcı yükleniyor..."</span>)
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">TimerOrnek</span>() {
+    <span class="keyword">var</span> saniye <span class="keyword">by</span> remember { mutableIntStateOf(<span class="number">0</span>) }
+    <span class="keyword">var</span> calisiyor <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">true</span>) }
+    
+    <span class="comment">// calisiyor true olduğu sürece timer çalışır</span>
+    <span class="comment">// calisiyor false olunca coroutine iptal edilir</span>
+    LaunchedEffect(calisiyor) {
+        <span class="keyword">while</span> (calisiyor) {
+            delay(<span class="number">1000</span>)
+            saniye++
+        }
+    }
+    
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text(
+            text = <span class="string">"$saniye saniye"</span>,
+            fontSize = <span class="number">32</span>.sp,
+            fontWeight = FontWeight.Bold
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Button(onClick = { calisiyor = !calisiyor }) {
+            Text(<span class="keyword">if</span> (calisiyor) <span class="string">"Durdur"</span> <span class="keyword">else</span> <span class="string">"Başlat"</span>)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SnackbarOrnek</span>() {
+    <span class="keyword">val</span> snackbarHostState = remember { SnackbarHostState() }
+    <span class="keyword">var</span> showSnackbar <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    <span class="comment">// One-time event handling</span>
+    LaunchedEffect(showSnackbar) {
+        <span class="keyword">if</span> (showSnackbar) {
+            snackbarHostState.showSnackbar(
+                message = <span class="string">"İşlem tamamlandı!"</span>,
+                duration = SnackbarDuration.Short
+            )
+            showSnackbar = <span class="keyword">false</span>
+        }
+    }
+    
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentAlignment = Alignment.Center
+        ) {
+            Button(onClick = { showSnackbar = <span class="keyword">true</span> }) {
+                Text(<span class="string">"Snackbar Göster"</span>)
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>rememberCoroutineScope</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Event Handler'da Coroutine</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">CoroutineScopeOrnek</span>() {
+    <span class="keyword">val</span> scope = rememberCoroutineScope()
+    <span class="keyword">var</span> mesaj <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> yukleniyor <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    Column(
+        modifier = Modifier.padding(<span class="number">16</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = {
+                <span class="comment">// Event handler'da coroutine başlat</span>
+                scope.launch {
+                    yukleniyor = <span class="keyword">true</span>
+                    delay(<span class="number">2000</span>)  <span class="comment">// Simulated work</span>
+                    mesaj = <span class="string">"İşlem tamamlandı!"</span>
+                    yukleniyor = <span class="keyword">false</span>
+                }
+            },
+            enabled = !yukleniyor
+        ) {
+            <span class="keyword">if</span> (yukleniyor) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(<span class="number">20</span>.dp),
+                    color = Color.White,
+                    strokeWidth = <span class="number">2</span>.dp
+                )
+            } <span class="keyword">else</span> {
+                Text(<span class="string">"İşlem Başlat"</span>)
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Text(mesaj)
+    }
+}
+
+<span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DrawerOrnek</span>() {
+    <span class="keyword">val</span> drawerState = rememberDrawerState(DrawerValue.Closed)
+    <span class="keyword">val</span> scope = rememberCoroutineScope()
+    
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet {
+                Text(
+                    <span class="string">"Menü"</span>,
+                    modifier = Modifier.padding(<span class="number">16</span>.dp),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                HorizontalDivider()
+                NavigationDrawerItem(
+                    label = { Text(<span class="string">"Ana Sayfa"</span>) },
+                    selected = <span class="keyword">true</span>,
+                    onClick = { scope.launch { drawerState.close() } }
+                )
+                NavigationDrawerItem(
+                    label = { Text(<span class="string">"Ayarlar"</span>) },
+                    selected = <span class="keyword">false</span>,
+                    onClick = { scope.launch { drawerState.close() } }
+                )
+            }
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text(<span class="string">"Drawer Örneği"</span>) },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = { scope.launch { drawerState.open() } }
+                        ) {
+                            Icon(Icons.Default.Menu, <span class="string">"Menü"</span>)
+                        }
+                    }
+                )
+            }
+        ) { padding ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(<span class="string">"Ana içerik"</span>)
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>DisposableEffect</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Cleanup Gerektiren Durumlar</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DisposableEffectOrnek</span>(lifecycleOwner: LifecycleOwner) {
+    DisposableEffect(lifecycleOwner) {
+        <span class="keyword">val</span> observer = LifecycleEventObserver { _, event ->
+            <span class="keyword">when</span> (event) {
+                Lifecycle.Event.ON_START -> {
+                    Log.d(<span class="string">"Lifecycle"</span>, <span class="string">"Ekran görünür oldu"</span>)
+                }
+                Lifecycle.Event.ON_STOP -> {
+                    Log.d(<span class="string">"Lifecycle"</span>, <span class="string">"Ekran gizlendi"</span>)
+                }
+                <span class="keyword">else</span> -> {}
+            }
+        }
+        
+        lifecycleOwner.lifecycle.addObserver(observer)
+        
+        <span class="comment">// Cleanup: Composable kaldırıldığında çağrılır</span>
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            Log.d(<span class="string">"Lifecycle"</span>, <span class="string">"Observer kaldırıldı"</span>)
+        }
+    }
+    
+    Text(<span class="string">"Lifecycle Observer Aktif"</span>)
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">BackHandlerOrnek</span>() {
+    <span class="keyword">var</span> backPressCount <span class="keyword">by</span> remember { mutableIntStateOf(<span class="number">0</span>) }
+    
+    <span class="comment">// Back button handling</span>
+    BackHandler(enabled = backPressCount < <span class="number">2</span>) {
+        backPressCount++
+    }
+    
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(<span class="number">16</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(<span class="string">"Geri tuşuna basıldı: $backPressCount kez"</span>)
+        Text(<span class="string">"3. basışta çıkış yapılır"</span>)
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Button(onClick = { backPressCount = <span class="number">0</span> }) {
+            Text(<span class="string">"Sıfırla"</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>SideEffect</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Non-Compose Kod İle Senkronizasyon</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SideEffectOrnek</span>(onColorChange: (Color) -> Unit) {
+    <span class="keyword">var</span> color <span class="keyword">by</span> remember { mutableStateOf(Color.Red) }
+    
+    <span class="comment">// Her başarılı recomposition sonrası çalışır</span>
+    SideEffect {
+        <span class="comment">// Non-compose kod ile state senkronizasyonu</span>
+        onColorChange(color)
+        Log.d(<span class="string">"SideEffect"</span>, <span class="string">"Renk değişti: $color"</span>)
+    }
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        Box(
+            modifier = Modifier
+                .size(<span class="number">100</span>.dp)
+                .background(color)
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Row(horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)) {
+            Button(onClick = { color = Color.Red }) { Text(<span class="string">"Kırmızı"</span>) }
+            Button(onClick = { color = Color.Green }) { Text(<span class="string">"Yeşil"</span>) }
+            Button(onClick = { color = Color.Blue }) { Text(<span class="string">"Mavi"</span>) }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>produceState</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Asenkron Veri Üretimi</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ProduceStateOrnek</span>(url: String) {
+    <span class="keyword">val</span> imageState <span class="keyword">by</span> produceState&lt;ImageLoadState&gt;(
+        initialValue = ImageLoadState.Loading,
+        key1 = url
+    ) {
+        value = ImageLoadState.Loading
+        
+        <span class="keyword">try</span> {
+            <span class="comment">// Simulated image loading</span>
+            delay(<span class="number">2000</span>)
+            value = ImageLoadState.Success(url)
+        } <span class="keyword">catch</span> (e: Exception) {
+            value = ImageLoadState.Error(e.message ?: <span class="string">"Hata"</span>)
+        }
+    }
+    
+    <span class="keyword">when</span> (<span class="keyword">val</span> state = imageState) {
+        <span class="keyword">is</span> ImageLoadState.Loading -> {
+            CircularProgressIndicator()
+        }
+        <span class="keyword">is</span> ImageLoadState.Success -> {
+            Text(<span class="string">"Resim yüklendi: ${state.url}"</span>)
+        }
+        <span class="keyword">is</span> ImageLoadState.Error -> {
+            Text(<span class="string">"Hata: ${state.message}"</span>, color = Color.Red)
+        }
+    }
+}
+
+<span class="keyword">sealed class</span> <span class="class-name">ImageLoadState</span> {
+    <span class="keyword">object</span> <span class="class-name">Loading</span> : ImageLoadState()
+    <span class="keyword">data class</span> <span class="class-name">Success</span>(<span class="keyword">val</span> url: String) : ImageLoadState()
+    <span class="keyword">data class</span> <span class="class-name">Error</span>(<span class="keyword">val</span> message: String) : ImageLoadState()
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>derivedStateOf</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Hesaplanmış State</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DerivedStateOrnek</span>() {
+    <span class="keyword">var</span> firstName <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> lastName <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    
+    <span class="comment">// Sadece firstName veya lastName değiştiğinde hesaplanır</span>
+    <span class="keyword">val</span> fullName <span class="keyword">by</span> remember {
+        derivedStateOf { 
+            <span class="string">"$firstName $lastName"</span>.trim()
+        }
+    }
+    
+    <span class="comment">// Form geçerliliği</span>
+    <span class="keyword">val</span> isValid <span class="keyword">by</span> remember {
+        derivedStateOf {
+            firstName.length >= <span class="number">2</span> && lastName.length >= <span class="number">2</span>
+        }
+    }
+    
+    Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+        OutlinedTextField(
+            value = firstName,
+            onValueChange = { firstName = it },
+            label = { Text(<span class="string">"Ad"</span>) }
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        
+        OutlinedTextField(
+            value = lastName,
+            onValueChange = { lastName = it },
+            label = { Text(<span class="string">"Soyad"</span>) }
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        
+        Text(<span class="string">"Tam İsim: $fullName"</span>)
+        
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        
+        Button(
+            onClick = { },
+            enabled = isValid
+        ) {
+            Text(<span class="string">"Kaydet"</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>LaunchedEffect ile geri sayım sayacı yap.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>DisposableEffect ile Activity lifecycle'ı dinle.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>produceState ile API'den veri çek ve göster.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders12.html" class="nav-btn prev">← Ders 12</a>
+            <a href="ders14.html" class="nav-btn next">Ders 14 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material Bileşenler - Jetpack Compose</title>
+<style>
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#0f1117;--surface:#1a1d27;--surface2:#242836;--surface3:#2e3344;
+--primary:#818cf8;--primary-dim:#6366f1;--secondary:#34d399;--accent:#f472b6;
+--danger:#f87171;--warning:#fbbf24;--text:#e2e8f0;--text-dim:#94a3b8;
+--radius:12px;--code-bg:#1e2235;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+a{color:var(--primary);text-decoration:none}
+
+/* NAV */
+.sidebar{position:fixed;top:0;left:0;width:260px;height:100vh;background:var(--surface);border-right:1px solid var(--surface3);padding:24px 16px;overflow-y:auto;z-index:100}
+.sidebar h2{font-size:1.1rem;color:var(--primary);margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--surface3)}
+.sidebar a{display:block;padding:8px 12px;border-radius:8px;color:var(--text-dim);font-size:.88rem;transition:.2s;margin-bottom:2px}
+.sidebar a:hover,.sidebar a.active{background:var(--surface3);color:var(--primary)}
+.sidebar .sub{padding-left:20px;font-size:.82rem}
+
+/* MAIN */
+.main{margin-left:260px;padding:40px 48px;max-width:960px}
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;padding:20px}}
+
+h1{font-size:2.4rem;background:linear-gradient(135deg,var(--primary),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+.subtitle{color:var(--text-dim);font-size:1.1rem;margin-bottom:40px}
+h2{font-size:1.6rem;color:var(--secondary);margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--surface3)}
+h3{font-size:1.15rem;color:var(--primary);margin:28px 0 12px}
+h4{font-size:1rem;color:var(--accent);margin:20px 0 8px}
+p,li{color:var(--text-dim);margin-bottom:10px}
+ul,ol{padding-left:24px;margin-bottom:16px}
+li{margin-bottom:6px}
+strong{color:var(--text)}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--surface3);border-radius:var(--radius);padding:24px;margin:16px 0}
+.card-accent{border-left:4px solid var(--primary)}
+.card-warn{border-left:4px solid var(--warning);background:rgba(251,191,36,.05)}
+.card-success{border-left:4px solid var(--secondary);background:rgba(52,211,153,.05)}
+
+/* CODE */
+pre{background:var(--code-bg);border:1px solid var(--surface3);border-radius:var(--radius);padding:20px;overflow-x:auto;font-size:.85rem;line-height:1.6;margin:12px 0 20px}
+code{font-family:'Cascadia Code','Fira Code',monospace}
+.kw{color:#c084fc}.fn{color:#60a5fa}.str{color:#34d399}.cm{color:#64748b;font-style:italic}
+.ann{color:#f472b6}.type{color:#fbbf24}.num{color:#f87171}.param{color:#fb923c}
+
+/* PHONE PREVIEW */
+.phone{width:280px;height:520px;background:#fff;border-radius:28px;border:8px solid #1f2937;margin:16px auto;display:flex;flex-direction:column;overflow:hidden;position:relative;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.phone::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:18px;background:#1f2937;border-radius:0 0 10px 10px;z-index:10}
+.phone-top{background:var(--primary);color:#fff;padding:26px 16px 12px;font-weight:600;display:flex;align-items:center;gap:12px;font-size:.9rem}
+.phone-body{flex:1;overflow-y:auto;padding:12px}
+.phone-bottom{background:#f8f9fa;border-top:1px solid #e5e7eb;display:flex;justify-content:space-around;padding:8px 0}
+.phone-bottom div{text-align:center;font-size:.7rem;color:#6b7280;padding:4px 8px}
+.phone-bottom div.act{color:var(--primary-dim);font-weight:600}
+.phone-fab{position:absolute;bottom:60px;right:16px;width:48px;height:48px;background:var(--primary);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.4rem;box-shadow:0 4px 12px rgba(129,140,248,.4)}
+.mini-card{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.mini-card h5{font-size:.85rem;color:#1f2937;margin-bottom:4px}
+.mini-card p{font-size:.75rem;color:#6b7280;margin:0}
+
+/* DIALOG PREVIEW */
+.dialog-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:20}
+.dialog-box{background:#fff;border-radius:16px;padding:20px;width:85%;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.dialog-box h5{font-size:.95rem;color:#1f2937;margin-bottom:8px}
+.dialog-box p{font-size:.8rem;color:#6b7280;margin-bottom:16px}
+.dialog-btns{display:flex;justify-content:flex-end;gap:12px}
+.dialog-btns span{font-size:.85rem;cursor:pointer;padding:6px 12px;border-radius:8px}
+.btn-cancel{color:#6b7280}
+.btn-danger{color:#ef4444;font-weight:600}
+
+/* BOTTOMSHEET PREVIEW */
+.sheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:16px 16px 0 0;padding:16px;box-shadow:0 -4px 20px rgba(0,0,0,.15);z-index:20}
+.sheet-handle{width:40px;height:4px;background:#d1d5db;border-radius:2px;margin:0 auto 12px}
+.sheet h5{font-size:.95rem;color:#1f2937;margin-bottom:12px}
+.sheet-item{padding:10px 8px;font-size:.85rem;color:#374151;border-radius:8px}
+.sheet-item:hover{background:#f3f4f6}
+
+/* STEP INDICATOR */
+.step{display:flex;align-items:flex-start;gap:16px;margin:16px 0}
+.step-num{min-width:36px;height:36px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#fff}
+.step-content{flex:1}
+
+/* TOGGLE */
+details{margin:12px 0}
+summary{cursor:pointer;background:var(--surface2);padding:12px 16px;border-radius:var(--radius);color:var(--text);font-weight:500;transition:.2s;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:'▶ ';font-size:.75rem;color:var(--primary)}
+details[open] summary::before{content:'▼ '}
+summary:hover{background:var(--surface3)}
+details .detail-body{padding:16px;background:var(--surface);border:1px solid var(--surface3);border-top:none;border-radius:0 0 var(--radius) var(--radius)}
+
+.emoji{font-size:1.2rem;margin-right:6px}
+.tag{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:600;margin:0 4px}
+.tag-blue{background:rgba(129,140,248,.15);color:var(--primary)}
+.tag-green{background:rgba(52,211,153,.15);color:var(--secondary)}
+.tag-pink{background:rgba(244,114,182,.15);color:var(--accent)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media(max-width:768px){.grid-2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <h2>📱 Material Bileşenler</h2>
+  <a href="#giris" class="active">🏠 Giriş</a>
+  <a href="#temel">🧱 Temel Kavramlar</a>
+  <a href="#scaffold">🏗️ Scaffold Nedir?</a>
+  <a class="sub" href="#scaffold-yapi">Yapısı</a>
+  <a class="sub" href="#scaffold-kod">Kodu</a>
+  <a href="#topappbar">📌 TopAppBar</a>
+  <a class="sub" href="#topappbar-parcalar">Parçaları</a>
+  <a class="sub" href="#topappbar-kod">Kodu</a>
+  <a href="#bottombar">🔽 BottomBar</a>
+  <a href="#fab">⊕ FAB Butonu</a>
+  <a href="#card">🃏 Card Bileşeni</a>
+  <a class="sub" href="#card-kod">Kodu</a>
+  <a href="#lazycolumn">📜 LazyColumn</a>
+  <a href="#tumkod">💻 Tüm Kod</a>
+  <a href="#dialog">💬 Dialog</a>
+  <a class="sub" href="#dialog-kod">Kodu</a>
+  <a href="#bottomsheet">📋 BottomSheet</a>
+  <a class="sub" href="#sheet-kod">Kodu</a>
+  <a href="#ozet">📝 Özet</a>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- GİRİŞ -->
+<section id="giris">
+<h1>Material Bileşenler 🎨</h1>
+<p class="subtitle">Scaffold, TopAppBar, Card, Dialog ve BottomSheet — Profesyonel uygulama arayüzleri oluşturmayı öğren!</p>
+
+<div class="card card-warn">
+<p><span class="emoji">💡</span><strong>Bu derste ne öğreneceksin?</strong></p>
+<ul>
+<li>Bir uygulamanın <strong>iskeletini</strong> (Scaffold) kurmayı</li>
+<li>Üst çubuk (TopAppBar), alt menü (BottomBar) ve eylem butonu (FAB) eklemeyi</li>
+<li>Bilgi kartları (Card) oluşturmayı</li>
+<li>Kullanıcıya soru soran <strong>Dialog</strong> penceresi göstermeyi</li>
+<li>Alttan açılan menü (<strong>BottomSheet</strong>) yapmayı</li>
+</ul>
+</div>
+</section>
+
+<!-- TEMEL KAVRAMLAR -->
+<section id="temel">
+<h2>🧱 Önce Temeli Anlayalım</h2>
+<p>Telefonundaki herhangi bir uygulamayı aç. Ne görüyorsun?</p>
+
+<div class="card card-accent">
+<p><strong>Her uygulamada ortak olan 4 şey:</strong></p>
+<div class="step"><div class="step-num">1</div><div class="step-content"><strong>Üst çubuk (TopAppBar)</strong> — Uygulamanın adı, menü ve arama ikonu burada.</div></div>
+<div class="step"><div class="step-num">2</div><div class="step-content"><strong>İçerik alanı</strong> — Kartlar, listeler, yazılar... asıl içerik burada.</div></div>
+<div class="step"><div class="step-num">3</div><div class="step-content"><strong>Alt menü (BottomBar)</strong> — "Ana Sayfa", "Favoriler", "Profil" gibi sekmeler.</div></div>
+<div class="step"><div class="step-num">4</div><div class="step-content"><strong>Eylem butonu (FAB)</strong> — Sağ alttaki yuvarlak "+" butonu.</div></div>
+</div>
+
+<p>İşte Jetpack Compose'da <strong>Scaffold</strong> bileşeni, bu 4 parçayı bir arada tutan <strong>iskelet</strong> yapıdır. Bir evin çatısı gibi düşün — önce çatıyı kurarsın, sonra odaları döşersin!</p>
+
+<div class="grid-2">
+<div class="card" style="text-align:center">
+<p style="font-size:3rem">🏠</p>
+<p><strong>Gerçek hayatta:</strong><br>Önce evin temeli + çatısı yapılır, sonra odalar döşenir.</p>
+</div>
+<div class="card" style="text-align:center">
+<p style="font-size:3rem">📱</p>
+<p><strong>Compose'da:</strong><br>Önce Scaffold kurulur, sonra içerik eklenir.</p>
+</div>
+</div>
+</section>
+
+<!-- SCAFFOLD -->
+<section id="scaffold">
+<h2>🏗️ Scaffold — Uygulamanın İskeleti</h2>
+<p>Scaffold, İngilizce'de <strong>"iskele, çatı"</strong> demektir. Bir uygulamanın temel yapı taşıdır.</p>
+
+<h3 id="scaffold-yapi">Scaffold'un parçaları:</h3>
+<div class="card card-success">
+<pre><code><span class="fn">Scaffold</span>(
+    <span class="param">topBar</span> = { <span class="cm">/* Üst çubuk buraya */</span> },
+    <span class="param">bottomBar</span> = { <span class="cm">/* Alt menü buraya */</span> },
+    <span class="param">floatingActionButton</span> = { <span class="cm">/* + butonu buraya */</span> }
+) { <span class="param">paddingValues</span> ->
+    <span class="cm">// Ana içerik buraya</span>
+}</code></pre>
+</div>
+
+<div class="card card-warn">
+<p><span class="emoji">⚠️</span><strong>paddingValues ne işe yarar?</strong></p>
+<p>Scaffold, üst çubuğun ve alt menünün kapladığı alanı hesaplar ve sana <code>paddingValues</code> olarak verir. Bunu içeriğe uygulamazsan, içerik üst çubuğun <strong>altında kalır</strong> ve görünmez!</p>
+</div>
+
+<!-- PHONE PREVIEW - SCAFFOLD -->
+<h4>Scaffold'un telefondaki görünümü:</h4>
+<div class="phone">
+  <div class="phone-top">
+    <span>☰</span>
+    <span style="flex:1">Uygulama Başlığı</span>
+    <span>🔍</span>
+    <span>⋮</span>
+  </div>
+  <div class="phone-body">
+    <div class="mini-card"><h5>Kart Başlığı 0</h5><p>Bu bir örnek kart içeriğidir.</p></div>
+    <div class="mini-card"><h5>Kart Başlığı 1</h5><p>Bu bir örnek kart içeriğidir.</p></div>
+    <div class="mini-card"><h5>Kart Başlığı 2</h5><p>Bu bir örnek kart içeriğidir.</p></div>
+    <div class="mini-card"><h5>Kart Başlığı 3</h5><p>Bu bir örnek kart içeriğidir.</p></div>
+    <div class="mini-card"><h5>Kart Başlığı 4</h5><p>Bu bir örnek kart içeriğidir.</p></div>
+  </div>
+  <div class="phone-fab">+</div>
+  <div class="phone-bottom">
+    <div class="act">🏠<br>Ana Sayfa</div>
+    <div>❤️<br>Favoriler</div>
+    <div>👤<br>Profil</div>
+  </div>
+</div>
+
+<p style="text-align:center;color:var(--text-dim);font-size:.85rem">↑ İşte Scaffold ile oluşturulan tipik bir uygulama ekranı</p>
+</section>
+
+<!-- TOPAPPBAR -->
+<section id="topappbar">
+<h2>📌 TopAppBar — Üst Çubuk</h2>
+<p>Uygulamanın en üstündeki çubuktur. Başlık, menü ikonu ve eylem butonlarını barındırır.</p>
+
+<h3 id="topappbar-parcalar">TopAppBar'ın 3 parçası:</h3>
+<div class="step"><div class="step-num">1</div><div class="step-content"><strong>navigationIcon</strong> — Sol taraftaki ikon (genelde ☰ menü ikonu)</div></div>
+<div class="step"><div class="step-num">2</div><div class="step-content"><strong>title</strong> — Ortadaki başlık yazısı</div></div>
+<div class="step"><div class="step-num">3</div><div class="step-content"><strong>actions</strong> — Sağ taraftaki ikon butonları (arama, ayarlar vb.)</div></div>
+
+<h3 id="topappbar-kod">TopAppBar kodu:</h3>
+<pre><code><span class="ann">@OptIn</span>(<span class="type">ExperimentalMaterial3Api</span>::<span class="kw">class</span>)
+
+<span class="fn">TopAppBar</span>(
+    <span class="param">title</span> = { <span class="fn">Text</span>(<span class="str">"Uygulama Başlığı"</span>) },
+
+    <span class="cm">// Sol taraftaki ikon</span>
+    <span class="param">navigationIcon</span> = {
+        <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+            <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Menu, <span class="str">"Menü"</span>)
+        }
+    },
+
+    <span class="cm">// Sağ taraftaki ikonlar</span>
+    <span class="param">actions</span> = {
+        <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+            <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Search, <span class="str">"Ara"</span>)
+        }
+        <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+            <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.MoreVert, <span class="str">"Daha fazla"</span>)
+        }
+    },
+
+    <span class="cm">// Arka plan rengi</span>
+    <span class="param">colors</span> = <span class="type">TopAppBarDefaults</span>.<span class="fn">topAppBarColors</span>(
+        <span class="param">containerColor</span> = <span class="type">MaterialTheme</span>.colorScheme.primaryContainer
+    )
+)</code></pre>
+
+<details>
+<summary>🤔 @OptIn(ExperimentalMaterial3Api::class) ne demek?</summary>
+<div class="detail-body">
+<p>Bazı Material 3 bileşenleri hâlâ <strong>deneysel</strong> (experimental) aşamadadır. Google bu bileşenleri gelecekte değiştirebilir. Bu yüzden <code>@OptIn</code> yazarak <em>"Bunun deneysel olduğunu biliyorum, yine de kullanmak istiyorum"</em> demiş oluruz.</p>
+</div>
+</details>
+</section>
+
+<!-- BOTTOMBAR -->
+<section id="bottombar">
+<h2>🔽 BottomBar — Alt Navigasyon Menüsü</h2>
+<p>Instagram, WhatsApp gibi uygulamaların altındaki sekme çubuğudur.</p>
+
+<pre><code><span class="fn">NavigationBar</span> {
+    <span class="fn">NavigationBarItem</span>(
+        <span class="param">selected</span> = <span class="kw">true</span>,          <span class="cm">// Bu sekme aktif mi?</span>
+        <span class="param">onClick</span> = { },              <span class="cm">// Tıklanınca ne olsun?</span>
+        <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Home, <span class="kw">null</span>) },
+        <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Ana Sayfa"</span>) }
+    )
+    <span class="fn">NavigationBarItem</span>(
+        <span class="param">selected</span> = <span class="kw">false</span>,
+        <span class="param">onClick</span> = { },
+        <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Favorite, <span class="kw">null</span>) },
+        <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Favoriler"</span>) }
+    )
+    <span class="fn">NavigationBarItem</span>(
+        <span class="param">selected</span> = <span class="kw">false</span>,
+        <span class="param">onClick</span> = { },
+        <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Person, <span class="kw">null</span>) },
+        <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Profil"</span>) }
+    )
+}</code></pre>
+
+<div class="card card-accent">
+<p><span class="emoji">📌</span><strong>selected = true</strong> olan öğe vurgulanır (rengi değişir). Hangi sayfada olduğunu gösterir.</p>
+</div>
+</section>
+
+<!-- FAB -->
+<section id="fab">
+<h2>⊕ FloatingActionButton (FAB)</h2>
+<p>Ekranın sağ alt köşesinde yüzen, uygulamanın <strong>en önemli eylemini</strong> temsil eden butondur.</p>
+<pre><code><span class="fn">FloatingActionButton</span>(<span class="param">onClick</span> = { }) {
+    <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Add, <span class="str">"Ekle"</span>)
+}</code></pre>
+<p>Örneğin: Not uygulamasında "Yeni not ekle", mesajlaşmada "Yeni sohbet başlat".</p>
+</section>
+
+<!-- CARD -->
+<section id="card">
+<h2>🃏 Card — Bilgi Kartı</h2>
+<p>Card, bilgileri güzel bir kutu içinde gösteren bileşendir. Gölge efekti ile içerikler ayrışır.</p>
+
+<h3 id="card-kod">Card kodu:</h3>
+<pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">OrnekKart</span>(<span class="param">index</span>: <span class="type">Int</span>) {
+    <span class="fn">Card</span>(
+        <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">fillMaxWidth</span>(),
+        <span class="param">elevation</span> = <span class="type">CardDefaults</span>.<span class="fn">cardElevation</span>(
+            <span class="param">defaultElevation</span> = <span class="num">4</span>.dp
+        )
+    ) {
+        <span class="fn">Column</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp)) {
+            <span class="fn">Text</span>(
+                <span class="str">"Kart Başlığı $index"</span>,
+                <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.titleMedium
+            )
+            <span class="fn">Spacer</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">8</span>.dp))
+            <span class="fn">Text</span>(
+                <span class="str">"Bu bir örnek kart içeriğidir."</span>,
+                <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.bodyMedium
+            )
+        }
+    }
+}</code></pre>
+
+<div class="card card-warn">
+<p><span class="emoji">💡</span><strong>elevation (yükseklik)</strong> = Kartın gölge miktarı. 4.dp hafif gölge verir, 8.dp daha belirgin.</p>
+</div>
+</section>
+
+<!-- LAZYCOLUMN -->
+<section id="lazycolumn">
+<h2>📜 LazyColumn ile Kartları Listeleme</h2>
+<p>10 tane kartı tek tek yazmak yerine, <strong>LazyColumn</strong> ile otomatik listeliyoruz:</p>
+<pre><code><span class="fn">LazyColumn</span>(
+    <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(paddingValues),
+    <span class="param">contentPadding</span> = <span class="fn">PaddingValues</span>(<span class="num">16</span>.dp),
+    <span class="param">verticalArrangement</span> = <span class="type">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">12</span>.dp)
+) {
+    <span class="fn">items</span>(<span class="num">10</span>) { <span class="param">index</span> ->
+        <span class="fn">OrnekKart</span>(index)
+    }
+}</code></pre>
+<div class="card card-accent">
+<p><span class="emoji">🔁</span><strong>items(10)</strong> → 0'dan 9'a kadar 10 kart oluşturur. Her birinde <code>index</code> değeri farklıdır (0, 1, 2...).</p>
+<p><span class="emoji">📏</span><strong>spacedBy(12.dp)</strong> → Kartlar arasında 12dp boşluk bırakır.</p>
+<p><span class="emoji">📐</span><strong>contentPadding</strong> → Listenin kenarlarından 16dp iç boşluk.</p>
+</div>
+</section>
+
+<!-- TÜM KOD -->
+<section id="tumkod">
+<h2>💻 Hepsini Birleştiren Tam Kod</h2>
+<p>Şimdi tüm parçaları Scaffold içinde birleştirelim:</p>
+<details>
+<summary>📄 MaterialBilesenler() — Tam kodu göster</summary>
+<div class="detail-body">
+<pre><code><span class="ann">@OptIn</span>(<span class="type">ExperimentalMaterial3Api</span>::<span class="kw">class</span>)
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">MaterialBilesenler</span>() {
+    <span class="fn">Scaffold</span>(
+        <span class="param">topBar</span> = {
+            <span class="fn">TopAppBar</span>(
+                <span class="param">title</span> = { <span class="fn">Text</span>(<span class="str">"Uygulama Başlığı"</span>) },
+                <span class="param">navigationIcon</span> = {
+                    <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+                        <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Menu, <span class="str">"Menü"</span>)
+                    }
+                },
+                <span class="param">actions</span> = {
+                    <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+                        <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Search, <span class="str">"Ara"</span>)
+                    }
+                    <span class="fn">IconButton</span>(<span class="param">onClick</span> = { }) {
+                        <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.MoreVert, <span class="str">"Daha fazla"</span>)
+                    }
+                },
+                <span class="param">colors</span> = <span class="type">TopAppBarDefaults</span>.<span class="fn">topAppBarColors</span>(
+                    <span class="param">containerColor</span> = <span class="type">MaterialTheme</span>.colorScheme.primaryContainer
+                )
+            )
+        },
+        <span class="param">floatingActionButton</span> = {
+            <span class="fn">FloatingActionButton</span>(<span class="param">onClick</span> = { }) {
+                <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Add, <span class="str">"Ekle"</span>)
+            }
+        },
+        <span class="param">bottomBar</span> = {
+            <span class="fn">NavigationBar</span> {
+                <span class="fn">NavigationBarItem</span>(
+                    <span class="param">selected</span> = <span class="kw">true</span>, <span class="param">onClick</span> = { },
+                    <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Home, <span class="kw">null</span>) },
+                    <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Ana Sayfa"</span>) }
+                )
+                <span class="fn">NavigationBarItem</span>(
+                    <span class="param">selected</span> = <span class="kw">false</span>, <span class="param">onClick</span> = { },
+                    <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Favorite, <span class="kw">null</span>) },
+                    <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Favoriler"</span>) }
+                )
+                <span class="fn">NavigationBarItem</span>(
+                    <span class="param">selected</span> = <span class="kw">false</span>, <span class="param">onClick</span> = { },
+                    <span class="param">icon</span> = { <span class="fn">Icon</span>(<span class="type">Icons</span>.Default.Person, <span class="kw">null</span>) },
+                    <span class="param">label</span> = { <span class="fn">Text</span>(<span class="str">"Profil"</span>) }
+                )
+            }
+        }
+    ) { <span class="param">paddingValues</span> ->
+        <span class="fn">LazyColumn</span>(
+            <span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(paddingValues),
+            <span class="param">contentPadding</span> = <span class="fn">PaddingValues</span>(<span class="num">16</span>.dp),
+            <span class="param">verticalArrangement</span> = <span class="type">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">12</span>.dp)
+        ) {
+            <span class="fn">items</span>(<span class="num">10</span>) { index ->
+                <span class="fn">OrnekKart</span>(index)
+            }
+        }
+    }
+}</code></pre>
+</div>
+</details>
+</section>
+
+<!-- DIALOG -->
+<section id="dialog">
+<h2>💬 Dialog — Onay Penceresi</h2>
+<p>Kullanıcıya bir soru sormak veya onay almak istediğinde Dialog kullanırsın. Örneğin: <em>"Silmek istediğinize emin misiniz?"</em></p>
+
+<h4>Dialog nasıl çalışır?</h4>
+<div class="step"><div class="step-num">1</div><div class="step-content">Bir <strong>state değişkeni</strong> oluşturursun: <code>var dialogAcik by remember { mutableStateOf(false) }</code></div></div>
+<div class="step"><div class="step-num">2</div><div class="step-content">Butona tıklanınca state'i <strong>true</strong> yaparsın → Dialog açılır</div></div>
+<div class="step"><div class="step-num">3</div><div class="step-content">Dialog kapatılınca state'i <strong>false</strong> yaparsın → Dialog kapanır</div></div>
+
+<!-- DIALOG PHONE PREVIEW -->
+<div class="phone">
+  <div class="phone-top"><span>☰</span><span style="flex:1">Uygulamam</span></div>
+  <div class="phone-body" style="display:flex;align-items:center;justify-content:center">
+    <div style="padding:12px 24px;background:#818cf8;color:#fff;border-radius:10px;font-size:.85rem">Dialog Aç</div>
+  </div>
+  <div class="dialog-overlay">
+    <div class="dialog-box">
+      <h5>Silme Onayı</h5>
+      <p>Bu öğeyi silmek istediğinizden emin misiniz?</p>
+      <div class="dialog-btns">
+        <span class="btn-cancel">İptal</span>
+        <span class="btn-danger">Sil</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3 id="dialog-kod">Dialog kodu:</h3>
+<pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">DialogOrnek</span>() {
+    <span class="cm">// 1) State: Dialog açık mı kapalı mı?</span>
+    <span class="kw">var</span> dialogAcik <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="kw">false</span>) }
+
+    <span class="cm">// 2) Butona tıkla → dialogAcik = true</span>
+    <span class="fn">Button</span>(<span class="param">onClick</span> = { dialogAcik = <span class="kw">true</span> }) {
+        <span class="fn">Text</span>(<span class="str">"Dialog Aç"</span>)
+    }
+
+    <span class="cm">// 3) Eğer dialogAcik true ise, Dialog'u göster</span>
+    <span class="kw">if</span> (dialogAcik) {
+        <span class="fn">AlertDialog</span>(
+            <span class="param">onDismissRequest</span> = { dialogAcik = <span class="kw">false</span> },
+            <span class="param">title</span> = { <span class="fn">Text</span>(<span class="str">"Silme Onayı"</span>) },
+            <span class="param">text</span> = { <span class="fn">Text</span>(<span class="str">"Bu öğeyi silmek istediğinizden emin misiniz?"</span>) },
+            <span class="param">confirmButton</span> = {
+                <span class="fn">TextButton</span>(<span class="param">onClick</span> = { dialogAcik = <span class="kw">false</span> }) {
+                    <span class="fn">Text</span>(<span class="str">"Sil"</span>, <span class="param">color</span> = <span class="type">Color</span>.Red)
+                }
+            },
+            <span class="param">dismissButton</span> = {
+                <span class="fn">TextButton</span>(<span class="param">onClick</span> = { dialogAcik = <span class="kw">false</span> }) {
+                    <span class="fn">Text</span>(<span class="str">"İptal"</span>)
+                }
+            }
+        )
+    }
+}</code></pre>
+
+<div class="card card-success">
+<p><span class="emoji">✅</span><strong>Önemli kavramlar:</strong></p>
+<ul>
+<li><strong>onDismissRequest</strong> → Kullanıcı dışarı tıklayınca veya geri tuşuna basınca çalışır</li>
+<li><strong>confirmButton</strong> → "Evet/Sil" gibi onay butonu</li>
+<li><strong>dismissButton</strong> → "İptal/Hayır" gibi vazgeçme butonu</li>
+</ul>
+</div>
+</section>
+
+<!-- BOTTOMSHEET -->
+<section id="bottomsheet">
+<h2>📋 BottomSheet — Alttan Açılan Menü</h2>
+<p>BottomSheet, ekranın <strong>altından yukarı kayan</strong> bir paneldir. Paylaşım seçenekleri, filtre menüsü gibi durumlarda kullanılır.</p>
+
+<!-- BOTTOMSHEET PHONE PREVIEW -->
+<div class="phone">
+  <div class="phone-top"><span>☰</span><span style="flex:1">Uygulamam</span></div>
+  <div class="phone-body" style="display:flex;align-items:center;justify-content:center">
+    <div style="padding:12px 24px;background:#818cf8;color:#fff;border-radius:10px;font-size:.85rem">Bottom Sheet Aç</div>
+  </div>
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <h5>Paylaş</h5>
+    <div class="sheet-item">📧 E-posta</div>
+    <div class="sheet-item">💬 Mesaj</div>
+    <div class="sheet-item">📋 Kopyala</div>
+  </div>
+</div>
+
+<h3 id="sheet-kod">BottomSheet kodu:</h3>
+<pre><code><span class="ann">@OptIn</span>(<span class="type">ExperimentalMaterial3Api</span>::<span class="kw">class</span>)
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">BottomSheetOrnek</span>() {
+    <span class="kw">var</span> sheetAcik <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="kw">false</span>) }
+    <span class="kw">val</span> sheetState = <span class="fn">rememberModalBottomSheetState</span>()
+
+    <span class="fn">Button</span>(<span class="param">onClick</span> = { sheetAcik = <span class="kw">true</span> }) {
+        <span class="fn">Text</span>(<span class="str">"Bottom Sheet Aç"</span>)
+    }
+
+    <span class="kw">if</span> (sheetAcik) {
+        <span class="fn">ModalBottomSheet</span>(
+            <span class="param">onDismissRequest</span> = { sheetAcik = <span class="kw">false</span> },
+            <span class="param">sheetState</span> = sheetState
+        ) {
+            <span class="fn">Column</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp)) {
+                <span class="fn">Text</span>(<span class="str">"Paylaş"</span>,
+                    <span class="param">style</span> = <span class="type">MaterialTheme</span>.typography.headlineSmall)
+                <span class="fn">Spacer</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">16</span>.dp))
+
+                <span class="fn">listOf</span>(<span class="str">"📧 E-posta"</span>, <span class="str">"💬 Mesaj"</span>, <span class="str">"📋 Kopyala"</span>).<span class="fn">forEach</span> {
+                    <span class="fn">Text</span>(
+                        <span class="param">text</span> = it,
+                        <span class="param">modifier</span> = <span class="type">Modifier</span>
+                            .<span class="fn">fillMaxWidth</span>()
+                            .<span class="fn">clickable</span> { sheetAcik = <span class="kw">false</span> }
+                            .<span class="fn">padding</span>(<span class="num">12</span>.dp)
+                    )
+                }
+
+                <span class="fn">Spacer</span>(<span class="param">modifier</span> = <span class="type">Modifier</span>.<span class="fn">height</span>(<span class="num">32</span>.dp))
+            }
+        }
+    }
+}</code></pre>
+
+<div class="card card-accent">
+<p><span class="emoji">🔑</span><strong>Dialog vs BottomSheet farkı:</strong></p>
+<div class="grid-2">
+<div class="card" style="text-align:center"><p style="font-size:2rem">💬</p><p><strong>Dialog</strong><br>Ekranın ortasında açılır.<br>Evet/Hayır soruları için.</p></div>
+<div class="card" style="text-align:center"><p style="font-size:2rem">📋</p><p><strong>BottomSheet</strong><br>Alttan yukarı kayar.<br>Seçenek listesi için.</p></div>
+</div>
+</div>
+</section>
+
+<!-- ÖZET -->
+<section id="ozet">
+<h2>📝 Özet — Ne Öğrendik?</h2>
+<div class="card card-success">
+<table style="width:100%;border-collapse:collapse">
+<tr style="border-bottom:1px solid var(--surface3)"><td style="padding:10px"><span class="tag tag-blue">Scaffold</span></td><td style="padding:10px;color:var(--text-dim)">Uygulamanın iskeleti. TopBar, BottomBar, FAB ve içeriği bir arada tutar.</td></tr>
+<tr style="border-bottom:1px solid var(--surface3)"><td style="padding:10px"><span class="tag tag-blue">TopAppBar</span></td><td style="padding:10px;color:var(--text-dim)">Üst çubuk. Başlık, menü ikonu ve eylem butonları içerir.</td></tr>
+<tr style="border-bottom:1px solid var(--surface3)"><td style="padding:10px"><span class="tag tag-blue">NavigationBar</span></td><td style="padding:10px;color:var(--text-dim)">Alt navigasyon menüsü. Sayfalar arası geçiş sağlar.</td></tr>
+<tr style="border-bottom:1px solid var(--surface3)"><td style="padding:10px"><span class="tag tag-green">FAB</span></td><td style="padding:10px;color:var(--text-dim)">Yüzen eylem butonu. En önemli eylemi temsil eder.</td></tr>
+<tr style="border-bottom:1px solid var(--surface3)"><td style="padding:10px"><span class="tag tag-green">Card</span></td><td style="padding:10px;color:var(--text-dim)">Gölgeli bilgi kartı. İçerikleri gruplar.</td></tr>
+<tr style="border-bottom:1px solid var(--surface3)"><td style="padding:10px"><span class="tag tag-pink">AlertDialog</span></td><td style="padding:10px;color:var(--text-dim)">Onay penceresi. Evet/Hayır soruları için.</td></tr>
+<tr><td style="padding:10px"><span class="tag tag-pink">BottomSheet</span></td><td style="padding:10px;color:var(--text-dim)">Alttan açılan seçenek paneli.</td></tr>
+</table>
+</div>
+
+<div class="card card-warn" style="text-align:center;margin-top:32px">
+<p style="font-size:2rem">🎯</p>
+<p><strong>Sıra Sende!</strong></p>
+<p>Bu bileşenleri kullanarak kendine bir <strong>"Yapılacaklar Listesi"</strong> uygulaması tasarla! TopAppBar'a başlık koy, kartlarla görevleri listele, FAB ile yeni görev ekle ve silme işlemi için Dialog kullan.</p>
+</div>
+</section>
+
+<footer style="text-align:center;padding:40px 0;color:var(--text-dim);font-size:.85rem;border-top:1px solid var(--surface3);margin-top:48px">
+  <p>Jetpack Compose — Material Bileşenler Dersi 📱</p>
+</footer>
+
+</div><!-- main -->
+
+<!-- Active nav highlighting -->
+<script>
+const links = document.querySelectorAll('.sidebar a');
+const sections = document.querySelectorAll('section');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 120) current = s.id;
+  });
+  links.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

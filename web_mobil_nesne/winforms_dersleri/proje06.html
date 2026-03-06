@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 6: Hızlı Yazma Oyunu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 6</span>
+            <h1>⌨️ Hızlı Yazma Oyunu</h1>
+            <p class="subtitle">Ders 1-6 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders06.html">Ders 6</a>
+            <a href="proje06.html" class="active">Proje 6</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Kullanıcıya rastgele kelimeler gösterilir, doğru yazıp Enter'a basması beklenir. Puan ve süre takibi
+                yapılır.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Konular (Ders 6):</strong> TextChanged, KeyPress, KeyDown olayları, Form_Activated,
+                validasyon
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Kontrolleri</h2>
+            <table>
+                <tr>
+                    <th>Kontrol</th>
+                    <th>Name</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblKelime</td>
+                    <td>Yazılacak kelime (büyük font)</td>
+                </tr>
+                <tr>
+                    <td>TextBox</td>
+                    <td>txtYazi</td>
+                    <td>Kullanıcı girişi</td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblPuan</td>
+                    <td>Skor gösterimi</td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblSure</td>
+                    <td>Kalan süre</td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblDurum</td>
+                    <td>Doğru/Yanlış bildirimi</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnBaslat</td>
+                    <td>Oyunu başlat</td>
+                </tr>
+                <tr>
+                    <td>Timer</td>
+                    <td>timer1</td>
+                    <td>Geri sayım için</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Kod Çözümü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Değişkenler ve Başlangıç</div>
+                <pre><code><span class="keyword">private</span> <span class="keyword">string</span>[] kelimeler = { 
+    <span class="string">"bilgisayar"</span>, <span class="string">"programlama"</span>, <span class="string">"klavye"</span>, <span class="string">"ekran"</span>, 
+    <span class="string">"yazılım"</span>, <span class="string">"algoritma"</span>, <span class="string">"değişken"</span>, <span class="string">"metot"</span>,
+    <span class="string">"döngü"</span>, <span class="string">"koşul"</span>, <span class="string">"dizi"</span>, <span class="string">"liste"</span>
+};
+<span class="keyword">private</span> Random rnd = <span class="keyword">new</span> Random();
+<span class="keyword">private int</span> puan = <span class="number">0</span>;
+<span class="keyword">private int</span> kalanSure = <span class="number">60</span>;
+<span class="keyword">private string</span> mevcutKelime;
+
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    timer1.Interval = <span class="number">1000</span>;
+    txtYazi.Enabled = <span class="keyword">false</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">btnBaslat_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    puan = <span class="number">0</span>;
+    kalanSure = <span class="number">60</span>;
+    lblPuan.Text = <span class="string">"Puan: 0"</span>;
+    lblSure.Text = <span class="string">"Süre: 60"</span>;
+    
+    txtYazi.Enabled = <span class="keyword">true</span>;
+    txtYazi.Clear();
+    txtYazi.Focus();
+    
+    YeniKelime();
+    timer1.Start();
+    btnBaslat.Enabled = <span class="keyword">false</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">YeniKelime</span>()
+{
+    mevcutKelime = kelimeler[rnd.Next(kelimeler.Length)];
+    lblKelime.Text = mevcutKelime;
+    lblDurum.Text = <span class="string">""</span>;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">KeyDown Olayı - Enter Kontrolü</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtYazi_KeyDown</span>(<span class="keyword">object</span> sender, KeyEventArgs e)
+{
+    <span class="keyword">if</span> (e.KeyCode == Keys.Enter)
+    {
+        e.SuppressKeyPress = <span class="keyword">true</span>; <span class="comment">// Ding sesini engelle</span>
+        
+        <span class="keyword">if</span> (txtYazi.Text.Trim().ToLower() == mevcutKelime.ToLower())
+        {
+            puan += <span class="number">10</span>;
+            lblPuan.Text = <span class="string">"Puan: "</span> + puan;
+            lblDurum.Text = <span class="string">"✓ Doğru!"</span>;
+            lblDurum.ForeColor = Color.Green;
+        }
+        <span class="keyword">else</span>
+        {
+            puan -= <span class="number">5</span>;
+            <span class="keyword">if</span> (puan &lt; <span class="number">0</span>) puan = <span class="number">0</span>;
+            lblPuan.Text = <span class="string">"Puan: "</span> + puan;
+            lblDurum.Text = <span class="string">"✗ Yanlış!"</span>;
+            lblDurum.ForeColor = Color.Red;
+        }
+        
+        txtYazi.Clear();
+        YeniKelime();
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">TextChanged ve Timer</div>
+                <pre><code><span class="comment">// Anlık karşılaştırma (opsiyonel)</span>
+<span class="keyword">private void</span> <span class="method">txtYazi_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (mevcutKelime.StartsWith(txtYazi.Text, StringComparison.OrdinalIgnoreCase))
+    {
+        txtYazi.BackColor = Color.LightGreen;
+    }
+    <span class="keyword">else</span>
+    {
+        txtYazi.BackColor = Color.LightCoral;
+    }
+    
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(txtYazi.Text))
+        txtYazi.BackColor = Color.White;
+}
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    kalanSure--;
+    lblSure.Text = <span class="string">"Süre: "</span> + kalanSure;
+    
+    <span class="keyword">if</span> (kalanSure &lt;= <span class="number">0</span>)
+    {
+        timer1.Stop();
+        txtYazi.Enabled = <span class="keyword">false</span>;
+        btnBaslat.Enabled = <span class="keyword">true</span>;
+        
+        MessageBox.Show($<span class="string">"Oyun Bitti!\n\nToplam Puan: {puan}"</span>, 
+            <span class="string">"Sonuç"</span>, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Zorluk seviyesi ekleyin</strong>
+                <p>Kolay/Orta/Zor seçenekleri ile kelime uzunluğunu ve süreyi ayarlayın.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Yüksek skor tablosu</strong>
+                <p>En yüksek 5 skoru ListBox'ta gösterin.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje05.html" class="nav-btn prev">← Proje 5</a>
+            <a href="proje07.html" class="nav-btn next">Proje 7 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parametre ile Navigation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface2: #16213e;
+            --card: #1e1e36;
+            --border: #2a2a4a;
+            --text: #e0e0f0;
+            --text2: #a0a0c0;
+            --accent: #7c3aed;
+            --accent2: #a78bfa;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a0533 0%, #0f0f1a 40%, #0a1628 100%);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate
+        }
+
+        @keyframes heroGlow {
+            0% {
+                transform: translate(0, 0)
+            }
+
+            100% {
+                transform: translate(-2%, 1%)
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            margin-bottom: 8px
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+            transition: border-color .3s
+        }
+
+        .card:hover {
+            border-color: var(--accent)
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .card p,
+        .card li {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.8
+        }
+
+        .card ul,
+        .card ol {
+            padding-left: 20px;
+            margin: 8px 0
+        }
+
+        pre {
+            background: #12121f;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+            position: relative
+        }
+
+        pre .label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7
+        }
+
+        .kw {
+            color: #c792ea
+        }
+
+        .fn {
+            color: #82aaff
+        }
+
+        .str {
+            color: #c3e88d
+        }
+
+        .cm {
+            color: #546e7a
+        }
+
+        .tp {
+            color: #ffcb6b
+        }
+
+        .num {
+            color: #f78c6c
+        }
+
+        .an {
+            color: #89ddff
+        }
+
+        .pr {
+            color: #f07178
+        }
+
+        .inline-code {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--accent2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.83rem
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1>📦 Parametre ile Navigation</h1>
+        <p class="subtitle">Sayfalar Arasında Veri Aktarımı Kılavuzu</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h3>💬 Açıklama</h3>
+            <p>Bazen bir sayfadan diğerine geçerken beraberinde <strong>bilgi taşımamız</strong> gerekir. Örneğin, bir
+                uygulamada listeden "Ahmet" kullanıcısına tıkladığımızda detay sayfasının sadece "Ahmet" ile ilgili
+                bilgileri gösterebilmesi için <strong>ID</strong> aktarımı yapmamız zorunludur.</p>
+            <p>Bu işleme <strong>Parametre Gönderme</strong> diyoruz. İnternet sitesi linklerinde gördüğümüz <span
+                    class="inline-code">site.com/urun/15</span> mantığının aynısıdır.</p>
+        </div>
+
+        <div class="card">
+            <h3>🛠️ Zorunlu Parametre Örneği</h3>
+            <p>Parametreleri her zaman süslü parantez içine koyarak adlandırırız: <span
+                    class="inline-code">"{id}"</span></p>
+            <pre><code><span class="cm">// NavHost haritasına ekliyoruz</span>
+<span class="fn">composable</span>(
+    route = <span class="str">"urun/{id}"</span>,                  <span class="cm">// Adreste {id} adıyla yer açtık</span>
+    arguments = <span class="fn">listOf</span>(
+        <span class="fn">navArgument</span>(<span class="str">"id"</span>) {
+            type = <span class="tp">NavType</span>.IntType      <span class="cm">// Gönderilen bilgi bir Tam Sayı (Int) olmalı</span>
+        }
+    )
+) { gelenVeri ->
+    <span class="cm">// Sayfa açılırken bilgiyi okuyoruz ve asıl sayfaya gönderiyoruz</span>
+    <span class="kw">val</span> urunI numarasi = gelenVeri.arguments?.<span class="fn">getInt</span>(<span class="str">"id"</span>) ?: <span class="num">0</span>
+    <span class="fn">UrunDetaySayfasi</span>(id = numarasi)
+}
+
+<span class="cm">// Tıklandığında sayfaya giderken 5 sayısını taşıma:</span>
+sofor.<span class="fn">navigate</span>(<span class="str">"urun/5"</span>)</code><span class="label">Kotlin</span></pre>
+        </div>
+
+        <div class="card">
+            <h3>⚠️ İsteğe Bağlı (Opsiyonel) Parametreler</h3>
+            <p>Gidilecek sayfaya veri gelmese de sayfanın çökmemesini istediğimiz durumlarda soru işareti "<span
+                    class="inline-code">?</span>" kullanırız.</p>
+            <pre><code><span class="fn">composable</span>(
+    route = <span class="str">"arama?kelime={kelime}"</span>,     <span class="cm">// ?kelime= şeklinde tanımlandı</span>
+    arguments = <span class="fn">listOf</span>(
+        <span class="fn">navArgument</span>(<span class="str">"kelime"</span>) {
+            type = <span class="tp">NavType</span>.StringType <span class="cm">// Metin türünde bekliyoruz</span>
+            defaultValue = <span class="str">""</span>         <span class="cm">// Eğer değer gelmezse boş kalacak</span>
+        }
+    )
+) { gelenVeri ->
+    <span class="kw">val</span> aranan = gelenVeri.arguments?.<span class="fn">getString</span>(<span class="str">"kelime"</span>) ?: <span class="str">""</span>
+    <span class="fn">AramaSayfasi</span>(aramaMetni = aranan)
+}</code><span class="label">Kotlin</span></pre>
+        </div>
+
+        <div class="card">
+            <h3>🎯 Senin Sıran: Koda Özellik Ekle!</h3>
+            <p>Mevcut kod üzerinden aşağıdaki yönlendirmeleri kendin yazmaya çalış:</p>
+            <ul>
+                <li>
+                    <strong>Özellik 1: Profil Sayfasına İsim Gönder</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Profil sayfası oluştur ve bu sayfaya "isim"
+                        parametresi gönder. Ana sayfada örneğin "Murat'ın Profiline Git" butonu olsun.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong>
+                        <code>route = "profil/{isim}"</code> tanımla ve argüman tipini <code>NavType.StringType</code>
+                        olarak belirle.</span>
+                </li>
+                <br>
+                <li>
+                    <strong>Özellik 2: Gelen İsmi Ekranda Başlık Olarak Göster</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Bir önceki görevde gönderilen ismi yakalayarak
+                        Profil sayfasında ekrana yazdır (Örn: "Murat Kullanıcısının Profili").</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong> Sayfa composable'ı
+                        açılırken <code>gelenVeri.arguments?.getString("isim")</code> ile ismi okumalı ve bunu Text()
+                        bileşeni içinde kullanmalısın.</span>
+                </li>
+                <br>
+                <li>
+                    <strong>Özellik 3: İsteğe Bağlı "Yaş" Parametresi Ekle</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Oluşturduğun profil adresine isteğe bağlı
+                        opsiyonel (varsa yazılacak, yoksa boş kalacak) bir de yaş verisi ekle.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong>
+                        <code>route = "profil/{isim}?yas={yas}"</code> yapısını kur ve <code>defaultValue = 0</code>
+                        veya <code>""</code> tanımlamasını unutma.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

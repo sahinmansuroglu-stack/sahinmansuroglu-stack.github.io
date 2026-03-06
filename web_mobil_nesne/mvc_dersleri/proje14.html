@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 14: Okul Yönetim Sistemi (Final Projesi)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Final Projesi</span>
+            <h1>🏫 Okul Yönetim Sistemi</h1>
+            <p class="subtitle">Tüm Dersleri Kapsayan Kapsamlı Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>14 derslik MVC eğitiminin tüm konularını kapsayan kapsamlı bir proje.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Tüm Konular:</strong><br>
+                ✅ MVC Mimarisi<br>
+                ✅ Controller, View, Model<br>
+                ✅ Routing ve Parametreler<br>
+                ✅ Razor Syntax ve Tag Helpers<br>
+                ✅ Data Annotations ve Validation<br>
+                ✅ Form İşlemleri<br>
+                ✅ Entity Framework Core<br>
+                ✅ CRUD İşlemleri<br>
+                ✅ Layout ve Partial View<br>
+                ✅ Dependency Injection<br>
+                ✅ İlişkisel Tablolar<br>
+                ✅ Arama ve Sayfalama<br>
+                ✅ Dosya Yükleme
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Proje Yapısı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Klasör Yapısı</div>
+                <pre><code>SchoolManagement/
+├── Controllers/
+│   ├── DashboardController.cs
+│   ├── StudentController.cs
+│   ├── TeacherController.cs
+│   ├── ClassroomController.cs
+│   ├── CourseController.cs
+│   └── EnrollmentController.cs
+├── Models/
+│   ├── Student.cs
+│   ├── Teacher.cs
+│   ├── Classroom.cs
+│   ├── Course.cs
+│   └── Enrollment.cs
+├── Services/
+│   ├── Interfaces/
+│   │   ├── IStudentService.cs
+│   │   ├── ITeacherService.cs
+│   │   └── ICourseService.cs
+│   └── Implementations/
+│       ├── StudentService.cs
+│       ├── TeacherService.cs
+│       └── CourseService.cs
+├── Data/
+│   └── SchoolDbContext.cs
+├── ViewModels/
+│   ├── DashboardViewModel.cs
+│   └── StudentFilterViewModel.cs
+└── Views/
+    ├── Shared/
+    │   ├── _Layout.cshtml
+    │   ├── _AdminLayout.cshtml
+    │   └── Components/
+    ├── Dashboard/
+    ├── Student/
+    ├── Teacher/
+    └── Course/</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model Sınıfları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Öğrenci numarası zorunlu"</span>)]
+    [Display(Name = <span class="string">"Öğrenci No"</span>)]
+    <span class="keyword">public string</span> StudentNumber { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required, StringLength(<span class="number">50</span>)]
+    [Display(Name = <span class="string">"Ad"</span>)]
+    <span class="keyword">public string</span> FirstName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required, StringLength(<span class="number">50</span>)]
+    [Display(Name = <span class="string">"Soyad"</span>)]
+    <span class="keyword">public string</span> LastName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [EmailAddress]
+    [Display(Name = <span class="string">"E-posta"</span>)]
+    <span class="keyword">public string</span>? Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [DataType(DataType.Date)]
+    [Display(Name = <span class="string">"Doğum Tarihi"</span>)]
+    <span class="keyword">public</span> DateTime? BirthDate { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Profil Fotoğrafı"</span>)]
+    <span class="keyword">public string</span>? PhotoPath { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public bool</span> IsActive { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">true</span>;
+    
+    <span class="comment">// One-to-Many: Öğrenci -> Sınıf</span>
+    <span class="keyword">public int</span> ClassroomId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Classroom Classroom { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Many-to-Many: Öğrenci <-> Ders</span>
+    <span class="keyword">public</span> ICollection&lt;Enrollment&gt; Enrollments { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Computed Properties</span>
+    <span class="keyword">public string</span> FullName => $<span class="string">"{FirstName} {LastName}"</span>;
+    <span class="keyword">public string</span> PhotoUrl => PhotoPath ?? <span class="string">"/images/default-avatar.png"</span>;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Enrollment.cs (Ara Tablo)</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Enrollment</span>
+{
+    <span class="keyword">public int</span> StudentId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Student Student { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> CourseId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Course Course { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public</span> DateTime EnrollmentDate { <span class="keyword">get</span>; <span class="keyword">set</span>; } = DateTime.Now;
+    
+    [Range(<span class="number">0</span>, <span class="number">100</span>)]
+    <span class="keyword">public</span> decimal? MidtermGrade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Range(<span class="number">0</span>, <span class="number">100</span>)]
+    <span class="keyword">public</span> decimal? FinalGrade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public</span> decimal? Average => 
+        MidtermGrade.HasValue && FinalGrade.HasValue 
+            ? (MidtermGrade * <span class="number">0.4m</span>) + (FinalGrade * <span class="number">0.6m</span>) 
+            : <span class="keyword">null</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Servis Katmanı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Services/StudentService.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentService</span> : <span class="class-name">IStudentService</span>
+{
+    <span class="keyword">private readonly</span> SchoolDbContext _context;
+    <span class="keyword">private readonly</span> IWebHostEnvironment _environment;
+    
+    <span class="keyword">public</span> <span class="method">StudentService</span>(
+        SchoolDbContext context, 
+        IWebHostEnvironment environment)
+    {
+        _context = context;
+        _environment = environment;
+    }
+    
+    <span class="keyword">public async</span> Task&lt;PagedResult&lt;Student&gt;&gt; <span class="method">SearchAsync</span>(StudentFilterViewModel filter)
+    {
+        <span class="keyword">var</span> query = _context.Students
+            .Include(s => s.Classroom)
+            .Where(s => s.IsActive)
+            .AsQueryable();
+        
+        <span class="comment">// Arama</span>
+        <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(filter.Search))
+        {
+            query = query.Where(s => 
+                s.FirstName.Contains(filter.Search) ||
+                s.LastName.Contains(filter.Search) ||
+                s.StudentNumber.Contains(filter.Search));
+        }
+        
+        <span class="comment">// Sınıf filtresi</span>
+        <span class="keyword">if</span> (filter.ClassroomId.HasValue)
+        {
+            query = query.Where(s => s.ClassroomId == filter.ClassroomId);
+        }
+        
+        <span class="comment">// Sıralama</span>
+        query = filter.SortBy <span class="keyword">switch</span>
+        {
+            <span class="string">"name"</span> => query.OrderBy(s => s.LastName).ThenBy(s => s.FirstName),
+            <span class="string">"number"</span> => query.OrderBy(s => s.StudentNumber),
+            <span class="string">"classroom"</span> => query.OrderBy(s => s.Classroom.Name),
+            _ => query.OrderBy(s => s.LastName)
+        };
+        
+        <span class="comment">// Sayfalama</span>
+        <span class="keyword">var</span> totalCount = <span class="keyword">await</span> query.CountAsync();
+        
+        <span class="keyword">var</span> students = <span class="keyword">await</span> query
+            .Skip((filter.Page - <span class="number">1</span>) * filter.PageSize)
+            .Take(filter.PageSize)
+            .ToListAsync();
+        
+        <span class="keyword">return new</span> PagedResult&lt;Student&gt;
+        {
+            Items = students,
+            CurrentPage = filter.Page,
+            PageSize = filter.PageSize,
+            TotalCount = totalCount,
+            TotalPages = (<span class="keyword">int</span>)Math.Ceiling(totalCount / (<span class="keyword">double</span>)filter.PageSize)
+        };
+    }
+    
+    <span class="keyword">public async</span> Task <span class="method">CreateAsync</span>(Student student, IFormFile? photo)
+    {
+        <span class="keyword">if</span> (photo != <span class="keyword">null</span>)
+        {
+            student.PhotoPath = <span class="keyword">await</span> UploadPhotoAsync(photo);
+        }
+        
+        _context.Students.Add(student);
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+    }
+    
+    <span class="keyword">private async</span> Task&lt;<span class="keyword">string</span>&gt; <span class="method">UploadPhotoAsync</span>(IFormFile photo)
+    {
+        <span class="keyword">var</span> fileName = $<span class="string">"{Guid.NewGuid()}{Path.GetExtension(photo.FileName)}"</span>;
+        <span class="keyword">var</span> path = Path.Combine(_environment.WebRootPath, <span class="string">"uploads"</span>, <span class="string">"students"</span>, fileName);
+        
+        Directory.CreateDirectory(Path.GetDirectoryName(path));
+        
+        <span class="keyword">using var</span> stream = <span class="keyword">new</span> FileStream(path, FileMode.Create);
+        <span class="keyword">await</span> photo.CopyToAsync(stream);
+        
+        <span class="keyword">return</span> $<span class="string">"/uploads/students/{fileName}"</span>;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Program.cs</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Program.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+<span class="comment">// DbContext</span>
+builder.Services.AddDbContext&lt;SchoolDbContext&gt;(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString(<span class="string">"DefaultConnection"</span>)));
+
+<span class="comment">// Services (Dependency Injection)</span>
+builder.Services.AddScoped&lt;IStudentService, StudentService&gt;();
+builder.Services.AddScoped&lt;ITeacherService, TeacherService&gt;();
+builder.Services.AddScoped&lt;ICourseService, CourseService&gt;();
+builder.Services.AddScoped&lt;IEnrollmentService, EnrollmentService&gt;();
+builder.Services.AddScoped&lt;IDashboardService, DashboardService&gt;();
+
+builder.Services.AddControllersWithViews();
+
+<span class="keyword">var</span> app = builder.Build();
+
+<span class="keyword">if</span> (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler(<span class="string">"/Home/Error"</span>);
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: <span class="string">"default"</span>,
+    pattern: <span class="string">"{controller=Dashboard}/{action=Index}/{id?}"</span>);
+
+app.Run();</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Dashboard Controller</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/DashboardController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">DashboardController</span> : Controller
+{
+    <span class="keyword">private readonly</span> IDashboardService _dashboardService;
+    
+    <span class="keyword">public</span> <span class="method">DashboardController</span>(IDashboardService dashboardService)
+    {
+        _dashboardService = dashboardService;
+    }
+    
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Index</span>()
+    {
+        <span class="keyword">var</span> model = <span class="keyword">new</span> DashboardViewModel
+        {
+            TotalStudents = <span class="keyword">await</span> _dashboardService.GetStudentCountAsync(),
+            TotalTeachers = <span class="keyword">await</span> _dashboardService.GetTeacherCountAsync(),
+            TotalCourses = <span class="keyword">await</span> _dashboardService.GetCourseCountAsync(),
+            TotalClassrooms = <span class="keyword">await</span> _dashboardService.GetClassroomCountAsync(),
+            RecentStudents = <span class="keyword">await</span> _dashboardService.GetRecentStudentsAsync(<span class="number">5</span>),
+            ClassroomStats = <span class="keyword">await</span> _dashboardService.GetClassroomStatsAsync(),
+            GradeDistribution = <span class="keyword">await</span> _dashboardService.GetGradeDistributionAsync()
+        };
+        
+        <span class="keyword">return</span> View(model);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Dashboard View</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Dashboard/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@model DashboardViewModel
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+&lt;h1&gt;🏫 Okul Yönetim Paneli&lt;/h1&gt;
+
+<span class="comment">&lt;!-- İstatistik Kartları --&gt;</span>
+&lt;div class="row mb-4"&gt;
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-primary"&gt;
+            &lt;div class="stat-icon"&gt;👨‍🎓&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@Model.TotalStudents&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Öğrenci&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-success"&gt;
+            &lt;div class="stat-icon"&gt;👨‍🏫&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@Model.TotalTeachers&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Öğretmen&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-info"&gt;
+            &lt;div class="stat-icon"&gt;📚&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@Model.TotalCourses&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Ders&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-3"&gt;
+        &lt;div class="stat-card stat-card-warning"&gt;
+            &lt;div class="stat-icon"&gt;🏫&lt;/div&gt;
+            &lt;div class="stat-info"&gt;
+                &lt;span class="stat-value"&gt;@Model.TotalClassrooms&lt;/span&gt;
+                &lt;span class="stat-title"&gt;Sınıf&lt;/span&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+<span class="comment">&lt;!-- İçerik Satırları --&gt;</span>
+&lt;div class="row"&gt;
+    &lt;div class="col-md-8"&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="card-header"&gt;Son Kayıt Olan Öğrenciler&lt;/div&gt;
+            &lt;div class="card-body"&gt;
+                &lt;partial name="_RecentStudents" model="@Model.RecentStudents" /&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="col-md-4"&gt;
+        &lt;div class="card"&gt;
+            &lt;div class="card-header"&gt;Sınıf Dağılımı&lt;/div&gt;
+            &lt;div class="card-body"&gt;
+                @foreach (var stat in Model.ClassroomStats)
+                {
+                    &lt;div class="d-flex justify-content-between mb-2"&gt;
+                        &lt;span&gt;@stat.Name&lt;/span&gt;
+                        &lt;span class="badge bg-primary"&gt;@stat.StudentCount&lt;/span&gt;
+                    &lt;/div&gt;
+                }
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Projeyi Genişletme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Kullanıcı kimlik doğrulama sistemi ekleyin (Identity)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Devamsızlık takip modülü ekleyin</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Sınav takvimi ve duyuru sistemi ekleyin</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>Excel/PDF rapor dışa aktarma özelliği ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje13.html" class="nav-btn prev">← Proje 13</a>
+            <a href="index.html" class="nav-btn next">Ana Sayfa →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

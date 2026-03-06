@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 8: Kütüphane Yönetim Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 8</span>
+            <h1>📚 Kütüphane Yönetim Sistemi</h1>
+            <p class="subtitle">Ders 1-8 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>CRUD işlemleri ile kitap ve üye yönetimi.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • Create, Read, Update, Delete<br>
+                • Soft Delete<br>
+                • TempData mesajları<br>
+                • Confirmation dialog
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Models</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Book.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Book</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Kitap adı zorunlu"</span>)]
+    [Display(Name = <span class="string">"Kitap Adı"</span>)]
+    <span class="keyword">public string</span> Title { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [Display(Name = <span class="string">"Yazar"</span>)]
+    <span class="keyword">public string</span> Author { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"ISBN"</span>)]
+    <span class="keyword">public string</span>? ISBN { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Yayın Yılı"</span>)]
+    <span class="keyword">public int</span>? PublishYear { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Stok Adedi"</span>)]
+    <span class="keyword">public int</span> Stock { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Mevcut"</span>)]
+    <span class="keyword">public bool</span> IsActive { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">true</span>;
+    
+    <span class="comment">// Navigation</span>
+    <span class="keyword">public int</span> CategoryId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Category Category { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller - CRUD İşlemleri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/BookController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">BookController</span> : Controller
+{
+    <span class="keyword">private readonly</span> LibraryDbContext _context;
+    
+    <span class="keyword">public</span> <span class="method">BookController</span>(LibraryDbContext context)
+    {
+        _context = context;
+    }
+    
+    <span class="comment">// READ - Listele</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Index</span>()
+    {
+        <span class="keyword">var</span> books = <span class="keyword">await</span> _context.Books
+            .Where(b => b.IsActive)
+            .Include(b => b.Category)
+            .OrderBy(b => b.Title)
+            .ToListAsync();
+        
+        <span class="keyword">return</span> View(books);
+    }
+    
+    <span class="comment">// READ - Detay</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> book = <span class="keyword">await</span> _context.Books
+            .Include(b => b.Category)
+            .FirstOrDefaultAsync(b => b.Id == id);
+        
+        <span class="keyword">if</span> (book == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        <span class="keyword">return</span> View(book);
+    }
+    
+    <span class="comment">// CREATE - GET</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>()
+    {
+        <span class="keyword">await</span> PopulateCategoriesAsync();
+        <span class="keyword">return</span> View();
+    }
+    
+    <span class="comment">// CREATE - POST</span>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(Book book)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            _context.Books.Add(book);
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            TempData[<span class="string">"Success"</span>] = $<span class="string">"{book.Title} kitabı eklendi!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+        }
+        
+        <span class="keyword">await</span> PopulateCategoriesAsync(book.CategoryId);
+        <span class="keyword">return</span> View(book);
+    }
+    
+    <span class="comment">// UPDATE - GET</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Edit</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> book = <span class="keyword">await</span> _context.Books.FindAsync(id);
+        <span class="keyword">if</span> (book == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        
+        <span class="keyword">await</span> PopulateCategoriesAsync(book.CategoryId);
+        <span class="keyword">return</span> View(book);
+    }
+    
+    <span class="comment">// UPDATE - POST</span>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Edit</span>(<span class="keyword">int</span> id, Book book)
+    {
+        <span class="keyword">if</span> (id != book.Id) <span class="keyword">return</span> NotFound();
+        
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            _context.Update(book);
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            TempData[<span class="string">"Success"</span>] = <span class="string">"Kitap güncellendi!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+        }
+        
+        <span class="keyword">await</span> PopulateCategoriesAsync(book.CategoryId);
+        <span class="keyword">return</span> View(book);
+    }
+    
+    <span class="comment">// DELETE - GET (Onay sayfası)</span>
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Delete</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> book = <span class="keyword">await</span> _context.Books
+            .Include(b => b.Category)
+            .FirstOrDefaultAsync(b => b.Id == id);
+        
+        <span class="keyword">if</span> (book == <span class="keyword">null</span>) <span class="keyword">return</span> NotFound();
+        <span class="keyword">return</span> View(book);
+    }
+    
+    <span class="comment">// DELETE - POST (Soft Delete)</span>
+    [HttpPost, ActionName(<span class="string">"Delete"</span>)]
+    [ValidateAntiForgeryToken]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">DeleteConfirmed</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> book = <span class="keyword">await</span> _context.Books.FindAsync(id);
+        
+        <span class="keyword">if</span> (book != <span class="keyword">null</span>)
+        {
+            <span class="comment">// Soft Delete - sadece IsActive = false</span>
+            book.IsActive = <span class="keyword">false</span>;
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            TempData[<span class="string">"Success"</span>] = <span class="string">"Kitap silindi!"</span>;
+        }
+        
+        <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+    }
+    
+    <span class="keyword">private async</span> Task <span class="method">PopulateCategoriesAsync</span>(<span class="keyword">int</span>? selectedId = <span class="keyword">null</span>)
+    {
+        ViewBag.Categories = <span class="keyword">new</span> SelectList(
+            <span class="keyword">await</span> _context.Categories.ToListAsync(),
+            <span class="string">"Id"</span>, <span class="string">"Name"</span>, selectedId);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Silme Onayı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Book/Delete.cshtml</div>
+                <pre data-lang="Razor"><code>@model Book
+
+&lt;h1&gt;⚠️ Silme Onayı&lt;/h1&gt;
+
+&lt;div class="alert alert-warning"&gt;
+    &lt;strong&gt;@Model.Title&lt;/strong&gt; kitabını silmek istediğinizden emin misiniz?
+&lt;/div&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-body"&gt;
+        &lt;dl class="row"&gt;
+            &lt;dt class="col-sm-3"&gt;Kitap Adı&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;@Model.Title&lt;/dd&gt;
+            
+            &lt;dt class="col-sm-3"&gt;Yazar&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;@Model.Author&lt;/dd&gt;
+            
+            &lt;dt class="col-sm-3"&gt;Kategori&lt;/dt&gt;
+            &lt;dd class="col-sm-9"&gt;@Model.Category.Name&lt;/dd&gt;
+        &lt;/dl&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;form asp-action="Delete" method="post" class="mt-3"&gt;
+    &lt;input type="hidden" asp-for="Id" /&gt;
+    &lt;button type="submit" class="btn btn-danger"&gt;Evet, Sil&lt;/button&gt;
+    &lt;a asp-action="Index" class="btn btn-secondary"&gt;İptal&lt;/a&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Ödünç alma/iade sistemi ekleyin (Borrow entity)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Silinen kitapları geri getirme (Restore) özelliği ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje07.html" class="nav-btn prev">← Proje 7</a>
+            <a href="proje09.html" class="nav-btn next">Proje 9 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

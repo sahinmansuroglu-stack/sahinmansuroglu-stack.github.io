@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 12: Timer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 12</span>
+            <h1>Timer</h1>
+            <p class="subtitle">Zamanlayıcı ve Animasyonlar</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders10.html">Ders 10</a>
+            <a href="ders11.html">Ders 11</a>
+            <a href="ders12.html" class="active">Ders 12</a>
+            <a href="ders13.html">Ders 13</a>
+            <a href="ders14.html">Ders 14</a>
+        </nav>
+
+        <section class="section">
+            <h2>Timer Nedir?</h2>
+            <p><strong>Timer</strong>, belirli zaman aralıklarında otomatik olarak kod çalıştıran kontroldür. Saatler,
+                animasyonlar, otomatik kaydetme gibi işlemler için kullanılır.</p>
+
+            <div class="diagram">
+                <div class="diagram-box">Timer.Start()</div>
+                <span class="diagram-arrow">→</span>
+                <div class="diagram-box">Interval ms bekle</div>
+                <span class="diagram-arrow">→</span>
+                <div class="diagram-box">Tick olayı çalışır</div>
+                <span class="diagram-arrow">↻</span>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik/Metot</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Interval</td>
+                    <td>Tick aralığı (milisaniye). 1000 = 1 saniye</td>
+                </tr>
+                <tr>
+                    <td>Enabled</td>
+                    <td>Timer aktif mi?</td>
+                </tr>
+                <tr>
+                    <td>Start()</td>
+                    <td>Timer'ı başlat</td>
+                </tr>
+                <tr>
+                    <td>Stop()</td>
+                    <td>Timer'ı durdur</td>
+                </tr>
+                <tr>
+                    <td>Tick (Event)</td>
+                    <td>Her interval'de tetiklenen olay</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Temel Timer Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Dijital Saat</div>
+                <pre><code><span class="comment">// Form_Load'da ayarla</span>
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    timer1.Interval = <span class="number">1000</span>; <span class="comment">// 1 saniye</span>
+    timer1.Start();
+    
+    <span class="comment">// Başlangıçta saati göster</span>
+    lblSaat.Text = DateTime.Now.ToString(<span class="string">"HH:mm:ss"</span>);
+}
+
+<span class="comment">// Her saniye çalışır</span>
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    lblSaat.Text = DateTime.Now.ToString(<span class="string">"HH:mm:ss"</span>);
+    lblTarih.Text = DateTime.Now.ToString(<span class="string">"dd MMMM yyyy dddd"</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Geri Sayım Sayacı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Countdown Timer</div>
+                <pre><code><span class="keyword">private int</span> kalanSaniye;
+
+<span class="keyword">private void</span> <span class="method">btnBaslat_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    kalanSaniye = (<span class="keyword">int</span>)numSure.Value; <span class="comment">// NumericUpDown'dan al</span>
+    
+    <span class="keyword">if</span> (kalanSaniye &lt;= <span class="number">0</span>)
+    {
+        MessageBox.Show(<span class="string">"Geçerli bir süre girin!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    progressBar1.Maximum = kalanSaniye;
+    progressBar1.Value = kalanSaniye;
+    
+    timer1.Interval = <span class="number">1000</span>;
+    timer1.Start();
+    
+    btnBaslat.Enabled = <span class="keyword">false</span>;
+    btnDurdur.Enabled = <span class="keyword">true</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    kalanSaniye--;
+    
+    <span class="comment">// Süreyi formatlı göster</span>
+    TimeSpan ts = TimeSpan.FromSeconds(kalanSaniye);
+    lblSure.Text = ts.ToString(<span class="string">@"mm\:ss"</span>);
+    
+    progressBar1.Value = kalanSaniye;
+    
+    <span class="keyword">if</span> (kalanSaniye &lt;= <span class="number">0</span>)
+    {
+        timer1.Stop();
+        MessageBox.Show(<span class="string">"Süre doldu!"</span>, <span class="string">"Alarm"</span>, 
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
+        
+        btnBaslat.Enabled = <span class="keyword">true</span>;
+        btnDurdur.Enabled = <span class="keyword">false</span>;
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">btnDurdur_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    timer1.Stop();
+    btnBaslat.Enabled = <span class="keyword">true</span>;
+    btnDurdur.Enabled = <span class="keyword">false</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kronometre (Stopwatch)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Kronometre Uygulaması</div>
+                <pre><code><span class="keyword">private</span> Stopwatch kronometre = <span class="keyword">new</span> Stopwatch();
+
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    timer1.Interval = <span class="number">10</span>; <span class="comment">// 10ms (daha hassas)</span>
+}
+
+<span class="keyword">private void</span> <span class="method">btnBaslat_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    kronometre.Start();
+    timer1.Start();
+}
+
+<span class="keyword">private void</span> <span class="method">btnDurdur_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    kronometre.Stop();
+    timer1.Stop();
+}
+
+<span class="keyword">private void</span> <span class="method">btnSifirla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    kronometre.Reset();
+    lblSure.Text = <span class="string">"00:00:00.000"</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">btnTur_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    listTurlar.Items.Add(lblSure.Text);
+}
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    TimeSpan ts = kronometre.Elapsed;
+    lblSure.Text = ts.ToString(<span class="string">@"mm\:ss\.fff"</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Basit Animasyon</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Hareket Eden Nesne</div>
+                <pre><code><span class="keyword">private int</span> hiz = <span class="number">5</span>;
+<span class="keyword">private int</span> yonX = <span class="number">1</span>;
+<span class="keyword">private int</span> yonY = <span class="number">1</span>;
+
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    timer1.Interval = <span class="number">20</span>; <span class="comment">// 50 FPS</span>
+    timer1.Start();
+}
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Yeni konum hesapla</span>
+    <span class="keyword">int</span> yeniX = pictureBox1.Left + (hiz * yonX);
+    <span class="keyword">int</span> yeniY = pictureBox1.Top + (hiz * yonY);
+    
+    <span class="comment">// Sınır kontrolü - X ekseni</span>
+    <span class="keyword">if</span> (yeniX &lt;= <span class="number">0</span> || yeniX + pictureBox1.Width >= <span class="keyword">this</span>.ClientSize.Width)
+    {
+        yonX = -yonX; <span class="comment">// Yön değiştir</span>
+    }
+    
+    <span class="comment">// Sınır kontrolü - Y ekseni</span>
+    <span class="keyword">if</span> (yeniY &lt;= <span class="number">0</span> || yeniY + pictureBox1.Height >= <span class="keyword">this</span>.ClientSize.Height)
+    {
+        yonY = -yonY; <span class="comment">// Yön değiştir</span>
+    }
+    
+    <span class="comment">// Pozisyonu güncelle</span>
+    pictureBox1.Left += hiz * yonX;
+    pictureBox1.Top += hiz * yonY;
+}
+
+<span class="comment">// Hız kontrolü</span>
+<span class="keyword">private void</span> <span class="method">trackBar1_Scroll</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    hiz = trackBar1.Value;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Renk Animasyonu</div>
+                <pre><code><span class="keyword">private int</span> renkIndex = <span class="number">0</span>;
+<span class="keyword">private</span> Color[] renkler = { Color.Red, Color.Orange, Color.Yellow, 
+                              Color.Green, Color.Blue, Color.Purple };
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    panel1.BackColor = renkler[renkIndex];
+    renkIndex = (renkIndex + <span class="number">1</span>) % renkler.Length;
+}
+
+<span class="comment">// Yavaş geçişli renk değişimi</span>
+<span class="keyword">private int</span> r = <span class="number">0</span>, g = <span class="number">0</span>, b = <span class="number">255</span>;
+<span class="keyword">private void</span> <span class="method">timerGradient_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    r = (r + <span class="number">1</span>) % <span class="number">256</span>;
+    g = (g + <span class="number">2</span>) % <span class="number">256</span>;
+    b = (b + <span class="number">3</span>) % <span class="number">256</span>;
+    
+    panel1.BackColor = Color.FromArgb(r, g, b);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Otomatik Kaydetme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Auto-Save Özelliği</div>
+                <pre><code><span class="keyword">private</span> DateTime sonKayit;
+<span class="keyword">private</span> <span class="keyword">bool</span> degisiklikVar = <span class="keyword">false</span>;
+
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    timerAutoSave.Interval = <span class="number">60000</span>; <span class="comment">// 1 dakika</span>
+    timerAutoSave.Start();
+}
+
+<span class="keyword">private void</span> <span class="method">txtIcerik_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    degisiklikVar = <span class="keyword">true</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">timerAutoSave_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (degisiklikVar)
+    {
+        OtomatikKaydet();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">OtomatikKaydet</span>()
+{
+    <span class="keyword">string</span> yedekDosya = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        <span class="string">"autosave_"</span> + DateTime.Now.ToString(<span class="string">"yyyyMMdd_HHmmss"</span>) + <span class="string">".txt"</span>);
+    
+    File.WriteAllText(yedekDosya, txtIcerik.Text);
+    
+    sonKayit = DateTime.Now;
+    degisiklikVar = <span class="keyword">false</span>;
+    tslDurum.Text = <span class="string">"Otomatik kaydedildi: "</span> + sonKayit.ToString(<span class="string">"HH:mm:ss"</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Slideshow</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Otomatik Resim Geçişi</div>
+                <pre><code><span class="keyword">private</span> <span class="keyword">string</span>[] resimler;
+<span class="keyword">private int</span> index = <span class="number">0</span>;
+
+<span class="keyword">private void</span> <span class="method">btnKlasorSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FolderBrowserDialog dialog = <span class="keyword">new</span> FolderBrowserDialog();
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        resimler = Directory.GetFiles(dialog.SelectedPath, <span class="string">"*.jpg"</span>);
+        
+        <span class="keyword">if</span> (resimler.Length > <span class="number">0</span>)
+        {
+            index = <span class="number">0</span>;
+            ResimGoster();
+            
+            timerSlide.Interval = <span class="number">3000</span>; <span class="comment">// 3 saniye</span>
+            timerSlide.Start();
+        }
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">timerSlide_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    index = (index + <span class="number">1</span>) % resimler.Length;
+    ResimGoster();
+}
+
+<span class="keyword">private void</span> <span class="method">ResimGoster</span>()
+{
+    pictureBox1.Image = Image.FromFile(resimler[index]);
+    lblDurum.Text = $<span class="string">"{index + 1} / {resimler.Length}"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Anlık saati gösteren dijital saat uygulaması yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    timer1.Interval = <span class="number">1000</span>;
+    timer1.Start();
+}
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    lblSaat.Text = DateTime.Now.ToString(<span class="string">"HH:mm:ss"</span>);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>60 saniyeden geri sayan bir zamanlayıcı yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">int</span> sure = <span class="number">60</span>;
+
+<span class="keyword">private void</span> <span class="method">btnBaslat_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    sure = <span class="number">60</span>;
+    timer1.Start();
+}
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    sure--;
+    lblSure.Text = sure.ToString();
+    
+    <span class="keyword">if</span> (sure &lt;= <span class="number">0</span>)
+    {
+        timer1.Stop();
+        MessageBox.Show(<span class="string">"Süre doldu!"</span>);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Ekranda sağa-sola hareket eden bir buton yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">int</span> yon = <span class="number">5</span>;
+
+<span class="keyword">private void</span> <span class="method">timer1_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    button1.Left += yon;
+    
+    <span class="keyword">if</span> (button1.Left &lt;= <span class="number">0</span> || button1.Right >= <span class="keyword">this</span>.ClientSize.Width)
+    {
+        yon = -yon;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders11.html" class="nav-btn prev">← Önceki: PictureBox</a>
+            <a href="ders13.html" class="nav-btn next">Sonraki: DataGridView →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

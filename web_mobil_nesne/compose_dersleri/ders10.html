@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 10: Retrofit ve API</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 10</span>
+            <h1>🌐 Retrofit ve API</h1>
+            <p class="subtitle">REST API ile Veri Çekme</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • Retrofit kurulumu<br>
+                • API Service tanımlama<br>
+                • JSON parsing<br>
+                • Hata yönetimi
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kurulum</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">build.gradle.kts</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">dependencies</span> {
+    <span class="comment">// Retrofit</span>
+    implementation(<span class="string">"com.squareup.retrofit2:retrofit:2.9.0"</span>)
+    implementation(<span class="string">"com.squareup.retrofit2:converter-gson:2.9.0"</span>)
+    
+    <span class="comment">// OkHttp (logging için)</span>
+    implementation(<span class="string">"com.squareup.okhttp3:logging-interceptor:4.12.0"</span>)
+    
+    <span class="comment">// Coil (resim yükleme)</span>
+    implementation(<span class="string">"io.coil-kt:coil-compose:2.5.0"</span>)
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">AndroidManifest.xml</div>
+                <pre
+                    data-lang="XML"><code>&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Data Class (Model)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">API Yanıt Modelleri</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// JSONPlaceholder API için model</span>
+<span class="keyword">data class</span> <span class="class-name">Post</span>(
+    <span class="keyword">val</span> userId: Int,
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> title: String,
+    <span class="keyword">val</span> body: String
+)
+
+<span class="keyword">data class</span> <span class="class-name">User</span>(
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> name: String,
+    <span class="keyword">val</span> username: String,
+    <span class="keyword">val</span> email: String,
+    <span class="keyword">val</span> phone: String,
+    <span class="keyword">val</span> website: String
+)
+
+<span class="comment">// Farklı JSON isimleri için @SerializedName</span>
+<span class="keyword">data class</span> <span class="class-name">Urun</span>(
+    <span class="annotation">@SerializedName</span>(<span class="string">"urun_id"</span>)
+    <span class="keyword">val</span> id: Int,
+    
+    <span class="annotation">@SerializedName</span>(<span class="string">"urun_adi"</span>)
+    <span class="keyword">val</span> ad: String,
+    
+    <span class="annotation">@SerializedName</span>(<span class="string">"fiyat"</span>)
+    <span class="keyword">val</span> fiyat: Double,
+    
+    <span class="annotation">@SerializedName</span>(<span class="string">"resim_url"</span>)
+    <span class="keyword">val</span> resimUrl: String?
+)</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>API Service</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Retrofit Service Interface</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">interface</span> <span class="class-name">JsonPlaceholderApi</span> {
+    <span class="comment">// GET - Tüm postları getir</span>
+    <span class="annotation">@GET</span>(<span class="string">"posts"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">getPosts</span>(): List&lt;Post&gt;
+    
+    <span class="comment">// GET - Tek post getir</span>
+    <span class="annotation">@GET</span>(<span class="string">"posts/{id}"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">getPost</span>(<span class="annotation">@Path</span>(<span class="string">"id"</span>) postId: Int): Post
+    
+    <span class="comment">// GET - Query parametresi</span>
+    <span class="annotation">@GET</span>(<span class="string">"posts"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">getPostsByUser</span>(<span class="annotation">@Query</span>(<span class="string">"userId"</span>) userId: Int): List&lt;Post&gt;
+    
+    <span class="comment">// GET - Kullanıcılar</span>
+    <span class="annotation">@GET</span>(<span class="string">"users"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">getUsers</span>(): List&lt;User&gt;
+    
+    <span class="comment">// POST - Yeni post oluştur</span>
+    <span class="annotation">@POST</span>(<span class="string">"posts"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">createPost</span>(<span class="annotation">@Body</span> post: Post): Post
+    
+    <span class="comment">// PUT - Post güncelle</span>
+    <span class="annotation">@PUT</span>(<span class="string">"posts/{id}"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">updatePost</span>(
+        <span class="annotation">@Path</span>(<span class="string">"id"</span>) postId: Int,
+        <span class="annotation">@Body</span> post: Post
+    ): Post
+    
+    <span class="comment">// DELETE - Post sil</span>
+    <span class="annotation">@DELETE</span>(<span class="string">"posts/{id}"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">deletePost</span>(<span class="annotation">@Path</span>(<span class="string">"id"</span>) postId: Int)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Retrofit Instance</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Retrofit Oluşturma</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">object</span> <span class="class-name">RetrofitInstance</span> {
+    <span class="keyword">private const val</span> BASE_URL = <span class="string">"https://jsonplaceholder.typicode.com/"</span>
+    
+    <span class="comment">// Logging interceptor (debug için)</span>
+    <span class="keyword">private val</span> loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+    
+    <span class="comment">// OkHttp client</span>
+    <span class="keyword">private val</span> okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .connectTimeout(<span class="number">30</span>, TimeUnit.SECONDS)
+        .readTimeout(<span class="number">30</span>, TimeUnit.SECONDS)
+        .build()
+    
+    <span class="comment">// Retrofit instance</span>
+    <span class="keyword">private val</span> retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    
+    <span class="comment">// API service</span>
+    <span class="keyword">val</span> api: JsonPlaceholderApi = retrofit.create(JsonPlaceholderApi::<span class="keyword">class</span>.java)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Repository</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Repository ile API Çağrıları</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">sealed class</span> <span class="class-name">Result</span>&lt;<span class="keyword">out</span> T&gt; {
+    <span class="keyword">data class</span> <span class="class-name">Success</span>&lt;T&gt;(<span class="keyword">val</span> data: T) : Result&lt;T&gt;()
+    <span class="keyword">data class</span> <span class="class-name">Error</span>(<span class="keyword">val</span> message: String) : Result&lt;Nothing&gt;()
+    <span class="keyword">object</span> <span class="class-name">Loading</span> : Result&lt;Nothing&gt;()
+}
+
+<span class="keyword">class</span> <span class="class-name">PostRepository</span>(
+    <span class="keyword">private val</span> api: JsonPlaceholderApi = RetrofitInstance.api
+) {
+    <span class="keyword">suspend fun</span> <span class="method">getPosts</span>(): Result&lt;List&lt;Post&gt;&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> posts = api.getPosts()
+            Result.Success(posts)
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.Error(e.message ?: <span class="string">"Bilinmeyen hata"</span>)
+        }
+    }
+    
+    <span class="keyword">suspend fun</span> <span class="method">getPost</span>(postId: Int): Result&lt;Post&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> post = api.getPost(postId)
+            Result.Success(post)
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.Error(e.message ?: <span class="string">"Bilinmeyen hata"</span>)
+        }
+    }
+    
+    <span class="keyword">suspend fun</span> <span class="method">createPost</span>(title: String, body: String): Result&lt;Post&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> newPost = Post(userId = <span class="number">1</span>, id = <span class="number">0</span>, title = title, body = body)
+            <span class="keyword">val</span> createdPost = api.createPost(newPost)
+            Result.Success(createdPost)
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.Error(e.message ?: <span class="string">"Bilinmeyen hata"</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>ViewModel</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">PostViewModel</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">data class</span> <span class="class-name">PostUiState</span>(
+    <span class="keyword">val</span> posts: List&lt;Post&gt; = emptyList(),
+    <span class="keyword">val</span> isLoading: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> error: String? = <span class="keyword">null</span>
+)
+
+<span class="keyword">class</span> <span class="class-name">PostViewModel</span>(
+    <span class="keyword">private val</span> repository: PostRepository = PostRepository()
+) : ViewModel() {
+    
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(PostUiState())
+    <span class="keyword">val</span> uiState: StateFlow&lt;PostUiState&gt; = _uiState.asStateFlow()
+    
+    <span class="keyword">init</span> {
+        loadPosts()
+    }
+    
+    <span class="keyword">fun</span> <span class="method">loadPosts</span>() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = <span class="keyword">true</span>, error = <span class="keyword">null</span>) }
+            
+            <span class="keyword">when</span> (<span class="keyword">val</span> result = repository.getPosts()) {
+                <span class="keyword">is</span> Result.Success -> {
+                    _uiState.update { 
+                        it.copy(
+                            posts = result.data,
+                            isLoading = <span class="keyword">false</span>
+                        ) 
+                    }
+                }
+                <span class="keyword">is</span> Result.Error -> {
+                    _uiState.update { 
+                        it.copy(
+                            error = result.message,
+                            isLoading = <span class="keyword">false</span>
+                        ) 
+                    }
+                }
+                <span class="keyword">is</span> Result.Loading -> { }
+            }
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">retry</span>() {
+        loadPosts()
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>UI Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Post Listesi Ekranı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">PostListScreen</span>(
+    viewModel: PostViewModel = viewModel()
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsState()
+    
+    Box(modifier = Modifier.fillMaxSize()) {
+        <span class="keyword">when</span> {
+            uiState.isLoading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            uiState.error != <span class="keyword">null</span> -> {
+                ErrorContent(
+                    message = uiState.error!!,
+                    onRetry = { viewModel.retry() },
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            <span class="keyword">else</span> -> {
+                LazyColumn(
+                    contentPadding = PaddingValues(<span class="number">16</span>.dp),
+                    verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+                ) {
+                    items(uiState.posts) { post ->
+                        PostCard(post = post)
+                    }
+                }
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">PostCard</span>(post: Post) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = <span class="number">2</span>.dp)
+    ) {
+        Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            Text(
+                text = post.title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            Text(
+                text = post.body,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = <span class="number">3</span>,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">ErrorContent</span>(
+    message: String,
+    onRetry: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.padding(<span class="number">16</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            Icons.Default.Warning,
+            contentDescription = <span class="keyword">null</span>,
+            modifier = Modifier.size(<span class="number">48</span>.dp),
+            tint = MaterialTheme.colorScheme.error
+        )
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        Text(text = message, textAlign = TextAlign.Center)
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        Button(onClick = onRetry) {
+            Text(<span class="string">"Tekrar Dene"</span>)
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Coil ile Resim Yükleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">AsyncImage Kullanımı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">UserCard</span>(user: User, avatarUrl: String?) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.padding(<span class="number">16</span>.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(avatarUrl ?: <span class="string">"https://via.placeholder.com/100"</span>)
+                    .crossfade(<span class="keyword">true</span>)
+                    .build(),
+                contentDescription = user.name,
+                modifier = Modifier
+                    .size(<span class="number">60</span>.dp)
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(R.drawable.placeholder),
+                error = painterResource(R.drawable.error_image)
+            )
+            
+            Spacer(modifier = Modifier.width(<span class="number">16</span>.dp))
+            
+            Column {
+                Text(user.name, style = MaterialTheme.typography.titleMedium)
+                Text(user.email, style = MaterialTheme.typography.bodySmall)
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>JSONPlaceholder API'den kullanıcıları çekip listele.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Post detay sayfası yap (ID ile tek post getir).</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Pull-to-refresh özelliği ekle.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders9.html" class="nav-btn prev">← Ders 9</a>
+            <a href="ders11.html" class="nav-btn next">Ders 11 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

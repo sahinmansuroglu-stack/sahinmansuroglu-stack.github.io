@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 9: Room Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 9</span>
+            <h1>💾 Room Database</h1>
+            <p class="subtitle">Yerel Veritabanı ile Kalıcı Veri Saklama</p>
+        </header>
+
+        <section class="section">
+            <h2>Bu Derste Öğrenecekleriniz</h2>
+            <div class="info-box">
+                <strong>📚 Konular:</strong><br>
+                • Room kurulumu<br>
+                • Entity, DAO, Database<br>
+                • CRUD işlemleri<br>
+                • Flow ile reactive veri
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kurulum</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">build.gradle.kts</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">plugins</span> {
+    id(<span class="string">"com.google.devtools.ksp"</span>) version <span class="string">"1.9.21-1.0.15"</span>
+}
+
+<span class="keyword">dependencies</span> {
+    <span class="keyword">val</span> roomVersion = <span class="string">"2.6.1"</span>
+    
+    implementation(<span class="string">"androidx.room:room-runtime:$roomVersion"</span>)
+    implementation(<span class="string">"androidx.room:room-ktx:$roomVersion"</span>)
+    ksp(<span class="string">"androidx.room:room-compiler:$roomVersion"</span>)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Entity (Tablo Tanımı)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Entity Sınıfı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Entity</span>(tableName = <span class="string">"notlar"</span>)
+<span class="keyword">data class</span> <span class="class-name">Not</span>(
+    <span class="annotation">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)
+    <span class="keyword">val</span> id: Int = <span class="number">0</span>,
+    
+    <span class="annotation">@ColumnInfo</span>(name = <span class="string">"baslik"</span>)
+    <span class="keyword">val</span> baslik: String,
+    
+    <span class="annotation">@ColumnInfo</span>(name = <span class="string">"icerik"</span>)
+    <span class="keyword">val</span> icerik: String,
+    
+    <span class="annotation">@ColumnInfo</span>(name = <span class="string">"olusturma_tarihi"</span>)
+    <span class="keyword">val</span> olusturmaTarihi: Long = System.currentTimeMillis(),
+    
+    <span class="annotation">@ColumnInfo</span>(name = <span class="string">"favori"</span>)
+    <span class="keyword">val</span> favori: Boolean = <span class="keyword">false</span>
+)
+
+<span class="comment">// İlişkili tablolar</span>
+<span class="annotation">@Entity</span>(tableName = <span class="string">"kategoriler"</span>)
+<span class="keyword">data class</span> <span class="class-name">Kategori</span>(
+    <span class="annotation">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)
+    <span class="keyword">val</span> id: Int = <span class="number">0</span>,
+    <span class="keyword">val</span> ad: String
+)
+
+<span class="annotation">@Entity</span>(
+    tableName = <span class="string">"not_detaylari"</span>,
+    foreignKeys = [
+        ForeignKey(
+            entity = Not::<span class="keyword">class</span>,
+            parentColumns = [<span class="string">"id"</span>],
+            childColumns = [<span class="string">"not_id"</span>],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+<span class="keyword">data class</span> <span class="class-name">NotDetay</span>(
+    <span class="annotation">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)
+    <span class="keyword">val</span> id: Int = <span class="number">0</span>,
+    
+    <span class="annotation">@ColumnInfo</span>(name = <span class="string">"not_id"</span>)
+    <span class="keyword">val</span> notId: Int,
+    
+    <span class="keyword">val</span> etiket: String
+)</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>DAO (Data Access Object)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">DAO Interface</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Dao</span>
+<span class="keyword">interface</span> <span class="class-name">NotDao</span> {
+    <span class="comment">// Tüm notları getir (Flow ile reactive)</span>
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar ORDER BY olusturma_tarihi DESC"</span>)
+    <span class="keyword">fun</span> <span class="method">tumNotlar</span>(): Flow&lt;List&lt;Not&gt;&gt;
+    
+    <span class="comment">// ID ile tek not getir</span>
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar WHERE id = :notId"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">notGetir</span>(notId: Int): Not?
+    
+    <span class="comment">// Favori notları getir</span>
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar WHERE favori = 1"</span>)
+    <span class="keyword">fun</span> <span class="method">favoriNotlar</span>(): Flow&lt;List&lt;Not&gt;&gt;
+    
+    <span class="comment">// Arama</span>
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM notlar WHERE baslik LIKE '%' || :aramaMetni || '%'"</span>)
+    <span class="keyword">fun</span> <span class="method">notAra</span>(aramaMetni: String): Flow&lt;List&lt;Not&gt;&gt;
+    
+    <span class="comment">// Ekleme</span>
+    <span class="annotation">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)
+    <span class="keyword">suspend fun</span> <span class="method">notEkle</span>(not: Not): Long
+    
+    <span class="comment">// Güncelleme</span>
+    <span class="annotation">@Update</span>
+    <span class="keyword">suspend fun</span> <span class="method">notGuncelle</span>(not: Not)
+    
+    <span class="comment">// Silme</span>
+    <span class="annotation">@Delete</span>
+    <span class="keyword">suspend fun</span> <span class="method">notSil</span>(not: Not)
+    
+    <span class="comment">// ID ile silme</span>
+    <span class="annotation">@Query</span>(<span class="string">"DELETE FROM notlar WHERE id = :notId"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">notSilById</span>(notId: Int)
+    
+    <span class="comment">// Favori toggle</span>
+    <span class="annotation">@Query</span>(<span class="string">"UPDATE notlar SET favori = NOT favori WHERE id = :notId"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">favoriToggle</span>(notId: Int)
+    
+    <span class="comment">// Tüm notları sil</span>
+    <span class="annotation">@Query</span>(<span class="string">"DELETE FROM notlar"</span>)
+    <span class="keyword">suspend fun</span> <span class="method">tumNotlariSil</span>()
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Database</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Database Sınıfı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Database</span>(
+    entities = [Not::<span class="keyword">class</span>],
+    version = <span class="number">1</span>,
+    exportSchema = <span class="keyword">false</span>
+)
+<span class="keyword">abstract class</span> <span class="class-name">NotDatabase</span> : RoomDatabase() {
+    <span class="keyword">abstract fun</span> <span class="method">notDao</span>(): NotDao
+    
+    <span class="keyword">companion object</span> {
+        <span class="annotation">@Volatile</span>
+        <span class="keyword">private var</span> INSTANCE: NotDatabase? = <span class="keyword">null</span>
+        
+        <span class="keyword">fun</span> <span class="method">getDatabase</span>(context: Context): NotDatabase {
+            <span class="keyword">return</span> INSTANCE ?: <span class="keyword">synchronized</span>(<span class="keyword">this</span>) {
+                <span class="keyword">val</span> instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    NotDatabase::<span class="keyword">class</span>.java,
+                    <span class="string">"not_database"</span>
+                ).build()
+                INSTANCE = instance
+                instance
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Repository</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Repository Pattern</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">class</span> <span class="class-name">NotRepository</span>(<span class="keyword">private val</span> notDao: NotDao) {
+    <span class="keyword">val</span> tumNotlar: Flow&lt;List&lt;Not&gt;&gt; = notDao.tumNotlar()
+    <span class="keyword">val</span> favoriNotlar: Flow&lt;List&lt;Not&gt;&gt; = notDao.favoriNotlar()
+    
+    <span class="keyword">fun</span> <span class="method">notAra</span>(aramaMetni: String): Flow&lt;List&lt;Not&gt;&gt; {
+        <span class="keyword">return</span> notDao.notAra(aramaMetni)
+    }
+    
+    <span class="keyword">suspend fun</span> <span class="method">notGetir</span>(notId: Int): Not? {
+        <span class="keyword">return</span> notDao.notGetir(notId)
+    }
+    
+    <span class="keyword">suspend fun</span> <span class="method">notEkle</span>(not: Not): Long {
+        <span class="keyword">return</span> notDao.notEkle(not)
+    }
+    
+    <span class="keyword">suspend fun</span> <span class="method">notGuncelle</span>(not: Not) {
+        notDao.notGuncelle(not)
+    }
+    
+    <span class="keyword">suspend fun</span> <span class="method">notSil</span>(not: Not) {
+        notDao.notSil(not)
+    }
+    
+    <span class="keyword">suspend fun</span> <span class="method">favoriToggle</span>(notId: Int) {
+        notDao.favoriToggle(notId)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>ViewModel ile Kullanım</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">NotViewModel</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">class</span> <span class="class-name">NotViewModel</span>(
+    <span class="keyword">private val</span> repository: NotRepository
+) : ViewModel() {
+    
+    <span class="keyword">val</span> tumNotlar: StateFlow&lt;List&lt;Not&gt;&gt; = repository.tumNotlar
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(<span class="number">5000</span>),
+            initialValue = emptyList()
+        )
+    
+    <span class="keyword">private val</span> _aramaSorgusu = MutableStateFlow(<span class="string">""</span>)
+    
+    <span class="keyword">val</span> filtrelenmisNotlar: StateFlow&lt;List&lt;Not&gt;&gt; = _aramaSorgusu
+        .flatMapLatest { sorgu ->
+            <span class="keyword">if</span> (sorgu.isEmpty()) {
+                repository.tumNotlar
+            } <span class="keyword">else</span> {
+                repository.notAra(sorgu)
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(<span class="number">5000</span>),
+            initialValue = emptyList()
+        )
+    
+    <span class="keyword">fun</span> <span class="method">aramaGuncelle</span>(sorgu: String) {
+        _aramaSorgusu.value = sorgu
+    }
+    
+    <span class="keyword">fun</span> <span class="method">notEkle</span>(baslik: String, icerik: String) {
+        viewModelScope.launch {
+            <span class="keyword">val</span> yeniNot = Not(baslik = baslik, icerik = icerik)
+            repository.notEkle(yeniNot)
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">notSil</span>(not: Not) {
+        viewModelScope.launch {
+            repository.notSil(not)
+        }
+    }
+    
+    <span class="keyword">fun</span> <span class="method">favoriToggle</span>(notId: Int) {
+        viewModelScope.launch {
+            repository.favoriToggle(notId)
+        }
+    }
+}
+
+<span class="comment">// ViewModel Factory</span>
+<span class="keyword">class</span> <span class="class-name">NotViewModelFactory</span>(
+    <span class="keyword">private val</span> repository: NotRepository
+) : ViewModelProvider.Factory {
+    <span class="keyword">override fun</span> &lt;T : ViewModel&gt; <span class="method">create</span>(modelClass: Class&lt;T&gt;): T {
+        <span class="keyword">if</span> (modelClass.isAssignableFrom(NotViewModel::<span class="keyword">class</span>.java)) {
+            <span class="annotation">@Suppress</span>(<span class="string">"UNCHECKED_CAST"</span>)
+            <span class="keyword">return</span> NotViewModel(repository) <span class="keyword">as</span> T
+        }
+        <span class="keyword">throw</span> IllegalArgumentException(<span class="string">"Unknown ViewModel class"</span>)
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>UI Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Not Uygulaması Ekranı</div>
+                <pre data-lang="Kotlin"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">NotListesiScreen</span>(
+    viewModel: NotViewModel
+) {
+    <span class="keyword">val</span> notlar <span class="keyword">by</span> viewModel.filtrelenmisNotlar.collectAsState()
+    <span class="keyword">var</span> aramaSorgusu <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> dialogAcik <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+    
+    Scaffold(
+        topBar = {
+            SearchBar(
+                query = aramaSorgusu,
+                onQueryChange = { 
+                    aramaSorgusu = it
+                    viewModel.aramaGuncelle(it)
+                }
+            )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { dialogAcik = <span class="keyword">true</span> }) {
+                Icon(Icons.Default.Add, <span class="string">"Not Ekle"</span>)
+            }
+        }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier.padding(padding),
+            contentPadding = PaddingValues(<span class="number">16</span>.dp),
+            verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+        ) {
+            items(notlar, key = { it.id }) { not ->
+                NotKart(
+                    not = not,
+                    onSil = { viewModel.notSil(not) },
+                    onFavori = { viewModel.favoriToggle(not.id) }
+                )
+            }
+        }
+    }
+    
+    <span class="keyword">if</span> (dialogAcik) {
+        NotEkleDialog(
+            onKapat = { dialogAcik = <span class="keyword">false</span> },
+            onKaydet = { baslik, icerik ->
+                viewModel.notEkle(baslik, icerik)
+                dialogAcik = <span class="keyword">false</span>
+            }
+        )
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">NotKart</span>(
+    not: Not,
+    onSil: () -> Unit,
+    onFavori: () -> Unit
+) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = not.baslik,
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.weight(<span class="number">1f</span>)
+                )
+                
+                IconButton(onClick = onFavori) {
+                    Icon(
+                        imageVector = <span class="keyword">if</span> (not.favori) 
+                            Icons.Default.Favorite <span class="keyword">else</span> Icons.Default.FavoriteBorder,
+                        contentDescription = <span class="string">"Favori"</span>,
+                        tint = <span class="keyword">if</span> (not.favori) Color.Red <span class="keyword">else</span> Color.Gray
+                    )
+                }
+                
+                IconButton(onClick = onSil) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = <span class="string">"Sil"</span>,
+                        tint = Color.Red
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            
+            Text(
+                text = not.icerik,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = <span class="number">3</span>,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Basit bir not uygulaması yap (ekleme, silme, listeleme).</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Not düzenleme özelliği ekle.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Favoriler sekmesi ile sadece favori notları göster.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders8.html" class="nav-btn prev">← Ders 8</a>
+            <a href="ders10.html" class="nav-btn next">Ders 10 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

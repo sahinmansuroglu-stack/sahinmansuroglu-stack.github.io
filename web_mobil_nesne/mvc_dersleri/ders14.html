@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 14: Dosya Yükleme ve Resim İşlemleri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 14</span>
+            <h1>Dosya Yükleme ve Resim İşlemleri</h1>
+            <p class="subtitle">Profil Fotoğrafı ve Döküman Yükleme</p>
+        </header>
+
+        <section class="section">
+            <h2>Dosya Yükleme Temelleri</h2>
+
+            <div class="info-box">
+                <strong>💡 Önemli Noktalar:</strong><br>
+                • Dosyalar <code>wwwroot</code> klasörüne kaydedilir<br>
+                • <code>IFormFile</code> interface'i kullanılır<br>
+                • Güvenlik için dosya uzantısı ve boyutu kontrol edilmeli<br>
+                • Form'da <code>enctype="multipart/form-data"</code> gerekli
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model Güncelleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    <span class="keyword">public string</span> FirstName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    <span class="keyword">public string</span> LastName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Profil fotoğrafı yolu</span>
+    <span class="keyword">public string</span>? PhotoPath { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Hesaplanmış özellik</span>
+    <span class="keyword">public string</span> PhotoUrl => <span class="keyword">string</span>.IsNullOrEmpty(PhotoPath) 
+        ? <span class="string">"/images/default-avatar.png"</span> 
+        : PhotoPath;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller - Dosya Yükleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/StudentController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentController</span> : Controller
+{
+    <span class="keyword">private readonly</span> SchoolDbContext _context;
+    <span class="keyword">private readonly</span> IWebHostEnvironment _environment;
+    
+    <span class="keyword">public</span> <span class="method">StudentController</span>(
+        SchoolDbContext context, 
+        IWebHostEnvironment environment)
+    {
+        _context = context;
+        _environment = environment;
+    }
+    
+    [HttpPost]
+    <span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Create</span>(
+        Student student, 
+        IFormFile? photo)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            <span class="comment">// Fotoğraf yükle</span>
+            <span class="keyword">if</span> (photo != <span class="keyword">null</span> && photo.Length > <span class="number">0</span>)
+            {
+                student.PhotoPath = <span class="keyword">await</span> UploadPhotoAsync(photo);
+            }
+            
+            _context.Students.Add(student);
+            <span class="keyword">await</span> _context.SaveChangesAsync();
+            
+            TempData[<span class="string">"Success"</span>] = <span class="string">"Öğrenci eklendi!"</span>;
+            <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+        }
+        <span class="keyword">return</span> View(student);
+    }
+    
+    <span class="keyword">private async</span> Task&lt;<span class="keyword">string</span>&gt; <span class="method">UploadPhotoAsync</span>(IFormFile photo)
+    {
+        <span class="comment">// Uzantı kontrolü</span>
+        <span class="keyword">var</span> allowedExtensions = <span class="keyword">new</span>[] { <span class="string">".jpg"</span>, <span class="string">".jpeg"</span>, <span class="string">".png"</span>, <span class="string">".gif"</span> };
+        <span class="keyword">var</span> extension = Path.GetExtension(photo.FileName).ToLower();
+        
+        <span class="keyword">if</span> (!allowedExtensions.Contains(extension))
+        {
+            <span class="keyword">throw new</span> Exception(<span class="string">"Geçersiz dosya türü!"</span>);
+        }
+        
+        <span class="comment">// Boyut kontrolü (2MB)</span>
+        <span class="keyword">if</span> (photo.Length > <span class="number">2</span> * <span class="number">1024</span> * <span class="number">1024</span>)
+        {
+            <span class="keyword">throw new</span> Exception(<span class="string">"Dosya 2MB'dan büyük olamaz!"</span>);
+        }
+        
+        <span class="comment">// Benzersiz dosya adı</span>
+        <span class="keyword">var</span> fileName = $<span class="string">"{Guid.NewGuid()}{extension}"</span>;
+        
+        <span class="comment">// Kayıt yolu</span>
+        <span class="keyword">var</span> uploadsFolder = Path.Combine(_environment.WebRootPath, <span class="string">"uploads"</span>, <span class="string">"photos"</span>);
+        Directory.CreateDirectory(uploadsFolder);
+        
+        <span class="keyword">var</span> filePath = Path.Combine(uploadsFolder, fileName);
+        
+        <span class="comment">// Dosyayı kaydet</span>
+        <span class="keyword">using</span> (<span class="keyword">var</span> stream = <span class="keyword">new</span> FileStream(filePath, FileMode.Create))
+        {
+            <span class="keyword">await</span> photo.CopyToAsync(stream);
+        }
+        
+        <span class="keyword">return</span> $<span class="string">"/uploads/photos/{fileName}"</span>;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Dosya Yükleme Formu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Student/Create.cshtml</div>
+                <pre data-lang="Razor"><code>@model Student
+
+&lt;h1&gt;Yeni Öğrenci&lt;/h1&gt;
+
+&lt;form asp-action="Create" method="post" <span class="attribute">enctype</span>=<span class="string">"multipart/form-data"</span>&gt;
+    &lt;div asp-validation-summary="ModelOnly" class="text-danger"&gt;&lt;/div&gt;
+    
+    &lt;div class="row"&gt;
+        &lt;div class="col-md-6 mb-3"&gt;
+            &lt;label asp-for="FirstName"&gt;&lt;/label&gt;
+            &lt;input asp-for="FirstName" class="form-control" /&gt;
+            &lt;span asp-validation-for="FirstName" class="text-danger"&gt;&lt;/span&gt;
+        &lt;/div&gt;
+        &lt;div class="col-md-6 mb-3"&gt;
+            &lt;label asp-for="LastName"&gt;&lt;/label&gt;
+            &lt;input asp-for="LastName" class="form-control" /&gt;
+            &lt;span asp-validation-for="LastName" class="text-danger"&gt;&lt;/span&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Fotoğraf Yükleme --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label class="form-label"&gt;Profil Fotoğrafı&lt;/label&gt;
+        &lt;input type="file" name="photo" class="form-control" 
+               accept=".jpg,.jpeg,.png,.gif" /&gt;
+        &lt;small class="text-muted"&gt;Max 2MB, JPG/PNG/GIF formatları&lt;/small&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Önizleme --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;img id="preview" src="/images/default-avatar.png" 
+             alt="Önizleme" style="max-width: 150px; border-radius: 10px;" /&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-success"&gt;Kaydet&lt;/button&gt;
+&lt;/form&gt;
+
+@section Scripts {
+    &lt;script&gt;
+        document.querySelector('input[name="photo"]').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    &lt;/script&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Fotoğraf Güncelleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Edit Action</div>
+                <pre data-lang="C#"><code>[HttpPost]
+<span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">Edit</span>(
+    <span class="keyword">int</span> id, 
+    Student student, 
+    IFormFile? photo)
+{
+    <span class="keyword">if</span> (id != student.Id) <span class="keyword">return</span> NotFound();
+    
+    <span class="keyword">if</span> (ModelState.IsValid)
+    {
+        <span class="keyword">var</span> existingStudent = <span class="keyword">await</span> _context.Students.FindAsync(id);
+        
+        <span class="comment">// Yeni fotoğraf yüklendiyse</span>
+        <span class="keyword">if</span> (photo != <span class="keyword">null</span> && photo.Length > <span class="number">0</span>)
+        {
+            <span class="comment">// Eski fotoğrafı sil</span>
+            <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(existingStudent.PhotoPath))
+            {
+                DeletePhoto(existingStudent.PhotoPath);
+            }
+            
+            <span class="comment">// Yeni fotoğrafı yükle</span>
+            existingStudent.PhotoPath = <span class="keyword">await</span> UploadPhotoAsync(photo);
+        }
+        
+        <span class="comment">// Diğer alanları güncelle</span>
+        existingStudent.FirstName = student.FirstName;
+        existingStudent.LastName = student.LastName;
+        existingStudent.Email = student.Email;
+        
+        <span class="keyword">await</span> _context.SaveChangesAsync();
+        TempData[<span class="string">"Success"</span>] = <span class="string">"Güncellendi!"</span>;
+        <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+    }
+    <span class="keyword">return</span> View(student);
+}
+
+<span class="keyword">private void</span> <span class="method">DeletePhoto</span>(<span class="keyword">string</span> photoPath)
+{
+    <span class="keyword">var</span> fullPath = Path.Combine(_environment.WebRootPath, photoPath.TrimStart(<span class="string">'/'</span>));
+    <span class="keyword">if</span> (System.IO.File.Exists(fullPath))
+    {
+        System.IO.File.Delete(fullPath);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Fotoğrafı Gösterme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">View'da Kullanım</div>
+                <pre data-lang="Razor"><code><span class="comment">&lt;!-- Listede --&gt;</span>
+&lt;td&gt;
+    &lt;img src="@s.PhotoUrl" alt="@s.FullName" 
+         class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" /&gt;
+&lt;/td&gt;
+
+<span class="comment">&lt;!-- Detay sayfasında --&gt;</span>
+&lt;div class="text-center mb-4"&gt;
+    &lt;img src="@Model.PhotoUrl" alt="@Model.FullName" 
+         class="rounded-circle shadow" 
+         style="width: 150px; height: 150px; object-fit: cover;" /&gt;
+    &lt;h2 class="mt-3"&gt;@Model.FullName&lt;/h2&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Çoklu dosya yükleme için controller action yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre data-lang="C#"><code>[HttpPost]
+<span class="keyword">public async</span> Task&lt;IActionResult&gt; <span class="method">UploadMultiple</span>(List&lt;IFormFile&gt; files)
+{
+    <span class="keyword">var</span> uploadedPaths = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
+    
+    <span class="keyword">foreach</span> (<span class="keyword">var</span> file <span class="keyword">in</span> files)
+    {
+        <span class="keyword">if</span> (file.Length > <span class="number">0</span>)
+        {
+            <span class="keyword">var</span> path = <span class="keyword">await</span> UploadPhotoAsync(file);
+            uploadedPaths.Add(path);
+        }
+    }
+    
+    TempData[<span class="string">"Success"</span>] = $<span class="string">"{uploadedPaths.Count} dosya yüklendi."</span>;
+    <span class="keyword">return</span> RedirectToAction(<span class="keyword">nameof</span>(Index));
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Dosya türü doğrulama için custom validation attribute yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">AllowedExtensionsAttribute</span> : ValidationAttribute
+{
+    <span class="keyword">private readonly string</span>[] _extensions;
+    
+    <span class="keyword">public</span> <span class="method">AllowedExtensionsAttribute</span>(<span class="keyword">string</span>[] extensions)
+    {
+        _extensions = extensions;
+    }
+    
+    <span class="keyword">protected override</span> ValidationResult IsValid(
+        <span class="keyword">object</span> value, 
+        ValidationContext validationContext)
+    {
+        <span class="keyword">if</span> (value <span class="keyword">is</span> IFormFile file)
+        {
+            <span class="keyword">var</span> extension = Path.GetExtension(file.FileName);
+            <span class="keyword">if</span> (!_extensions.Contains(extension.ToLower()))
+            {
+                <span class="keyword">return new</span> ValidationResult(<span class="string">"Geçersiz dosya türü!"</span>);
+            }
+        }
+        <span class="keyword">return</span> ValidationResult.Success;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders13.html" class="nav-btn prev">← Önceki: Arama ve Sayfalama</a>
+            <a href="proje14.html" class="nav-btn next">Final Projesi →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

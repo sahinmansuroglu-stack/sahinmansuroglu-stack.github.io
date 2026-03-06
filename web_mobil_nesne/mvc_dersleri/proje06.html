@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 6: Sipariş Formu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 6</span>
+            <h1>🛒 Online Sipariş Formu</h1>
+            <p class="subtitle">Ders 1-6 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Form işlemleri, GET/POST, SelectList ve checkbox/radio kullanımı.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • GET/POST metodları<br>
+                • Form binding<br>
+                • SelectList ve dropdown<br>
+                • CheckBox, Radio Button<br>
+                • asp-for, asp-items Tag Helpers
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Models</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Product.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Product</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/OrderViewModel.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> System.Collections.Generic;
+<span class="keyword">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="keyword">public class</span> <span class="class-name">OrderViewModel</span>
+{
+    [Required(ErrorMessage = <span class="string">"Ürün seçimi zorunlu"</span>)]
+    [Display(Name = <span class="string">"Ürün"</span>)]
+    <span class="keyword">public int</span> ProductId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Range(<span class="number">1</span>, <span class="number">100</span>, ErrorMessage = <span class="string">"Adet 1-100 arası olmalı"</span>)]
+    [Display(Name = <span class="string">"Adet"</span>)]
+    <span class="keyword">public int</span> Quantity { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="number">1</span>;
+    
+    [Required]
+    [Display(Name = <span class="string">"Teslimat Tipi"</span>)]
+    <span class="keyword">public string</span> DeliveryType { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Ek Hizmetler"</span>)]
+    <span class="keyword">public</span> List&lt;<span class="keyword">string</span>&gt; ExtraServices { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">new</span>();
+    
+    [Required]
+    [Display(Name = <span class="string">"Teslimat Adresi"</span>)]
+    <span class="keyword">public string</span> Address { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Ödeme Yöntemi"</span>)]
+    <span class="keyword">public string</span> PaymentMethod { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Not"</span>)]
+    <span class="keyword">public string</span>? Note { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/OrderController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+<span class="keyword">using</span> Microsoft.AspNetCore.Mvc.Rendering;
+<span class="keyword">using</span> System.Collections.Generic;
+<span class="keyword">using</span> System.Linq;
+
+<span class="keyword">public class</span> <span class="class-name">OrderController</span> : Controller
+{
+    <span class="keyword">private static</span> List&lt;Product&gt; _products = <span class="keyword">new</span>()
+    {
+        <span class="keyword">new</span> Product { Id = <span class="number">1</span>, Name = <span class="string">"Laptop"</span>, Price = <span class="number">15000</span> },
+        <span class="keyword">new</span> Product { Id = <span class="number">2</span>, Name = <span class="string">"Telefon"</span>, Price = <span class="number">8000</span> },
+        <span class="keyword">new</span> Product { Id = <span class="number">3</span>, Name = <span class="string">"Tablet"</span>, Price = <span class="number">5000</span> }
+    };
+    
+    [HttpGet]
+    <span class="keyword">public</span> IActionResult <span class="method">Create</span>()
+    {
+        <span class="comment">// Ürün dropdown için SelectList</span>
+        ViewBag.Products = <span class="keyword">new</span> SelectList(_products, <span class="string">"Id"</span>, <span class="string">"Name"</span>);
+        
+        <span class="comment">// Teslimat tipleri</span>
+        ViewBag.DeliveryTypes = <span class="keyword">new</span> List&lt;SelectListItem&gt;
+        {
+            <span class="keyword">new</span>() { Value = <span class="string">"standard"</span>, Text = <span class="string">"Standart (3-5 gün)"</span> },
+            <span class="keyword">new</span>() { Value = <span class="string">"express"</span>, Text = <span class="string">"Hızlı (1-2 gün) +50₺"</span> },
+            <span class="keyword">new</span>() { Value = <span class="string">"same_day"</span>, Text = <span class="string">"Aynı Gün +100₺"</span> }
+        };
+        
+        <span class="comment">// Ödeme yöntemleri</span>
+        ViewBag.PaymentMethods = <span class="keyword">new</span>[] { <span class="string">"Kredi Kartı"</span>, <span class="string">"Havale/EFT"</span>, <span class="string">"Kapıda Ödeme"</span> };
+        
+        <span class="keyword">return</span> View();
+    }
+    
+    [HttpPost]
+    <span class="keyword">public</span> IActionResult <span class="method">Create</span>(OrderViewModel model)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            <span class="comment">// Seçilen ürünü bul</span>
+            <span class="keyword">var</span> product = _products.FirstOrDefault(p => p.Id == model.ProductId);
+            
+            <span class="comment">// Toplam hesapla</span>
+            <span class="keyword">decimal</span> total = product.Price * model.Quantity;
+            
+            <span class="comment">// Kargo ücreti</span>
+            <span class="keyword">if</span> (model.DeliveryType == <span class="string">"express"</span>) total += <span class="number">50</span>;
+            <span class="keyword">if</span> (model.DeliveryType == <span class="string">"same_day"</span>) total += <span class="number">100</span>;
+            
+            <span class="comment">// Ek hizmetler</span>
+            <span class="keyword">if</span> (model.ExtraServices.Contains(<span class="string">"insurance"</span>)) total += <span class="number">30</span>;
+            <span class="keyword">if</span> (model.ExtraServices.Contains(<span class="string">"gift_wrap"</span>)) total += <span class="number">20</span>;
+            
+            ViewBag.Product = product;
+            ViewBag.Total = total;
+            
+            <span class="keyword">return</span> View(<span class="string">"Confirmation"</span>, model);
+        }
+        
+        <span class="comment">// Hata varsa dropdown'ları tekrar doldur</span>
+        ViewBag.Products = <span class="keyword">new</span> SelectList(_products, <span class="string">"Id"</span>, <span class="string">"Name"</span>, model.ProductId);
+        <span class="keyword">return</span> View(model);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Sipariş Formu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Order/Create.cshtml</div>
+                <pre data-lang="Razor"><code>@model OrderViewModel
+
+&lt;h1&gt;🛒 Sipariş Ver&lt;/h1&gt;
+
+&lt;form asp-action="Create" method="post"&gt;
+    &lt;div asp-validation-summary="ModelOnly" class="alert alert-danger"&gt;&lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Ürün Seçimi (Dropdown) --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label asp-for="ProductId"&gt;&lt;/label&gt;
+        &lt;select asp-for="ProductId" asp-items="ViewBag.Products" class="form-select"&gt;
+            &lt;option value=""&gt;-- Ürün Seçin --&lt;/option&gt;
+        &lt;/select&gt;
+        &lt;span asp-validation-for="ProductId" class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Adet --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label asp-for="Quantity"&gt;&lt;/label&gt;
+        &lt;input asp-for="Quantity" type="number" min="1" max="100" class="form-control" /&gt;
+        &lt;span asp-validation-for="Quantity" class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Teslimat Tipi (Radio) --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label class="form-label"&gt;Teslimat Tipi&lt;/label&gt;
+        @foreach (var type in ViewBag.DeliveryTypes as List&lt;SelectListItem&gt;)
+        {
+            &lt;div class="form-check"&gt;
+                &lt;input type="radio" asp-for="DeliveryType" value="@type.Value" class="form-check-input" /&gt;
+                &lt;label class="form-check-label"&gt;@type.Text&lt;/label&gt;
+            &lt;/div&gt;
+        }
+        &lt;span asp-validation-for="DeliveryType" class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Ek Hizmetler (Checkbox) --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label class="form-label"&gt;Ek Hizmetler&lt;/label&gt;
+        &lt;div class="form-check"&gt;
+            &lt;input type="checkbox" name="ExtraServices" value="insurance" class="form-check-input" /&gt;
+            &lt;label class="form-check-label"&gt;Kargo Sigortası (+30₺)&lt;/label&gt;
+        &lt;/div&gt;
+        &lt;div class="form-check"&gt;
+            &lt;input type="checkbox" name="ExtraServices" value="gift_wrap" class="form-check-input" /&gt;
+            &lt;label class="form-check-label"&gt;Hediye Paketi (+20₺)&lt;/label&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Ödeme Yöntemi (Select) --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label asp-for="PaymentMethod"&gt;&lt;/label&gt;
+        &lt;select asp-for="PaymentMethod" class="form-select"&gt;
+            &lt;option value=""&gt;-- Seçin --&lt;/option&gt;
+            @foreach (var method in ViewBag.PaymentMethods as string[])
+            {
+                &lt;option value="@method"&gt;@method&lt;/option&gt;
+            }
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Adres (Textarea) --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label asp-for="Address"&gt;&lt;/label&gt;
+        &lt;textarea asp-for="Address" class="form-control" rows="3"&gt;&lt;/textarea&gt;
+        &lt;span asp-validation-for="Address" class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-success btn-lg"&gt;Siparişi Tamamla&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Sepet mantığı ekleyin (birden fazla ürün)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>İndirim kodu alanı ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje05.html" class="nav-btn prev">← Proje 5</a>
+            <a href="proje07.html" class="nav-btn next">Proje 7 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

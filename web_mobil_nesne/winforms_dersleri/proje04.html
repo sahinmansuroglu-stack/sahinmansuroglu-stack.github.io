@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 4: Restoran Sipariş Sistemi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 4</span>
+            <h1>🍕 Restoran Sipariş Sistemi</h1>
+            <p class="subtitle">Ders 1-4 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders04.html">Ders 4</a>
+            <a href="proje04.html" class="active">Proje 4</a>
+            <a href="ders05.html">Ders 5</a>
+            <a href="proje05.html">Proje 5</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Bu projede, bir restoran için sipariş alma formu oluşturacaksınız. Müşteriler yemek seçebilir, ekstra
+                malzemeler ekleyebilir ve siparişlerini onaylayabilir.</p>
+
+            <div class="info-box">
+                <strong>📚 Kullanılan Konular:</strong>
+                <ul>
+                    <li><strong>Ders 1:</strong> Form oluşturma, proje yapısı</li>
+                    <li><strong>Ders 2:</strong> Label, TextBox, Button</li>
+                    <li><strong>Ders 3:</strong> CheckBox, RadioButton, GroupBox</li>
+                    <li><strong>Ders 4:</strong> ListBox, ComboBox</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Proje Gereksinimleri</h2>
+
+            <div class="project-card">
+                <h3>📋 Form Tasarımı</h3>
+                <ul>
+                    <li>Müşteri adı için TextBox</li>
+                    <li>Masa numarası için ComboBox (1-20 arası)</li>
+                    <li>Yemek kategorisi seçimi için RadioButton'lar (Pizza, Burger, Makarna)</li>
+                    <li>Seçilen kategorideki yemekleri gösteren ListBox</li>
+                    <li>Ekstra malzemeler için CheckBox'lar</li>
+                    <li>Sipariş özeti için çok satırlı TextBox</li>
+                    <li>Sipariş Ekle ve Siparişi Onayla butonları</li>
+                </ul>
+            </div>
+
+            <div class="project-card">
+                <h3>🎯 İşlevsellik</h3>
+                <ul>
+                    <li>Kategori değiştiğinde ListBox'taki yemekler güncellensin</li>
+                    <li>Yemek seçildiğinde fiyat gösterilsin</li>
+                    <li>Ekstra malzemeler ek ücret eklesin</li>
+                    <li>Toplam tutar hesaplansın</li>
+                    <li>Sipariş özeti TextBox'ta gösterilsin</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Adım Adım Çözüm</h2>
+
+            <h3>Adım 1: Form Tasarımı</h3>
+            <p>Aşağıdaki kontrolleri forma ekleyin:</p>
+
+            <table>
+                <tr>
+                    <th>Kontrol</th>
+                    <th>Name</th>
+                    <th>Text/Özellik</th>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblMusteri</td>
+                    <td>Müşteri Adı:</td>
+                </tr>
+                <tr>
+                    <td>TextBox</td>
+                    <td>txtMusteri</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblMasa</td>
+                    <td>Masa No:</td>
+                </tr>
+                <tr>
+                    <td>ComboBox</td>
+                    <td>cmbMasa</td>
+                    <td>DropDownStyle: DropDownList</td>
+                </tr>
+                <tr>
+                    <td>GroupBox</td>
+                    <td>grpKategori</td>
+                    <td>Kategori</td>
+                </tr>
+                <tr>
+                    <td>RadioButton</td>
+                    <td>rbPizza</td>
+                    <td>Pizza</td>
+                </tr>
+                <tr>
+                    <td>RadioButton</td>
+                    <td>rbBurger</td>
+                    <td>Burger</td>
+                </tr>
+                <tr>
+                    <td>RadioButton</td>
+                    <td>rbMakarna</td>
+                    <td>Makarna</td>
+                </tr>
+                <tr>
+                    <td>ListBox</td>
+                    <td>lstYemekler</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>GroupBox</td>
+                    <td>grpEkstralar</td>
+                    <td>Ekstralar</td>
+                </tr>
+                <tr>
+                    <td>CheckBox</td>
+                    <td>chkPeynir</td>
+                    <td>Ekstra Peynir (+5₺)</td>
+                </tr>
+                <tr>
+                    <td>CheckBox</td>
+                    <td>chkSos</td>
+                    <td>Özel Sos (+3₺)</td>
+                </tr>
+                <tr>
+                    <td>CheckBox</td>
+                    <td>chkIcecek</td>
+                    <td>İçecek (+10₺)</td>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lblToplam</td>
+                    <td>Toplam: 0₺</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnEkle</td>
+                    <td>Siparişe Ekle</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btnOnayla</td>
+                    <td>Siparişi Onayla</td>
+                </tr>
+                <tr>
+                    <td>TextBox</td>
+                    <td>txtOzet</td>
+                    <td>Multiline: True, ReadOnly: True</td>
+                </tr>
+            </table>
+
+            <h3>Adım 2: Form Yüklendiğinde</h3>
+            <div class="code-example">
+                <div class="code-example-title">Form1_Load</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Masa numaralarını ekle</span>
+    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= <span class="number">20</span>; i++)
+    {
+        cmbMasa.Items.Add(<span class="string">"Masa "</span> + i);
+    }
+    cmbMasa.SelectedIndex = <span class="number">0</span>;
+    
+    <span class="comment">// Varsayılan kategori</span>
+    rbPizza.Checked = <span class="keyword">true</span>;
+    
+    <span class="comment">// Pizza menüsünü yükle</span>
+    YemekleriYukle();
+}</code></pre>
+            </div>
+
+            <h3>Adım 3: Kategori Değişimi</h3>
+            <div class="code-example">
+                <div class="code-example-title">Kategori RadioButton CheckedChanged Olayları</div>
+                <pre><code><span class="comment">// Yemek verileri (sınıf düzeyinde)</span>
+<span class="keyword">private</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">decimal</span>&gt; pizzalar = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">decimal</span>&gt;()
+{
+    { <span class="string">"Margarita"</span>, <span class="number">80</span> },
+    { <span class="string">"Pepperoni"</span>, <span class="number">95</span> },
+    { <span class="string">"Karışık"</span>, <span class="number">110</span> },
+    { <span class="string">"Sucuklu"</span>, <span class="number">90</span> },
+    { <span class="string">"Vejeteryan"</span>, <span class="number">85</span> }
+};
+
+<span class="keyword">private</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">decimal</span>&gt; burgerler = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">decimal</span>&gt;()
+{
+    { <span class="string">"Klasik Burger"</span>, <span class="number">60</span> },
+    { <span class="string">"Cheese Burger"</span>, <span class="number">70</span> },
+    { <span class="string">"Double Burger"</span>, <span class="number">90</span> },
+    { <span class="string">"Tavuk Burger"</span>, <span class="number">65</span> }
+};
+
+<span class="keyword">private</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">decimal</span>&gt; makarnalar = <span class="keyword">new</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">decimal</span>&gt;()
+{
+    { <span class="string">"Bolonez"</span>, <span class="number">55</span> },
+    { <span class="string">"Alfredo"</span>, <span class="number">60</span> },
+    { <span class="string">"Carbonara"</span>, <span class="number">65</span> },
+    { <span class="string">"Arabiata"</span>, <span class="number">50</span> }
+};
+
+<span class="keyword">private void</span> <span class="method">YemekleriYukle</span>()
+{
+    lstYemekler.Items.Clear();
+    
+    Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">decimal</span>&gt; seciliMenu = <span class="keyword">null</span>;
+    
+    <span class="keyword">if</span> (rbPizza.Checked)
+        seciliMenu = pizzalar;
+    <span class="keyword">else if</span> (rbBurger.Checked)
+        seciliMenu = burgerler;
+    <span class="keyword">else if</span> (rbMakarna.Checked)
+        seciliMenu = makarnalar;
+    
+    <span class="keyword">if</span> (seciliMenu != <span class="keyword">null</span>)
+    {
+        <span class="keyword">foreach</span> (<span class="keyword">var</span> yemek <span class="keyword">in</span> seciliMenu)
+        {
+            lstYemekler.Items.Add($<span class="string">"{yemek.Key} - {yemek.Value}₺"</span>);
+        }
+    }
+}
+
+<span class="comment">// Her RadioButton için</span>
+<span class="keyword">private void</span> <span class="method">rbPizza_CheckedChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (rbPizza.Checked) YemekleriYukle();
+}
+
+<span class="keyword">private void</span> <span class="method">rbBurger_CheckedChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (rbBurger.Checked) YemekleriYukle();
+}
+
+<span class="keyword">private void</span> <span class="method">rbMakarna_CheckedChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (rbMakarna.Checked) YemekleriYukle();
+}</code></pre>
+            </div>
+
+            <h3>Adım 4: Fiyat Hesaplama</h3>
+            <div class="code-example">
+                <div class="code-example-title">Toplam Fiyat Hesaplama</div>
+                <pre><code><span class="keyword">private decimal</span> <span class="method">FiyatHesapla</span>()
+{
+    <span class="keyword">decimal</span> toplam = <span class="number">0</span>;
+    
+    <span class="comment">// Seçili yemek fiyatı</span>
+    <span class="keyword">if</span> (lstYemekler.SelectedItem != <span class="keyword">null</span>)
+    {
+        <span class="keyword">string</span> secili = lstYemekler.SelectedItem.ToString();
+        <span class="keyword">string</span> yemekAdi = secili.Split(<span class="string">'-'</span>)[<span class="number">0</span>].Trim();
+        
+        <span class="keyword">if</span> (rbPizza.Checked && pizzalar.ContainsKey(yemekAdi))
+            toplam = pizzalar[yemekAdi];
+        <span class="keyword">else if</span> (rbBurger.Checked && burgerler.ContainsKey(yemekAdi))
+            toplam = burgerler[yemekAdi];
+        <span class="keyword">else if</span> (rbMakarna.Checked && makarnalar.ContainsKey(yemekAdi))
+            toplam = makarnalar[yemekAdi];
+    }
+    
+    <span class="comment">// Ekstralari ekle</span>
+    <span class="keyword">if</span> (chkPeynir.Checked) toplam += <span class="number">5</span>;
+    <span class="keyword">if</span> (chkSos.Checked) toplam += <span class="number">3</span>;
+    <span class="keyword">if</span> (chkIcecek.Checked) toplam += <span class="number">10</span>;
+    
+    <span class="keyword">return</span> toplam;
+}
+
+<span class="comment">// ListBox seçim değiştiğinde</span>
+<span class="keyword">private void</span> <span class="method">lstYemekler_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    lblToplam.Text = <span class="string">"Toplam: "</span> + FiyatHesapla() + <span class="string">"₺"</span>;
+}
+
+<span class="comment">// CheckBox'lar değiştiğinde (hepsine aynı event bağla)</span>
+<span class="keyword">private void</span> <span class="method">Ekstra_CheckedChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    lblToplam.Text = <span class="string">"Toplam: "</span> + FiyatHesapla() + <span class="string">"₺"</span>;
+}</code></pre>
+            </div>
+
+            <h3>Adım 5: Siparişi Ekleme ve Onaylama</h3>
+            <div class="code-example">
+                <div class="code-example-title">Sipariş İşlemleri</div>
+                <pre><code><span class="keyword">private</span> List&lt;<span class="keyword">string</span>&gt; siparisler = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;();
+<span class="keyword">private decimal</span> genelToplam = <span class="number">0</span>;
+
+<span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Doğrulama</span>
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(txtMusteri.Text))
+    {
+        MessageBox.Show(<span class="string">"Müşteri adını girin!"</span>, <span class="string">"Uyarı"</span>);
+        txtMusteri.Focus();
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="keyword">if</span> (lstYemekler.SelectedItem == <span class="keyword">null</span>)
+    {
+        MessageBox.Show(<span class="string">"Bir yemek seçin!"</span>, <span class="string">"Uyarı"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="comment">// Sipariş metnini oluştur</span>
+    <span class="keyword">string</span> yemek = lstYemekler.SelectedItem.ToString().Split(<span class="string">'-'</span>)[<span class="number">0</span>].Trim();
+    <span class="keyword">decimal</span> fiyat = FiyatHesapla();
+    
+    <span class="keyword">string</span> ekstralar = <span class="string">""</span>;
+    <span class="keyword">if</span> (chkPeynir.Checked) ekstralar += <span class="string">"Ekstra Peynir, "</span>;
+    <span class="keyword">if</span> (chkSos.Checked) ekstralar += <span class="string">"Özel Sos, "</span>;
+    <span class="keyword">if</span> (chkIcecek.Checked) ekstralar += <span class="string">"İçecek, "</span>;
+    
+    <span class="keyword">string</span> siparis = $<span class="string">"• {yemek}"</span>;
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(ekstralar))
+        siparis += $<span class="string">" ({ekstralar.TrimEnd(',', ' ')})"</span>;
+    siparis += $<span class="string">" - {fiyat}₺"</span>;
+    
+    siparisler.Add(siparis);
+    genelToplam += fiyat;
+    
+    <span class="comment">// Özeti güncelle</span>
+    OzetiGuncelle();
+    
+    <span class="comment">// Seçimleri temizle</span>
+    lstYemekler.ClearSelected();
+    chkPeynir.Checked = <span class="keyword">false</span>;
+    chkSos.Checked = <span class="keyword">false</span>;
+    chkIcecek.Checked = <span class="keyword">false</span>;
+    lblToplam.Text = <span class="string">"Toplam: 0₺"</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">OzetiGuncelle</span>()
+{
+    txtOzet.Clear();
+    txtOzet.AppendText($<span class="string">"=== SİPARİŞ FİŞİ ===\r\n"</span>);
+    txtOzet.AppendText($<span class="string">"Müşteri: {txtMusteri.Text}\r\n"</span>);
+    txtOzet.AppendText($<span class="string">"{cmbMasa.SelectedItem}\r\n"</span>);
+    txtOzet.AppendText($<span class="string">"Tarih: {DateTime.Now:dd.MM.yyyy HH:mm}\r\n"</span>);
+    txtOzet.AppendText(<span class="string">"─────────────────────\r\n"</span>);
+    
+    <span class="keyword">foreach</span> (<span class="keyword">string</span> s <span class="keyword">in</span> siparisler)
+    {
+        txtOzet.AppendText(s + <span class="string">"\r\n"</span>);
+    }
+    
+    txtOzet.AppendText(<span class="string">"─────────────────────\r\n"</span>);
+    txtOzet.AppendText($<span class="string">"GENEL TOPLAM: {genelToplam}₺\r\n"</span>);
+}
+
+<span class="keyword">private void</span> <span class="method">btnOnayla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (siparisler.Count == <span class="number">0</span>)
+    {
+        MessageBox.Show(<span class="string">"Önce sipariş ekleyin!"</span>, <span class="string">"Uyarı"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    DialogResult sonuc = MessageBox.Show(
+        $<span class="string">"Toplam tutar: {genelToplam}₺\nSiparişi onaylıyor musunuz?"</span>,
+        <span class="string">"Sipariş Onayı"</span>,
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Question);
+    
+    <span class="keyword">if</span> (sonuc == DialogResult.Yes)
+    {
+        MessageBox.Show(<span class="string">"Sipariş mutfağa gönderildi!\nAfiyet olsun!"</span>, 
+            <span class="string">"Başarılı"</span>, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        
+        <span class="comment">// Formu sıfırla</span>
+        siparisler.Clear();
+        genelToplam = <span class="number">0</span>;
+        txtMusteri.Clear();
+        txtOzet.Clear();
+        cmbMasa.SelectedIndex = <span class="number">0</span>;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Ekran Görüntüsü Taslağı</h2>
+            <div class="diagram">
+                <pre style="text-align: left; display: inline-block; font-family: monospace;">
+┌─────────────────────────────────────────────────────────┐
+│  🍕 Restoran Sipariş Sistemi                            │
+├─────────────────────────────────────────────────────────┤
+│                                                         │
+│  Müşteri Adı: [________________]   Masa No: [▼ Masa 1]  │
+│                                                         │
+│  ┌─ Kategori ────────┐  ┌─ Menü ─────────────────────┐  │
+│  │ ○ Pizza           │  │ Margarita - 80₺           │  │
+│  │ ● Burger          │  │ Pepperoni - 95₺           │  │
+│  │ ○ Makarna         │  │ Karışık - 110₺            │  │
+│  └───────────────────┘  │ Sucuklu - 90₺             │  │
+│                         └────────────────────────────┘  │
+│  ┌─ Ekstralar ───────┐                                  │
+│  │ ☑ Ekstra Peynir   │  Toplam: 75₺                    │
+│  │ ☐ Özel Sos        │                                  │
+│  │ ☑ İçecek          │  [Siparişe Ekle] [Onayla]       │
+│  └───────────────────┘                                  │
+│                                                         │
+│  ┌─ Sipariş Özeti ───────────────────────────────────┐  │
+│  │ === SİPARİŞ FİŞİ ===                              │  │
+│  │ Müşteri: Ali                                       │  │
+│  │ Masa 5                                             │  │
+│  │ • Cheese Burger (Ekstra Peynir, İçecek) - 85₺     │  │
+│  │ GENEL TOPLAM: 85₺                                 │  │
+│  └────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Porsiyon seçimi ekleyin (Küçük, Orta, Büyük)</strong>
+                <p>RadioButton grubu ile porsiyon seçimi yapın ve fiyatı buna göre %20-%30 artırın.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Sipariş silme özelliği ekleyin</strong>
+                <p>Sipariş listesini ListBox yapın ve seçili siparişi silme butonu ekleyin.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>İndirim kuponu ekleyin</strong>
+                <p>TextBox'a kupon kodu girildiğinde belirli oranda indirim uygulayın.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders04.html" class="nav-btn prev">← Ders 4: ListBox, ComboBox</a>
+            <a href="proje05.html" class="nav-btn next">Proje 5 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi - Proje 4 © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 4: Dinamik Anket Sayfası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 4</span>
+            <h1>📊 Dinamik Anket Sayfası</h1>
+            <p class="subtitle">Ders 1-4 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Razor syntax ile dinamik anket formu ve sonuç gösterimi.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong><br>
+                • Razor syntax (@if, @foreach, @for)<br>
+                • Tag Helpers (asp-for, asp-action)<br>
+                • Koşullu render<br>
+                • Strongly-typed View
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Survey.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Survey</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Title { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> List&lt;Question&gt; Questions { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">new</span>();
+}
+
+<span class="keyword">public class</span> <span class="class-name">Question</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Text { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> QuestionType Type { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> List&lt;<span class="keyword">string</span>&gt; Options { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">new</span>();
+}
+
+<span class="keyword">public enum</span> <span class="class-name">QuestionType</span>
+{
+    Text,
+    SingleChoice,
+    MultipleChoice
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/SurveyController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">SurveyController</span> : Controller
+{
+    <span class="keyword">private static</span> Survey _survey = <span class="keyword">new</span>()
+    {
+        Id = <span class="number">1</span>,
+        Title = <span class="string">"Yazılım Tercihleri Anketi"</span>,
+        Questions = <span class="keyword">new</span> List&lt;Question&gt;
+        {
+            <span class="keyword">new</span>() { Id = <span class="number">1</span>, Text = <span class="string">"Adınız"</span>, Type = QuestionType.Text },
+            <span class="keyword">new</span>() { 
+                Id = <span class="number">2</span>, 
+                Text = <span class="string">"Favori programlama diliniz?"</span>, 
+                Type = QuestionType.SingleChoice,
+                Options = <span class="keyword">new</span>() { <span class="string">"C#"</span>, <span class="string">"Python"</span>, <span class="string">"JavaScript"</span>, <span class="string">"Java"</span> }
+            },
+            <span class="keyword">new</span>() { 
+                Id = <span class="number">3</span>, 
+                Text = <span class="string">"Hangi teknolojileri kullanıyorsunuz?"</span>, 
+                Type = QuestionType.MultipleChoice,
+                Options = <span class="keyword">new</span>() { <span class="string">"ASP.NET"</span>, <span class="string">"React"</span>, <span class="string">"Angular"</span>, <span class="string">"Vue"</span> }
+            }
+        }
+    };
+    
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">return</span> View(_survey);
+    }
+    
+    [HttpPost]
+    <span class="keyword">public</span> IActionResult <span class="method">Submit</span>(Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt; answers)
+    {
+        ViewBag.Answers = answers;
+        ViewBag.Survey = _survey;
+        <span class="keyword">return</span> View(<span class="string">"Result"</span>);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Anket Formu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Survey/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@model Survey
+
+&lt;h1&gt;📊 @Model.Title&lt;/h1&gt;
+
+&lt;form asp-action="Submit" method="post"&gt;
+    @for (<span class="keyword">int</span> i = 0; i &lt; Model.Questions.Count; i++)
+    {
+        <span class="keyword">var</span> question = Model.Questions[i];
+        
+        &lt;div class="card mb-3"&gt;
+            &lt;div class="card-body"&gt;
+                &lt;h5&gt;Soru @(i + 1): @question.Text&lt;/h5&gt;
+                
+                @switch (question.Type)
+                {
+                    <span class="keyword">case</span> QuestionType.Text:
+                        &lt;input type="text" name="answers[@question.Id]" 
+                               class="form-control" /&gt;
+                        <span class="keyword">break</span>;
+                        
+                    <span class="keyword">case</span> QuestionType.SingleChoice:
+                        @foreach (var option in question.Options)
+                        {
+                            &lt;div class="form-check"&gt;
+                                &lt;input type="radio" name="answers[@question.Id]" 
+                                       value="@option" class="form-check-input" /&gt;
+                                &lt;label class="form-check-label"&gt;@option&lt;/label&gt;
+                            &lt;/div&gt;
+                        }
+                        <span class="keyword">break</span>;
+                        
+                    <span class="keyword">case</span> QuestionType.MultipleChoice:
+                        @foreach (var option in question.Options)
+                        {
+                            &lt;div class="form-check"&gt;
+                                &lt;input type="checkbox" name="answers[@question.Id]" 
+                                       value="@option" class="form-check-input" /&gt;
+                                &lt;label class="form-check-label"&gt;@option&lt;/label&gt;
+                            &lt;/div&gt;
+                        }
+                        <span class="keyword">break</span>;
+                }
+            &lt;/div&gt;
+        &lt;/div&gt;
+    }
+    
+    &lt;button type="submit" class="btn btn-success btn-lg"&gt;Gönder&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Sonuç</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Survey/Result.cshtml</div>
+                <pre data-lang="Razor"><code>@{
+    <span class="keyword">var</span> answers = ViewBag.Answers <span class="keyword">as</span> Dictionary&lt;<span class="keyword">string</span>, <span class="keyword">string</span>&gt;;
+    <span class="keyword">var</span> survey = ViewBag.Survey <span class="keyword">as</span> Survey;
+}
+
+&lt;h1&gt;✅ Teşekkürler!&lt;/h1&gt;
+&lt;p&gt;Anket yanıtlarınız başarıyla kaydedildi.&lt;/p&gt;
+
+&lt;div class="card"&gt;
+    &lt;div class="card-header"&gt;Yanıtlarınız&lt;/div&gt;
+    &lt;div class="card-body"&gt;
+        @foreach (var question in survey.Questions)
+        {
+            &lt;p&gt;
+                &lt;strong&gt;@question.Text:&lt;/strong&gt;
+                @if (answers.ContainsKey(question.Id.ToString()))
+                {
+                    &lt;span class="text-success"&gt;@answers[question.Id.ToString()]&lt;/span&gt;
+                }
+                else
+                {
+                    &lt;span class="text-muted"&gt;Cevaplanmadı&lt;/span&gt;
+                }
+            &lt;/p&gt;
+        }
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;a asp-action="Index" class="btn btn-primary mt-3"&gt;Yeni Anket&lt;/a&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Puan sistemi ekleyin (1-5 arası rating)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Zorunlu sorular için @Required işareti ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje03.html" class="nav-btn prev">← Proje 3</a>
+            <a href="proje05.html" class="nav-btn next">Proje 5 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

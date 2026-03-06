@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 8: Basit Metin Editörü</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 8</span>
+            <h1>📝 Basit Metin Editörü</h1>
+            <p class="subtitle">Ders 1-8 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders08.html">Ders 8</a>
+            <a href="proje08.html" class="active">Proje 8</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>MenuStrip ve ToolStrip ile donatılmış Not Defteri benzeri uygulama. Metin düzenleme özellikleri içerir.
+            </p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Konular (Ders 8):</strong> MenuStrip, ToolStrip, ContextMenuStrip, StatusStrip, Kısayol
+                tuşları
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Tasarımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Menü Yapısı</div>
+                <pre><code><span class="comment">Dosya</span>
+├── Yeni (Ctrl+N)
+├── Aç (Ctrl+O)
+├── Kaydet (Ctrl+S)
+├── Farklı Kaydet
+├── ─────────
+└── Çıkış
+
+<span class="comment">Düzen</span>
+├── Geri Al (Ctrl+Z)
+├── Kes (Ctrl+X)
+├── Kopyala (Ctrl+C)
+├── Yapıştır (Ctrl+V)
+├── ─────────
+├── Tümünü Seç (Ctrl+A)
+└── Bul (Ctrl+F)
+
+<span class="comment">Biçim</span>
+├── Sözcük Kaydır
+└── Yazı Tipi...
+
+<span class="comment">Yardım</span>
+└── Hakkında</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kod Çözümü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Form ve Değişkenler</div>
+                <pre><code><span class="keyword">private string</span> dosyaYolu = <span class="string">""</span>;
+<span class="keyword">private bool</span> degisiklikVar = <span class="keyword">false</span>;
+
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.Dock = DockStyle.Fill;
+    txtIcerik.Multiline = <span class="keyword">true</span>;
+    txtIcerik.ScrollBars = ScrollBars.Both;
+    GuncelleBaslik();
+}
+
+<span class="keyword">private void</span> <span class="method">GuncelleBaslik</span>()
+{
+    <span class="keyword">string</span> dosyaAdi = <span class="keyword">string</span>.IsNullOrEmpty(dosyaYolu) ? <span class="string">"Adsız"</span> : Path.GetFileName(dosyaYolu);
+    <span class="keyword">string</span> degisiklik = degisiklikVar ? <span class="string">"*"</span> : <span class="string">""</span>;
+    <span class="keyword">this</span>.Text = $<span class="string">"{degisiklik}{dosyaAdi} - Metin Editörü"</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">txtIcerik_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    degisiklikVar = <span class="keyword">true</span>;
+    GuncelleBaslik();
+    tslKarakterSayisi.Text = $<span class="string">"Karakter: {txtIcerik.Text.Length}"</span>;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Dosya Menüsü İşlemleri</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">yeniToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (degisiklikVar)
+    {
+        DialogResult sonuc = MessageBox.Show(<span class="string">"Değişiklikleri kaydetmek ister misiniz?"</span>,
+            <span class="string">"Kaydet"</span>, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+        
+        <span class="keyword">if</span> (sonuc == DialogResult.Yes) Kaydet();
+        <span class="keyword">else if</span> (sonuc == DialogResult.Cancel) <span class="keyword">return</span>;
+    }
+    
+    txtIcerik.Clear();
+    dosyaYolu = <span class="string">""</span>;
+    degisiklikVar = <span class="keyword">false</span>;
+    GuncelleBaslik();
+}
+
+<span class="keyword">private void</span> <span class="method">acToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog ofd = <span class="keyword">new</span> OpenFileDialog();
+    ofd.Filter = <span class="string">"Metin Dosyaları|*.txt|Tüm Dosyalar|*.*"</span>;
+    
+    <span class="keyword">if</span> (ofd.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.Text = File.ReadAllText(ofd.FileName);
+        dosyaYolu = ofd.FileName;
+        degisiklikVar = <span class="keyword">false</span>;
+        GuncelleBaslik();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">Kaydet</span>()
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrEmpty(dosyaYolu))
+    {
+        FarkliKaydet();
+    }
+    <span class="keyword">else</span>
+    {
+        File.WriteAllText(dosyaYolu, txtIcerik.Text);
+        degisiklikVar = <span class="keyword">false</span>;
+        GuncelleBaslik();
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">FarkliKaydet</span>()
+{
+    SaveFileDialog sfd = <span class="keyword">new</span> SaveFileDialog();
+    sfd.Filter = <span class="string">"Metin Dosyası|*.txt"</span>;
+    
+    <span class="keyword">if</span> (sfd.ShowDialog() == DialogResult.OK)
+    {
+        File.WriteAllText(sfd.FileName, txtIcerik.Text);
+        dosyaYolu = sfd.FileName;
+        degisiklikVar = <span class="keyword">false</span>;
+        GuncelleBaslik();
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Düzen Menüsü ve ToolStrip</div>
+                <pre><code><span class="comment">// Düzen işlemleri</span>
+<span class="keyword">private void</span> <span class="method">geriAlToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+    => txtIcerik.Undo();
+
+<span class="keyword">private void</span> <span class="method">kesToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+    => txtIcerik.Cut();
+
+<span class="keyword">private void</span> <span class="method">kopyalaToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+    => txtIcerik.Copy();
+
+<span class="keyword">private void</span> <span class="method">yapistirToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+    => txtIcerik.Paste();
+
+<span class="keyword">private void</span> <span class="method">tumunuSecToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+    => txtIcerik.SelectAll();
+
+<span class="comment">// Yazı tipi değiştir</span>
+<span class="keyword">private void</span> <span class="method">yaziTipiToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FontDialog fd = <span class="keyword">new</span> FontDialog();
+    fd.Font = txtIcerik.Font;
+    
+    <span class="keyword">if</span> (fd.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.Font = fd.Font;
+    }
+}
+
+<span class="comment">// ContextMenuStrip (sağ tık menüsü)</span>
+<span class="comment">// Aynı işlemleri ContextMenuStrip'e de bağlayın</span></code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">StatusStrip Güncelleme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtIcerik_SelectionChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">int</span> satir = txtIcerik.GetLineFromCharIndex(txtIcerik.SelectionStart) + <span class="number">1</span>;
+    <span class="keyword">int</span> sutun = txtIcerik.SelectionStart - txtIcerik.GetFirstCharIndexOfCurrentLine() + <span class="number">1</span>;
+    
+    tslKonum.Text = $<span class="string">"Satır: {satir}, Sütun: {sutun}"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Bul ve Değiştir özelliği ekleyin</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Son açılan dosyalar listesi</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje07.html" class="nav-btn prev">← Proje 7</a>
+            <a href="proje09.html" class="nav-btn next">Proje 9 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 6: Form İşlemleri ve HTTP Metodları</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 6</span>
+            <h1>Form İşlemleri ve HTTP Metodları</h1>
+            <p class="subtitle">GET, POST ve Form Binding</p>
+        </header>
+
+        <section class="section">
+            <h2>HTTP Metodları</h2>
+            <table>
+                <tr>
+                    <th>Metod</th>
+                    <th>Kullanım</th>
+                    <th>Örnek</th>
+                </tr>
+                <tr>
+                    <td><strong>GET</strong></td>
+                    <td>Veri okuma, sayfa görüntüleme</td>
+                    <td>Liste, detay sayfası</td>
+                </tr>
+                <tr>
+                    <td><strong>POST</strong></td>
+                    <td>Veri gönderme, oluşturma</td>
+                    <td>Form gönderme, kayıt ekleme</td>
+                </tr>
+                <tr>
+                    <td><strong>PUT</strong></td>
+                    <td>Veri güncelleme</td>
+                    <td>Kayıt düzenleme</td>
+                </tr>
+                <tr>
+                    <td><strong>DELETE</strong></td>
+                    <td>Veri silme</td>
+                    <td>Kayıt silme</td>
+                </tr>
+            </table>
+
+            <div class="info-box">
+                <strong>💡 Web formlarında</strong> sadece GET ve POST kullanılır. PUT/DELETE API'lerde kullanılır.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>HttpGet ve HttpPost Attributes</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/ProductController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+<span class="keyword">public class</span> <span class="class-name">ProductController</span> : Controller
+{
+    <span class="keyword">private readonly</span> AppDbContext _context;
+    
+    <span class="keyword">public</span> <span class="method">ProductController</span>(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    <span class="comment">// GET: /Product/Create - Boş form göster</span>
+    [HttpGet]
+    <span class="keyword">public</span> IActionResult <span class="method">Create</span>()
+    {
+        <span class="keyword">return</span> View();
+    }
+    
+    <span class="comment">// POST: /Product/Create - Form verisi al ve kaydet</span>
+    [HttpPost]
+    <span class="keyword">public</span> IActionResult <span class="method">Create</span>(Product product)
+    {
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            <span class="comment">// Veritabanına kaydet</span>
+            _context.Products.Add(product);
+            _context.SaveChanges();
+            <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);
+        }
+        <span class="keyword">return</span> View(product);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Oluşturma</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Product/Create.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> Product
+
+&lt;h2&gt;Yeni Ürün Ekle&lt;/h2&gt;
+
+&lt;form <span class="attribute">asp-action</span>=<span class="string">"Create"</span> method="post"&gt;
+    <span class="comment">&lt;!-- Validation özeti --&gt;</span>
+    &lt;div <span class="attribute">asp-validation-summary</span>=<span class="string">"ModelOnly"</span> class="alert alert-danger"&gt;&lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Text input --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Name"</span> class="form-label"&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Name"</span> class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Name"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Number input --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Price"</span> class="form-label"&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Price"</span> type="number" step="0.01" class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Price"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Textarea --&gt;</span>
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Description"</span> class="form-label"&gt;&lt;/label&gt;
+        &lt;textarea <span class="attribute">asp-for</span>=<span class="string">"Description"</span> class="form-control" rows="3"&gt;&lt;/textarea&gt;
+    &lt;/div&gt;
+    
+    <span class="comment">&lt;!-- Checkbox --&gt;</span>
+    &lt;div class="form-check mb-3"&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"IsActive"</span> class="form-check-input" /&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"IsActive"</span> class="form-check-label"&gt;&lt;/label&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-primary"&gt;Kaydet&lt;/button&gt;
+    &lt;a <span class="attribute">asp-action</span>=<span class="string">"Index"</span> class="btn btn-secondary"&gt;İptal&lt;/a&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Select (Dropdown) Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controller - SelectList Hazırlama</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc.Rendering;
+
+[HttpGet]
+<span class="keyword">public</span> IActionResult <span class="method">Create</span>()
+{
+    <span class="comment">// Kategorileri hazırla</span>
+    ViewBag.Categories = <span class="keyword">new</span> SelectList(
+        _context.Categories, 
+        <span class="string">"Id"</span>,      <span class="comment">// value</span>
+        <span class="string">"Name"</span>     <span class="comment">// display text</span>
+    );
+    
+    <span class="comment">// veya manuel liste</span>
+    ViewBag.Grades = <span class="keyword">new</span> SelectList(
+        <span class="keyword">new</span> List&lt;SelectListItem&gt;
+        {
+            <span class="keyword">new</span> SelectListItem { Value = <span class="string">"9"</span>, Text = <span class="string">"9. Sınıf"</span> },
+            <span class="keyword">new</span> SelectListItem { Value = <span class="string">"10"</span>, Text = <span class="string">"10. Sınıf"</span> },
+            <span class="keyword">new</span> SelectListItem { Value = <span class="string">"11"</span>, Text = <span class="string">"11. Sınıf"</span> },
+            <span class="keyword">new</span> SelectListItem { Value = <span class="string">"12"</span>, Text = <span class="string">"12. Sınıf"</span> }
+        }, <span class="string">"Value"</span>, <span class="string">"Text"</span>
+    );
+    
+    <span class="keyword">return</span> View();
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">View - Select Tag Helper</div>
+                <pre data-lang="Razor"><code><span class="comment">&lt;!-- Kategori seçimi --&gt;</span>
+&lt;div class="mb-3"&gt;
+    &lt;label <span class="attribute">asp-for</span>=<span class="string">"CategoryId"</span> class="form-label"&gt;&lt;/label&gt;
+    &lt;select <span class="attribute">asp-for</span>=<span class="string">"CategoryId"</span> 
+            <span class="attribute">asp-items</span>=<span class="string">"ViewBag.Categories"</span> 
+            class="form-select"&gt;
+        &lt;option value=""&gt;-- Kategori Seçin --&lt;/option&gt;
+    &lt;/select&gt;
+    &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"CategoryId"</span> class="text-danger"&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+<span class="comment">&lt;!-- Sınıf seçimi --&gt;</span>
+&lt;div class="mb-3"&gt;
+    &lt;label <span class="attribute">asp-for</span>=<span class="string">"Grade"</span>&gt;&lt;/label&gt;
+    &lt;select <span class="attribute">asp-for</span>=<span class="string">"Grade"</span> <span class="attribute">asp-items</span>=<span class="string">"ViewBag.Grades"</span> class="form-select"&gt;&lt;/select&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Edit (Düzenleme) İşlemi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controller - Edit</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+<span class="comment">// GET: /Product/Edit/5</span>
+[HttpGet]
+<span class="keyword">public</span> IActionResult <span class="method">Edit</span>(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> product = _context.Products.Find(id);
+    <span class="keyword">if</span> (product == <span class="keyword">null</span>)
+        <span class="keyword">return</span> NotFound();
+    
+    <span class="keyword">return</span> View(product);
+}
+
+<span class="comment">// POST: /Product/Edit/5</span>
+[HttpPost]
+<span class="keyword">public</span> IActionResult <span class="method">Edit</span>(<span class="keyword">int</span> id, Product product)
+{
+    <span class="keyword">if</span> (id != product.Id)
+        <span class="keyword">return</span> NotFound();
+    
+    <span class="keyword">if</span> (ModelState.IsValid)
+    {
+        _context.Products.Update(product);
+        _context.SaveChanges();
+        
+        TempData[<span class="string">"Success"</span>] = <span class="string">"Ürün güncellendi!"</span>;
+        <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);
+    }
+    <span class="keyword">return</span> View(product);
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Product/Edit.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> Product
+
+&lt;h2&gt;Ürün Düzenle&lt;/h2&gt;
+
+&lt;form <span class="attribute">asp-action</span>=<span class="string">"Edit"</span> method="post"&gt;
+    <span class="comment">&lt;!-- Hidden field for Id --&gt;</span>
+    &lt;input type="hidden" <span class="attribute">asp-for</span>=<span class="string">"Id"</span> /&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Name"</span>&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Name"</span> class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Name"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Price"</span>&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Price"</span> class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Price"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-primary"&gt;Güncelle&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Delete (Silme) İşlemi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controller - Delete</div>
+                <pre data-lang="C#"><code><span class="comment">// GET: /Product/Delete/5 - Onay sayfası</span>
+[HttpGet]
+<span class="keyword">public</span> IActionResult <span class="method">Delete</span>(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> product = _context.Products.Find(id);
+    <span class="keyword">if</span> (product == <span class="keyword">null</span>)
+        <span class="keyword">return</span> NotFound();
+    
+    <span class="keyword">return</span> View(product);
+}
+
+<span class="comment">// POST: /Product/Delete/5 - Gerçek silme</span>
+[HttpPost, ActionName(<span class="string">"Delete"</span>)]
+<span class="keyword">public</span> IActionResult <span class="method">DeleteConfirmed</span>(<span class="keyword">int</span> id)
+{
+    <span class="keyword">var</span> product = _context.Products.Find(id);
+    <span class="keyword">if</span> (product != <span class="keyword">null</span>)
+    {
+        _context.Products.Remove(product);
+        _context.SaveChanges();
+        TempData[<span class="string">"Success"</span>] = <span class="string">"Ürün silindi!"</span>;
+    }
+    <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Product/Delete.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> Product
+
+&lt;h2&gt;Ürün Sil&lt;/h2&gt;
+
+&lt;div class="alert alert-danger"&gt;
+    &lt;h4&gt;Emin misiniz?&lt;/h4&gt;
+    &lt;p&gt;&lt;strong&gt;<span class="keyword">@</span>Model.Name&lt;/strong&gt; ürününü silmek üzeresiniz.&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;dl class="row"&gt;
+    &lt;dt class="col-sm-3"&gt;Ürün Adı&lt;/dt&gt;
+    &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.Name&lt;/dd&gt;
+    &lt;dt class="col-sm-3"&gt;Fiyat&lt;/dt&gt;
+    &lt;dd class="col-sm-9"&gt;<span class="keyword">@</span>Model.Price TL&lt;/dd&gt;
+&lt;/dl&gt;
+
+&lt;form <span class="attribute">asp-action</span>=<span class="string">"Delete"</span> method="post"&gt;
+    &lt;input type="hidden" <span class="attribute">asp-for</span>=<span class="string">"Id"</span> /&gt;
+    &lt;button type="submit" class="btn btn-danger"&gt;Sil&lt;/button&gt;
+    &lt;a <span class="attribute">asp-action</span>=<span class="string">"Index"</span> class="btn btn-secondary"&gt;İptal&lt;/a&gt;
+&lt;/form&gt;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>TempData ile Mesaj Gösterme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">_Layout.cshtml veya Index.cshtml</div>
+                <pre data-lang="Razor"><code><span class="comment">&lt;!-- Başarı mesajı --&gt;</span>
+<span class="keyword">@if</span> (TempData[<span class="string">"Success"</span>] != <span class="keyword">null</span>)
+{
+    &lt;div class="alert alert-success alert-dismissible fade show"&gt;
+        <span class="keyword">@</span>TempData[<span class="string">"Success"</span>]
+        &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
+    &lt;/div&gt;
+}
+
+<span class="comment">&lt;!-- Hata mesajı --&gt;</span>
+<span class="keyword">@if</span> (TempData[<span class="string">"Error"</span>] != <span class="keyword">null</span>)
+{
+    &lt;div class="alert alert-danger alert-dismissible fade show"&gt;
+        <span class="keyword">@</span>TempData[<span class="string">"Error"</span>]
+        &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;
+    &lt;/div&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>GET ve POST metodlarının farkını açıklayın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <p><strong>GET:</strong></p>
+                    <ul>
+                        <li>Veri okumak için kullanılır</li>
+                        <li>Parametreler URL'de görünür</li>
+                        <li>Sayfa yenileme güvenlidir</li>
+                        <li>Örnek: Listeleme, arama</li>
+                    </ul>
+                    <p><strong>POST:</strong></p>
+                    <ul>
+                        <li>Veri göndermek için kullanılır</li>
+                        <li>Veriler body'de gizlidir</li>
+                        <li>Form gönderimi için</li>
+                        <li>Örnek: Kayıt, güncelleme</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Öğrenci ekleme formu için Create GET ve POST metodlarını yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+
+[HttpGet]
+<span class="keyword">public</span> IActionResult <span class="method">Create</span>()
+{
+    <span class="keyword">return</span> View();
+}
+
+[HttpPost]
+<span class="keyword">public</span> IActionResult <span class="method">Create</span>(Student student)
+{
+    <span class="keyword">if</span> (ModelState.IsValid)
+    {
+        _context.Students.Add(student);
+        _context.SaveChanges();
+        TempData[<span class="string">"Success"</span>] = <span class="string">"Öğrenci eklendi!"</span>;
+        <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);
+    }
+    <span class="keyword">return</span> View(student);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Sınıf seçimi için SelectList oluşturun (9, 10, 11, 12).</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre data-lang="C#"><code>ViewBag.Grades = <span class="keyword">new</span> List&lt;SelectListItem&gt;
+{
+    <span class="keyword">new</span> SelectListItem { Value = <span class="string">"9"</span>, Text = <span class="string">"9. Sınıf"</span> },
+    <span class="keyword">new</span> SelectListItem { Value = <span class="string">"10"</span>, Text = <span class="string">"10. Sınıf"</span> },
+    <span class="keyword">new</span> SelectListItem { Value = <span class="string">"11"</span>, Text = <span class="string">"11. Sınıf"</span> },
+    <span class="keyword">new</span> SelectListItem { Value = <span class="string">"12"</span>, Text = <span class="string">"12. Sınıf"</span> }
+};</code></pre>
+                    <pre data-lang="Razor"><code>&lt;select <span class="attribute">asp-for</span>=<span class="string">"Grade"</span> <span class="attribute">asp-items</span>=<span class="string">"ViewBag.Grades"</span> class="form-select"&gt;
+    &lt;option value=""&gt;Sınıf Seçin&lt;/option&gt;
+&lt;/select&gt;</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>Edit action'ında hidden field neden gereklidir?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <p>Hidden field, düzenlenen kaydın <strong>Id</strong> değerini form ile birlikte gönderir.</p>
+                    <p>Bu sayede POST metodunda hangi kaydın güncelleneceği bilinir.</p>
+                    <pre
+                        data-lang="Razor"><code>&lt;input type="hidden" <span class="attribute">asp-for</span>=<span class="string">"Id"</span> /&gt;</code></pre>
+                    <p>Olmadan, Id değeri = 0 olur ve güncelleme başarısız olur.</p>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders5.html" class="nav-btn prev">← Önceki: Model ve Validation</a>
+            <a href="ders7.html" class="nav-btn next">Sonraki: Entity Framework →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

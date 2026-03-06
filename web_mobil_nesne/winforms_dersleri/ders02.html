@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 2: Label, TextBox, Button</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 2</span>
+            <h1>Label, TextBox, Button</h1>
+            <p class="subtitle">Temel Kontroller ve İlk Olay</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders01.html">Ders 1</a>
+            <a href="ders02.html" class="active">Ders 2</a>
+            <a href="ders03.html">Ders 3</a>
+            <a href="ders04.html">Ders 4</a>
+            <a href="ders05.html">Ders 5</a>
+        </nav>
+
+        <section class="section">
+            <h2>1. Label (Etiket)</h2>
+            <p><strong>Label</strong>, kullanıcıya metin bilgisi göstermek için kullanılır. Genellikle statik yazılar
+                veya açıklamalar için tercih edilir.</p>
+
+            <div class="control-visual">
+                <span style="font-size: 14px; color: #333;">Bu bir Label kontrolüdür</span>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Text</td>
+                    <td>Gösterilecek metin</td>
+                </tr>
+                <tr>
+                    <td>ForeColor</td>
+                    <td>Yazı rengi</td>
+                </tr>
+                <tr>
+                    <td>BackColor</td>
+                    <td>Arka plan rengi</td>
+                </tr>
+                <tr>
+                    <td>Font</td>
+                    <td>Yazı tipi ve boyutu</td>
+                </tr>
+                <tr>
+                    <td>AutoSize</td>
+                    <td>Metne göre otomatik boyutlanma</td>
+                </tr>
+                <tr>
+                    <td>TextAlign</td>
+                    <td>Metnin hizalanması</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Label Kullanımı</div>
+                <pre><code><span class="comment">// Label'a yazı atama</span>
+label1.Text = <span class="string">"Merhaba Dünya!"</span>;
+
+<span class="comment">// Yazı rengini değiştirme</span>
+label1.ForeColor = Color.Red;
+
+<span class="comment">// Yazı tipini değiştirme</span>
+label1.Font = <span class="keyword">new</span> Font(<span class="string">"Arial"</span>, <span class="number">14</span>, FontStyle.Bold);
+
+<span class="comment">// Arka plan rengi</span>
+label1.BackColor = Color.Yellow;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. TextBox (Metin Kutusu)</h2>
+            <p><strong>TextBox</strong>, kullanıcıdan veri girişi almak için kullanılır. En temel ve en çok kullanılan
+                kontrollerden biridir.</p>
+
+            <div class="control-visual">
+                <input type="text" class="textbox-demo" placeholder="Metin girin..."
+                    style="padding: 8px; font-size: 14px;">
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Text</td>
+                    <td>Kutudaki metin</td>
+                </tr>
+                <tr>
+                    <td>MaxLength</td>
+                    <td>Maksimum karakter sayısı</td>
+                </tr>
+                <tr>
+                    <td>PasswordChar</td>
+                    <td>Şifre karakteri (* veya ●)</td>
+                </tr>
+                <tr>
+                    <td>Multiline</td>
+                    <td>Çok satırlı giriş</td>
+                </tr>
+                <tr>
+                    <td>ReadOnly</td>
+                    <td>Salt okunur</td>
+                </tr>
+                <tr>
+                    <td>PlaceholderText</td>
+                    <td>İpucu metni (.NET 5+)</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">TextBox Kullanımı</div>
+                <pre><code><span class="comment">// TextBox'tan değer alma</span>
+<span class="keyword">string</span> ad = textBox1.Text;
+
+<span class="comment">// TextBox'a değer yazma</span>
+textBox1.Text = <span class="string">"Varsayılan Değer"</span>;
+
+<span class="comment">// Şifreli karakter gösterme</span>
+txtSifre.PasswordChar = <span class="string">'*'</span>;
+
+<span class="comment">// Maksimum karakter sınırı</span>
+txtTelefon.MaxLength = <span class="number">11</span>;
+
+<span class="comment">// Çok satırlı TextBox</span>
+txtAciklama.Multiline = <span class="keyword">true</span>;
+txtAciklama.ScrollBars = ScrollBars.Vertical;
+
+<span class="comment">// TextBox'ı temizleme</span>
+textBox1.Clear();</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>3. Button (Düğme)</h2>
+            <p><strong>Button</strong>, kullanıcının bir işlemi tetiklemesi için kullanılır. Tıklandığında
+                <code>Click</code> olayı çalışır.</p>
+
+            <div class="control-visual">
+                <button class="button-demo" style="padding: 10px 25px; font-size: 14px; cursor: pointer;">Tıkla</button>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Text</td>
+                    <td>Buton üzerindeki yazı</td>
+                </tr>
+                <tr>
+                    <td>Enabled</td>
+                    <td>Aktif/Pasif durumu</td>
+                </tr>
+                <tr>
+                    <td>BackColor</td>
+                    <td>Arka plan rengi</td>
+                </tr>
+                <tr>
+                    <td>FlatStyle</td>
+                    <td>Düz stil görünümü</td>
+                </tr>
+                <tr>
+                    <td>Image</td>
+                    <td>Buton üzerinde resim</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">Button Click Olayı</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">button1_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Label'a yazı yaz</span>
+    label1.Text = <span class="string">"Butona Tıklandı!"</span>;
+    
+    <span class="comment">// Butonu pasif yap</span>
+    button1.Enabled = <span class="keyword">false</span>;
+}
+
+<span class="comment">// Buton özelliklerini değiştirme</span>
+button1.Text = <span class="string">"Kaydet"</span>;
+button1.BackColor = Color.Green;
+button1.ForeColor = Color.White;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Selamlama Uygulaması</h2>
+            <p>Kullanıcının adını alıp selamlayan basit bir uygulama yapalım:</p>
+
+            <div class="control-visual">
+                <div style="text-align: left; max-width: 300px; margin: 0 auto;">
+                    <label style="display: block; margin-bottom: 5px;">Adınız:</label>
+                    <input type="text" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                    <button style="padding: 10px 20px; cursor: pointer;">Selamla</button>
+                    <p style="margin-top: 15px; color: #0078d4; font-weight: bold;">Merhaba, Ali!</p>
+                </div>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Selamlama Uygulaması Kodu</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnSelamla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span> ad = txtAd.Text;
+    
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(ad))
+    {
+        MessageBox.Show(<span class="string">"Lütfen adınızı girin!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    lblSonuc.Text = <span class="string">"Merhaba, "</span> + ad + <span class="string">"!"</span>;
+    
+    <span class="comment">// veya string interpolation ile:</span>
+    lblSonuc.Text = $<span class="string">"Merhaba, {ad}!"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>İsimlendirme Kuralları</h2>
+            <p>Kontrollerinize anlamlı isimler verin:</p>
+
+            <table>
+                <tr>
+                    <th>Kontrol</th>
+                    <th>Önek</th>
+                    <th>Örnek</th>
+                </tr>
+                <tr>
+                    <td>Label</td>
+                    <td>lbl</td>
+                    <td>lblBaslik, lblSonuc</td>
+                </tr>
+                <tr>
+                    <td>TextBox</td>
+                    <td>txt</td>
+                    <td>txtAd, txtSifre</td>
+                </tr>
+                <tr>
+                    <td>Button</td>
+                    <td>btn</td>
+                    <td>btnKaydet, btnIptal</td>
+                </tr>
+                <tr>
+                    <td>Form</td>
+                    <td>frm</td>
+                    <td>frmGiris, frmAna</td>
+                </tr>
+            </table>
+
+            <div class="tip-box">
+                <strong>💡 İpucu:</strong> Kontrollere anlamlı isimler vermek, kodunuzu daha okunabilir ve bakımı kolay
+                hale getirir.
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>İki sayıyı toplayan bir hesap makinesi yapın. (2 TextBox, 1 Button, 1 Label)</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnTopla_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">int</span> sayi1 = <span class="keyword">int</span>.Parse(txtSayi1.Text);
+    <span class="keyword">int</span> sayi2 = <span class="keyword">int</span>.Parse(txtSayi2.Text);
+    <span class="keyword">int</span> toplam = sayi1 + sayi2;
+    
+    lblSonuc.Text = <span class="string">"Sonuç: "</span> + toplam.ToString();
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Şifre giriş ekranı yapın. Şifre "1234" ise "Giriş Başarılı", değilse "Hatalı Şifre"
+                    yazsın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnGiris_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (txtSifre.Text == <span class="string">"1234"</span>)
+    {
+        lblSonuc.Text = <span class="string">"Giriş Başarılı!"</span>;
+        lblSonuc.ForeColor = Color.Green;
+    }
+    <span class="keyword">else</span>
+    {
+        lblSonuc.Text = <span class="string">"Hatalı Şifre!"</span>;
+        lblSonuc.ForeColor = Color.Red;
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Butona her tıklandığında sayacı 1 artıran bir uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">int</span> sayac = <span class="number">0</span>;
+
+<span class="keyword">private void</span> <span class="method">btnArtir_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    sayac++;
+    lblSayac.Text = <span class="string">"Sayaç: "</span> + sayac.ToString();
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders01.html" class="nav-btn prev">← Önceki: Giriş</a>
+            <a href="ders03.html" class="nav-btn next">Sonraki: CheckBox, RadioButton →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

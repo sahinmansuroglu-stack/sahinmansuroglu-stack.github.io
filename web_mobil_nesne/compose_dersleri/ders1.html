@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 1: Jetpack Compose'a Giriş</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 1</span>
+            <h1>🚀 Jetpack Compose'a Giriş</h1>
+            <p class="subtitle">Modern Android UI Geliştirme</p>
+        </header>
+
+        <section class="section">
+            <h2>Jetpack Compose Nedir?</h2>
+            <p>Jetpack Compose, Android için modern, deklaratif UI toolkit'idir. XML yerine Kotlin kodu ile UI
+                oluşturmanızı sağlar.</p>
+
+            <div class="info-box">
+                <strong>🎯 Bu derste öğrenecekleriniz:</strong><br>
+                • Compose'un avantajları<br>
+                • Proje kurulumu<br>
+                • İlk Composable fonksiyon<br>
+                • Preview kullanımı
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Compose vs XML</h2>
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>Özellik</th>
+                        <th>XML</th>
+                        <th>Compose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Yaklaşım</td>
+                        <td>İmperatif</td>
+                        <td>Deklaratif</td>
+                    </tr>
+                    <tr>
+                        <td>Dil</td>
+                        <td>XML + Kotlin</td>
+                        <td>Sadece Kotlin</td>
+                    </tr>
+                    <tr>
+                        <td>State Yönetimi</td>
+                        <td>Manuel</td>
+                        <td>Otomatik Recomposition</td>
+                    </tr>
+                    <tr>
+                        <td>Öğrenme Eğrisi</td>
+                        <td>Daha kolay başlangıç</td>
+                        <td>Daha kolay ileri seviye</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Proje Kurulumu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">build.gradle.kts (Module)</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">plugins</span> {
+    id(<span class="string">"com.android.application"</span>)
+    id(<span class="string">"org.jetbrains.kotlin.android"</span>)
+}
+
+<span class="keyword">android</span> {
+    namespace = <span class="string">"com.example.composeapp"</span>
+    compileSdk = <span class="number">34</span>
+
+    <span class="keyword">defaultConfig</span> {
+        applicationId = <span class="string">"com.example.composeapp"</span>
+        minSdk = <span class="number">24</span>
+        targetSdk = <span class="number">34</span>
+    }
+
+    <span class="keyword">buildFeatures</span> {
+        compose = <span class="keyword">true</span>
+    }
+
+    <span class="keyword">composeOptions</span> {
+        kotlinCompilerExtensionVersion = <span class="string">"1.5.3"</span>
+    }
+}
+
+<span class="keyword">dependencies</span> {
+    <span class="comment">// Compose BOM (Bill of Materials)</span>
+    <span class="keyword">val</span> composeBom = platform(<span class="string">"androidx.compose:compose-bom:2024.01.00"</span>)
+    implementation(composeBom)
+    
+    <span class="comment">// Temel Compose kütüphaneleri</span>
+    implementation(<span class="string">"androidx.compose.ui:ui"</span>)
+    implementation(<span class="string">"androidx.compose.ui:ui-graphics"</span>)
+    implementation(<span class="string">"androidx.compose.ui:ui-tooling-preview"</span>)
+    implementation(<span class="string">"androidx.compose.material3:material3"</span>)
+    
+    <span class="comment">// Activity Compose</span>
+    implementation(<span class="string">"androidx.activity:activity-compose:1.8.2"</span>)
+    
+    <span class="comment">// Debug için</span>
+    debugImplementation(<span class="string">"androidx.compose.ui:ui-tooling"</span>)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>İlk Composable Fonksiyon</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">MainActivity.kt</div>
+                <pre data-lang="Kotlin"><code><span class="keyword">package</span> com.example.composeapp
+
+<span class="keyword">import</span> android.os.Bundle
+<span class="keyword">import</span> androidx.activity.ComponentActivity
+<span class="keyword">import</span> androidx.activity.compose.setContent
+<span class="keyword">import</span> androidx.compose.foundation.layout.*
+<span class="keyword">import</span> androidx.compose.material3.*
+<span class="keyword">import</span> androidx.compose.runtime.*
+<span class="keyword">import</span> androidx.compose.ui.Alignment
+<span class="keyword">import</span> androidx.compose.ui.Modifier
+<span class="keyword">import</span> androidx.compose.ui.tooling.preview.Preview
+<span class="keyword">import</span> androidx.compose.ui.unit.dp
+<span class="keyword">import</span> androidx.compose.ui.unit.sp
+
+<span class="keyword">class</span> <span class="class-name">MainActivity</span> : ComponentActivity() {
+    <span class="keyword">override fun</span> <span class="method">onCreate</span>(savedInstanceState: Bundle?) {
+        <span class="keyword">super</span>.onCreate(savedInstanceState)
+        setContent {
+            <span class="comment">// Compose UI burada başlar</span>
+            MerhabaApp()
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">MerhabaApp</span>() {
+    MaterialTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Selamlama(<span class="string">"Dünya"</span>)
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">Selamlama</span>(isim: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(<span class="number">16</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = <span class="string">"Merhaba, $isim!"</span>,
+            fontSize = <span class="number">24</span>.sp,
+            color = MaterialTheme.colorScheme.primary
+        )
+        
+        Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+        
+        Text(
+            text = <span class="string">"Jetpack Compose'a hoş geldiniz 🎉"</span>,
+            fontSize = <span class="number">16</span>.sp
+        )
+    }
+}
+
+<span class="annotation">@Preview</span>(showBackground = <span class="keyword">true</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">SelamlamaPreview</span>() {
+    Selamlama(<span class="string">"Android"</span>)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>@Composable Annotation</h2>
+            <p><code>@Composable</code> annotation'ı, bir fonksiyonun UI bileşeni olduğunu belirtir.</p>
+
+            <div class="info-box warning">
+                <strong>⚠️ Önemli Kurallar:</strong><br>
+                • Composable fonksiyonlar sadece diğer Composable fonksiyonlardan çağrılabilir<br>
+                • Fonksiyon isimleri PascalCase olmalı (Button, Text gibi)<br>
+                • Return type belirtilmez (Unit döner)<br>
+                • Side effect'lerden kaçının
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Preview Kullanımı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Farklı Preview Seçenekleri</div>
+                <pre data-lang="Kotlin"><code><span class="comment">// Basit preview</span>
+<span class="annotation">@Preview</span>(showBackground = <span class="keyword">true</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DefaultPreview</span>() {
+    Selamlama(<span class="string">"Test"</span>)
+}
+
+<span class="comment">// Sistem UI ile preview</span>
+<span class="annotation">@Preview</span>(showSystemUi = <span class="keyword">true</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">FullScreenPreview</span>() {
+    MerhabaApp()
+}
+
+<span class="comment">// Karanlık tema preview</span>
+<span class="annotation">@Preview</span>(
+    showBackground = <span class="keyword">true</span>,
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = <span class="string">"Dark Theme"</span>
+)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">DarkPreview</span>() {
+    MaterialTheme(colorScheme = darkColorScheme()) {
+        Selamlama(<span class="string">"Gece"</span>)
+    }
+}
+
+<span class="comment">// Farklı cihaz boyutlarında preview</span>
+<span class="annotation">@Preview</span>(device = Devices.PIXEL_4)
+<span class="annotation">@Preview</span>(device = Devices.TABLET)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="method">MultiDevicePreview</span>() {
+    Selamlama(<span class="string">"Cihaz"</span>)
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <p>Yeni bir Compose projesi oluştur ve "Merhaba, [Kendi Adın]!" yazdır.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <p>Preview'da hem açık hem karanlık temayı görüntüle.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <p>Farklı font boyutlarıyla 3 satır metin göster.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="index.html" class="nav-btn prev">← Ana Sayfa</a>
+            <a href="ders2.html" class="nav-btn next">Ders 2 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

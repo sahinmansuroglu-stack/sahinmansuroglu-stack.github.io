@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 5: Model ve Data Annotations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 5</span>
+            <h1>Model ve Data Annotations</h1>
+            <p class="subtitle">Veri Doğrulama ve Kısıtlamalar</p>
+        </header>
+
+        <section class="section">
+            <h2>Data Annotations Nedir?</h2>
+            <p>Data Annotations, Model özelliklerine kurallar ekleyerek veri doğrulama (validation) yapmamızı sağlar.
+                <code>System.ComponentModel.DataAnnotations</code> namespace'ini kullanır.</p>
+
+            <div class="info-box">
+                <strong>💡 Neden Kullanırız?</strong><br>
+                Kullanıcıdan gelen verilerin geçerli olup olmadığını kontrol etmek için. Örneğin: boş bırakılamaz,
+                e-posta formatı, minimum uzunluk.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Temel Annotations</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Ad alanı zorunludur"</span>)]
+    [StringLength(<span class="number">50</span>, MinimumLength = <span class="number">2</span>, 
+        ErrorMessage = <span class="string">"Ad 2-50 karakter arasında olmalı"</span>)]
+    [Display(Name = <span class="string">"Öğrenci Adı"</span>)]
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"E-posta zorunludur"</span>)]
+    [EmailAddress(ErrorMessage = <span class="string">"Geçerli bir e-posta girin"</span>)]
+    <span class="keyword">public string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Range(<span class="number">1</span>, <span class="number">12</span>, ErrorMessage = <span class="string">"Sınıf 1-12 arası olmalı"</span>)]
+    [Display(Name = <span class="string">"Sınıf"</span>)]
+    <span class="keyword">public int</span> Grade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Phone(ErrorMessage = <span class="string">"Geçerli telefon numarası girin"</span>)]
+    <span class="keyword">public string</span> Phone { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <table>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Açıklama</th>
+                    <th>Örnek</th>
+                </tr>
+                <tr>
+                    <td>[Required]</td>
+                    <td>Zorunlu alan</td>
+                    <td>Boş bırakılamaz</td>
+                </tr>
+                <tr>
+                    <td>[StringLength]</td>
+                    <td>Metin uzunluğu</td>
+                    <td>Min/Max karakter</td>
+                </tr>
+                <tr>
+                    <td>[Range]</td>
+                    <td>Sayı aralığı</td>
+                    <td>1-100 arası</td>
+                </tr>
+                <tr>
+                    <td>[EmailAddress]</td>
+                    <td>E-posta formatı</td>
+                    <td>xxx@xxx.com</td>
+                </tr>
+                <tr>
+                    <td>[Phone]</td>
+                    <td>Telefon formatı</td>
+                    <td>Rakam kontrolü</td>
+                </tr>
+                <tr>
+                    <td>[Display]</td>
+                    <td>Görünen isim</td>
+                    <td>Label metni</td>
+                </tr>
+                <tr>
+                    <td>[Compare]</td>
+                    <td>Alan karşılaştırma</td>
+                    <td>Şifre onayı</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Örnek: Ürün Modeli</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Product.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> System.ComponentModel.DataAnnotations;
+<span class="keyword">using</span> System.ComponentModel.DataAnnotations.Schema;
+
+<span class="keyword">public class</span> <span class="class-name">Product</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Ürün adı gereklidir"</span>)]
+    [StringLength(<span class="number">100</span>)]
+    [Display(Name = <span class="string">"Ürün Adı"</span>)]
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [Range(<span class="number">0.01</span>, <span class="number">99999.99</span>, ErrorMessage = <span class="string">"Fiyat 0.01-99999.99 arasında olmalı"</span>)]
+    [Column(TypeName = <span class="string">"decimal(18,2)"</span>)]
+    [Display(Name = <span class="string">"Fiyat (TL)"</span>)]
+    <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [StringLength(<span class="number">500</span>)]
+    [Display(Name = <span class="string">"Açıklama"</span>)]
+    <span class="keyword">public string</span> Description { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [Range(<span class="number">0</span>, <span class="number">10000</span>, ErrorMessage = <span class="string">"Stok miktarını kontrol edin"</span>)]
+    [Display(Name = <span class="string">"Stok Miktarı"</span>)]
+    <span class="keyword">public int</span> Stock { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Display(Name = <span class="string">"Aktif mi?"</span>)]
+    <span class="keyword">public bool</span> IsActive { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="keyword">true</span>;
+    
+    [DataType(DataType.Date)]
+    [Display(Name = <span class="string">"Eklenme Tarihi"</span>)]
+    <span class="keyword">public</span> DateTime CreatedAt { <span class="keyword">get</span>; <span class="keyword">set</span>; } = DateTime.Now;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Örnek: Kullanıcı Kayıt Modeli</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/RegisterViewModel.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">RegisterViewModel</span>
+{
+    [Required(ErrorMessage = <span class="string">"Kullanıcı adı gerekli"</span>)]
+    [StringLength(<span class="number">30</span>, MinimumLength = <span class="number">3</span>)]
+    [Display(Name = <span class="string">"Kullanıcı Adı"</span>)]
+    <span class="keyword">public string</span> Username { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"E-posta gerekli"</span>)]
+    [EmailAddress]
+    <span class="keyword">public string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Şifre gerekli"</span>)]
+    [StringLength(<span class="number">100</span>, MinimumLength = <span class="number">6</span>, 
+        ErrorMessage = <span class="string">"Şifre en az 6 karakter olmalı"</span>)]
+    [DataType(DataType.Password)]
+    [Display(Name = <span class="string">"Şifre"</span>)]
+    <span class="keyword">public string</span> Password { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Şifre onayı gerekli"</span>)]
+    [DataType(DataType.Password)]
+    [Compare(<span class="string">"Password"</span>, ErrorMessage = <span class="string">"Şifreler eşleşmiyor"</span>)]
+    [Display(Name = <span class="string">"Şifre Onayı"</span>)]
+    <span class="keyword">public string</span> ConfirmPassword { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Range(<span class="keyword">typeof</span>(<span class="keyword">bool</span>), <span class="string">"true"</span>, <span class="string">"true"</span>, 
+        ErrorMessage = <span class="string">"Şartları kabul etmelisiniz"</span>)]
+    [Display(Name = <span class="string">"Kullanım şartlarını kabul ediyorum"</span>)]
+    <span class="keyword">public bool</span> AcceptTerms { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Controller'da ModelState Kontrolü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Controllers/StudentController.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">StudentController</span> : Controller
+{
+    <span class="comment">// GET: /Student/Create</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Create</span>()
+    {
+        <span class="keyword">return</span> View();
+    }
+    
+    <span class="comment">// POST: /Student/Create</span>
+    [HttpPost]
+    <span class="keyword">public</span> IActionResult <span class="method">Create</span>(Student student)
+    {
+        <span class="comment">// Model geçerli mi kontrol et</span>
+        <span class="keyword">if</span> (ModelState.IsValid)
+        {
+            <span class="comment">// Veritabanına kaydet</span>
+            <span class="comment">// _context.Students.Add(student);</span>
+            <span class="comment">// _context.SaveChanges();</span>
+            
+            <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);
+        }
+        
+        <span class="comment">// Hatalar varsa formu tekrar göster</span>
+        <span class="keyword">return</span> View(student);
+    }
+}</code></pre>
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Önemli:</strong> <code>ModelState.IsValid</code> tüm Data Annotations kurallarını kontrol
+                eder. Geçersizse View geri döner ve hatalar gösterilir.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View'de Hata Gösterimi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Student/Create.cshtml</div>
+                <pre data-lang="Razor"><code><span class="keyword">@model</span> Student
+
+&lt;h2&gt;Yeni Öğrenci Ekle&lt;/h2&gt;
+
+<span class="comment">&lt;!-- Tüm hatalar --&gt;</span>
+&lt;div <span class="attribute">asp-validation-summary</span>=<span class="string">"All"</span> class="text-danger"&gt;&lt;/div&gt;
+
+&lt;form <span class="attribute">asp-action</span>=<span class="string">"Create"</span> method="post"&gt;
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Name"</span> class="form-label"&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Name"</span> class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Name"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Email"</span> class="form-label"&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Email"</span> class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Email"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Grade"</span> class="form-label"&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Grade"</span> type="number" class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Grade"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-primary"&gt;Kaydet&lt;/button&gt;
+    &lt;a <span class="attribute">asp-action</span>=<span class="string">"Index"</span> class="btn btn-secondary"&gt;İptal&lt;/a&gt;
+&lt;/form&gt;
+
+<span class="comment">&lt;!-- jQuery Validation (istemci tarafı) --&gt;</span>
+@section Scripts {
+    &lt;partial name="_ValidationScriptsPartial" /&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Özel Validation Attribute</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Yaş Kontrolü - Custom Attribute</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">MinimumAgeAttribute</span> : ValidationAttribute
+{
+    <span class="keyword">private readonly int</span> _minimumAge;
+    
+    <span class="keyword">public</span> <span class="method">MinimumAgeAttribute</span>(<span class="keyword">int</span> minimumAge)
+    {
+        _minimumAge = minimumAge;
+    }
+    
+    <span class="keyword">protected override</span> ValidationResult IsValid(
+        <span class="keyword">object</span> value, ValidationContext context)
+    {
+        <span class="keyword">if</span> (value <span class="keyword">is</span> DateTime birthDate)
+        {
+            <span class="keyword">var</span> age = DateTime.Today.Year - birthDate.Year;
+            <span class="keyword">if</span> (age >= _minimumAge)
+            {
+                <span class="keyword">return</span> ValidationResult.Success;
+            }
+        }
+        <span class="keyword">return new</span> ValidationResult(
+            $<span class="string">"Yaşınız en az {_minimumAge} olmalıdır"</span>);
+    }
+}
+
+<span class="comment">// Kullanımı:</span>
+<span class="keyword">public class</span> <span class="class-name">User</span>
+{
+    [MinimumAge(<span class="number">18</span>)]
+    [DataType(DataType.Date)]
+    <span class="keyword">public</span> DateTime BirthDate { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>"Book" modeli için: Title (zorunlu, 5-100 karakter), Author (zorunlu), Price (0.01-9999), ISBN
+                    yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Book</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Kitap adı zorunludur"</span>)]
+    [StringLength(<span class="number">100</span>, MinimumLength = <span class="number">5</span>)]
+    [Display(Name = <span class="string">"Kitap Adı"</span>)]
+    <span class="keyword">public string</span> Title { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required(ErrorMessage = <span class="string">"Yazar adı zorunludur"</span>)]
+    [Display(Name = <span class="string">"Yazar"</span>)]
+    <span class="keyword">public string</span> Author { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Range(<span class="number">0.01</span>, <span class="number">9999</span>)]
+    [Display(Name = <span class="string">"Fiyat"</span>)]
+    <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [StringLength(<span class="number">13</span>)]
+    <span class="keyword">public string</span> ISBN { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Şifre ve şifre onayı alanları olan LoginViewModel yazın (Compare kullanarak).</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">ChangePasswordViewModel</span>
+{
+    [Required(ErrorMessage = <span class="string">"Mevcut şifre gerekli"</span>)]
+    [DataType(DataType.Password)]
+    [Display(Name = <span class="string">"Mevcut Şifre"</span>)]
+    <span class="keyword">public string</span> CurrentPassword { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [StringLength(<span class="number">100</span>, MinimumLength = <span class="number">6</span>)]
+    [DataType(DataType.Password)]
+    [Display(Name = <span class="string">"Yeni Şifre"</span>)]
+    <span class="keyword">public string</span> NewPassword { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [DataType(DataType.Password)]
+    [Compare(<span class="string">"NewPassword"</span>, ErrorMessage = <span class="string">"Şifreler eşleşmiyor"</span>)]
+    [Display(Name = <span class="string">"Şifre Onayı"</span>)]
+    <span class="keyword">public string</span> ConfirmPassword { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>ModelState.IsValid kontrolü yapan Create action'ı yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre data-lang="C#"><code>[HttpPost]
+<span class="keyword">public</span> IActionResult <span class="method">Create</span>(Book book)
+{
+    <span class="keyword">if</span> (ModelState.IsValid)
+    {
+        <span class="comment">// Kaydet</span>
+        _context.Books.Add(book);
+        _context.SaveChanges();
+        
+        TempData[<span class="string">"Success"</span>] = <span class="string">"Kitap başarıyla eklendi!"</span>;
+        <span class="keyword">return</span> RedirectToAction(<span class="string">"Index"</span>);
+    }
+    
+    <span class="comment">// Validation hataları varsa formu göster</span>
+    <span class="keyword">return</span> View(book);
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>Hata mesajlarını gösteren form View'i yazın (asp-validation-for).</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <pre data-lang="Razor"><code><span class="keyword">@model</span> Book
+
+&lt;form <span class="attribute">asp-action</span>=<span class="string">"Create"</span> method="post"&gt;
+    &lt;div <span class="attribute">asp-validation-summary</span>=<span class="string">"ModelOnly"</span> class="alert alert-danger"&gt;&lt;/div&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Title"</span>&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Title"</span> class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Title"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="mb-3"&gt;
+        &lt;label <span class="attribute">asp-for</span>=<span class="string">"Author"</span>&gt;&lt;/label&gt;
+        &lt;input <span class="attribute">asp-for</span>=<span class="string">"Author"</span> class="form-control" /&gt;
+        &lt;span <span class="attribute">asp-validation-for</span>=<span class="string">"Author"</span> class="text-danger"&gt;&lt;/span&gt;
+    &lt;/div&gt;
+    
+    &lt;button type="submit" class="btn btn-success"&gt;Kaydet&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders4.html" class="nav-btn prev">← Önceki: View ve Razor</a>
+            <a href="ders6.html" class="nav-btn next">Sonraki: Form İşlemleri →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

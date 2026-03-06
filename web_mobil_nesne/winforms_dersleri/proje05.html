@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 5: Otel Rezervasyon Sistemi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 5</span>
+            <h1>🏨 Otel Rezervasyon Sistemi</h1>
+            <p class="subtitle">Ders 1-5 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders05.html">Ders 5</a>
+            <a href="proje05.html" class="active">Proje 5</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Otel için rezervasyon formu. Müşteriler tarih seçer, oda tipi belirler ve misafir sayısı girer.</p>
+
+            <div class="info-box">
+                <strong>📚 Kullanılan Konular:</strong> DateTimePicker, NumericUpDown, MaskedTextBox, RadioButton,
+                CheckBox
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Form Kontrolleri</h2>
+            <table>
+                <tr>
+                    <th>Kontrol</th>
+                    <th>Name</th>
+                    <th>Özellik</th>
+                </tr>
+                <tr>
+                    <td>MaskedTextBox</td>
+                    <td>mtbTelefon</td>
+                    <td>Mask: (000) 000 00 00</td>
+                </tr>
+                <tr>
+                    <td>DateTimePicker</td>
+                    <td>dtpGiris</td>
+                    <td>MinDate: Today</td>
+                </tr>
+                <tr>
+                    <td>DateTimePicker</td>
+                    <td>dtpCikis</td>
+                    <td>MinDate: Today + 1</td>
+                </tr>
+                <tr>
+                    <td>NumericUpDown</td>
+                    <td>numYetiskin</td>
+                    <td>Min: 1, Max: 4</td>
+                </tr>
+                <tr>
+                    <td>RadioButton</td>
+                    <td>rbStandart</td>
+                    <td>Standart (500₺/gece)</td>
+                </tr>
+                <tr>
+                    <td>RadioButton</td>
+                    <td>rbDeluxe</td>
+                    <td>Deluxe (800₺/gece)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Kod Çözümü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Form_Load ve Fiyat Hesaplama</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    dtpGiris.MinDate = DateTime.Today;
+    dtpCikis.MinDate = DateTime.Today.AddDays(<span class="number">1</span>);
+    numYetiskin.Minimum = <span class="number">1</span>;
+    numYetiskin.Maximum = <span class="number">4</span>;
+    rbStandart.Checked = <span class="keyword">true</span>;
+    FiyatHesapla();
+}
+
+<span class="keyword">private void</span> <span class="method">dtpGiris_ValueChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    dtpCikis.MinDate = dtpGiris.Value.AddDays(<span class="number">1</span>);
+    FiyatHesapla();
+}
+
+<span class="keyword">private void</span> <span class="method">FiyatHesapla</span>()
+{
+    <span class="keyword">int</span> gece = (dtpCikis.Value - dtpGiris.Value).Days;
+    <span class="keyword">decimal</span> odaFiyat = rbStandart.Checked ? <span class="number">500</span> : 
+                       rbDeluxe.Checked ? <span class="number">800</span> : <span class="number">1200</span>;
+    
+    <span class="keyword">decimal</span> toplam = odaFiyat * gece;
+    
+    <span class="keyword">if</span> (chkKahvalti.Checked) toplam += <span class="number">100</span> * gece;
+    <span class="keyword">if</span> (chkTransfer.Checked) toplam += <span class="number">250</span>;
+    
+    lblToplam.Text = $<span class="string">"Toplam: {toplam:N0}₺ ({gece} gece)"</span>;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Rezervasyon Onaylama</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnRezervasyon_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(txtAd.Text))
+    {
+        MessageBox.Show(<span class="string">"Ad zorunludur!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="keyword">if</span> (!mtbTelefon.MaskCompleted)
+    {
+        MessageBox.Show(<span class="string">"Telefon eksiksiz girin!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    <span class="keyword">string</span> rezervasyonNo = <span class="string">"RZ-"</span> + DateTime.Now.ToString(<span class="string">"yyyyMMddHHmmss"</span>);
+    MessageBox.Show($<span class="string">"Rezervasyon Alındı!\nNo: {rezervasyonNo}"</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje04.html" class="nav-btn prev">← Proje 4</a>
+            <a href="proje06.html" class="nav-btn next">Proje 6 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

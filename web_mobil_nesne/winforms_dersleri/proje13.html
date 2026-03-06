@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 13: Ürün Yönetim Sistemi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 13</span>
+            <h1>📦 Ürün Yönetim Sistemi</h1>
+            <p class="subtitle">Ders 1-13 Konularını Kapsayan Proje</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders13.html">Ders 13</a>
+            <a href="proje13.html" class="active">Proje 13</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>DataGridView ile CRUD işlemleri yapan ürün yönetim sistemi. Arama, filtreleme ve koşullu formatlama.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Konular (Ders 13):</strong> DataGridView, DataSource, Columns, Rows, CellClick,
+                CellFormatting
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Kod Çözümü</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Model ve Veri</div>
+                <pre><code><span class="keyword">public class</span> <span class="class-name">Urun</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Ad { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Kategori { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public decimal</span> Fiyat { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Stok { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public string</span> StokDurumu => Stok == <span class="number">0</span> ? <span class="string">"Tükendi"</span> : 
+                                Stok &lt; <span class="number">10</span> ? <span class="string">"Az"</span> : <span class="string">"Yeterli"</span>;
+}
+
+<span class="keyword">private</span> BindingList&lt;Urun&gt; urunler = <span class="keyword">new</span> BindingList&lt;Urun&gt;();
+<span class="keyword">private int</span> sonId = <span class="number">0</span>;</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Form Başlangıç</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Kategorileri doldur</span>
+    cmbKategori.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"Elektronik"</span>, <span class="string">"Giyim"</span>, <span class="string">"Gıda"</span>, <span class="string">"Kitap"</span> });
+    cmbFiltre.Items.Add(<span class="string">"Tümü"</span>);
+    cmbFiltre.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"Elektronik"</span>, <span class="string">"Giyim"</span>, <span class="string">"Gıda"</span>, <span class="string">"Kitap"</span> });
+    cmbFiltre.SelectedIndex = <span class="number">0</span>;
+    
+    <span class="comment">// DataGridView ayarları</span>
+    dgvUrunler.AutoGenerateColumns = <span class="keyword">false</span>;
+    dgvUrunler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn { Name = <span class="string">"Id"</span>, HeaderText = <span class="string">"ID"</span>, DataPropertyName = <span class="string">"Id"</span>, Width = <span class="number">50</span> });
+    dgvUrunler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn { Name = <span class="string">"Ad"</span>, HeaderText = <span class="string">"Ürün Adı"</span>, DataPropertyName = <span class="string">"Ad"</span>, Width = <span class="number">150</span> });
+    dgvUrunler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn { Name = <span class="string">"Kategori"</span>, HeaderText = <span class="string">"Kategori"</span>, DataPropertyName = <span class="string">"Kategori"</span>, Width = <span class="number">100</span> });
+    dgvUrunler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn { Name = <span class="string">"Fiyat"</span>, HeaderText = <span class="string">"Fiyat"</span>, DataPropertyName = <span class="string">"Fiyat"</span>, Width = <span class="number">80</span> });
+    dgvUrunler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn { Name = <span class="string">"Stok"</span>, HeaderText = <span class="string">"Stok"</span>, DataPropertyName = <span class="string">"Stok"</span>, Width = <span class="number">60</span> });
+    dgvUrunler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn { Name = <span class="string">"Durum"</span>, HeaderText = <span class="string">"Durum"</span>, DataPropertyName = <span class="string">"StokDurumu"</span>, Width = <span class="number">70</span> });
+    
+    dgvUrunler.DataSource = urunler;
+    
+    <span class="comment">// Örnek veri</span>
+    urunler.Add(<span class="keyword">new</span> Urun { Id = ++sonId, Ad = <span class="string">"Laptop"</span>, Kategori = <span class="string">"Elektronik"</span>, Fiyat = <span class="number">15000</span>, Stok = <span class="number">25</span> });
+    urunler.Add(<span class="keyword">new</span> Urun { Id = ++sonId, Ad = <span class="string">"T-Shirt"</span>, Kategori = <span class="string">"Giyim"</span>, Fiyat = <span class="number">150</span>, Stok = <span class="number">5</span> });
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">CRUD İşlemleri</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(txtAd.Text) || cmbKategori.SelectedIndex == -<span class="number">1</span>)
+    {
+        MessageBox.Show(<span class="string">"Tüm alanları doldurun!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    urunler.Add(<span class="keyword">new</span> Urun
+    {
+        Id = ++sonId,
+        Ad = txtAd.Text,
+        Kategori = cmbKategori.Text,
+        Fiyat = numFiyat.Value,
+        Stok = (<span class="keyword">int</span>)numStok.Value
+    });
+    
+    FormuTemizle();
+}
+
+<span class="keyword">private void</span> <span class="method">dgvUrunler_CellClick</span>(<span class="keyword">object</span> sender, DataGridViewCellEventArgs e)
+{
+    <span class="keyword">if</span> (e.RowIndex &lt; <span class="number">0</span>) <span class="keyword">return</span>;
+    
+    Urun u = urunler[e.RowIndex];
+    txtAd.Text = u.Ad;
+    cmbKategori.Text = u.Kategori;
+    numFiyat.Value = u.Fiyat;
+    numStok.Value = u.Stok;
+}
+
+<span class="keyword">private void</span> <span class="method">btnGuncelle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dgvUrunler.CurrentRow == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    Urun u = urunler[dgvUrunler.CurrentRow.Index];
+    u.Ad = txtAd.Text;
+    u.Kategori = cmbKategori.Text;
+    u.Fiyat = numFiyat.Value;
+    u.Stok = (<span class="keyword">int</span>)numStok.Value;
+    
+    dgvUrunler.Refresh();
+}
+
+<span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dgvUrunler.CurrentRow == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    <span class="keyword">if</span> (MessageBox.Show(<span class="string">"Silmek istiyor musunuz?"</span>, <span class="string">"Onay"</span>, 
+        MessageBoxButtons.YesNo) == DialogResult.Yes)
+    {
+        urunler.RemoveAt(dgvUrunler.CurrentRow.Index);
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Arama ve Koşullu Formatlama</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">txtArama_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">string</span> arama = txtArama.Text.ToLower();
+    <span class="keyword">string</span> kategori = cmbFiltre.SelectedItem?.ToString();
+    
+    <span class="keyword">var</span> sonuc = urunler.Where(u => 
+        u.Ad.ToLower().Contains(arama) &&
+        (kategori == <span class="string">"Tümü"</span> || u.Kategori == kategori)
+    ).ToList();
+    
+    dgvUrunler.DataSource = <span class="keyword">new</span> BindingList&lt;Urun&gt;(sonuc);
+}
+
+<span class="comment">// Stok durumuna göre renklendirme</span>
+<span class="keyword">private void</span> <span class="method">dgvUrunler_CellFormatting</span>(<span class="keyword">object</span> sender, DataGridViewCellFormattingEventArgs e)
+{
+    <span class="keyword">if</span> (e.ColumnIndex == dgvUrunler.Columns[<span class="string">"Stok"</span>].Index && e.Value != <span class="keyword">null</span>)
+    {
+        <span class="keyword">int</span> stok = (<span class="keyword">int</span>)e.Value;
+        
+        <span class="keyword">if</span> (stok == <span class="number">0</span>)
+            e.CellStyle.BackColor = Color.LightCoral;
+        <span class="keyword">else if</span> (stok &lt; <span class="number">10</span>)
+            e.CellStyle.BackColor = Color.LightYellow;
+        <span class="keyword">else</span>
+            e.CellStyle.BackColor = Color.LightGreen;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje12.html" class="nav-btn prev">← Proje 12</a>
+            <a href="proje14.html" class="nav-btn next">Proje 14 →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 7: Entity Framework ve Veritabanı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 7</span>
+            <h1>Entity Framework ve Veritabanı</h1>
+            <p class="subtitle">ORM ile Veritabanı İşlemleri</p>
+        </header>
+
+        <section class="section">
+            <h2>Entity Framework Nedir?</h2>
+            <p><strong>Entity Framework (EF)</strong>, Microsoft'un geliştirdiği bir ORM (Object-Relational Mapping)
+                aracıdır. C# nesneleri ile veritabanı tabloları arasında köprü kurar.</p>
+
+            <div class="info-box">
+                <strong>💡 ORM Avantajları:</strong><br>
+                • SQL yazmadan veritabanı işlemleri<br>
+                • C# nesneleri ile çalışma<br>
+                • Veritabanı bağımsızlığı<br>
+                • Otomatik migration desteği
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Entity Framework Kurulumu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">NuGet Paketleri (Package Manager Console)</div>
+                <pre data-lang="PowerShell"><code><span class="comment"># EF Core ve SQL Server</span>
+Install-Package Microsoft.EntityFrameworkCore.SqlServer
+Install-Package Microsoft.EntityFrameworkCore.Tools
+
+<span class="comment"># veya dotnet CLI:</span>
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+dotnet add package Microsoft.EntityFrameworkCore.Tools</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model Sınıfları (Entity)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Student.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="keyword">public class</span> <span class="class-name">Student</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }  <span class="comment">// Primary Key (otomatik)</span>
+    
+    [Required]
+    [StringLength(<span class="number">50</span>)]
+    <span class="keyword">public string</span> FirstName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [StringLength(<span class="number">50</span>)]
+    <span class="keyword">public string</span> LastName { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [EmailAddress]
+    <span class="keyword">public string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> Grade { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Navigation Property - İlişki</span>
+    <span class="keyword">public int</span> ClassroomId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Classroom Classroom { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Classroom.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Classroom</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [Required]
+    [StringLength(<span class="number">10</span>)]
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }  <span class="comment">// "11-A"</span>
+    
+    <span class="keyword">public int</span> Capacity { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="comment">// Bir sınıfta birden fazla öğrenci</span>
+    <span class="keyword">public</span> ICollection&lt;Student&gt; Students { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>DbContext Oluşturma</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Data/ApplicationDbContext.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.EntityFrameworkCore;
+
+<span class="keyword">public class</span> <span class="class-name">ApplicationDbContext</span> : <span class="class-name">DbContext</span>
+{
+    <span class="keyword">public</span> <span class="method">ApplicationDbContext</span>(DbContextOptions&lt;ApplicationDbContext&gt; options)
+        : <span class="keyword">base</span>(options)
+    {
+    }
+    
+    <span class="comment">// DbSet = Veritabanı Tablosu</span>
+    <span class="keyword">public</span> DbSet&lt;Student&gt; Students { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> DbSet&lt;Classroom&gt; Classrooms { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">protected override void</span> <span class="method">OnModelCreating</span>(ModelBuilder modelBuilder)
+    {
+        <span class="comment">// Seed Data - Başlangıç verileri</span>
+        modelBuilder.Entity&lt;Classroom&gt;().HasData(
+            <span class="keyword">new</span> Classroom { Id = <span class="number">1</span>, Name = <span class="string">"11-A"</span>, Capacity = <span class="number">30</span> },
+            <span class="keyword">new</span> Classroom { Id = <span class="number">2</span>, Name = <span class="string">"11-B"</span>, Capacity = <span class="number">28</span> }
+        );
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Program.cs Yapılandırması</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Program.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">var</span> builder = WebApplication.CreateBuilder(args);
+
+<span class="comment">// DbContext kaydı</span>
+builder.Services.AddDbContext&lt;ApplicationDbContext&gt;(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString(<span class="string">"DefaultConnection"</span>)
+    )
+);
+
+builder.Services.AddControllersWithViews();
+
+<span class="keyword">var</span> app = builder.Build();
+<span class="comment">// ... devamı</span></code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">appsettings.json</div>
+                <pre data-lang="JSON"><code>{
+  <span class="string">"ConnectionStrings"</span>: {
+    <span class="string">"DefaultConnection"</span>: <span class="string">"Server=(localdb)\\mssqllocaldb;Database=OkulDB;Trusted_Connection=True;"</span>
+  },
+  <span class="string">"Logging"</span>: {
+    <span class="string">"LogLevel"</span>: {
+      <span class="string">"Default"</span>: <span class="string">"Information"</span>
+    }
+  }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Migration (Veritabanı Oluşturma)</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Package Manager Console</div>
+                <pre data-lang="PowerShell"><code><span class="comment"># 1. Migration oluştur</span>
+Add-Migration InitialCreate
+
+<span class="comment"># 2. Veritabanına uygula</span>
+Update-Database
+
+<span class="comment"># YENİ değişiklik sonrası:</span>
+Add-Migration AddEmailToStudent
+Update-Database
+
+<span class="comment"># dotnet CLI:</span>
+dotnet ef migrations add InitialCreate
+dotnet ef database update</code></pre>
+            </div>
+
+            <div class="success-box">
+                <strong>✅ Tebrikler!</strong> Artık veritabanınız ve tablolarınız hazır.
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>LINQ ile Veritabanı Sorguları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Temel LINQ Sorguları</div>
+                <pre data-lang="C#"><code><span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+<span class="keyword">using</span> Microsoft.EntityFrameworkCore;
+<span class="keyword">using</span> System.Linq;
+
+<span class="keyword">public class</span> <span class="class-name">StudentController</span> : Controller
+{
+    <span class="keyword">private readonly</span> ApplicationDbContext _context;
+    
+    <span class="keyword">public</span> <span class="method">StudentController</span>(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+    
+    <span class="comment">// Tümünü getir</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Index</span>()
+    {
+        <span class="keyword">var</span> students = _context.Students.ToList();
+        <span class="keyword">return</span> View(students);
+    }
+    
+    <span class="comment">// ID ile bul</span>
+    <span class="keyword">public</span> IActionResult <span class="method">Details</span>(<span class="keyword">int</span> id)
+    {
+        <span class="keyword">var</span> student = _context.Students.Find(id);
+        <span class="comment">// veya</span>
+        <span class="keyword">var</span> student2 = _context.Students
+            .FirstOrDefault(s => s.Id == id);
+        <span class="keyword">return</span> View(student);
+    }
+    
+    <span class="comment">// Filtreleme</span>
+    <span class="keyword">public</span> IActionResult <span class="method">ByGrade</span>(<span class="keyword">int</span> grade)
+    {
+        <span class="keyword">var</span> students = _context.Students
+            .Where(s => s.Grade == grade)
+            .OrderBy(s => s.LastName)
+            .ToList();
+        <span class="keyword">return</span> View(students);
+    }
+    
+    <span class="comment">// Include ile ilişkili veri</span>
+    <span class="keyword">public</span> IActionResult <span class="method">WithClassroom</span>()
+    {
+        <span class="keyword">var</span> students = _context.Students
+            .Include(s => s.Classroom)
+            .ToList();
+        <span class="keyword">return</span> View(students);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Yaygın LINQ Metodları</h2>
+
+            <table>
+                <tr>
+                    <th>Metod</th>
+                    <th>Açıklama</th>
+                    <th>Örnek</th>
+                </tr>
+                <tr>
+                    <td>Where()</td>
+                    <td>Filtreleme</td>
+                    <td>.Where(x => x.Price > 100)</td>
+                </tr>
+                <tr>
+                    <td>OrderBy()</td>
+                    <td>Sıralama (A-Z)</td>
+                    <td>.OrderBy(x => x.Name)</td>
+                </tr>
+                <tr>
+                    <td>OrderByDescending()</td>
+                    <td>Ters sıralama</td>
+                    <td>.OrderByDescending(x => x.Date)</td>
+                </tr>
+                <tr>
+                    <td>Select()</td>
+                    <td>Projeksiyon</td>
+                    <td>.Select(x => x.Name)</td>
+                </tr>
+                <tr>
+                    <td>FirstOrDefault()</td>
+                    <td>İlk kayıt veya null</td>
+                    <td>.FirstOrDefault(x => x.Id == 1)</td>
+                </tr>
+                <tr>
+                    <td>Any()</td>
+                    <td>Kayıt var mı?</td>
+                    <td>.Any(x => x.Stock == 0)</td>
+                </tr>
+                <tr>
+                    <td>Count()</td>
+                    <td>Kayıt sayısı</td>
+                    <td>.Count(x => x.IsActive)</td>
+                </tr>
+                <tr>
+                    <td>Sum()</td>
+                    <td>Toplam</td>
+                    <td>.Sum(x => x.Price)</td>
+                </tr>
+                <tr>
+                    <td>Take()</td>
+                    <td>Belirli sayıda al</td>
+                    <td>.Take(10)</td>
+                </tr>
+                <tr>
+                    <td>Skip()</td>
+                    <td>Atla</td>
+                    <td>.Skip(20).Take(10)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>Örnek: Arama ve Filtreleme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Gelişmiş Arama</div>
+                <pre data-lang="C#"><code><span class="keyword">public</span> IActionResult <span class="method">Search</span>(<span class="keyword">string</span> query, <span class="keyword">int</span>? grade, <span class="keyword">string</span> sort)
+{
+    <span class="keyword">var</span> students = _context.Students.AsQueryable();
+    
+    <span class="comment">// Arama</span>
+    <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(query))
+    {
+        students = students.Where(s => 
+            s.FirstName.Contains(query) || 
+            s.LastName.Contains(query));
+    }
+    
+    <span class="comment">// Sınıf filtresi</span>
+    <span class="keyword">if</span> (grade.HasValue)
+    {
+        students = students.Where(s => s.Grade == grade);
+    }
+    
+    <span class="comment">// Sıralama</span>
+    students = sort <span class="keyword">switch</span>
+    {
+        <span class="string">"name"</span> => students.OrderBy(s => s.FirstName),
+        <span class="string">"name_desc"</span> => students.OrderByDescending(s => s.FirstName),
+        <span class="string">"grade"</span> => students.OrderBy(s => s.Grade),
+        _ => students.OrderBy(s => s.Id)
+    };
+    
+    <span class="keyword">return</span> View(students.ToList());
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Entity Framework nedir ve ne işe yarar?</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <p>Entity Framework, ORM (Object-Relational Mapping) aracıdır.</p>
+                    <ul>
+                        <li>C# nesneleri ile veritabanı arasında köprü kurar</li>
+                        <li>SQL yazmadan veritabanı işlemleri yapılır</li>
+                        <li>Model sınıfları otomatik tablolara dönüşür</li>
+                        <li>LINQ ile sorgulama yapılır</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Product için DbContext sınıfı yazın (Id, Name, Price, Stock alanları).</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Product</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Name { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public decimal</span> Price { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Stock { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}
+
+<span class="keyword">public class</span> <span class="class-name">AppDbContext</span> : DbContext
+{
+    <span class="keyword">public</span> AppDbContext(DbContextOptions&lt;AppDbContext&gt; options) 
+        : <span class="keyword">base</span>(options) { }
+    
+    <span class="keyword">public</span> DbSet&lt;Product&gt; Products { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Fiyatı 100 TL üstünde, stokta olan ve isme göre sıralı ürünleri getiren LINQ yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre data-lang="C#"><code><span class="keyword">var</span> products = _context.Products
+    .Where(p => p.Price > <span class="number">100</span>)
+    .Where(p => p.Stock > <span class="number">0</span>)
+    .OrderBy(p => p.Name)
+    .ToList();</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">4</span>
+                <strong>Migration komutlarını sırasıyla yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(4)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-4">
+                    <pre data-lang="PowerShell"><code><span class="comment"># 1. Migration oluştur</span>
+Add-Migration InitialCreate
+
+<span class="comment"># 2. Veritabanına uygula</span>
+Update-Database
+
+<span class="comment"># Model değişikliği sonrası:</span>
+Add-Migration AddStockColumn
+Update-Database</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">5</span>
+                <strong>En pahalı 5 ürünü getiren LINQ sorgusu yazın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(5)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-5">
+                    <pre data-lang="C#"><code><span class="keyword">var</span> topProducts = _context.Products
+    .OrderByDescending(p => p.Price)
+    .Take(<span class="number">5</span>)
+    .ToList();</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders6.html" class="nav-btn prev">← Önceki: Form İşlemleri</a>
+            <a href="ders8.html" class="nav-btn next">Sonraki: CRUD İşlemleri →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temel Navigation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface2: #16213e;
+            --card: #1e1e36;
+            --border: #2a2a4a;
+            --text: #e0e0f0;
+            --text2: #a0a0c0;
+            --accent: #7c3aed;
+            --accent2: #a78bfa;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a0533 0%, #0f0f1a 40%, #0a1628 100%);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate
+        }
+
+        @keyframes heroGlow {
+            0% {
+                transform: translate(0, 0)
+            }
+
+            100% {
+                transform: translate(-2%, 1%)
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            margin-bottom: 8px
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+            transition: border-color .3s
+        }
+
+        .card:hover {
+            border-color: var(--accent)
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .card p,
+        .card li {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.8
+        }
+
+        .card ul,
+        .card ol {
+            padding-left: 20px;
+            margin: 8px 0
+        }
+
+        pre {
+            background: #12121f;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+            position: relative
+        }
+
+        pre .label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7
+        }
+
+        .kw {
+            color: #c792ea
+        }
+
+        .fn {
+            color: #82aaff
+        }
+
+        .str {
+            color: #c3e88d
+        }
+
+        .cm {
+            color: #546e7a
+        }
+
+        .tp {
+            color: #ffcb6b
+        }
+
+        .pr {
+            color: #f07178
+        }
+
+        .inline-code {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--accent2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.83rem
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1>🧭 Temel Navigation</h1>
+        <p class="subtitle">Jetpack Compose'da Sayfalar Arası Geçişin Temelleri</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h3>💬 Açıklama</h3>
+            <p>Uygulamamızdaki ekranlar (sayfalar) arasında geçiş yapmak için kullandığımız yapıya
+                <strong>Navigation</strong> denir. Bu yapıyı evimizdeki odalar arasında dolaşmaya benzetebiliriz.</p>
+            <p>Temel bir gezinme (navigation) işlemi şu 4 parçadan oluşur:</p>
+            <ul>
+                <li><strong>Route (Adres):</strong> Her sayfanın kimliği yani adresidir (Örn: "anasayfa").</li>
+                <li><strong>NavController (Şoför):</strong> Sayfayı değiştirmeyi veya geri dönmeyi sağlayan komutları
+                    verir.</li>
+                <li><strong>NavHost (Harita):</strong> Hangi adresin hangi sayfayı açacağını bilen iç haritadır.</li>
+                <li><strong>Sayfalar:</strong> Ekranda gördüğümüz <span class="inline-code">@Composable</span>
+                    fonksiyonlarıdır.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>🛠️ Örnek Kod</h3>
+            <p>Aşağıda Ana Sayfadan Detay Sayfasına giden basit bir geçişi görebilirsiniz.</p>
+            <pre><code><span class="cm">// 1. Temsili adreslerimizi (Route) belirliyoruz</span>
+<span class="kw">object</span> <span class="tp">Adresler</span> {
+    <span class="kw">const val</span> <span class="pr">ANA_SAYFA</span> = <span class="str">"anaEkran"</span>
+    <span class="kw">const val</span> <span class="pr">DETAY</span> = <span class="str">"detayEkran"</span>
+}
+
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">UygulamaGecisleri</span>() {
+    <span class="cm">// 2. Şoförümüzü yaratıyoruz</span>
+    <span class="kw">val</span> sofor = <span class="fn">rememberNavController</span>()
+    
+    <span class="cm">// 3. Haritamızı oluşturuyoruz (İlk hangi sayfa açılacak?)</span>
+    <span class="fn">NavHost</span>(
+        navController = sofor,
+        startDestination = <span class="tp">Adresler</span>.<span class="pr">ANA_SAYFA</span>
+    ) {
+        <span class="cm">// 4. Sayfalarımızı haritaya ekliyoruz</span>
+        <span class="fn">composable</span>(<span class="tp">Adresler</span>.<span class="pr">ANA_SAYFA</span>) {
+            <span class="fn">AnaEkran</span>(
+                detayaGit = { sofor.<span class="fn">navigate</span>(<span class="tp">Adresler</span>.<span class="pr">DETAY</span>) } <span class="cm">// Detaya git emri</span>
+            )
+        }
+        
+        <span class="fn">composable</span>(<span class="tp">Adresler</span>.<span class="pr">DETAY</span>) {
+            <span class="fn">DetayEkran</span>(
+                geriDon = { sofor.<span class="fn">popBackStack</span>() } <span class="cm">// Geri dön emri</span>
+            )
+        }
+    }
+}</code><span class="label">Kotlin</span></pre>
+        </div>
+
+        <div class="card">
+            <h3>🖥️ Sayfaların Tasarımı</h3>
+            <p>Sayfalarımız yukarıdaki haritadan aldıkları görevleri uygulayan butonlara sahiptir.</p>
+            <pre><code><span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">AnaEkran</span>(detayaGit: () -> <span class="tp">Unit</span>) {
+    <span class="fn">Column</span> {
+        <span class="fn">Text</span>(<span class="str">"Burası Ana Sayfa"</span>)
+        <span class="fn">Button</span>(onClick = detayaGit) {
+            <span class="fn">Text</span>(<span class="str">"Detaya İlerle"</span>)
+        }
+    }
+}
+
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">DetayEkran</span>(geriDon: () -> <span class="tp">Unit</span>) {
+    <span class="fn">Column</span> {
+        <span class="fn">Text</span>(<span class="str">"Burası Detay Sayfası"</span>)
+        <span class="fn">Button</span>(onClick = geriDon) {
+            <span class="fn">Text</span>(<span class="str">"Geri Dön"</span>)
+        }
+    }
+}</code><span class="label">Kotlin</span></pre>
+        </div>
+        <div class="card">
+            <h3>🎯 Senin Sıran: Koda Özellik Ekle!</h3>
+            <p>Yukarıdaki örneği anladıysan sıra sende. Aşağıdaki görevleri sırasıyla projene eklemeye çalış:</p>
+            <ul>
+                <li>
+                    <strong>Özellik 1: Hakkımızda Sayfası Ekle</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Mevcut uygulamaya bir de "Hakkımızda" sayfası
+                        ekle. Ana ekrana bir buton daha koyup bu sayfaya yönlendir.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong> Önce
+                        <code>Adresler</code> objesine <code>const val HAKKIMIZDA = "hakkimizda"</code> ekle. Sonra yeni
+                        bir <code>composable</code> blok aç.</span>
+                </li>
+                <br>
+                <li>
+                    <strong>Özellik 2: Detay Sayfasından Ana Sayfaya Dönüş Butonu</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Kullanıcı detay sayfasına geldiğinde, "Geri Dön"
+                        butonuna basarsa geldiği yere dönsün.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong>
+                        <code>DetayEkran</code> içine bir Button ekle ve tıklandığında süslü parantez içine
+                        <code>sofor.popBackStack()</code> komutunu çağır (Bu komut onu otomatik olarak önceki sayfaya
+                        atar).</span>
+                </li>
+                <br>
+                <li>
+                    <strong>Özellik 3: Tüm Sayfaları Birbirine Bağla</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Hakkımızda sayfasından doğrudan Detay sayfasına
+                        geçiş sağlayan bir kısayol oluştur.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong> Hakkımızda ekranı
+                        için yazdığın fonksiyon dışarıdan <code>detayaGit: () -> Unit</code> parametresi almalı ve
+                        <code>NavHost</code> içindeyken bu parametreye <code>sofor.navigate(Adresler.DETAY)</code>
+                        atanmalı.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

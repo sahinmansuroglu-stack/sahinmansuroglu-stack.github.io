@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose Navigation Öğrenme Rehberi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface2: #16213e;
+            --card: #1e1e36;
+            --border: #2a2a4a;
+            --text: #e0e0f0;
+            --text2: #a0a0c0;
+            --accent: #7c3aed;
+            --accent2: #a78bfa;
+            --radius: 12px;
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --orange: #f59e0b;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a0533 0%, #0f0f1a 40%, #0a1628 100%);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate
+        }
+
+        @keyframes heroGlow {
+            0% {
+                transform: translate(0, 0)
+            }
+
+            100% {
+                transform: translate(-2%, 1%)
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            margin-bottom: 8px
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+            margin-top: 40px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .nav-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--cyan));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.15);
+        }
+
+        .card:hover::after {
+            opacity: 1;
+        }
+
+        .card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .card-footer {
+            margin-top: auto;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--accent2);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .card-footer span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1>🚀 Compose Navigation</h1>
+        <p class="subtitle">Adım Adım Gezinme ve Sayfa Geçişleri Eğitim Seti</p>
+    </div>
+
+    <div class="container">
+        <div class="nav-grid">
+            <!-- Temel Navigation -->
+            <a href="temel_navigation.html" class="card">
+                <div class="icon">🧭</div>
+                <h3>1. Temel Navigation</h3>
+                <p>Uygulamadaki sayfalar (ekranlar) arasında geçiş yapmak için kullandığımız temel yapıları, NavHost ve
+                    NavController'ı öğren.</p>
+                <div class="card-footer">
+                    <span>Başla &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Parametre ile Navigation -->
+            <a href="parametre_navigation.html" class="card">
+                <div class="icon">📦</div>
+                <h3>2. Parametre ile Veri Aktarımı</h3>
+                <p>Listeden seçilen bir öğenin detayını göstermek için sayfalara kimlik bilgisi (id, isim) gibi
+                    parametreleri nasıl göndereceğini keşfet.</p>
+                <div class="card-footer">
+                    <span>İncele &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Bottom Navigation -->
+            <a href="bottom_navigation.html" class="card">
+                <div class="icon">📱</div>
+                <h3>3. Bottom Navigation (Alt Menü)</h3>
+                <p>Instagram ve Twitter gibi popüler uygulamalarda bulunan alt menü düğmelerinin yapısını ve taslağını
+                    oluşturmayı öğren.</p>
+                <div class="card-footer">
+                    <span>Öğren &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Bottom Navigation + Scaffold -->
+            <a href="bottom_navigation_scaffold.html" class="card">
+                <div class="icon">📐</div>
+                <h3>4. Alt Menüyü Eklemleme (Scaffold)</h3>
+                <p>Önceki adımda taslağını çıkardığın alt menüyü "Scaffold" kullanarak sayfanın en altına sabitle ve
+                    haritayla birleştir.</p>
+                <div class="card-footer">
+                    <span>Uygula &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Navigation Animasyonları -->
+            <a href="navigation_animasyonlari.html" class="card">
+                <div class="icon">🎬</div>
+                <h3>5. Navigation Animasyonları</h3>
+                <p>Sayfaların şıp diye değil de kayarak gelmesi, birbirinden çıkarken pürüzsüz biçimde kararması için
+                    gereken animasyonları ekle.</p>
+                <div class="card-footer">
+                    <span>Süsle &rarr;</span>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+
+</html>

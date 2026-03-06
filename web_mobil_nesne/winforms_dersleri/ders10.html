@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 10: ColorDialog ve FontDialog</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 10</span>
+            <h1>ColorDialog ve FontDialog</h1>
+            <p class="subtitle">Renk ve Yazı Tipi Seçme Dialogları</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders08.html">Ders 8</a>
+            <a href="ders09.html">Ders 9</a>
+            <a href="ders10.html" class="active">Ders 10</a>
+            <a href="ders11.html">Ders 11</a>
+            <a href="ders12.html">Ders 12</a>
+        </nav>
+
+        <section class="section">
+            <h2>1. ColorDialog (Renk Seçme)</h2>
+            <p><strong>ColorDialog</strong>, kullanıcının renk paletinden renk seçmesini sağlar.</p>
+
+            <div class="control-visual">
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <div
+                        style="width: 30px; height: 30px; background: #ff0000; border: 1px solid #ccc; cursor: pointer;">
+                    </div>
+                    <div
+                        style="width: 30px; height: 30px; background: #00ff00; border: 1px solid #ccc; cursor: pointer;">
+                    </div>
+                    <div
+                        style="width: 30px; height: 30px; background: #0000ff; border: 1px solid #ccc; cursor: pointer;">
+                    </div>
+                    <div
+                        style="width: 30px; height: 30px; background: #ffff00; border: 1px solid #ccc; cursor: pointer;">
+                    </div>
+                    <div
+                        style="width: 30px; height: 30px; background: #ff00ff; border: 1px solid #ccc; cursor: pointer;">
+                    </div>
+                    <div
+                        style="width: 30px; height: 30px; background: #00ffff; border: 1px solid #ccc; cursor: pointer;">
+                    </div>
+                </div>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Color</td>
+                    <td>Seçilen renk</td>
+                </tr>
+                <tr>
+                    <td>AllowFullOpen</td>
+                    <td>Özel renk seçimi aktif mi?</td>
+                </tr>
+                <tr>
+                    <td>FullOpen</td>
+                    <td>Dialog açık/geniş görünümde başlasın mı?</td>
+                </tr>
+                <tr>
+                    <td>AnyColor</td>
+                    <td>Herhangi bir renk seçilebilir mi?</td>
+                </tr>
+                <tr>
+                    <td>SolidColorOnly</td>
+                    <td>Sadece katı renkler mi?</td>
+                </tr>
+                <tr>
+                    <td>CustomColors</td>
+                    <td>Özel renk paleti</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">ColorDialog Kullanımı</div>
+                <pre><code><span class="comment">// Form arka plan rengini değiştir</span>
+<span class="keyword">private void</span> <span class="method">btnArkaPlanRenk_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ColorDialog dialog = <span class="keyword">new</span> ColorDialog();
+    dialog.Color = <span class="keyword">this</span>.BackColor; <span class="comment">// Mevcut rengi göster</span>
+    dialog.AllowFullOpen = <span class="keyword">true</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">this</span>.BackColor = dialog.Color;
+    }
+}
+
+<span class="comment">// Label yazı rengini değiştir</span>
+<span class="keyword">private void</span> <span class="method">btnYaziRenk_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ColorDialog dialog = <span class="keyword">new</span> ColorDialog();
+    dialog.Color = lblMesaj.ForeColor;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        lblMesaj.ForeColor = dialog.Color;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Özel Renkler (Custom Colors)</div>
+                <pre><code><span class="comment">// Özel renk paleti oluştur</span>
+ColorDialog dialog = <span class="keyword">new</span> ColorDialog();
+
+<span class="comment">// Özel renkler (int dizisi olarak ARGB değerleri)</span>
+dialog.CustomColors = <span class="keyword">new int</span>[] 
+{
+    ColorTranslator.ToOle(Color.FromArgb(<span class="number">255</span>, <span class="number">128</span>, <span class="number">0</span>)),     <span class="comment">// Turuncu</span>
+    ColorTranslator.ToOle(Color.FromArgb(<span class="number">128</span>, <span class="number">0</span>, <span class="number">128</span>)),     <span class="comment">// Mor</span>
+    ColorTranslator.ToOle(Color.FromArgb(<span class="number">0</span>, <span class="number">128</span>, <span class="number">128</span>)),     <span class="comment">// Deniz mavisi</span>
+};
+
+<span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+{
+    panel1.BackColor = dialog.Color;
+    
+    <span class="comment">// RGB değerlerini göster</span>
+    lblRGB.Text = $<span class="string">"RGB: {dialog.Color.R}, {dialog.Color.G}, {dialog.Color.B}"</span>;
+    lblHex.Text = $<span class="string">"HEX: #{dialog.Color.R:X2}{dialog.Color.G:X2}{dialog.Color.B:X2}"</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>2. FontDialog (Yazı Tipi Seçme)</h2>
+            <p><strong>FontDialog</strong>, kullanıcının yazı tipi, boyutu ve stilini seçmesini sağlar.</p>
+
+            <div class="control-visual">
+                <div style="text-align: center;">
+                    <span style="font-family: Arial; font-size: 14px;">Arial 14pt</span> &nbsp;|&nbsp;
+                    <span style="font-family: Times New Roman; font-size: 16px; font-style: italic;">Times 16pt
+                        İtalik</span> &nbsp;|&nbsp;
+                    <span style="font-family: Courier New; font-size: 12px; font-weight: bold;">Courier 12pt
+                        Kalın</span>
+                </div>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Font</td>
+                    <td>Seçilen yazı tipi</td>
+                </tr>
+                <tr>
+                    <td>Color</td>
+                    <td>Yazı rengi (ShowColor=true ise)</td>
+                </tr>
+                <tr>
+                    <td>ShowColor</td>
+                    <td>Renk seçimi göster</td>
+                </tr>
+                <tr>
+                    <td>ShowEffects</td>
+                    <td>Altı çizili, üstü çizili göster</td>
+                </tr>
+                <tr>
+                    <td>MinSize / MaxSize</td>
+                    <td>Font boyutu sınırları</td>
+                </tr>
+                <tr>
+                    <td>FontMustExist</td>
+                    <td>Sadece mevcut fontlar</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">FontDialog Kullanımı</div>
+                <pre><code><span class="comment">// Label yazı tipini değiştir</span>
+<span class="keyword">private void</span> <span class="method">btnYaziTipi_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FontDialog dialog = <span class="keyword">new</span> FontDialog();
+    dialog.Font = lblMesaj.Font; <span class="comment">// Mevcut fontu göster</span>
+    dialog.ShowColor = <span class="keyword">true</span>;
+    dialog.Color = lblMesaj.ForeColor;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        lblMesaj.Font = dialog.Font;
+        lblMesaj.ForeColor = dialog.Color;
+    }
+}
+
+<span class="comment">// TextBox için font değiştir</span>
+<span class="keyword">private void</span> <span class="method">btnTxtFont_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FontDialog dialog = <span class="keyword">new</span> FontDialog();
+    dialog.Font = txtIcerik.Font;
+    dialog.MinSize = <span class="number">8</span>;
+    dialog.MaxSize = <span class="number">72</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.Font = dialog.Font;
+        
+        <span class="comment">// Font bilgilerini göster</span>
+        lblFontBilgi.Text = $<span class="string">"{dialog.Font.Name}, {dialog.Font.Size}pt"</span>;
+        
+        <span class="keyword">if</span> (dialog.Font.Bold) lblFontBilgi.Text += <span class="string">", Kalın"</span>;
+        <span class="keyword">if</span> (dialog.Font.Italic) lblFontBilgi.Text += <span class="string">", İtalik"</span>;
+        <span class="keyword">if</span> (dialog.Font.Underline) lblFontBilgi.Text += <span class="string">", Altı Çizili"</span>;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Color Sınıfı</h2>
+            <p>Renklerle çalışırken kullanılan yöntemler:</p>
+
+            <div class="code-example">
+                <div class="code-example-title">Color Kullanımı</div>
+                <pre><code><span class="comment">// Hazır renkler</span>
+panel1.BackColor = Color.Red;
+panel2.BackColor = Color.LightBlue;
+panel3.BackColor = Color.DarkGreen;
+
+<span class="comment">// RGB ile renk oluşturma</span>
+Color ozelRenk = Color.FromArgb(<span class="number">255</span>, <span class="number">128</span>, <span class="number">64</span>); <span class="comment">// R, G, B</span>
+panel1.BackColor = ozelRenk;
+
+<span class="comment">// ARGB ile (Alpha dahil - şeffaflık)</span>
+Color yariseffaf = Color.FromArgb(<span class="number">128</span>, <span class="number">255</span>, <span class="number">0</span>, <span class="number">0</span>); <span class="comment">// %50 şeffaf kırmızı</span>
+
+<span class="comment">// HEX'ten renk</span>
+Color hexRenk = ColorTranslator.FromHtml(<span class="string">"#FF5733"</span>);
+
+<span class="comment">// Renk bileşenlerini alma</span>
+<span class="keyword">int</span> kirmizi = Color.Coral.R;
+<span class="keyword">int</span> yesil = Color.Coral.G;
+<span class="keyword">int</span> mavi = Color.Coral.B;
+
+<span class="comment">// Sistem renkleri</span>
+<span class="keyword">this</span>.BackColor = SystemColors.Control;
+label1.BackColor = SystemColors.Highlight;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Font Sınıfı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Font Kullanımı</div>
+                <pre><code><span class="comment">// Basit font</span>
+label1.Font = <span class="keyword">new</span> Font(<span class="string">"Arial"</span>, <span class="number">14</span>);
+
+<span class="comment">// Font stili ile</span>
+label1.Font = <span class="keyword">new</span> Font(<span class="string">"Arial"</span>, <span class="number">14</span>, FontStyle.Bold);
+
+<span class="comment">// Birden fazla stil (| - pipe ile)</span>
+label1.Font = <span class="keyword">new</span> Font(<span class="string">"Arial"</span>, <span class="number">14</span>, FontStyle.Bold | FontStyle.Italic);
+
+<span class="comment">// Mevcut fontun boyutunu değiştirme</span>
+label1.Font = <span class="keyword">new</span> Font(label1.Font.FontFamily, <span class="number">20</span>);
+
+<span class="comment">// Mevcut fontu kalın yapma</span>
+label1.Font = <span class="keyword">new</span> Font(label1.Font, FontStyle.Bold);
+
+<span class="comment">// Font stilleri</span>
+<span class="comment">// FontStyle.Regular - Normal</span>
+<span class="comment">// FontStyle.Bold - Kalın</span>
+<span class="comment">// FontStyle.Italic - İtalik</span>
+<span class="comment">// FontStyle.Underline - Altı çizili</span>
+<span class="comment">// FontStyle.Strikeout - Üstü çizili</span></code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Pratik Örnek: Biçimlendirme Araç Çubuğu</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Metin Editörü Biçimlendirme</div>
+                <pre><code><span class="comment">// Kalın</span>
+<span class="keyword">private void</span> <span class="method">btnKalin_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (txtIcerik.Font.Bold)
+        txtIcerik.Font = <span class="keyword">new</span> Font(txtIcerik.Font, txtIcerik.Font.Style ^ FontStyle.Bold);
+    <span class="keyword">else</span>
+        txtIcerik.Font = <span class="keyword">new</span> Font(txtIcerik.Font, txtIcerik.Font.Style | FontStyle.Bold);
+}
+
+<span class="comment">// İtalik</span>
+<span class="keyword">private void</span> <span class="method">btnItalik_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.Font = <span class="keyword">new</span> Font(txtIcerik.Font, txtIcerik.Font.Style ^ FontStyle.Italic);
+}
+
+<span class="comment">// Altı çizili</span>
+<span class="keyword">private void</span> <span class="method">btnAltiCizili_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    txtIcerik.Font = <span class="keyword">new</span> Font(txtIcerik.Font, txtIcerik.Font.Style ^ FontStyle.Underline);
+}
+
+<span class="comment">// Font boyutu ComboBox'tan</span>
+<span class="keyword">private void</span> <span class="method">cmbBoyut_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">float</span> boyut = <span class="keyword">float</span>.Parse(cmbBoyut.SelectedItem.ToString());
+    txtIcerik.Font = <span class="keyword">new</span> Font(txtIcerik.Font.FontFamily, boyut, txtIcerik.Font.Style);
+}
+
+<span class="comment">// Yazı rengi</span>
+<span class="keyword">private void</span> <span class="method">btnYaziRengi_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ColorDialog cd = <span class="keyword">new</span> ColorDialog();
+    cd.Color = txtIcerik.ForeColor;
+    
+    <span class="keyword">if</span> (cd.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.ForeColor = cd.Color;
+    }
+}
+
+<span class="comment">// Arka plan rengi</span>
+<span class="keyword">private void</span> <span class="method">btnArkaPlan_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ColorDialog cd = <span class="keyword">new</span> ColorDialog();
+    cd.Color = txtIcerik.BackColor;
+    
+    <span class="keyword">if</span> (cd.ShowDialog() == DialogResult.OK)
+    {
+        txtIcerik.BackColor = cd.Color;
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Form arka plan rengini değiştiren bir buton yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnRenk_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ColorDialog cd = <span class="keyword">new</span> ColorDialog();
+    
+    <span class="keyword">if</span> (cd.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">this</span>.BackColor = cd.Color;
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Label yazı tipini değiştiren bir uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnFont_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FontDialog fd = <span class="keyword">new</span> FontDialog();
+    fd.Font = lblMesaj.Font;
+    fd.ShowColor = <span class="keyword">true</span>;
+    
+    <span class="keyword">if</span> (fd.ShowDialog() == DialogResult.OK)
+    {
+        lblMesaj.Font = fd.Font;
+        lblMesaj.ForeColor = fd.Color;
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Seçilen rengin RGB ve HEX değerlerini gösteren uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnRenkSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    ColorDialog cd = <span class="keyword">new</span> ColorDialog();
+    
+    <span class="keyword">if</span> (cd.ShowDialog() == DialogResult.OK)
+    {
+        Color c = cd.Color;
+        panelRenk.BackColor = c;
+        
+        lblRGB.Text = $<span class="string">"RGB: {c.R}, {c.G}, {c.B}"</span>;
+        lblHex.Text = $<span class="string">"HEX: #{c.R:X2}{c.G:X2}{c.B:X2}"</span>;
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders09.html" class="nav-btn prev">← Önceki: Dosya Dialogları</a>
+            <a href="ders11.html" class="nav-btn next">Sonraki: PictureBox →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

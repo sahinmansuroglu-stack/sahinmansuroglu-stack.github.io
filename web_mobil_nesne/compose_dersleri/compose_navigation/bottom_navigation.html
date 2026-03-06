@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bottom Navigation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface2: #16213e;
+            --card: #1e1e36;
+            --border: #2a2a4a;
+            --text: #e0e0f0;
+            --text2: #a0a0c0;
+            --accent: #7c3aed;
+            --accent2: #a78bfa;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a0533 0%, #0f0f1a 40%, #0a1628 100%);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate
+        }
+
+        @keyframes heroGlow {
+            0% {
+                transform: translate(0, 0)
+            }
+
+            100% {
+                transform: translate(-2%, 1%)
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            margin-bottom: 8px
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+            transition: border-color .3s
+        }
+
+        .card:hover {
+            border-color: var(--accent)
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .card p,
+        .card li {
+            color: var(--text2);
+            font-size: 1rem;
+            line-height: 1.8
+        }
+
+        .card ul,
+        .card ol {
+            padding-left: 20px;
+            margin: 8px 0
+        }
+
+        pre {
+            background: #12121f;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+            position: relative
+        }
+
+        pre .label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7
+        }
+
+        .kw {
+            color: #c792ea
+        }
+
+        .fn {
+            color: #82aaff
+        }
+
+        .str {
+            color: #c3e88d
+        }
+
+        .cm {
+            color: #546e7a
+        }
+
+        .tp {
+            color: #ffcb6b
+        }
+
+        .num {
+            color: #f78c6c
+        }
+
+        .an {
+            color: #89ddff
+        }
+
+        .pr {
+            color: #f07178
+        }
+
+        .inline-code {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--accent2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.83rem
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1>📱 Bottom Navigation</h1>
+        <p class="subtitle">Alt Menü ile Geçiş Mekanizması</p>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h3>💬 Açıklama</h3>
+            <p><strong>Bottom Navigation</strong> (Alt Menü), Instagram, Twitter veya WhatsApp gibi milyonlarca
+                uygulamanın ekranının en altında yer alan ana sekme çubuğudur.</p>
+            <p>Bu sistemi uygulamamıza dahil edebilmek için ilk adımda bu düğmelerin ne olacağını tasarlamamız gerekir.
+                Tüm düğmelerin ortak özellikleri şunlardır:</p>
+            <ul>
+                <li><strong>Gidilecek Sayfa:</strong> Menülere tıklanınca nerenin açılacağı (Route)</li>
+                <li><strong>Sekme Yazısı:</strong> Altında ne yazdığı ("Ana Sayfa", "Arama")</li>
+                <li><strong>İkon:</strong> Görsel sembolü (Ev işareti, Büyüteç işareti vb.)</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>🛠️ Alt Menü Seçeneklerini Tanımlama</h3>
+            <p>Bir <span class="inline-code">sealed class</span> kullanarak alt menüde olacak her düğmenin bütün sabit
+                ve önemli özelliklerini bir arada, kalıp halinde belirleriz:</p>
+            <pre><code><span class="cm">// Alt menüdeki her sekmenin taslağını yazıyoruz</span>
+<span class="kw">sealed class</span> <span class="tp">AltMenu</span>(
+    <span class="kw">val</span> route: <span class="tp">String</span>,     <span class="cm">// Yönlendirilecek adres</span>
+    <span class="kw">val</span> baslik: <span class="tp">String</span>,    <span class="cm">// Buton altında görünen İsim</span>
+    <span class="kw">val</span> ikon: <span class="tp">ImageVector</span>  <span class="cm">// Simge</span>
+) {
+    <span class="cm">// İlk Sekme: Anasayfa</span>
+    <span class="kw">object</span> <span class="tp">Ev</span> : <span class="tp">AltMenu</span>(<span class="str">"anasayfa"</span>, <span class="str">"Ana Sayfa"</span>, <span class="tp">Icons</span>.Default.Home)
+    
+    <span class="cm">// İkinci Sekme: Arama</span>
+    <span class="kw">object</span> <span class="tp">Ara</span> : <span class="tp">AltMenu</span>(<span class="str">"arama"</span>, <span class="str">"Keşfet"</span>, <span class="tp">Icons</span>.Default.Search)
+    
+    <span class="cm">// Üçüncü Sekme: Profil</span>
+    <span class="kw">object</span> <span class="tp">Profil</span> : <span class="tp">AltMenu</span>(<span class="str">"profil"</span>, <span class="str">"Ben"</span>, <span class="tp">Icons</span>.Default.Person)
+}</code><span class="label">Kotlin</span></pre>
+            <p>Bu taslağı oluşturduktan sonra diğer adıma yani bu taslağı sayfaya gömmeye geçebiliriz (Bunun için
+                Scaffold adımına geçeceğiz).</p>
+        </div>
+
+        <div class="card">
+            <h3>🎯 Senin Sıran: Koda Özellik Ekle!</h3>
+            <p>Sealed class yapısını kullanarak menümüzü genişletelim:</p>
+            <ul>
+                <li>
+                    <strong>Özellik 1: Ayarlar Sekmesi Ekle</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Uygulamamızın alt menüsüne dördüncü bir buton
+                        olarak "Ayarlar"ı ekle.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong> <code>AltMenu</code>
+                        sealed class'ı içine
+                        <code>object Ayarlar : AltMenu("ayarlar", "Ayarlar", Icons.Default.Settings)</code> bloğunu
+                        eklemelisin.</span>
+                </li>
+                <br>
+                <li>
+                    <strong>Özellik 2: Bildirimler Sekmesi Ekle</strong><br>
+                    <span style="color:var(--text2);font-size:0.9rem">Menümüze çan simgesi ile gösterilen "Bildirimler"
+                        adresini oluştur.</span><br>
+                    <span style="color:var(--orange);font-size:0.85rem">💡 <strong>İpucu:</strong> Yeni object ismini
+                        <code>Bildirimler</code> yapıp ikonu <code>Icons.Default.Notifications</code> olarak
+                        tanımla.</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose Navigation - Ders Dokümanı</title>
+    <meta name="description" content="Lise öğrencileri için Jetpack Compose Navigation rehberi">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #0f0f1a;
+            --surface: #1a1a2e;
+            --surface2: #16213e;
+            --card: #1e1e36;
+            --border: #2a2a4a;
+            --text: #e0e0f0;
+            --text2: #a0a0c0;
+            --accent: #7c3aed;
+            --accent2: #a78bfa;
+            --green: #22c55e;
+            --green2: #4ade80;
+            --blue: #3b82f6;
+            --orange: #f59e0b;
+            --pink: #ec4899;
+            --red: #ef4444;
+            --cyan: #06b6d4;
+            --radius: 12px
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #1a0533 0%, #0f0f1a 40%, #0a1628 100%);
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite alternate
+        }
+
+        @keyframes heroGlow {
+            0% {
+                transform: translate(0, 0)
+            }
+
+            100% {
+                transform: translate(-2%, 1%)
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, #a78bfa, #7c3aed, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            margin-bottom: 8px
+        }
+
+        .hero .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.4rem);
+            color: var(--text2);
+            font-weight: 500
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px
+        }
+
+        .toc {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            margin: 40px 0
+        }
+
+        .toc h2 {
+            font-size: 1.2rem;
+            color: var(--accent2);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .toc ol {
+            padding-left: 20px;
+            display: grid;
+            gap: 6px
+        }
+
+        .toc li {
+            color: var(--text2);
+            font-size: 0.95rem
+        }
+
+        .toc a {
+            color: var(--cyan);
+            text-decoration: none;
+            transition: color .2s
+        }
+
+        .toc a:hover {
+            color: var(--accent2)
+        }
+
+        .section {
+            margin-top: 50px
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border)
+        }
+
+        .section-num {
+            background: linear-gradient(135deg, var(--accent), var(--blue));
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.1rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+            transition: border-color .3s
+        }
+
+        .card:hover {
+            border-color: var(--accent)
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent2);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .card p,
+        .card li {
+            color: var(--text2);
+            font-size: 0.93rem;
+            line-height: 1.8
+        }
+
+        .card ul,
+        .card ol {
+            padding-left: 20px;
+            margin: 8px 0
+        }
+
+        .info {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(59, 130, 246, 0.05));
+            border-left: 3px solid var(--cyan);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 16px 20px;
+            margin: 16px 0
+        }
+
+        .info strong {
+            color: var(--cyan)
+        }
+
+        .warn {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(239, 68, 68, 0.05));
+            border-left: 3px solid var(--orange);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 16px 20px;
+            margin: 16px 0
+        }
+
+        .warn strong {
+            color: var(--orange)
+        }
+
+        .analogy {
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(124, 58, 237, 0.05));
+            border-left: 3px solid var(--pink);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 16px 20px;
+            margin: 16px 0
+        }
+
+        .analogy strong {
+            color: var(--pink)
+        }
+
+        pre {
+            background: #12121f;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+            position: relative
+        }
+
+        pre .label {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7
+        }
+
+        .kw {
+            color: #c792ea
+        }
+
+        .fn {
+            color: #82aaff
+        }
+
+        .str {
+            color: #c3e88d
+        }
+
+        .cm {
+            color: #546e7a
+        }
+
+        .tp {
+            color: #ffcb6b
+        }
+
+        .num {
+            color: #f78c6c
+        }
+
+        .an {
+            color: #89ddff
+        }
+
+        .pr {
+            color: #f07178
+        }
+
+        .inline-code {
+            background: rgba(124, 58, 237, 0.15);
+            color: var(--accent2);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.83rem
+        }
+
+        .diagram {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin: 20px 0;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text2);
+            line-height: 2
+        }
+
+        .diagram .box {
+            display: inline-block;
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 6px 16px;
+            margin: 4px;
+            color: var(--accent2);
+            font-weight: 600
+        }
+
+        .diagram .arrow {
+            color: var(--green);
+            font-weight: 700;
+            margin: 0 4px
+        }
+
+        .step-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 16px 0
+        }
+
+        .step-flow .step {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent2)
+        }
+
+        .step-flow .arr {
+            color: var(--green);
+            font-size: 1.2rem;
+            font-weight: 700
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin: 2px
+        }
+
+        .badge-green {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--green2)
+        }
+
+        .badge-blue {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--blue)
+        }
+
+        .badge-orange {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--orange)
+        }
+
+        .badge-pink {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--pink)
+        }
+
+        .project {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.1), rgba(6, 182, 212, 0.08));
+            border: 2px solid var(--accent);
+            border-radius: var(--radius);
+            padding: 28px;
+            margin: 20px 0
+        }
+
+        .project h3 {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 12px
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            color: var(--text2);
+            font-size: 0.93rem
+        }
+
+        .checklist li::before {
+            content: '☐ ';
+            color: var(--accent2);
+            font-size: 1.1rem
+        }
+
+        .checklist li.done::before {
+            content: '✅ ';
+            color: var(--green)
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text2);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 60px
+        }
+
+        @media(max-width:600px) {
+            .hero {
+                padding: 50px 16px
+            }
+
+            .card {
+                padding: 16px
+            }
+
+            pre {
+                padding: 14px;
+                font-size: 0.8rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== HERO ==================== -->
+    <div class="hero">
+        <h1>🧭 Jetpack Compose Navigation</h1>
+        <p class="subtitle">Sayfalar Arası Geçiş — Parçadan Bütüne Öğrenme Rehberi</p>
+    </div>
+
+    <div class="container">
+
+        <!-- ==================== İÇİNDEKİLER ==================== -->
+        <nav class="toc">
+            <h2>📑 İçindekiler</h2>
+            <ol>
+                <li><a href="#s1">Navigation Nedir? — Gerçek Hayat Benzetmesi</a></li>
+                <li><a href="#s2">Kurulum — Projeye Navigation Ekleme</a></li>
+                <li><a href="#s3">Parça 1: Route (Adres) Tanımları</a></li>
+                <li><a href="#s4">Parça 2: NavController — Şoför</a></li>
+                <li><a href="#s5">Parça 3: NavHost — Harita</a></li>
+                <li><a href="#s6">Parça 4: Sayfa Composable'ları</a></li>
+                <li><a href="#s7">Bütün: Temel Navigation Çalışıyor!</a></li>
+                <li><a href="#s8">Parametre ile Veri Aktarımı</a></li>
+                <li><a href="#s9">Bottom Navigation — Alt Menü</a></li>
+                <li><a href="#s10">Navigation Animasyonları</a></li>
+                <li><a href="#s11">🎯 Final Projesi: Okul Yönetim Uygulaması</a></li>
+            </ol>
+        </nav>
+
+        <!-- ==================== BÖLÜM 1 ==================== -->
+        <div class="section" id="s1">
+            <div class="section-header">
+                <div class="section-num">1</div>
+                <h2>Navigation Nedir?</h2>
+            </div>
+
+            <div class="analogy">
+                <strong>🏠 Gerçek Hayat Benzetmesi:</strong><br>
+                Bir evi düşünün: Salon, mutfak, yatak odası, banyo... Her oda ayrı bir <em>sayfa</em>dır.
+                Odalar arasında yürüyerek geçersiniz — bu da <em>navigation</em>'dır.
+                Evin planı (haritası) <em>NavHost</em>'tur. Sizi yönlendiren kişi ise <em>NavController</em>'dır.
+            </div>
+
+            <div class="card">
+                <h3>📌 Temel Kavramlar</h3>
+                <table style="width:100%;border-collapse:collapse;margin-top:8px">
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;font-weight:700;color:var(--accent2);width:35%">Route (Rota)</td>
+                        <td style="padding:10px;color:var(--text2)">Her sayfanın benzersiz adresi. Tıpkı bir web
+                            sitesinin URL'si gibi.</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;font-weight:700;color:var(--accent2)">NavController</td>
+                        <td style="padding:10px;color:var(--text2)">Sayfalar arası geçişi yöneten "şoför". Nereye
+                            gidileceğini bilir.</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;font-weight:700;color:var(--accent2)">NavHost</td>
+                        <td style="padding:10px;color:var(--text2)">Tüm sayfaların kayıtlı olduğu "harita". Hangi
+                            route'a hangi sayfa karşılık geliyor?</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:10px;font-weight:700;color:var(--accent2)">composable()</td>
+                        <td style="padding:10px;color:var(--text2)">Haritaya yeni bir sayfa ekleyen fonksiyon.</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="step-flow">
+                <div class="step">🏷️ Route Tanımla</div>
+                <div class="arr">→</div>
+                <div class="step">🚗 NavController Al</div>
+                <div class="arr">→</div>
+                <div class="step">🗺️ NavHost Oluştur</div>
+                <div class="arr">→</div>
+                <div class="step">📄 Sayfaları Ekle</div>
+                <div class="arr">→</div>
+                <div class="step">🔀 Geçiş Yap!</div>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 2 ==================== -->
+        <div class="section" id="s2">
+            <div class="section-header">
+                <div class="section-num">2</div>
+                <h2>Kurulum</h2>
+            </div>
+            <div class="card">
+                <h3>📦 build.gradle.kts (app)</h3>
+                <p>Navigation kütüphanesini projeye eklemek için <span class="inline-code">dependencies</span> bloğuna
+                    şu satırı ekliyoruz:</p>
+                <pre><code><span class="cm">// app/build.gradle.kts dosyasındaki dependencies bloğuna ekle</span>
+<span class="fn">dependencies</span> {
+    <span class="fn">implementation</span>(<span class="str">"androidx.navigation:navigation-compose:2.7.6"</span>)
+}</code><span class="label">Gradle</span></pre>
+                <div class="info">
+                    <strong>💡 Not:</strong> Bu satırı ekledikten sonra Android Studio'da <em>"Sync Now"</em> butonuna
+                    tıklamayı unutmayın!
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 3 ==================== -->
+        <div class="section" id="s3">
+            <div class="section-header">
+                <div class="section-num">3</div>
+                <h2>Parça 1: Route (Adres) Tanımları</h2>
+            </div>
+
+            <div class="card">
+                <h3>🏷️ Route Nedir?</h3>
+                <p>Her sayfanın bir <strong>ismi</strong> (adresi) olmalı. Tıpkı bir web sitesindeki URL gibi düşünün:
+                </p>
+                <ul>
+                    <li><span class="inline-code">instagram.com/home</span> → Ana Sayfa</li>
+                    <li><span class="inline-code">instagram.com/profile</span> → Profil</li>
+                    <li><span class="inline-code">instagram.com/settings</span> → Ayarlar</li>
+                </ul>
+                <p style="margin-top:12px">Biz de uygulamamızdaki her sayfaya bir string isim vereceğiz:</p>
+
+                <pre><code><span class="cm">// Her sayfanın benzersiz bir adresi var</span>
+<span class="cm">// Bu adresleri bir "object" içinde topluyoruz ki</span>
+<span class="cm">// yazdığımız zaman hata yapmayalım</span>
+
+<span class="kw">object</span> <span class="tp">Routes</span> {
+    <span class="kw">const val</span> <span class="pr">HOME</span> = <span class="str">"home"</span>        <span class="cm">// Ana Sayfa adresi</span>
+    <span class="kw">const val</span> <span class="pr">DETAIL</span> = <span class="str">"detail"</span>    <span class="cm">// Detay Sayfası adresi</span>
+    <span class="kw">const val</span> <span class="pr">PROFILE</span> = <span class="str">"profile"</span>  <span class="cm">// Profil adresi</span>
+    <span class="kw">const val</span> <span class="pr">SETTINGS</span> = <span class="str">"settings"</span><span class="cm">// Ayarlar adresi</span>
+}</code><span class="label">Kotlin</span></pre>
+
+                <div class="info">
+                    <strong>💡 Neden object kullanıyoruz?</strong> Route isimlerini doğrudan <span
+                        class="inline-code">"home"</span> şeklinde yazsak, bir yerde <span
+                        class="inline-code">"hme"</span> gibi yazım hatası yapabiliriz. Object içinde tanımlarsak, <span
+                        class="inline-code">Routes.HOME</span> yazarken IDE bizi yönlendirir ve hata yapmamızı engeller.
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 4 ==================== -->
+        <div class="section" id="s4">
+            <div class="section-header">
+                <div class="section-num">4</div>
+                <h2>Parça 2: NavController — Şoför</h2>
+            </div>
+
+            <div class="card">
+                <h3>🚗 NavController Nedir?</h3>
+                <p>NavController, uygulamanızdaki <strong>navigasyon şoförüdür</strong>. Sayfalar arası geçişi o
+                    yönetir.</p>
+
+                <pre><code><span class="cm">// NavController'ı oluşturuyoruz</span>
+<span class="cm">// "remember" sayesinde ekran döndüğünde bile kaybolmaz</span>
+<span class="kw">val</span> navController = <span class="fn">rememberNavController</span>()</code><span class="label">Kotlin</span></pre>
+
+                <h3 style="margin-top:20px">🎮 NavController Ne Yapabilir?</h3>
+                <table style="width:100%;border-collapse:collapse;margin-top:8px">
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td
+                            style="padding:10px;color:var(--green2);font-family:'JetBrains Mono',monospace;font-size:0.85rem">
+                            navController.navigate("detail")</td>
+                        <td style="padding:10px;color:var(--text2)">→ "detail" sayfasına git</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td
+                            style="padding:10px;color:var(--green2);font-family:'JetBrains Mono',monospace;font-size:0.85rem">
+                            navController.popBackStack()</td>
+                        <td style="padding:10px;color:var(--text2)">→ Geri dön (önceki sayfaya)</td>
+                    </tr>
+                </table>
+
+                <div class="analogy">
+                    <strong>🎯 Benzetme:</strong> NavController bir taksi şoförü gibidir. Ona <em>"şu adrese git"</em>
+                    dersiniz (<span class="inline-code">navigate</span>), ya da <em>"geri dön"</em> dersiniz (<span
+                        class="inline-code">popBackStack</span>).
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 5 ==================== -->
+        <div class="section" id="s5">
+            <div class="section-header">
+                <div class="section-num">5</div>
+                <h2>Parça 3: NavHost — Harita</h2>
+            </div>
+
+            <div class="card">
+                <h3>🗺️ NavHost Nedir?</h3>
+                <p>NavHost, tüm sayfalarınızın <strong>kayıtlı olduğu haritadır</strong>. Hangi adrese gidildiğinde
+                    hangi sayfanın gösterileceğini belirler.</p>
+
+                <pre><code><span class="fn">NavHost</span>(
+    navController = navController,         <span class="cm">// Şoförümüz</span>
+    startDestination = <span class="tp">Routes</span>.<span class="pr">HOME</span>     <span class="cm">// Uygulama açıldığında ilk sayfa</span>
+) {
+    <span class="cm">// Buraya sayfaları ekliyoruz ↓</span>
+    
+    <span class="fn">composable</span>(<span class="tp">Routes</span>.<span class="pr">HOME</span>) {
+        <span class="cm">// Route "home" olunca bu sayfa gösterilir</span>
+        <span class="fn">AnaSayfa</span>(...)
+    }
+    
+    <span class="fn">composable</span>(<span class="tp">Routes</span>.<span class="pr">DETAIL</span>) {
+        <span class="cm">// Route "detail" olunca bu sayfa gösterilir</span>
+        <span class="fn">DetaySayfasi</span>(...)
+    }
+}</code><span class="label">Kotlin</span></pre>
+
+                <div class="diagram">
+                    <div style="font-weight:700;color:var(--accent2);margin-bottom:12px">NavHost (Harita)</div>
+                    <div class="box">"home" → AnaSayfa</div><br>
+                    <div class="box">"detail" → DetaySayfasi</div><br>
+                    <div class="box">"profile" → ProfilSayfasi</div><br>
+                    <div class="box">"settings" → AyarlarSayfasi</div>
+                </div>
+
+                <div class="warn">
+                    <strong>⚠️ Dikkat:</strong> <span class="inline-code">startDestination</span> parametresi
+                    zorunludur. Uygulama ilk açıldığında hangi sayfanın gösterileceğini belirler.
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 6 ==================== -->
+        <div class="section" id="s6">
+            <div class="section-header">
+                <div class="section-num">6</div>
+                <h2>Parça 4: Sayfa Composable'ları</h2>
+            </div>
+
+            <div class="card">
+                <h3>📄 Sayfaları Tasarlıyoruz</h3>
+                <p>Şimdi haritamıza ekleyeceğimiz sayfaları oluşturalım. Her sayfa normal bir <span
+                        class="inline-code">@Composable</span> fonksiyondur.</p>
+
+                <h3 style="margin-top:20px">Ana Sayfa</h3>
+                <p>İki buton içerir: biri Detay sayfasına, diğeri Profil sayfasına gider.</p>
+                <pre><code><span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">AnaSayfa</span>(
+    onDetayaGit: () -> <span class="tp">Unit</span>,   <span class="cm">// Detay butonuna basınca çalışacak</span>
+    onProfil: () -> <span class="tp">Unit</span>       <span class="cm">// Profil butonuna basınca çalışacak</span>
+) {
+    <span class="fn">Column</span>(
+        modifier = <span class="tp">Modifier</span>
+            .<span class="fn">fillMaxSize</span>()
+            .<span class="fn">padding</span>(<span class="num">16</span>.dp),
+        horizontalAlignment = <span class="tp">Alignment</span>.CenterHorizontally,
+        verticalArrangement = <span class="tp">Arrangement</span>.Center
+    ) {
+        <span class="fn">Text</span>(<span class="str">"Ana Sayfa"</span>, style = <span class="tp">MaterialTheme</span>.typography.headlineLarge)
+        
+        <span class="fn">Spacer</span>(modifier = <span class="tp">Modifier</span>.<span class="fn">height</span>(<span class="num">16</span>.dp))
+        
+        <span class="fn">Button</span>(onClick = onDetayaGit) {
+            <span class="fn">Text</span>(<span class="str">"Detay Sayfasına Git"</span>)
+        }
+        
+        <span class="fn">Button</span>(onClick = onProfil) {
+            <span class="fn">Text</span>(<span class="str">"Profil Sayfasına Git"</span>)
+        }
+    }
+}</code><span class="label">Kotlin</span></pre>
+
+                <div class="info">
+                    <strong>💡 Lambda Parametreleri:</strong> <span class="inline-code">onDetayaGit: () -> Unit</span>
+                    bir <strong>fonksiyon parametresidir</strong>. Sayfa, hangi sayfaya gidileceğini bilmez — sadece
+                    "bana verilen fonksiyonu çalıştır" der. Navigation mantığı dışarıda (NavHost içinde) kalır. Bu
+                    sayede sayfalar birbirinden bağımsız olur!
+                </div>
+
+                <h3 style="margin-top:24px">Detay Sayfası</h3>
+                <p>Geri dönme butonu ile önceki sayfaya dönmeyi sağlar.</p>
+                <pre><code><span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">DetaySayfasi</span>(onGeriDon: () -> <span class="tp">Unit</span>) {
+    <span class="fn">Column</span>(
+        modifier = <span class="tp">Modifier</span>.<span class="fn">fillMaxSize</span>().<span class="fn">padding</span>(<span class="num">16</span>.dp)
+    ) {
+        <span class="fn">IconButton</span>(onClick = onGeriDon) {
+            <span class="fn">Icon</span>(<span class="tp">Icons</span>.AutoMirrored.Filled.ArrowBack, <span class="str">"Geri"</span>)
+        }
+        <span class="fn">Text</span>(<span class="str">"Detay Sayfası"</span>, style = <span class="tp">MaterialTheme</span>.typography.headlineLarge)
+    }
+}</code><span class="label">Kotlin</span></pre>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 7 ==================== -->
+        <div class="section" id="s7">
+            <div class="section-header">
+                <div class="section-num">7</div>
+                <h2>Bütün: Temel Navigation Çalışıyor! 🎉</h2>
+            </div>
+
+            <div class="card">
+                <h3>🧩 Parçaları Birleştiriyoruz</h3>
+                <p>Şimdi öğrendiğimiz 4 parçayı bir araya getiriyoruz:</p>
+
+                <div class="step-flow">
+                    <div class="step">Route'lar</div>
+                    <div class="arr">+</div>
+                    <div class="step">NavController</div>
+                    <div class="arr">+</div>
+                    <div class="step">NavHost</div>
+                    <div class="arr">+</div>
+                    <div class="step">Sayfalar</div>
+                    <div class="arr">=</div>
+                    <div class="step" style="background:rgba(34,197,94,0.15);border-color:var(--green)">✅ Çalışan
+                        Uygulama!</div>
+                </div>
+
+                <pre><code><span class="cm">// 1️⃣ Route Tanımları</span>
+<span class="kw">object</span> <span class="tp">Routes</span> {
+    <span class="kw">const val</span> <span class="pr">HOME</span> = <span class="str">"home"</span>
+    <span class="kw">const val</span> <span class="pr">DETAIL</span> = <span class="str">"detail"</span>
+    <span class="kw">const val</span> <span class="pr">PROFILE</span> = <span class="str">"profile"</span>
+    <span class="kw">const val</span> <span class="pr">SETTINGS</span> = <span class="str">"settings"</span>
+}
+
+<span class="cm">// 2️⃣ Ana Navigation Fonksiyonu</span>
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">AppNavigation</span>() {
+    <span class="cm">// 🚗 NavController oluştur</span>
+    <span class="kw">val</span> navController = <span class="fn">rememberNavController</span>()
+    
+    <span class="cm">// 🗺️ NavHost — Haritamız</span>
+    <span class="fn">NavHost</span>(
+        navController = navController,
+        startDestination = <span class="tp">Routes</span>.<span class="pr">HOME</span>  <span class="cm">// İlk açılan sayfa</span>
+    ) {
+        <span class="cm">// 📄 Sayfa 1: Ana Sayfa</span>
+        <span class="fn">composable</span>(<span class="tp">Routes</span>.<span class="pr">HOME</span>) {
+            <span class="fn">AnaSayfa</span>(
+                onDetayaGit = { navController.<span class="fn">navigate</span>(<span class="tp">Routes</span>.<span class="pr">DETAIL</span>) },
+                onProfil = { navController.<span class="fn">navigate</span>(<span class="tp">Routes</span>.<span class="pr">PROFILE</span>) }
+            )
+        }
+        
+        <span class="cm">// 📄 Sayfa 2: Detay</span>
+        <span class="fn">composable</span>(<span class="tp">Routes</span>.<span class="pr">DETAIL</span>) {
+            <span class="fn">DetaySayfasi</span>(
+                onGeriDon = { navController.<span class="fn">popBackStack</span>() }
+            )
+        }
+        
+        <span class="cm">// 📄 Sayfa 3: Profil</span>
+        <span class="fn">composable</span>(<span class="tp">Routes</span>.<span class="pr">PROFILE</span>) {
+            <span class="fn">ProfilSayfasi</span>(navController)
+        }
+        
+        <span class="cm">// 📄 Sayfa 4: Ayarlar</span>
+        <span class="fn">composable</span>(<span class="tp">Routes</span>.<span class="pr">SETTINGS</span>) {
+            <span class="fn">AyarlarSayfasi</span>(navController)
+        }
+    }
+}</code><span class="label">Kotlin — Tam Kod</span></pre>
+
+                <div class="diagram">
+                    <div style="font-weight:700;color:#fff;margin-bottom:12px">📱 Navigasyon Akışı</div>
+                    <div class="box">Ana Sayfa</div>
+                    <br>
+                    <span
+                        class="arrow">↙</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span
+                        class="arrow">↘</span>
+                    <br>
+                    <div class="box">Detay</div>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <div class="box">Profil</div>
+                    <br>
+                    <span class="arrow">↑ geri dön</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 8 ==================== -->
+        <div class="section" id="s8">
+            <div class="section-header">
+                <div class="section-num">8</div>
+                <h2>Parametre ile Veri Aktarımı</h2>
+            </div>
+
+            <div class="card">
+                <h3>📦 Sayfaya Veri Göndermek</h3>
+                <p>Bir ürüne tıklayınca detay sayfasına <strong>ürün numarasını</strong> göndermemiz gerekir. Tıpkı bir
+                    web sitesinde <span class="inline-code">urun/5</span> yazması gibi.</p>
+
+                <div class="analogy">
+                    <strong>🎯 Benzetme:</strong> Bir kargocuya "şu paketi 5 numaralı adrese götür" dersiniz. Burada
+                    <em>"5"</em> parametredir. Route'a parametre eklemek de aynı mantıktır: <span
+                        class="inline-code">"urun/5"</span>
+                </div>
+
+                <h3 style="margin-top:20px">Zorunlu Parametre <span class="badge badge-green">Gerekli</span></h3>
+                <p>Süslü parantez <span class="inline-code">{urunId}</span> ile tanımlanır:</p>
+                <pre><code><span class="cm">// 1️⃣ Route'u parametre ile tanımla</span>
+<span class="fn">composable</span>(
+    route = <span class="str">"urun/{urunId}"</span>,               <span class="cm">// {urunId} → parametre yeri</span>
+    arguments = <span class="fn">listOf</span>(
+        <span class="fn">navArgument</span>(<span class="str">"urunId"</span>) { 
+            type = <span class="tp">NavType</span>.IntType          <span class="cm">// Tam sayı bekliyoruz</span>
+        }
+    )
+) { backStackEntry ->
+    <span class="cm">// 2️⃣ Parametreyi oku</span>
+    <span class="kw">val</span> urunId = backStackEntry.arguments?.<span class="fn">getInt</span>(<span class="str">"urunId"</span>) ?: <span class="num">0</span>
+    <span class="fn">UrunDetay</span>(urunId = urunId, onGeriDon = { navController.<span class="fn">popBackStack</span>() })
+}
+
+<span class="cm">// 3️⃣ Sayfaya giderken parametreyi gönder</span>
+navController.<span class="fn">navigate</span>(<span class="str">"urun/</span><span class="an">$</span><span class="str">urunId"</span>)  <span class="cm">// örn: "urun/5"</span></code><span class="label">Kotlin</span></pre>
+
+                <h3 style="margin-top:24px">Opsiyonel (İsteğe Bağlı) Parametre <span
+                        class="badge badge-orange">Seçimlik</span></h3>
+                <p>Soru işareti <span class="inline-code">?</span> ile query parametresi olarak tanımlanır:</p>
+                <pre><code><span class="fn">composable</span>(
+    route = <span class="str">"arama?query={query}"</span>,          <span class="cm">// ? ile opsiyonel</span>
+    arguments = <span class="fn">listOf</span>(
+        <span class="fn">navArgument</span>(<span class="str">"query"</span>) {
+            type = <span class="tp">NavType</span>.StringType
+            defaultValue = <span class="str">""</span>               <span class="cm">// Varsayılan değer</span>
+            nullable = <span class="kw">true</span>                 <span class="cm">// null olabilir</span>
+        }
+    )
+) { backStackEntry ->
+    <span class="kw">val</span> query = backStackEntry.arguments?.<span class="fn">getString</span>(<span class="str">"query"</span>)
+    <span class="fn">AramaSayfasi</span>(query = query ?: <span class="str">""</span>)
+}</code><span class="label">Kotlin</span></pre>
+            </div>
+
+            <div class="card">
+                <h3>🛍️ Tam Örnek: Ürün Listesi → Detay</h3>
+                <pre><code><span class="cm">// Ürün Listesi Sayfası</span>
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">UrunListesi</span>(onUrunTikla: (<span class="tp">Int</span>) -> <span class="tp">Unit</span>) {
+    <span class="kw">val</span> urunler = (<span class="num">1</span>..<span class="num">20</span>).<span class="fn">map</span> { <span class="str">"Ürün $it"</span> }
+    
+    <span class="fn">LazyColumn</span>(contentPadding = <span class="fn">PaddingValues</span>(<span class="num">16</span>.dp)) {
+        <span class="fn">itemsIndexed</span>(urunler) { index, urun ->
+            <span class="fn">Card</span>(
+                modifier = <span class="tp">Modifier</span>
+                    .<span class="fn">fillMaxWidth</span>()
+                    .<span class="fn">padding</span>(vertical = <span class="num">4</span>.dp)
+                    .<span class="fn">clickable</span> { onUrunTikla(index + <span class="num">1</span>) }
+            ) {
+                <span class="fn">Text</span>(text = urun, modifier = <span class="tp">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp))
+            }
+        }
+    }
+}
+
+<span class="cm">// Ürün Detay Sayfası</span>
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">UrunDetay</span>(urunId: <span class="tp">Int</span>, onGeriDon: () -> <span class="tp">Unit</span>) {
+    <span class="fn">Column</span>(modifier = <span class="tp">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp)) {
+        <span class="fn">IconButton</span>(onClick = onGeriDon) {
+            <span class="fn">Icon</span>(<span class="tp">Icons</span>.AutoMirrored.Filled.ArrowBack, <span class="str">"Geri"</span>)
+        }
+        <span class="fn">Text</span>(<span class="str">"Ürün Detayı"</span>, style = <span class="tp">MaterialTheme</span>.typography.headlineLarge)
+        <span class="fn">Text</span>(<span class="str">"Ürün ID: $urunId"</span>, style = <span class="tp">MaterialTheme</span>.typography.titleLarge)
+    }
+}</code><span class="label">Kotlin</span></pre>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 9 ==================== -->
+        <div class="section" id="s9">
+            <div class="section-header">
+                <div class="section-num">9</div>
+                <h2>Bottom Navigation — Alt Menü</h2>
+            </div>
+
+            <div class="card">
+                <h3>📱 Bottom Navigation Nedir?</h3>
+                <p>Instagram, WhatsApp gibi uygulamalardaki alt menü çubuğudur. Kullanıcı bir sekmeye tıklayınca o ekran
+                    gösterilir.</p>
+
+                <div class="analogy">
+                    <strong>🎯 Benzetme:</strong> Bir televizyon kumandası düşünün. Her düğme farklı bir kanala geçer.
+                    Alt menüdeki her ikon da farklı bir sayfaya geçirir.
+                </div>
+
+                <h3 style="margin-top:20px">Adım 1: Sekme Bilgilerini Tanımla</h3>
+                <p>Her sekmenin <strong>route</strong>'u, <strong>başlığı</strong> ve <strong>ikonu</strong> olmalı:</p>
+                <pre><code><span class="cm">// sealed class = sadece burada tanımlanan alt sınıfları olabilir</span>
+<span class="kw">sealed class</span> <span class="tp">BottomNavItem</span>(
+    <span class="kw">val</span> route: <span class="tp">String</span>,        <span class="cm">// Sayfa adresi</span>
+    <span class="kw">val</span> title: <span class="tp">String</span>,        <span class="cm">// Menüde yazacak isim</span>
+    <span class="kw">val</span> icon: <span class="tp">ImageVector</span>      <span class="cm">// Menüdeki ikon</span>
+) {
+    <span class="kw">object</span> <span class="tp">Home</span> : <span class="tp">BottomNavItem</span>(<span class="str">"home"</span>, <span class="str">"Ana Sayfa"</span>, <span class="tp">Icons</span>.Default.Home)
+    <span class="kw">object</span> <span class="tp">Search</span> : <span class="tp">BottomNavItem</span>(<span class="str">"search"</span>, <span class="str">"Ara"</span>, <span class="tp">Icons</span>.Default.Search)
+    <span class="kw">object</span> <span class="tp">Favorites</span> : <span class="tp">BottomNavItem</span>(<span class="str">"favorites"</span>, <span class="str">"Favoriler"</span>, <span class="tp">Icons</span>.Default.Favorite)
+    <span class="kw">object</span> <span class="tp">Profile</span> : <span class="tp">BottomNavItem</span>(<span class="str">"profile"</span>, <span class="str">"Profil"</span>, <span class="tp">Icons</span>.Default.Person)
+}</code><span class="label">Kotlin</span></pre>
+
+                <h3 style="margin-top:24px">Adım 2: Scaffold + NavigationBar</h3>
+                <p><span class="inline-code">Scaffold</span> bize <span class="inline-code">bottomBar</span> alanı
+                    verir. <span class="inline-code">NavigationBar</span> ise alt menü çubuğudur:</p>
+                <pre><code><span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">MainScreen</span>() {
+    <span class="kw">val</span> navController = <span class="fn">rememberNavController</span>()
+    <span class="kw">val</span> items = <span class="fn">listOf</span>(
+        <span class="tp">BottomNavItem</span>.Home, <span class="tp">BottomNavItem</span>.Search,
+        <span class="tp">BottomNavItem</span>.Favorites, <span class="tp">BottomNavItem</span>.Profile
+    )
+    
+    <span class="fn">Scaffold</span>(
+        bottomBar = {
+            <span class="fn">NavigationBar</span> {
+                <span class="cm">// Hangi sayfadayız? Onu takip et</span>
+                <span class="kw">val</span> navBackStackEntry <span class="kw">by</span> navController
+                    .<span class="fn">currentBackStackEntryAsState</span>()
+                <span class="kw">val</span> currentRoute = navBackStackEntry
+                    ?.destination?.route
+                
+                items.<span class="fn">forEach</span> { item ->
+                    <span class="fn">NavigationBarItem</span>(
+                        icon = { <span class="fn">Icon</span>(item.icon, item.title) },
+                        label = { <span class="fn">Text</span>(item.title) },
+                        <span class="cm">// Aktif mi? Şu anki route ile eşleş</span>
+                        selected = currentRoute == item.route,
+                        onClick = {
+                            navController.<span class="fn">navigate</span>(item.route) {
+                                <span class="cm">// Geri tuşunda ana sayfaya dön</span>
+                                <span class="fn">popUpTo</span>(navController.graph
+                                    .<span class="fn">findStartDestination</span>().id) {
+                                    saveState = <span class="kw">true</span>
+                                }
+                                launchSingleTop = <span class="kw">true</span>  <span class="cm">// Çift tıklamayı engelle</span>
+                                restoreState = <span class="kw">true</span>    <span class="cm">// Eski state'i geri yükle</span>
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
+        <span class="fn">NavHost</span>(
+            navController = navController,
+            startDestination = <span class="tp">BottomNavItem</span>.Home.route,
+            modifier = <span class="tp">Modifier</span>.<span class="fn">padding</span>(paddingValues)
+        ) {
+            <span class="fn">composable</span>(<span class="tp">BottomNavItem</span>.Home.route) { <span class="fn">HomePage</span>() }
+            <span class="fn">composable</span>(<span class="tp">BottomNavItem</span>.Search.route) { <span class="fn">SearchPage</span>() }
+            <span class="fn">composable</span>(<span class="tp">BottomNavItem</span>.Favorites.route) { <span class="fn">FavoritesPage</span>() }
+            <span class="fn">composable</span>(<span class="tp">BottomNavItem</span>.Profile.route) { <span class="fn">ProfilePage</span>() }
+        }
+    }
+}</code><span class="label">Kotlin</span></pre>
+
+                <div class="info">
+                    <strong>💡 3 Önemli Özellik:</strong><br>
+                    • <span class="inline-code">popUpTo</span> → Geri tuşuna basınca direkt ana sayfaya döner<br>
+                    • <span class="inline-code">launchSingleTop</span> → Aynı sekmeye iki kez tıklayınca yeni kopya
+                    oluşturmaz<br>
+                    • <span class="inline-code">restoreState</span> → Sekmeler arası geçişte önceki durumu hatırlar
+                </div>
+
+                <h3 style="margin-top:24px">Adım 3: Sayfa Composable'ları</h3>
+                <pre><code><span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">HomePage</span>() {
+    <span class="fn">Box</span>(modifier = <span class="tp">Modifier</span>.<span class="fn">fillMaxSize</span>(), contentAlignment = <span class="tp">Alignment</span>.Center) {
+        <span class="fn">Text</span>(<span class="str">"🏠 Ana Sayfa"</span>, style = <span class="tp">MaterialTheme</span>.typography.headlineLarge)
+    }
+}
+
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">SearchPage</span>() {
+    <span class="fn">Box</span>(modifier = <span class="tp">Modifier</span>.<span class="fn">fillMaxSize</span>(), contentAlignment = <span class="tp">Alignment</span>.Center) {
+        <span class="fn">Text</span>(<span class="str">"🔍 Arama"</span>, style = <span class="tp">MaterialTheme</span>.typography.headlineLarge)
+    }
+}
+
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">FavoritesPage</span>() {
+    <span class="fn">Box</span>(modifier = <span class="tp">Modifier</span>.<span class="fn">fillMaxSize</span>(), contentAlignment = <span class="tp">Alignment</span>.Center) {
+        <span class="fn">Text</span>(<span class="str">"❤️ Favoriler"</span>, style = <span class="tp">MaterialTheme</span>.typography.headlineLarge)
+    }
+}
+
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">ProfilePage</span>() {
+    <span class="fn">Box</span>(modifier = <span class="tp">Modifier</span>.<span class="fn">fillMaxSize</span>(), contentAlignment = <span class="tp">Alignment</span>.Center) {
+        <span class="fn">Text</span>(<span class="str">"👤 Profil"</span>, style = <span class="tp">MaterialTheme</span>.typography.headlineLarge)
+    }
+}</code><span class="label">Kotlin</span></pre>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 10 ==================== -->
+        <div class="section" id="s10">
+            <div class="section-header">
+                <div class="section-num">10</div>
+                <h2>Navigation Animasyonları</h2>
+            </div>
+
+            <div class="card">
+                <h3>🎬 Geçiş Animasyonları</h3>
+                <p>Sayfalar arası geçişte <strong>kayma efekti</strong> ekleyerek uygulamayı daha profesyonel
+                    yapabiliriz:</p>
+
+                <pre><code><span class="fn">composable</span>(
+    route = <span class="str">"detail/{id}"</span>,
+    <span class="cm">// → Sayfaya GİRERKEN: Sağdan kayarak gir</span>
+    enterTransition = {
+        <span class="fn">slideInHorizontally</span>(
+            initialOffsetX = { <span class="num">1000</span> },       <span class="cm">// Sağdan başla</span>
+            animationSpec = <span class="fn">tween</span>(<span class="num">300</span>)     <span class="cm">// 300ms sürsün</span>
+        )
+    },
+    <span class="cm">// ← Yeni sayfaya geçerken ESKİ sayfa: Sola kayarak çık</span>
+    exitTransition = {
+        <span class="fn">slideOutHorizontally</span>(
+            targetOffsetX = { -<span class="num">1000</span> },      <span class="cm">// Sola git</span>
+            animationSpec = <span class="fn">tween</span>(<span class="num">300</span>)
+        )
+    },
+    <span class="cm">// → Geri tuşuyla DÖNÜLÜRKEN: Soldan kayarak gir</span>
+    popEnterTransition = {
+        <span class="fn">slideInHorizontally</span>(
+            initialOffsetX = { -<span class="num">1000</span> },
+            animationSpec = <span class="fn">tween</span>(<span class="num">300</span>)
+        )
+    },
+    <span class="cm">// ← Geri tuşuyla bu sayfa KAPATILIRKEN: Sağa kayarak çık</span>
+    popExitTransition = {
+        <span class="fn">slideOutHorizontally</span>(
+            targetOffsetX = { <span class="num">1000</span> },
+            animationSpec = <span class="fn">tween</span>(<span class="num">300</span>)
+        )
+    }
+) { backStackEntry ->
+    <span class="fn">DetaySayfasi</span>(...)
+}</code><span class="label">Kotlin</span></pre>
+
+                <div class="diagram">
+                    <div style="font-weight:700;color:#fff;margin-bottom:8px">Animasyon Yönleri</div>
+                    <div class="box">← Sayfa A</div>
+                    <span class="arrow">&nbsp;⟵ exitTransition &nbsp;|&nbsp; enterTransition ⟶&nbsp;</span>
+                    <div class="box">Sayfa B →</div>
+                    <br><br>
+                    <span style="color:var(--text2);font-size:0.85rem">İleri: A sola kayar, B sağdan gelir &nbsp;|&nbsp;
+                        Geri: B sağa kayar, A soldan gelir</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== BÖLÜM 11 — FİNAL PROJESİ ==================== -->
+        <div class="section" id="s11">
+            <div class="section-header">
+                <div class="section-num">🎯</div>
+                <h2>Final Projesi: Okul Yönetim Uygulaması</h2>
+            </div>
+
+            <div class="project">
+                <h3>📋 Proje Tanımı</h3>
+                <p style="color:var(--text2);margin-bottom:16px">
+                    Bottom Navigation ile 4 sekmesi olan bir <strong>"Okul Yönetim"</strong> uygulaması yapacaksın.
+                    Temel iskeleti aşağıda veriyoruz — <strong>SENİN GÖREVİN</strong> eksik özellikleri dokümandaki
+                    bilgileri kullanarak tamamlamak!
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🏗️ Verilen İskelet Kod</h3>
+                <p>Bu kod çalışır durumda ama eksik. Senin görevin aşağıdaki özellikleri eklemek.</p>
+                <pre><code><span class="cm">// ====== 1. ROUTE TANIMLARI ======</span>
+<span class="kw">sealed class</span> <span class="tp">OkulNavItem</span>(
+    <span class="kw">val</span> route: <span class="tp">String</span>,
+    <span class="kw">val</span> title: <span class="tp">String</span>,
+    <span class="kw">val</span> icon: <span class="tp">ImageVector</span>
+) {
+    <span class="kw">object</span> <span class="tp">Ogrenciler</span> : <span class="tp">OkulNavItem</span>(<span class="str">"ogrenciler"</span>, <span class="str">"Öğrenciler"</span>, <span class="tp">Icons</span>.Default.Person)
+    <span class="kw">object</span> <span class="tp">Dersler</span> : <span class="tp">OkulNavItem</span>(<span class="str">"dersler"</span>, <span class="str">"Dersler"</span>, <span class="tp">Icons</span>.Default.Book)
+    <span class="kw">object</span> <span class="tp">Notlar</span> : <span class="tp">OkulNavItem</span>(<span class="str">"notlar"</span>, <span class="str">"Notlar"</span>, <span class="tp">Icons</span>.Default.Star)
+    <span class="kw">object</span> <span class="tp">Ayarlar</span> : <span class="tp">OkulNavItem</span>(<span class="str">"ayarlar"</span>, <span class="str">"Ayarlar"</span>, <span class="tp">Icons</span>.Default.Settings)
+}
+
+<span class="cm">// ====== 2. VERİ MODELİ ======</span>
+<span class="kw">data class</span> <span class="tp">Ogrenci</span>(
+    <span class="kw">val</span> id: <span class="tp">Int</span>,
+    <span class="kw">val</span> ad: <span class="tp">String</span>,
+    <span class="kw">val</span> sinif: <span class="tp">String</span>,
+    <span class="kw">val</span> numara: <span class="tp">Int</span>
+)
+
+<span class="cm">// ====== 3. ANA EKRAN ======</span>
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">OkulApp</span>() {
+    <span class="kw">val</span> navController = <span class="fn">rememberNavController</span>()
+    <span class="kw">val</span> items = <span class="fn">listOf</span>(
+        <span class="tp">OkulNavItem</span>.Ogrenciler, <span class="tp">OkulNavItem</span>.Dersler,
+        <span class="tp">OkulNavItem</span>.Notlar, <span class="tp">OkulNavItem</span>.Ayarlar
+    )
+    
+    <span class="fn">Scaffold</span>(
+        bottomBar = {
+            <span class="fn">NavigationBar</span> {
+                <span class="kw">val</span> navBackStackEntry <span class="kw">by</span> navController
+                    .<span class="fn">currentBackStackEntryAsState</span>()
+                <span class="kw">val</span> currentRoute = navBackStackEntry
+                    ?.destination?.route
+                
+                items.<span class="fn">forEach</span> { item ->
+                    <span class="fn">NavigationBarItem</span>(
+                        icon = { <span class="fn">Icon</span>(item.icon, item.title) },
+                        label = { <span class="fn">Text</span>(item.title) },
+                        selected = currentRoute == item.route,
+                        onClick = {
+                            navController.<span class="fn">navigate</span>(item.route) {
+                                <span class="fn">popUpTo</span>(navController.graph
+                                    .<span class="fn">findStartDestination</span>().id) {
+                                    saveState = <span class="kw">true</span>
+                                }
+                                launchSingleTop = <span class="kw">true</span>
+                                restoreState = <span class="kw">true</span>
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    ) { paddingValues ->
+        <span class="fn">NavHost</span>(
+            navController = navController,
+            startDestination = <span class="tp">OkulNavItem</span>.Ogrenciler.route,
+            modifier = <span class="tp">Modifier</span>.<span class="fn">padding</span>(paddingValues)
+        ) {
+            <span class="fn">composable</span>(<span class="tp">OkulNavItem</span>.Ogrenciler.route) {
+                <span class="fn">OgrenciListesi</span>(
+                    onOgrenciTikla = { ogrenciId ->
+                        navController.<span class="fn">navigate</span>(<span class="str">"ogrenci/$ogrenciId"</span>)
+                    }
+                )
+            }
+            <span class="fn">composable</span>(<span class="tp">OkulNavItem</span>.Dersler.route) { <span class="fn">DerslerSayfasi</span>() }
+            <span class="fn">composable</span>(<span class="tp">OkulNavItem</span>.Notlar.route) { <span class="fn">NotlarSayfasi</span>() }
+            <span class="fn">composable</span>(<span class="tp">OkulNavItem</span>.Ayarlar.route) { <span class="fn">AyarlarSayfasi</span>() }
+            
+            <span class="cm">// TODO: Öğrenci detay sayfasını buraya ekle!</span>
+            <span class="cm">// İpucu: Bölüm 8'deki parametre kullanımına bak</span>
+        }
+    }
+}
+
+<span class="cm">// ====== 4. ÖĞRENCİ LİSTESİ ======</span>
+<span class="kw">@Composable</span>
+<span class="kw">fun</span> <span class="fn">OgrenciListesi</span>(onOgrenciTikla: (<span class="tp">Int</span>) -> <span class="tp">Unit</span>) {
+    <span class="kw">val</span> ogrenciler = <span class="fn">listOf</span>(
+        <span class="tp">Ogrenci</span>(<span class="num">1</span>, <span class="str">"Ali Yılmaz"</span>, <span class="str">"10-A"</span>, <span class="num">101</span>),
+        <span class="tp">Ogrenci</span>(<span class="num">2</span>, <span class="str">"Ayşe Demir"</span>, <span class="str">"10-B"</span>, <span class="num">205</span>),
+        <span class="tp">Ogrenci</span>(<span class="num">3</span>, <span class="str">"Mehmet Kaya"</span>, <span class="str">"11-A"</span>, <span class="num">302</span>),
+        <span class="tp">Ogrenci</span>(<span class="num">4</span>, <span class="str">"Fatma Şahin"</span>, <span class="str">"11-B"</span>, <span class="num">415</span>),
+        <span class="tp">Ogrenci</span>(<span class="num">5</span>, <span class="str">"Emre Çelik"</span>, <span class="str">"12-A"</span>, <span class="num">510</span>)
+    )
+    
+    <span class="fn">LazyColumn</span>(contentPadding = <span class="fn">PaddingValues</span>(<span class="num">16</span>.dp)) {
+        <span class="fn">items</span>(ogrenciler) { ogrenci ->
+            <span class="fn">Card</span>(
+                modifier = <span class="tp">Modifier</span>
+                    .<span class="fn">fillMaxWidth</span>()
+                    .<span class="fn">padding</span>(vertical = <span class="num">4</span>.dp)
+                    .<span class="fn">clickable</span> { onOgrenciTikla(ogrenci.id) }
+            ) {
+                <span class="fn">Column</span>(modifier = <span class="tp">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp)) {
+                    <span class="fn">Text</span>(ogrenci.ad, fontWeight = <span class="tp">FontWeight</span>.Bold)
+                    <span class="fn">Text</span>(<span class="str">"Sınıf: ${ogrenci.sinif} | No: ${ogrenci.numara}"</span>)
+                }
+            }
+        }
+    }
+}</code><span class="label">Kotlin — İskelet Proje</span></pre>
+            </div>
+
+            <div class="project">
+                <h3>✏️ SENİN EKLEYECEĞİN ÖZELLİKLER</h3>
+                <p style="color:var(--text2);margin-bottom:16px">Aşağıdaki listeden özellikleri sırayla ekle. İpuçlarını
+                    takip et ve dokümandaki ilgili bölümü referans al!</p>
+
+                <ul class="checklist">
+                    <li><strong>Özellik 1:</strong> Öğrenci Detay Sayfası
+                        <br><span style="color:var(--text2);font-size:0.85rem;margin-left:24px">📖 Bölüm 8'e bak →
+                            <code>composable("ogrenci/{ogrenciId}")</code> ile parametreli sayfa ekle. Öğrencinin adı,
+                            sınıfı ve numarasını göstersin.</span>
+                    </li>
+
+                    <li><strong>Özellik 2:</strong> Detay sayfasına geri dönme butonu ekle
+                        <br><span style="color:var(--text2);font-size:0.85rem;margin-left:24px">📖 Bölüm 6'ya bak →
+                            <code>IconButton</code> + <code>popBackStack()</code> ile geri dönme butonu ekle.</span>
+                    </li>
+
+                    <li><strong>Özellik 3:</strong> Dersler sayfasına içerik ekle
+                        <br><span style="color:var(--text2);font-size:0.85rem;margin-left:24px">📖 Bölüm 6'ya bak →
+                            Dersler sayfasında Matematik, Fizik, Kimya, Türkçe gibi dersleri <code>LazyColumn</code> ile
+                            listele.</span>
+                    </li>
+
+                    <li><strong>Özellik 4:</strong> Sayfa geçiş animasyonu ekle
+                        <br><span style="color:var(--text2);font-size:0.85rem;margin-left:24px">📖 Bölüm 10'a bak →
+                            Öğrenci detay sayfasına <code>enterTransition</code> ve <code>exitTransition</code>
+                            ekle.</span>
+                    </li>
+
+                    <li><strong>Özellik 5:</strong> Arama özelliği — Opsiyonel parametre
+                        <br><span style="color:var(--text2);font-size:0.85rem;margin-left:24px">📖 Bölüm 8'e bak →
+                            Ayarlar sekmesine bir arama ekranına yönlendiren buton koy.
+                            <code>"arama?query={query}"</code> route'u ile opsiyonel parametre kullan.</span>
+                    </li>
+
+                    <li><strong>⭐ BONUS — Özellik 6:</strong> Ders detay sayfası
+                        <br><span style="color:var(--text2);font-size:0.85rem;margin-left:24px">Bir derse tıklayınca o
+                            dersin detay sayfası açılsın. Parametre olarak ders adını <code>String</code> olarak
+                            gönder.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>💡 İpucu Tablosu</h3>
+                <table style="width:100%;border-collapse:collapse">
+                    <tr style="border-bottom:1px solid var(--border);background:rgba(124,58,237,0.08)">
+                        <td style="padding:10px;font-weight:700;color:var(--accent2)">Özellik</td>
+                        <td style="padding:10px;font-weight:700;color:var(--accent2)">Bak</td>
+                        <td style="padding:10px;font-weight:700;color:var(--accent2)">Anahtar Kod</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;color:var(--text2)">1. Detay Sayfası</td>
+                        <td style="padding:10px"><span class="badge badge-blue">Bölüm 8</span></td>
+                        <td
+                            style="padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green2)">
+                            composable("ogrenci/{id}", arguments=...)</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;color:var(--text2)">2. Geri Butonu</td>
+                        <td style="padding:10px"><span class="badge badge-green">Bölüm 6</span></td>
+                        <td
+                            style="padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green2)">
+                            IconButton { popBackStack() }</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;color:var(--text2)">3. Ders Listesi</td>
+                        <td style="padding:10px"><span class="badge badge-green">Bölüm 6</span></td>
+                        <td
+                            style="padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green2)">
+                            LazyColumn { items(...) { Card {...} } }</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;color:var(--text2)">4. Animasyon</td>
+                        <td style="padding:10px"><span class="badge badge-pink">Bölüm 10</span></td>
+                        <td
+                            style="padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green2)">
+                            enterTransition, exitTransition</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid var(--border)">
+                        <td style="padding:10px;color:var(--text2)">5. Arama</td>
+                        <td style="padding:10px"><span class="badge badge-orange">Bölüm 8</span></td>
+                        <td
+                            style="padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green2)">
+                            "arama?query={query}", defaultValue</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:10px;color:var(--text2)">6. Ders Detay</td>
+                        <td style="padding:10px"><span class="badge badge-blue">Bölüm 8</span></td>
+                        <td
+                            style="padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--green2)">
+                            NavType.StringType</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="warn">
+                <strong>⚠️ Önemli:</strong> Her özelliği ekledikten sonra uygulamayı çalıştırıp test et! Hata alırsan,
+                route isimlerinin doğru yazılıp yazılmadığını kontrol et.
+            </div>
+        </div>
+
+    </div><!-- container sonu -->
+
+    <div class="footer">
+        📚 Jetpack Compose Navigation — Lise Öğrenci Rehberi | 2026
+    </div>
+
+</body>
+
+</html>
+</code>

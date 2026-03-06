@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 13: Film Veritabanı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 13</span>
+            <h1>🎬 Film Veritabanı</h1>
+            <p class="subtitle">Ders 1-13 Konularını Kapsayan Proje</p>
+        </header>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Arama, filtreleme ve sayfalama içeren film kataloğu.</p>
+
+            <div class="info-box">
+                <strong>📚 Yeni Kapsanan Konular:</strong><br>
+                • Metin araması<br>
+                • Çoklu filtre<br>
+                • Sıralama seçenekleri<br>
+                • Sayfalama (Pagination)
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Models/Movie.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">Movie</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Title { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span>? OriginalTitle { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Year { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span> Duration { <span class="keyword">get</span>; <span class="keyword">set</span>; }  <span class="comment">// Dakika</span>
+    <span class="keyword">public decimal</span> Rating { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span>? PosterUrl { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span>? Description { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> GenreId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Genre Genre { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    <span class="keyword">public int</span> DirectorId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> Director Director { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+}
+
+<span class="keyword">public class</span> <span class="class-name">MovieFilterViewModel</span>
+{
+    <span class="keyword">public string</span>? Search { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span>? GenreId { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span>? YearFrom { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public int</span>? YearTo { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public decimal</span>? MinRating { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> SortBy { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="string">"rating_desc"</span>;
+    <span class="keyword">public int</span> Page { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="number">1</span>;
+    <span class="keyword">public int</span> PageSize { <span class="keyword">get</span>; <span class="keyword">set</span>; } = <span class="number">12</span>;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Servis</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Services/MovieService.cs</div>
+                <pre data-lang="C#"><code><span class="keyword">public class</span> <span class="class-name">MovieService</span> : <span class="class-name">IMovieService</span>
+{
+    <span class="keyword">private readonly</span> MovieDbContext _context;
+    
+    <span class="keyword">public async</span> Task&lt;PagedResult&lt;Movie&gt;&gt; <span class="method">SearchAsync</span>(MovieFilterViewModel filter)
+    {
+        <span class="keyword">var</span> query = _context.Movies
+            .Include(m => m.Genre)
+            .Include(m => m.Director)
+            .AsQueryable();
+        
+        <span class="comment">// Metin araması</span>
+        <span class="keyword">if</span> (!<span class="keyword">string</span>.IsNullOrEmpty(filter.Search))
+        {
+            <span class="keyword">var</span> searchLower = filter.Search.ToLower();
+            query = query.Where(m => 
+                m.Title.ToLower().Contains(searchLower) ||
+                m.OriginalTitle.ToLower().Contains(searchLower) ||
+                m.Director.Name.ToLower().Contains(searchLower));
+        }
+        
+        <span class="comment">// Tür filtresi</span>
+        <span class="keyword">if</span> (filter.GenreId.HasValue)
+        {
+            query = query.Where(m => m.GenreId == filter.GenreId);
+        }
+        
+        <span class="comment">// Yıl aralığı</span>
+        <span class="keyword">if</span> (filter.YearFrom.HasValue)
+        {
+            query = query.Where(m => m.Year >= filter.YearFrom);
+        }
+        <span class="keyword">if</span> (filter.YearTo.HasValue)
+        {
+            query = query.Where(m => m.Year <= filter.YearTo);
+        }
+        
+        <span class="comment">// Minimum puan</span>
+        <span class="keyword">if</span> (filter.MinRating.HasValue)
+        {
+            query = query.Where(m => m.Rating >= filter.MinRating);
+        }
+        
+        <span class="comment">// Sıralama</span>
+        query = filter.SortBy <span class="keyword">switch</span>
+        {
+            <span class="string">"title"</span> => query.OrderBy(m => m.Title),
+            <span class="string">"title_desc"</span> => query.OrderByDescending(m => m.Title),
+            <span class="string">"year"</span> => query.OrderBy(m => m.Year),
+            <span class="string">"year_desc"</span> => query.OrderByDescending(m => m.Year),
+            <span class="string">"rating"</span> => query.OrderBy(m => m.Rating),
+            <span class="string">"rating_desc"</span> => query.OrderByDescending(m => m.Rating),
+            _ => query.OrderByDescending(m => m.Rating)
+        };
+        
+        <span class="comment">// Toplam sayı</span>
+        <span class="keyword">var</span> totalCount = <span class="keyword">await</span> query.CountAsync();
+        
+        <span class="comment">// Sayfalama</span>
+        <span class="keyword">var</span> movies = <span class="keyword">await</span> query
+            .Skip((filter.Page - <span class="number">1</span>) * filter.PageSize)
+            .Take(filter.PageSize)
+            .ToListAsync();
+        
+        <span class="keyword">return new</span> PagedResult&lt;Movie&gt;
+        {
+            Items = movies,
+            CurrentPage = filter.Page,
+            PageSize = filter.PageSize,
+            TotalCount = totalCount,
+            TotalPages = (<span class="keyword">int</span>)Math.Ceiling(totalCount / (<span class="keyword">double</span>)filter.PageSize)
+        };
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>View - Film Listesi</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Views/Movie/Index.cshtml</div>
+                <pre data-lang="Razor"><code>@model PagedResult&lt;Movie&gt;
+
+&lt;h1&gt;🎬 Film Veritabanı&lt;/h1&gt;
+
+<span class="comment">&lt;!-- Filtreler --&gt;</span>
+&lt;form method="get" class="row g-3 mb-4"&gt;
+    &lt;div class="col-md-3"&gt;
+        &lt;input type="text" name="search" value="@ViewBag.Filter.Search" 
+               class="form-control" placeholder="Film adı veya yönetmen..." /&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;select name="genreId" class="form-select" asp-items="ViewBag.Genres"&gt;
+            &lt;option value=""&gt;Tüm Türler&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;input type="number" name="yearFrom" value="@ViewBag.Filter.YearFrom" 
+               class="form-control" placeholder="Yıl başlangıç" /&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;select name="minRating" class="form-select"&gt;
+            &lt;option value=""&gt;Tüm Puanlar&lt;/option&gt;
+            &lt;option value="7" @(ViewBag.Filter.MinRating == 7 ? "selected" : "")&gt;7+ ⭐&lt;/option&gt;
+            &lt;option value="8" @(ViewBag.Filter.MinRating == 8 ? "selected" : "")&gt;8+ ⭐&lt;/option&gt;
+            &lt;option value="9" @(ViewBag.Filter.MinRating == 9 ? "selected" : "")&gt;9+ ⭐&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-2"&gt;
+        &lt;select name="sortBy" class="form-select"&gt;
+            &lt;option value="rating_desc"&gt;Puan (Yüksek)&lt;/option&gt;
+            &lt;option value="year_desc"&gt;En Yeni&lt;/option&gt;
+            &lt;option value="title"&gt;A-Z&lt;/option&gt;
+        &lt;/select&gt;
+    &lt;/div&gt;
+    
+    &lt;div class="col-md-1"&gt;
+        &lt;button type="submit" class="btn btn-primary"&gt;🔍&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/form&gt;
+
+<span class="comment">&lt;!-- Sonuç bilgisi --&gt;</span>
+&lt;p class="text-muted"&gt;@Model.TotalCount film bulundu&lt;/p&gt;
+
+<span class="comment">&lt;!-- Film Grid --&gt;</span>
+&lt;div class="row"&gt;
+    @foreach (var movie in Model.Items)
+    {
+        &lt;div class="col-md-3 mb-4"&gt;
+            &lt;div class="movie-card"&gt;
+                &lt;img src="@(movie.PosterUrl ?? "/images/no-poster.jpg")" alt="@movie.Title" /&gt;
+                &lt;div class="movie-info"&gt;
+                    &lt;span class="rating"&gt;⭐ @movie.Rating.ToString("F1")&lt;/span&gt;
+                    &lt;h5&gt;@movie.Title&lt;/h5&gt;
+                    &lt;p&gt;@movie.Year • @movie.Genre.Name&lt;/p&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    }
+&lt;/div&gt;
+
+<span class="comment">&lt;!-- Sayfalama --&gt;</span>
+@if (Model.TotalPages > 1)
+{
+    &lt;nav&gt;
+        &lt;ul class="pagination justify-content-center"&gt;
+            @for (int i = 1; i &lt;= Model.TotalPages; i++)
+            {
+                &lt;li class="page-item @(i == Model.CurrentPage ? "active" : "")"&gt;
+                    &lt;a class="page-link" href="?page=@i&amp;search=@ViewBag.Filter.Search&amp;genreId=@ViewBag.Filter.GenreId"&gt;@i&lt;/a&gt;
+                &lt;/li&gt;
+            }
+        &lt;/ul&gt;
+    &lt;/nav&gt;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>AJAX ile sayfalama yapın (sayfa yenilemeden)</strong>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Film favorilere ekleme özelliği ekleyin</strong>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje12.html" class="nav-btn prev">← Proje 12</a>
+            <a href="proje14.html" class="nav-btn next">Proje 14 →</a>
+        </nav>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

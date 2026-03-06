@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje 15: Kişi Rehberi (Final)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Proje 15 - Final</span>
+            <h1>📒 Kişi Rehberi Uygulaması</h1>
+            <p class="subtitle">Tüm Konuları Kapsayan Final Projesi</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders15.html">Ders 15</a>
+            <a href="proje15.html" class="active">Proje 15</a>
+        </nav>
+
+        <section class="section">
+            <h2>Proje Hakkında</h2>
+            <p>Tüm derslerde öğrenilen konuları bir araya getiren kapsamlı kişi rehberi uygulaması.</p>
+
+            <div class="info-box">
+                <strong>📚 Kapsanan Konular:</strong>
+                <ul>
+                    <li>Temel kontroller (TextBox, Button, Label, GroupBox)</li>
+                    <li>Seçim kontrolleri (ComboBox, CheckBox, RadioButton)</li>
+                    <li>DateTimePicker, MaskedTextBox, NumericUpDown</li>
+                    <li>Olaylar ve MessageBox</li>
+                    <li>MenuStrip, ToolStrip, ContextMenuStrip</li>
+                    <li>OpenFileDialog, SaveFileDialog</li>
+                    <li>PictureBox (profil fotoğrafı)</li>
+                    <li>Timer (otomatik kaydetme)</li>
+                    <li>DataGridView (kişi listesi)</li>
+                    <li>Dosya işlemleri (JSON kaydetme)</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Model Sınıfı</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Kisi.cs</div>
+                <pre><code><span class="keyword">using</span> System.Text.Json.Serialization;
+
+<span class="keyword">public class</span> <span class="class-name">Kisi</span>
+{
+    <span class="keyword">public int</span> Id { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Ad { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Soyad { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Telefon { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Email { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Adres { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public</span> DateTime DogumTarihi { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> Kategori { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public string</span> FotoYolu { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    <span class="keyword">public bool</span> Favori { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+    
+    [JsonIgnore]
+    <span class="keyword">public string</span> TamAd => $<span class="string">"{Ad} {Soyad}"</span>;
+    
+    [JsonIgnore]
+    <span class="keyword">public int</span> Yas => DateTime.Today.Year - DogumTarihi.Year;
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Ana Form - Form1.cs</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Değişkenler ve Başlangıç</div>
+                <pre><code><span class="keyword">private</span> BindingList&lt;Kisi&gt; kisiler = <span class="keyword">new</span> BindingList&lt;Kisi&gt;();
+<span class="keyword">private string</span> veriDosyasi;
+<span class="keyword">private int</span> sonId = <span class="number">0</span>;
+<span class="keyword">private bool</span> degisiklikVar = <span class="keyword">false</span>;
+
+<span class="keyword">private void</span> <span class="method">Form1_Load</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="comment">// Veri dosyası yolu</span>
+    veriDosyasi = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+        <span class="string">"Rehber"</span>, <span class="string">"kisiler.json"</span>);
+    
+    <span class="comment">// Klasörü oluştur</span>
+    Directory.CreateDirectory(Path.GetDirectoryName(veriDosyasi));
+    
+    <span class="comment">// Kategorileri doldur</span>
+    cmbKategori.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"Aile"</span>, <span class="string">"Arkadaş"</span>, <span class="string">"İş"</span>, <span class="string">"Diğer"</span> });
+    cmbFiltre.Items.Add(<span class="string">"Tümü"</span>);
+    cmbFiltre.Items.AddRange(<span class="keyword">new</span>[] { <span class="string">"Aile"</span>, <span class="string">"Arkadaş"</span>, <span class="string">"İş"</span>, <span class="string">"Diğer"</span>, <span class="string">"Favoriler"</span> });
+    cmbFiltre.SelectedIndex = <span class="number">0</span>;
+    
+    <span class="comment">// DataGridView</span>
+    DataGridViewAyarla();
+    
+    <span class="comment">// Verileri yükle</span>
+    VerileriYukle();
+    
+    <span class="comment">// Otomatik kaydetme timer</span>
+    timerOtoKaydet.Interval = <span class="number">60000</span>; <span class="comment">// 1 dakika</span>
+    timerOtoKaydet.Start();
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">DataGridView Ayarları</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">DataGridViewAyarla</span>()
+{
+    dgvKisiler.AutoGenerateColumns = <span class="keyword">false</span>;
+    dgvKisiler.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+    dgvKisiler.MultiSelect = <span class="keyword">false</span>;
+    
+    dgvKisiler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn 
+        { HeaderText = <span class="string">"ID"</span>, DataPropertyName = <span class="string">"Id"</span>, Width = <span class="number">40</span> });
+    dgvKisiler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn 
+        { HeaderText = <span class="string">"Ad Soyad"</span>, DataPropertyName = <span class="string">"TamAd"</span>, Width = <span class="number">150</span> });
+    dgvKisiler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn 
+        { HeaderText = <span class="string">"Telefon"</span>, DataPropertyName = <span class="string">"Telefon"</span>, Width = <span class="number">120</span> });
+    dgvKisiler.Columns.Add(<span class="keyword">new</span> DataGridViewTextBoxColumn 
+        { HeaderText = <span class="string">"Kategori"</span>, DataPropertyName = <span class="string">"Kategori"</span>, Width = <span class="number">80</span> });
+    dgvKisiler.Columns.Add(<span class="keyword">new</span> DataGridViewCheckBoxColumn 
+        { HeaderText = <span class="string">"⭐"</span>, DataPropertyName = <span class="string">"Favori"</span>, Width = <span class="number">40</span> });
+    
+    dgvKisiler.DataSource = kisiler;
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Veri Yükleme ve Kaydetme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">VerileriYukle</span>()
+{
+    <span class="keyword">if</span> (File.Exists(veriDosyasi))
+    {
+        <span class="keyword">try</span>
+        {
+            <span class="keyword">string</span> json = File.ReadAllText(veriDosyasi);
+            <span class="keyword">var</span> liste = JsonSerializer.Deserialize&lt;List&lt;Kisi&gt;&gt;(json);
+            
+            <span class="keyword">foreach</span> (<span class="keyword">var</span> k <span class="keyword">in</span> liste)
+            {
+                kisiler.Add(k);
+                <span class="keyword">if</span> (k.Id > sonId) sonId = k.Id;
+            }
+            
+            tslDurum.Text = $<span class="string">"{kisiler.Count} kişi yüklendi"</span>;
+        }
+        <span class="keyword">catch</span> (Exception ex)
+        {
+            MessageBox.Show(<span class="string">"Yükleme hatası: "</span> + ex.Message);
+        }
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">VerileriKaydet</span>()
+{
+    <span class="keyword">try</span>
+    {
+        <span class="keyword">var</span> options = <span class="keyword">new</span> JsonSerializerOptions { WriteIndented = <span class="keyword">true</span> };
+        <span class="keyword">string</span> json = JsonSerializer.Serialize(kisiler.ToList(), options);
+        File.WriteAllText(veriDosyasi, json);
+        
+        degisiklikVar = <span class="keyword">false</span>;
+        tslDurum.Text = <span class="string">"Kaydedildi: "</span> + DateTime.Now.ToString(<span class="string">"HH:mm:ss"</span>);
+    }
+    <span class="keyword">catch</span> (Exception ex)
+    {
+        MessageBox.Show(<span class="string">"Kaydetme hatası: "</span> + ex.Message);
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">timerOtoKaydet_Tick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (degisiklikVar)
+    {
+        VerileriKaydet();
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">CRUD İşlemleri</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnEkle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (!Dogrula()) <span class="keyword">return</span>;
+    
+    kisiler.Add(<span class="keyword">new</span> Kisi
+    {
+        Id = ++sonId,
+        Ad = txtAd.Text,
+        Soyad = txtSoyad.Text,
+        Telefon = mtbTelefon.Text,
+        Email = txtEmail.Text,
+        Adres = txtAdres.Text,
+        DogumTarihi = dtpDogum.Value,
+        Kategori = cmbKategori.Text,
+        FotoYolu = picFoto.ImageLocation ?? <span class="string">""</span>,
+        Favori = chkFavori.Checked
+    });
+    
+    degisiklikVar = <span class="keyword">true</span>;
+    FormuTemizle();
+}
+
+<span class="keyword">private bool</span> <span class="method">Dogrula</span>()
+{
+    <span class="keyword">if</span> (<span class="keyword">string</span>.IsNullOrWhiteSpace(txtAd.Text))
+    {
+        MessageBox.Show(<span class="string">"Ad zorunludur!"</span>, <span class="string">"Hata"</span>, 
+            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        txtAd.Focus();
+        <span class="keyword">return false</span>;
+    }
+    
+    <span class="keyword">if</span> (!mtbTelefon.MaskCompleted)
+    {
+        MessageBox.Show(<span class="string">"Telefon numarasını eksiksiz girin!"</span>);
+        mtbTelefon.Focus();
+        <span class="keyword">return false</span>;
+    }
+    
+    <span class="keyword">return true</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">dgvKisiler_SelectionChanged</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dgvKisiler.CurrentRow == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    Kisi k = kisiler[dgvKisiler.CurrentRow.Index];
+    KisiyiFormaDoldur(k);
+}
+
+<span class="keyword">private void</span> <span class="method">btnSil_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (dgvKisiler.CurrentRow == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    <span class="keyword">if</span> (MessageBox.Show(<span class="string">"Kişiyi silmek istiyor musunuz?"</span>, <span class="string">"Onay"</span>,
+        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+    {
+        kisiler.RemoveAt(dgvKisiler.CurrentRow.Index);
+        degisiklikVar = <span class="keyword">true</span>;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Arama ve Filtreleme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">Filtrele</span>()
+{
+    <span class="keyword">string</span> arama = txtArama.Text.ToLower();
+    <span class="keyword">string</span> kategori = cmbFiltre.SelectedItem?.ToString();
+    
+    <span class="keyword">var</span> sonuc = kisiler.Where(k =>
+        (k.Ad.ToLower().Contains(arama) || 
+         k.Soyad.ToLower().Contains(arama) ||
+         k.Telefon.Contains(arama)) &&
+        (kategori == <span class="string">"Tümü"</span> || 
+         kategori == <span class="string">"Favoriler"</span> && k.Favori ||
+         k.Kategori == kategori)
+    ).ToList();
+    
+    dgvKisiler.DataSource = <span class="keyword">new</span> BindingList&lt;Kisi&gt;(sonuc);
+    tslDurum.Text = $<span class="string">"{sonuc.Count} kişi bulundu"</span>;
+}
+
+<span class="keyword">private void</span> <span class="method">txtArama_TextChanged</span>(<span class="keyword">object</span> sender, EventArgs e) => Filtrele();
+<span class="keyword">private void</span> <span class="method">cmbFiltre_SelectedIndexChanged</span>(<span class="keyword">object</span> sender, EventArgs e) => Filtrele();</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Fotoğraf Seçme (PictureBox)</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnFotoSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog ofd = <span class="keyword">new</span> OpenFileDialog();
+    ofd.Filter = <span class="string">"Resim Dosyaları|*.jpg;*.png;*.bmp"</span>;
+    
+    <span class="keyword">if</span> (ofd.ShowDialog() == DialogResult.OK)
+    {
+        picFoto.ImageLocation = ofd.FileName;
+        picFoto.SizeMode = PictureBoxSizeMode.Zoom;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Menü İşlemleri</div>
+                <pre><code><span class="comment">// Dosya Menüsü</span>
+<span class="keyword">private void</span> <span class="method">kaydetToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    VerileriKaydet();
+}
+
+<span class="keyword">private void</span> <span class="method">cikisToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (degisiklikVar)
+    {
+        DialogResult dr = MessageBox.Show(<span class="string">"Değişiklikleri kaydetmek ister misiniz?"</span>,
+            <span class="string">"Çıkış"</span>, MessageBoxButtons.YesNoCancel);
+        
+        <span class="keyword">if</span> (dr == DialogResult.Yes) VerileriKaydet();
+        <span class="keyword">else if</span> (dr == DialogResult.Cancel) <span class="keyword">return</span>;
+    }
+    
+    Application.Exit();
+}
+
+<span class="comment">// Dışa Aktar - CSV</span>
+<span class="keyword">private void</span> <span class="method">csvAktarToolStripMenuItem_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    SaveFileDialog sfd = <span class="keyword">new</span> SaveFileDialog();
+    sfd.Filter = <span class="string">"CSV Dosyası|*.csv"</span>;
+    sfd.FileName = <span class="string">"Rehber_"</span> + DateTime.Now.ToString(<span class="string">"yyyyMMdd"</span>);
+    
+    <span class="keyword">if</span> (sfd.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">using</span> (StreamWriter sw = <span class="keyword">new</span> StreamWriter(sfd.FileName, <span class="keyword">false</span>, Encoding.UTF8))
+        {
+            sw.WriteLine(<span class="string">"Ad,Soyad,Telefon,Email,Kategori"</span>);
+            
+            <span class="keyword">foreach</span> (Kisi k <span class="keyword">in</span> kisiler)
+            {
+                sw.WriteLine($<span class="string">"\"{k.Ad}\",\"{k.Soyad}\",\"{k.Telefon}\",\"{k.Email}\",\"{k.Kategori}\""</span>);
+            }
+        }
+        
+        MessageBox.Show(<span class="string">"CSV dosyası oluşturuldu!"</span>);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Geliştirme Önerileri</h2>
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Doğum günü hatırlatıcısı</strong>
+                <p>Bugün doğum günü olanları form açılışında gösterin.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Grup mesaj gönderme</strong>
+                <p>Seçili kategorideki kişilere toplu mesaj şablonu oluşturun.</p>
+            </div>
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Yedekleme/Geri yükleme</strong>
+                <p>Rehberi zip dosyasına yedekleme ve geri yükleme özelliği ekleyin.</p>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="proje14.html" class="nav-btn prev">← Proje 14</a>
+            <a href="index.html" class="nav-btn next">Ana Sayfa →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi - Final Projesi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ders 11: PictureBox</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="ders-no">Ders 11</span>
+            <h1>PictureBox</h1>
+            <p class="subtitle">Resim Görüntüleme ve İşleme</p>
+        </header>
+
+        <nav>
+            <a href="index.html">Anasayfa</a>
+            <a href="ders09.html">Ders 9</a>
+            <a href="ders10.html">Ders 10</a>
+            <a href="ders11.html" class="active">Ders 11</a>
+            <a href="ders12.html">Ders 12</a>
+            <a href="ders13.html">Ders 13</a>
+        </nav>
+
+        <section class="section">
+            <h2>PictureBox Nedir?</h2>
+            <p><strong>PictureBox</strong>, resimleri görüntülemek için kullanılan kontroldür. JPG, PNG, BMP, GIF gibi
+                formatları destekler.</p>
+
+            <div class="control-visual">
+                <div
+                    style="width: 200px; height: 150px; background: linear-gradient(135deg, #667eea, #764ba2); border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto; color: white;">
+                    🖼️ Resim Alanı
+                </div>
+            </div>
+
+            <table class="property-table">
+                <tr>
+                    <th>Özellik</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Image</td>
+                    <td>Gösterilecek resim</td>
+                </tr>
+                <tr>
+                    <td>SizeMode</td>
+                    <td>Resmin boyutlandırma modu</td>
+                </tr>
+                <tr>
+                    <td>ImageLocation</td>
+                    <td>Resim dosya yolu veya URL</td>
+                </tr>
+                <tr>
+                    <td>BackColor</td>
+                    <td>Arka plan rengi</td>
+                </tr>
+                <tr>
+                    <td>BorderStyle</td>
+                    <td>Kenarlık stili</td>
+                </tr>
+                <tr>
+                    <td>ErrorImage</td>
+                    <td>Hata durumunda gösterilecek resim</td>
+                </tr>
+                <tr>
+                    <td>InitialImage</td>
+                    <td>Yüklenirken gösterilecek resim</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>SizeMode Ayarları</h2>
+
+            <table>
+                <tr>
+                    <th>Değer</th>
+                    <th>Açıklama</th>
+                </tr>
+                <tr>
+                    <td>Normal</td>
+                    <td>Resim orijinal boyutunda, sol üst köşeden başlar</td>
+                </tr>
+                <tr>
+                    <td>StretchImage</td>
+                    <td>Resim PictureBox boyutuna esnetilir (oran bozulabilir)</td>
+                </tr>
+                <tr>
+                    <td>AutoSize</td>
+                    <td>PictureBox resim boyutuna göre ayarlanır</td>
+                </tr>
+                <tr>
+                    <td>CenterImage</td>
+                    <td>Resim ortada gösterilir</td>
+                </tr>
+                <tr>
+                    <td>Zoom</td>
+                    <td>Oranı koruyarak sığdırır ✓ En çok kullanılan</td>
+                </tr>
+            </table>
+
+            <div class="code-example">
+                <div class="code-example-title">SizeMode Kullanımı</div>
+                <pre><code><span class="comment">// Zoom - Oranı koruyarak sığdır (önerilen)</span>
+pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+
+<span class="comment">// StretchImage - Tam doldur (oran bozulabilir)</span>
+pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+
+<span class="comment">// CenterImage - Ortala</span>
+pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
+
+<span class="comment">// AutoSize - PictureBox resim boyutuna uyar</span>
+pictureBox1.SizeMode = PictureBoxSizeMode.AutoSize;</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Resim Yükleme Yöntemleri</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Dosyadan Resim Yükleme</div>
+                <pre><code><span class="comment">// Doğrudan dosya yolu</span>
+pictureBox1.Image = Image.FromFile(<span class="string">@"C:\Resimler\foto.jpg"</span>);
+
+<span class="comment">// OpenFileDialog ile</span>
+<span class="keyword">private void</span> <span class="method">btnResimSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Title = <span class="string">"Resim Seç"</span>;
+    dialog.Filter = <span class="string">"Resim Dosyaları|*.jpg;*.jpeg;*.png;*.gif;*.bmp|Tüm Dosyalar|*.*"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        pictureBox1.Image = Image.FromFile(dialog.FileName);
+        pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">URL'den Resim Yükleme</div>
+                <pre><code><span class="comment">// ImageLocation özelliği ile URL'den</span>
+pictureBox1.ImageLocation = <span class="string">"https://example.com/resim.jpg"</span>;
+pictureBox1.Load(); <span class="comment">// Asenkron yükle</span>
+
+<span class="comment">// Veya LoadAsync metodu ile</span>
+pictureBox1.LoadAsync(<span class="string">"https://example.com/resim.jpg"</span>);
+
+<span class="comment">// Yükleme tamamlandığında</span>
+<span class="keyword">private void</span> <span class="method">pictureBox1_LoadCompleted</span>(<span class="keyword">object</span> sender, AsyncCompletedEventArgs e)
+{
+    <span class="keyword">if</span> (e.Error != <span class="keyword">null</span>)
+    {
+        MessageBox.Show(<span class="string">"Resim yüklenemedi: "</span> + e.Error.Message);
+    }
+    <span class="keyword">else</span>
+    {
+        lblDurum.Text = <span class="string">"Resim yüklendi!"</span>;
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-example">
+                <div class="code-example-title">Resources'tan Resim Yükleme</div>
+                <pre><code><span class="comment">// Proje kaynaklarından (Properties > Resources.resx)</span>
+pictureBox1.Image = Properties.Resources.logo;
+
+<span class="comment">// Embedded Resource olarak</span>
+pictureBox1.Image = Image.FromStream(
+    Assembly.GetExecutingAssembly().GetManifestResourceStream(<span class="string">"MyApp.Images.logo.png"</span>));</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Resim Temizleme ve Değiştirme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Resim İşlemleri</div>
+                <pre><code><span class="comment">// Resmi temizle</span>
+<span class="keyword">private void</span> <span class="method">btnTemizle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (pictureBox1.Image != <span class="keyword">null</span>)
+    {
+        pictureBox1.Image.Dispose(); <span class="comment">// Belleği serbest bırak</span>
+        pictureBox1.Image = <span class="keyword">null</span>;
+    }
+}
+
+<span class="comment">// Resmi değiştir (öncekini dispose et)</span>
+<span class="keyword">private void</span> <span class="method">ResimYukle</span>(<span class="keyword">string</span> dosyaYolu)
+{
+    <span class="keyword">if</span> (pictureBox1.Image != <span class="keyword">null</span>)
+    {
+        pictureBox1.Image.Dispose();
+    }
+    
+    pictureBox1.Image = Image.FromFile(dosyaYolu);
+}
+
+<span class="comment">// Resim var mı kontrolü</span>
+<span class="keyword">if</span> (pictureBox1.Image != <span class="keyword">null</span>)
+{
+    MessageBox.Show(<span class="string">"Resim yüklü"</span>);
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Resim Kaydetme</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Resmi Farklı Formatlarda Kaydetme</div>
+                <pre><code><span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (pictureBox1.Image == <span class="keyword">null</span>)
+    {
+        MessageBox.Show(<span class="string">"Kaydedilecek resim yok!"</span>);
+        <span class="keyword">return</span>;
+    }
+    
+    SaveFileDialog dialog = <span class="keyword">new</span> SaveFileDialog();
+    dialog.Filter = <span class="string">"PNG|*.png|JPEG|*.jpg|Bitmap|*.bmp|GIF|*.gif"</span>;
+    dialog.DefaultExt = <span class="string">"png"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">string</span> uzanti = Path.GetExtension(dialog.FileName).ToLower();
+        ImageFormat format = ImageFormat.Png; <span class="comment">// Varsayılan</span>
+        
+        <span class="keyword">switch</span> (uzanti)
+        {
+            <span class="keyword">case</span> <span class="string">".jpg"</span>:
+            <span class="keyword">case</span> <span class="string">".jpeg"</span>:
+                format = ImageFormat.Jpeg;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">".bmp"</span>:
+                format = ImageFormat.Bmp;
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">".gif"</span>:
+                format = ImageFormat.Gif;
+                <span class="keyword">break</span>;
+        }
+        
+        pictureBox1.Image.Save(dialog.FileName, format);
+        MessageBox.Show(<span class="string">"Resim kaydedildi!"</span>);
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>PictureBox Olayları</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Click ve DoubleClick Olayları</div>
+                <pre><code><span class="comment">// Tıklandığında resim seç</span>
+<span class="keyword">private void</span> <span class="method">pictureBox1_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Filter = <span class="string">"Resimler|*.jpg;*.png;*.bmp"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        pictureBox1.Image = Image.FromFile(dialog.FileName);
+    }
+}
+
+<span class="comment">// Çift tıklandığında büyüt</span>
+<span class="keyword">private void</span> <span class="method">pictureBox1_DoubleClick</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (pictureBox1.Image != <span class="keyword">null</span>)
+    {
+        Form buyukForm = <span class="keyword">new</span> Form();
+        buyukForm.Text = <span class="string">"Resim Önizleme"</span>;
+        buyukForm.WindowState = FormWindowState.Maximized;
+        
+        PictureBox buyukPic = <span class="keyword">new</span> PictureBox();
+        buyukPic.Dock = DockStyle.Fill;
+        buyukPic.SizeMode = PictureBoxSizeMode.Zoom;
+        buyukPic.Image = pictureBox1.Image;
+        buyukPic.Click += (s, args) => buyukForm.Close();
+        
+        buyukForm.Controls.Add(buyukPic);
+        buyukForm.ShowDialog();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Resim Galerisi Örneği</h2>
+
+            <div class="code-example">
+                <div class="code-example-title">Basit Resim Galerisi</div>
+                <pre><code><span class="keyword">private</span> <span class="keyword">string</span>[] resimler;
+<span class="keyword">private int</span> mevcutIndex = <span class="number">0</span>;
+
+<span class="comment">// Klasör seç ve resimleri yükle</span>
+<span class="keyword">private void</span> <span class="method">btnKlasorSec_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    FolderBrowserDialog dialog = <span class="keyword">new</span> FolderBrowserDialog();
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        resimler = Directory.GetFiles(dialog.SelectedPath)
+            .Where(f => f.EndsWith(<span class="string">".jpg"</span>) || f.EndsWith(<span class="string">".png"</span>) || f.EndsWith(<span class="string">".bmp"</span>))
+            .ToArray();
+        
+        <span class="keyword">if</span> (resimler.Length > <span class="number">0</span>)
+        {
+            mevcutIndex = <span class="number">0</span>;
+            ResimGoster();
+        }
+        <span class="keyword">else</span>
+        {
+            MessageBox.Show(<span class="string">"Klasörde resim bulunamadı!"</span>);
+        }
+    }
+}
+
+<span class="keyword">private void</span> <span class="method">ResimGoster</span>()
+{
+    <span class="keyword">if</span> (resimler != <span class="keyword">null</span> && resimler.Length > <span class="number">0</span>)
+    {
+        pictureBox1.Image = Image.FromFile(resimler[mevcutIndex]);
+        lblDurum.Text = $<span class="string">"{mevcutIndex + 1} / {resimler.Length}"</span>;
+    }
+}
+
+<span class="comment">// Önceki resim</span>
+<span class="keyword">private void</span> <span class="method">btnOnceki_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (resimler != <span class="keyword">null</span> && mevcutIndex > <span class="number">0</span>)
+    {
+        mevcutIndex--;
+        ResimGoster();
+    }
+}
+
+<span class="comment">// Sonraki resim</span>
+<span class="keyword">private void</span> <span class="method">btnSonraki_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (resimler != <span class="keyword">null</span> && mevcutIndex &lt; resimler.Length - <span class="number">1</span>)
+    {
+        mevcutIndex++;
+        ResimGoster();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section class="sira-sende">
+            <h2>🎯 Sıra Sende!</h2>
+
+            <div class="soru">
+                <span class="soru-no">1</span>
+                <strong>Dosyadan resim yükleyip PictureBox'ta gösteren uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(1)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-1">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnYukle_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    OpenFileDialog dialog = <span class="keyword">new</span> OpenFileDialog();
+    dialog.Filter = <span class="string">"Resimler|*.jpg;*.png;*.bmp"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        pictureBox1.Image = Image.FromFile(dialog.FileName);
+        pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">2</span>
+                <strong>Resmi farklı formatlarda kaydeden uygulama yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(2)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-2">
+                    <pre><code><span class="keyword">private void</span> <span class="method">btnKaydet_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (pictureBox1.Image == <span class="keyword">null</span>) <span class="keyword">return</span>;
+    
+    SaveFileDialog dialog = <span class="keyword">new</span> SaveFileDialog();
+    dialog.Filter = <span class="string">"PNG|*.png|JPG|*.jpg"</span>;
+    
+    <span class="keyword">if</span> (dialog.ShowDialog() == DialogResult.OK)
+    {
+        <span class="keyword">var</span> format = dialog.FileName.EndsWith(<span class="string">".png"</span>) ? 
+            ImageFormat.Png : ImageFormat.Jpeg;
+        pictureBox1.Image.Save(dialog.FileName, format);
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="soru">
+                <span class="soru-no">3</span>
+                <strong>Önceki/Sonraki butonları ile resim galerisi yapın.</strong>
+                <button class="cozum-toggle" onclick="toggleCozum(3)">Çözümü Göster</button>
+                <div class="cozum-content" id="cozum-3">
+                    <pre><code><span class="keyword">string</span>[] resimler;
+<span class="keyword">int</span> index = <span class="number">0</span>;
+
+<span class="keyword">private void</span> <span class="method">Goster</span>() => pictureBox1.Image = Image.FromFile(resimler[index]);
+
+<span class="keyword">private void</span> <span class="method">btnOnceki_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (index > <span class="number">0</span>) { index--; Goster(); }
+}
+
+<span class="keyword">private void</span> <span class="method">btnSonraki_Click</span>(<span class="keyword">object</span> sender, EventArgs e)
+{
+    <span class="keyword">if</span> (index &lt; resimler.Length - <span class="number">1</span>) { index++; Goster(); }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navigation">
+            <a href="ders10.html" class="nav-btn prev">← Önceki: ColorDialog, FontDialog</a>
+            <a href="ders12.html" class="nav-btn next">Sonraki: Timer →</a>
+        </nav>
+
+        <footer>
+            <p>C# Windows Forms Eğitimi © 2024</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

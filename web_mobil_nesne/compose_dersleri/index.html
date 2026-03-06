@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose Eğitimi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400&family=Inter:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #4285F4 0%, #0F9D58 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-decoration: none;
+            color: inherit;
+            border-left: 4px solid #4285F4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .lesson-card h3 {
+            color: #4285F4;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lesson-card p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #4285F4, #0F9D58);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .topics {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 40px;
+        }
+
+        .topics h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .topics ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .topics li {
+            padding: 8px 12px;
+            background: white;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .topics li::before {
+            content: "✓ ";
+            color: #0F9D58;
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4285F4;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="../index.html" class="back-link">← Ana Sayfaya Dön</a>
+
+        <div class="hero">
+            <h1>🚀 Jetpack Compose Eğitimi</h1>
+            <p>Modern Android UI Geliştirme</p>
+            <p style="margin-top: 16px; opacity: 0.8;">14 Ders • Kotlin & OOP Bilgisi Gerektirir</p>
+        </div>
+
+        <h2>📚 Dersler</h2>
+        <div class="lessons-grid">
+            <a href="ders1.html" class="lesson-card">
+                <h3><span class="number">1</span> Compose'a Giriş</h3>
+                <p>Kurulum, ilk composable ve preview</p>
+            </a>
+
+            <a href="ders2.html" class="lesson-card">
+                <h3><span class="number">2</span> Temel Composable'lar</h3>
+                <p>Text, Button, Image, TextField</p>
+            </a>
+
+            <a href="ders3.html" class="lesson-card">
+                <h3><span class="number">3</span> Layout ve Modifier</h3>
+                <p>Column, Row, Box ve Modifier zinciri</p>
+            </a>
+
+            <a href="ders4.html" class="lesson-card">
+                <h3><span class="number">4</span> State Yönetimi</h3>
+                <p>remember, mutableStateOf, recomposition</p>
+            </a>
+
+            <a href="ders5.html" class="lesson-card">
+                <h3><span class="number">5</span> Listeler</h3>
+                <p>LazyColumn, LazyRow, LazyGrid</p>
+            </a>
+
+            <a href="ders6.html" class="lesson-card">
+                <h3><span class="number">6</span> Material Design 3</h3>
+                <p>Tema, renk, typography, bileşenler</p>
+            </a>
+
+            <a href="ders7.html" class="lesson-card">
+                <h3><span class="number">7</span> Navigation</h3>
+                <p>NavController, NavHost, Bottom Navigation</p>
+            </a>
+
+            <a href="ders8.html" class="lesson-card">
+                <h3><span class="number">8</span> ViewModel ve MVVM</h3>
+                <p>StateFlow, UI State, mimari</p>
+            </a>
+
+            <a href="ders9.html" class="lesson-card">
+                <h3><span class="number">9</span> Room Database</h3>
+                <p>Entity, DAO, Database, CRUD</p>
+            </a>
+
+            <a href="ders10.html" class="lesson-card">
+                <h3><span class="number">10</span> Retrofit ve API</h3>
+                <p>REST API, JSON parsing, Coil</p>
+            </a>
+
+            <a href="ders11.html" class="lesson-card">
+                <h3><span class="number">11</span> Animasyonlar</h3>
+                <p>animate*AsState, AnimatedVisibility</p>
+            </a>
+
+            <a href="ders12.html" class="lesson-card">
+                <h3><span class="number">12</span> Custom Composable</h3>
+                <p>Slot API, reusable components</p>
+            </a>
+
+            <a href="ders13.html" class="lesson-card">
+                <h3><span class="number">13</span> Side Effects</h3>
+                <p>LaunchedEffect, DisposableEffect</p>
+            </a>
+
+            <a href="ders14.html" class="lesson-card" style="border-left-color: #F4B400;">
+                <h3 style="color: #F4B400;"><span class="number"
+                        style="background: linear-gradient(135deg, #F4B400, #EA4335);">★</span> Kapsamlı Proje</h3>
+                <p>Not Defteri Uygulaması - Tüm konular</p>
+            </a>
+        </div>
+
+        <div class="topics">
+            <h2>📋 Kapsanan Konular</h2>
+            <ul>
+                <li>Declarative UI</li>
+                <li>Composable Functions</li>
+                <li>State Management</li>
+                <li>Recomposition</li>
+                <li>Modifier System</li>
+                <li>Layout Composables</li>
+                <li>Material Design 3</li>
+                <li>Theming</li>
+                <li>Navigation Component</li>
+                <li>ViewModel</li>
+                <li>MVVM Architecture</li>
+                <li>Room Database</li>
+                <li>Retrofit/API</li>
+                <li>Coil Image Loading</li>
+                <li>Animations</li>
+                <li>Custom Components</li>
+                <li>Slot API Pattern</li>
+                <li>Side Effects</li>
+                <li>Coroutines</li>
+                <li>Flow/StateFlow</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; color: #666;">
+            <p>Her ders kod örnekleri ve "Sıra Sende!" alıştırmaları içerir.</p>
+            <p>Kotlin ve OOP bilgisi gerektirir.</p>
+            <p>© 2024 - Jetpack Compose Eğitimi (14 Ders)</p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
