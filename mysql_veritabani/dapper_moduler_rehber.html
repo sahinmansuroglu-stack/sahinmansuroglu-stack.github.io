@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dapper: Modüler CRUD Mimarisi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%);
+            background-attachment: fixed;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 2rem;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(to right, #818cf8, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #38bdf8;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        pre {
+            border-radius: 1rem !important;
+            margin: 1.5rem 0 !important;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .alert {
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .alert h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 5rem;
+            padding: 2rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .file-name {
+            display: inline-block;
+            background: #1e293b;
+            color: #818cf8;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.4rem;
+            font-family: monospace;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="badge">Eğitim Serisi</span>
+            <h1>Modern Dapper Mimarisi</h1>
+            <p>Kodlarınızı parçalara bölün, daha temiz ve yönetilebilir bir yapı kurun.</p>
+        </header>
+
+        <section id="neden-task">
+            <div class="card" style="border-left: 5px solid var(--secondary);">
+                <h2><span>⏳</span> Neden "Task" Kullanıyoruz?</h2>
+                <p>Modern C# dünyasında veritabanı işlemleri için <code>Task</code> (Asenkron yapı) kullanmak bir tercih değil, <strong>zorunluluktur</strong>. İşte sebebi:</p>
+                
+                <div class="grid" style="margin-top: 1rem;">
+                    <div style="background: rgba(236, 72, 153, 0.05); padding: 1.5rem; border-radius: 1rem; border: 1px dashed var(--secondary);">
+                        <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">Arayüz Donmasını Engeller</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 0;">Veritabanına bir sorgu gönderdiğinizde cevabın gelmesi zaman alabilir. Eğer <code>Task</code> kullanmazsanız, bu süre boyunca formunuz kilitlenir (not responding). <code>Task</code> sayesinde formunuz canlı kalmaya devam eder.</p>
+                    </div>
+                    <div style="background: rgba(56, 189, 248, 0.05); padding: 1.5rem; border-radius: 1rem; border: 1px dashed #38bdf8;">
+                        <h4 style="color: #38bdf8; margin-bottom: 0.5rem;">Arka Planda Çalışma</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 0;">Programınız veritabanından cevap gelmesini beklerken, bilgisayarınızın işlemcisini yormaz. İş bittiğinde <code>await</code> komutu ile kaldığı yerden devam eder.</p>
+                    </div>
+                </div>
+
+                <div class="alert" style="background: rgba(99, 102, 241, 0.1); border-left-color: var(--primary);">
+                    <h4 style="color: var(--primary);">🎯 Özetle</h4>
+                    <p style="margin-bottom: 0; color: var(--text-main);"><code>Task</code> = Yapılacak işin kendisi.<br><code>async</code> = Bu metodun içinde beklememiz gereken işler olduğunu söyler.<br><code>await</code> = "İş bitene kadar burada dur, ama programın geri kalanını kilitleme" demektir.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="giris">
+            <div class="card">
+                <h2><span>🏗️</span> Neden Modüler Yapı?</h2>
+                <p>Kodlarımızı parçalara (Model, Servis, UI) ayırmak, projemizin gelecekte büyümesini kolaylaştırır. Bir hata olduğunda nerede arayacağımızı biliriz ve aynı kodları tekrar tekrar yazmak zorunda kalmayız.</p>
+                <div class="grid">
+                    <div style="background: rgba(99, 102, 241, 0.1); padding: 1.5rem; border-radius: 1rem;">
+                        <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Daha Temiz Kod</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 0;">Her sınıfın sadece bir görevi vardır (Single Responsibility).</p>
+                    </div>
+                    <div style="background: rgba(236, 72, 153, 0.1); padding: 1.5rem; border-radius: 1rem;">
+                        <h4 style="color: var(--secondary); margin-bottom: 0.5rem;">Kolay Bakım</h4>
+                        <p style="font-size: 0.9rem; margin-bottom: 0;">Veritabanı şifresi değiştiğinde sadece tek bir dosyayı güncellemeniz yeterli olur.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="model">
+            <div class="card">
+                <h2><div class="step-number">1</div> Veri Modeli</h2>
+                <p>Veritabanındaki tabloyu temsil eden sınıftır. Bu sınıf sadece veriyi taşır.</p>
+                <span class="file-name">Ogrenci.cs</span>
+                <pre><code class="language-csharp">public class Ogrenci 
+{
+    public int OgrenciID { get; set; }
+    public string Ad { get; set; }
+    public string Soyad { get; set; }
+    public string Sinif { get; set; }
+    public int Puan { get; set; }
+}</code></pre>
+            </div>
+        </section>
+
+        <section id="servis">
+            <div class="card">
+                <h2><div class="step-number">2</div> Veritabanı Servisi</h2>
+                <p>Tüm SQL sorgularının ve Dapper komutlarının bulunduğu "beyin" kısmıdır. UI (Arayüz) bu servisi çağırarak iş yapar.</p>
+                <span class="file-name">VeritabaniServis.cs</span>
+                <pre><code class="language-csharp">using Dapper;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+
+public class VeritabaniServis
+{
+    private readonly string _connStr = "host=localhost;port=3306;user id=root;password=mtal123;database=okuldb;";
+
+    private IDbConnection BaglantiAl() => new MySqlConnection(_connStr);
+
+    // Verileri Listele
+    public async Task&lt;List&lt;Ogrenci&gt;&gt; ListeleAsync()
+    {
+        using var db = BaglantiAl();
+        return (await db.QueryAsync&lt;Ogrenci&gt;("SELECT * FROM ogrenciler")).ToList();
+    }
+
+    // Yeni Kayıt Ekle
+    public async Task&lt;int&gt; EkleAsync(Ogrenci ogrenci)
+    {
+        using var db = BaglantiAl();
+        string sql = "INSERT INTO ogrenciler (Ad, Soyad, Sinif, Puan) VALUES (@Ad, @Soyad, @Sinif, @Puan)";
+        return await db.ExecuteAsync(sql, ogrenci);
+    }
+
+    // Kaydı Güncelle
+    public async Task&lt;int&gt; GuncelleAsync(Ogrenci ogrenci)
+    {
+        using var db = BaglantiAl();
+        string sql = "UPDATE ogrenciler SET Ad=@Ad, Soyad=@Soyad, Sinif=@Sinif, Puan=@Puan WHERE OgrenciID=@OgrenciID";
+        return await db.ExecuteAsync(sql, ogrenci);
+    }
+
+    // Kaydı Sil
+    public async Task&lt;int&gt; SilAsync(int id)
+    {
+        using var db = BaglantiAl();
+        return await db.ExecuteAsync("DELETE FROM ogrenciler WHERE OgrenciID = @id", new { id });
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <section id="ui">
+            <div class="card">
+                <h2><div class="step-number">3</div> Arayüz Entegrasyonu</h2>
+                <p>Button click olaylarında servisi nasıl kullanacağınızı ve DataGrid seçimini nasıl yapacağınızı gösterir.</p>
+                <span class="file-name">Form1.cs (Kısmi)</span>
+                
+                <div class="alert">
+                    <h4><span>💡</span> Kritik İpucu</h4>
+                    <p style="margin-bottom: 0;">Güncelleme ve Silme işlemleri için her zaman bir <code>_seciliId</code> değişkeni tutun. Bu ID'yi DataGrid'e her tıklandığında güncelleyin.</p>
+                </div>
+
+                <pre><code class="language-csharp">// Servis örneği (Global tanımlayın)
+VeritabaniServis _servis = new VeritabaniServis();
+int _seciliId = 0;
+
+// LİSTELEME BUTONU
+private async void btnListele_Click(object sender, EventArgs e) 
+{
+    dgvOgrenciler.DataSource = await _servis.ListeleAsync();
+}
+
+// EKLEME BUTONU
+private async void btnEkle_Click(object sender, EventArgs e) 
+{
+    var ogrenci = new Ogrenci {
+        Ad = txtAd.Text, Soyad = txtSoyad.Text, 
+        Sinif = txtSinif.Text, Puan = int.Parse(txtPuan.Text)
+    };
+    int sonuc = await _servis.EkleAsync(ogrenci);
+    if(sonuc > 0) MessageBox.Show("Başarıyla eklendi!");
+    await Listele(); // Listeyi yenile
+}
+
+// GÜNCELLEME BUTONU
+private async void btnGuncelle_Click(object sender, EventArgs e) 
+{
+    if(_seciliId == 0) return;
+    var ogrenci = new Ogrenci {
+        OgrenciID = _seciliId,
+        Ad = txtAd.Text, Soyad = txtSoyad.Text, 
+        Sinif = txtSinif.Text, Puan = int.Parse(txtPuan.Text)
+    };
+    int sonuc = await _servis.GuncelleAsync(ogrenci);
+    if(sonuc > 0) MessageBox.Show("Güncelleme başarılı!");
+    await Listele();
+}
+
+// DATAGRID TIKLAMA (Veriyi UI'a Taşıma)
+private void dgvOgrenciler_CellClick(object sender, DataGridViewCellEventArgs e) 
+{
+    if (e.RowIndex >= 0) {
+        var satir = dgvOgrenciler.Rows[e.RowIndex];
+        _seciliId = (int)satir.Cells["OgrenciID"].Value;
+        
+        // Kutuları doldur
+        txtAd.Text = satir.Cells["Ad"].Value.ToString();
+        txtSoyad.Text = satir.Cells["Soyad"].Value.ToString();
+        txtSinif.Text = satir.Cells["Sinif"].Value.ToString();
+        txtPuan.Text = satir.Cells["Puan"].Value.ToString();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 - Modern Dapper Eğitim Serisi | Modüler Mimari Rehberi</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+</body>
+
+</html>

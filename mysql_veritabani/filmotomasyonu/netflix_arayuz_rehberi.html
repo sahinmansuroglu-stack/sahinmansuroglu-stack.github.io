@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Arayüz Rehberi: Login & Film Yönetimi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+
+        :root {
+            --netflix-red: #e50914;
+            --netflix-black: #141414;
+            --netflix-dark: #1f1f1f;
+            --accent: #00d4ff;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--netflix-black);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: 
+                linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+                url('https://images.unsplash.com/photo-1574267431647-c82c47468903?auto=format&fit=crop&q=80&w=1600');
+            background-size: cover;
+            background-attachment: fixed;
+            padding-bottom: 5rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 3rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            border: 1px solid var(--glass-border);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--netflix-red);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .step-card {
+            background: rgba(31, 31, 31, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.8s ease-out forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-badge {
+            background: var(--netflix-red);
+            color: white;
+            padding: 0.4rem 1.2rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .code-box {
+            background: #000;
+            border-radius: 1rem;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        pre {
+            margin: 0 !important;
+            padding: 1.5rem !important;
+            font-size: 0.9rem !important;
+        }
+
+        .info-box {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid var(--accent);
+            padding: 1.25rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 2rem;
+            border-top: 1px solid var(--glass-border);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>NETFLIX UI REHBERİ</h1>
+            <p>Login Formundan Film Listesine: Adım Adım Uygulama Akışı</p>
+        </header>
+
+        <!-- STEP 1: LOGIN -->
+        <div class="step-card">
+            <span class="step-badge">ADIM 1</span>
+            <h2>Giriş Formu (Login Form)</h2>
+            <p>Kullanıcının adı ve şifresiyle sisteme girdiği ilk ekrandır.</p>
+            
+            <div class="info-box">
+                <h4>🔑 Giriş Mantığı</h4>
+                <p style="margin-bottom: 0;">Servis katmanında <code>SELECT * FROM Users WHERE KullaniciAdi=@ad AND Sifre=@sifre</code> sorgusunu çalıştırarak dönen değerin boş olup olmadığını kontrol ederiz.</p>
+            </div>
+
+            <div class="code-box">
+                <pre><code class="language-csharp">// UserService.cs içine eklenecek metot
+public async Task&lt;User&gt; LoginAsync(string ad, string sifre) 
+{
+    using var db = new MySqlConnection(_conn);
+    string sql = "SELECT * FROM Users WHERE KullaniciAdi = @ad AND Sifre = @sifre";
+    return await db.QueryFirstOrDefaultAsync&lt;User&gt;(sql, new { ad, sifre });
+}
+
+// FormLogin.cs - Buton Click Olayı
+private async void btnGiris_Click(object sender, EventArgs e) 
+{
+    var user = await _userService.LoginAsync(txtAd.Text, txtSifre.Text);
+    if (user != null) {
+        FormAnaSayfa anaSayfa = new FormAnaSayfa(user); // Kullanıcıyı aktar
+        anaSayfa.Show();
+        this.Hide();
+    } else {
+        MessageBox.Show("Hatalı Giriş!");
+    }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- STEP 2: AVG RATINGS -->
+        <div class="step-card">
+            <span class="step-badge">ADIM 2</span>
+            <h2>Ortalama Puanlar Listesi</h2>
+            <p>Login formunun altında veya ana sayfada, filmlerin genel başarı ortalamasını gösteren listedir.</p>
+
+            <div class="code-box">
+                <pre><code class="language-sql">-- SQL: Filmlerin Ortalama Puanlarını Getir
+SELECT 
+    M.FilmAdi, 
+    AVG(W.VerilenPuan) as OrtalamaPuan,
+    COUNT(W.KayitID) as ToplamIzlenme
+FROM Movies M
+LEFT JOIN Watchlist W ON M.FilmID = W.FilmID
+GROUP BY M.FilmID, M.FilmAdi;</code></pre>
+            </div>
+
+            <div class="code-box">
+                <pre><code class="language-csharp">// ReportService.cs içine eklenecek
+public class FilmBasariRaporu {
+    public string FilmAdi { get; set; }
+    public double OrtalamaPuan { get; set; }
+    public int ToplamIzlenme { get; set; }
+}
+
+public async Task&lt;List&lt;FilmBasariRaporu&gt;&gt; GetAverageRatingsAsync() {
+    using var db = new MySqlConnection(_conn);
+    string sql = "SELECT M.FilmAdi, AVG(W.VerilenPuan) as OrtalamaPuan, COUNT(W.KayitID) as ToplamIzlenme FROM Movies M LEFT JOIN Watchlist W ON M.FilmID = W.FilmID GROUP BY M.FilmID, M.FilmAdi";
+    var result = await db.QueryAsync&lt;FilmBasariRaporu&gt;(sql);
+    return result.ToList();
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- STEP 3: MAIN FORM & RATING FLOW -->
+        <div class="step-card">
+            <span class="step-badge">ADIM 3</span>
+            <h2>İzleme Akışı ve Dinamik Puanlama</h2>
+            <p>Gerçekçi bir deneyim için kullanıcı önce izlemeye başlar, bitirdiğinde ise puanını verir.</p>
+
+            <div class="info-box" style="border-left-color: #ffd700;">
+                <h4 style="color: #ffd700;">🔄 İki Aşamalı Mantık</h4>
+                <p style="margin-bottom: 0;">1. <strong>İzlemeye Başla:</strong> Veritabanında durumu 'İzleniyor' olarak bir kayıt açar.<br>
+                2. <strong>Bitir ve Puanla:</strong> Mevcut kaydı güncelleyerek durumu 'Tamamlandı' yapar ve puanı işler.</p>
+            </div>
+
+            <h3>1. İzlemeye Başla (Start)</h3>
+            <div class="code-box">
+                <pre><code class="language-csharp">// FormAnaSayfa.cs
+private async void btnIzlemeyeBasla_Click(object sender, EventArgs e) 
+{
+    var izlemeKaydi = new Watchlist {
+        KullaniciID = _girisYapanUser.KullaniciID,
+        FilmID = _seciliFilmId,
+        Durum = "İzleniyor",
+        VerilenPuan = 0 // Henüz puan verilmedi
+    };
+
+    await _watchlistService.StartWatchingAsync(izlemeKaydi);
+    btnIzlemeyeBasla.Enabled = false; // Tekrar basılmasın
+    btnBitirVePuanla.Visible = true;  // Bitir butonu görünsün
+}</code></pre>
+            </div>
+
+            <h3 style="margin-top: 2rem;">2. Bitir ve Puanla (Finish & Rate)</h3>
+            <div class="code-box">
+                <pre><code class="language-csharp">// FormAnaSayfa.cs
+private async void btnBitirVePuanla_Click(object sender, EventArgs e) 
+{
+    // Mevcut 'İzleniyor' kaydını 'Tamamlandı' olarak güncelle
+    var guncelleme = new Watchlist {
+        KullaniciID = _girisYapanUser.KullaniciID,
+        FilmID = _seciliFilmId,
+        VerilenPuan = int.Parse(txtPuan.Text),
+        Durum = "Tamamlandı"
+    };
+
+    await _watchlistService.UpdateStatusAndRateAsync(guncelleme);
+    MessageBox.Show("Harika! Film listenize eklendi ve puanlandı.");
+    
+    btnBitirVePuanla.Visible = false;
+    btnIzlemeyeBasla.Enabled = true;
+    await OrtalamaPuanlariGuncelle(); // İstatistikleri yenile
+}</code></pre>
+            </div>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 - Netflix Arayüz & Navigasyon Rehberi</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+
+</html>

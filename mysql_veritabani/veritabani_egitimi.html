@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# ve MySQL: Veritabanı Temelleri</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+
+        :root {
+            --primary: #4F46E5; /* Indigo 600 */
+            --primary-hover: #4338CA;
+            --secondary: #10B981; /* Emerald 500 */
+            --bg-color: #0F172A; /* Slate 900 */
+            --surface: #1E293B; /* Slate 800 */
+            --surface-light: #334155;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --accent: #F59E0B; /* Amber 500 */
+            --danger: #EF4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at top right, #1E1B4B, transparent 40%),
+                              radial-gradient(circle at bottom left, #064E3B, transparent 40%);
+            background-attachment: fixed;
+            padding-bottom: 3rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #60A5FA, #A78BFA);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #93C5FD;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #38BDF8;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--surface-light);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(96, 165, 250, 0.3);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .concept-item {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border-left: 5px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .concept-item:hover {
+            background: var(--surface-light);
+            transform: scale(1.02);
+        }
+
+        .concept-item h4 {
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .concept-item p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        pre {
+            background-color: #000 !important;
+            border-radius: 0.75rem !important;
+            padding: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+            border: 1px solid var(--surface-light);
+            overflow-x: auto;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            color: #E2E8F0;
+        }
+
+        .example-box {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--secondary);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 0.75rem 0.75rem 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .example-box p {
+            margin-bottom: 0;
+            color: #D1D5DB;
+        }
+        
+        .example-box strong {
+            color: var(--secondary);
+        }
+
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 0.75rem 0.75rem 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .warning-box p {
+            margin-bottom: 0;
+            color: #FCA5A5;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px -3px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -3px rgba(79, 70, 229, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            box-shadow: 0 4px 15px -3px rgba(16, 185, 129, 0.4);
+        }
+
+        #solutions-section {
+            display: none;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px dashed var(--surface-light);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .task-list {
+            margin-left: 1.5rem;
+            margin-bottom: 2rem;
+            color: #E2E8F0;
+        }
+
+        .task-list li {
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+        }
+
+        .task-list li::marker {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .sub-list {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+            color: var(--text-muted);
+            list-style-type: circle;
+        }
+
+        .sub-list li {
+            margin-bottom: 0.25rem;
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.1);
+            color: #38BDF8;
+            padding: 0.1rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+            font-family: monospace;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface-light);
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Veritabanı Dünyasına Giriş</h1>
+            <p class="subtitle">C# Nesne Tabanlı Programlama Macerasında Yeni Bir Durak!</p>
+        </header>
+
+        <section class="card">
+            <h2><span>📦</span> 1. Temel Veritabanı Kavramları</h2>
+            <p>Merhaba gençler! C# ile harika programlar yazıyoruz, nesneler (object) oluşturuyoruz, sınıflar (class) tasarlıyoruz. Peki, programımızı kapattığımızda bu verilere ne oluyor? Maalesef uçup gidiyor! İşte verilerimizin <span class="highlight">kalıcı</span> olmasını sağlayan sihirli depolara <strong>Veritabanı (Database)</strong> diyoruz.</p>
+            
+            <p>Bir veritabanını, okuldaki kocaman bir dosya dolabı veya devasa bir dijital kütüphane gibi düşünebilirsiniz. İçinde çok düzenli bir sistem vardır.</p>
+
+            <div class="concept-grid">
+                <div class="concept-item">
+                    <h4>🗄️ Veritabanı (Database)</h4>
+                    <p>Tüm verilerimizin düzenli bir şekilde tutulduğu ana depodur. Tıpkı okuldaki ana arşiv odası gibidir. (Örn: <i>OkulDB</i>)</p>
+                </div>
+                <div class="concept-item">
+                    <h4>📊 Tablo (Table)</h4>
+                    <p>Veritabanı içindeki klasörlerdir. Benzer türdeki verileri gruplar. Örneğin; <i>Ogrenciler</i> tablosu, <i>Ogretmenler</i> tablosu.</p>
+                </div>
+                <div class="concept-item">
+                    <h4>📝 Satır / Kayıt (Row/Record)</h4>
+                    <p>Tablodaki her bir veridir. Örneğin; "101 numaralı Ahmet Yılmaz'ın tüm bilgileri" bir satırdır.</p>
+                </div>
+                <div class="concept-item">
+                    <h4>🏷️ Sütun / Alan (Column)</h4>
+                    <p>Kayıtların özellikleridir. C#'taki class property'leri gibidir. Örneğin; <i>Ad, Soyad, Yas</i> birer sütundur.</p>
+                </div>
+                <div class="concept-item" style="grid-column: 1 / -1; border-left-color: var(--accent);">
+                    <h4>🔑 Birincil Anahtar (Primary Key - PK)</h4>
+                    <p>Bir kaydı diğerlerinden ayıran <b>benzersiz</b> değerdir. Sizin TC Kimlik Numaranız veya Okul Numaranız gibidir. İki öğrencinin adı aynı olabilir ama okul numarası aynı olamaz!</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>🐬</span> 2. MySQL Sunucusu Nedir?</h2>
+            <p>Veritabanımız kendi başına duramaz; onu yönetecek, verileri hızlıca bulup getirecek, güvenliği sağlayacak bir "yöneticiye" ihtiyaç vardır. İşte <strong>MySQL Server</strong>, dünyadaki en popüler, ücretsiz ve çok güçlü veritabanı yönetim sistemlerinden (RDBMS) biridir.</p>
+            <p>Biz C# programımızdan MySQL'e bağlanıp, ona <em>"Bana 10-A sınıfındaki öğrencileri getir!"</em> veya <em>"Yeni bir oyunu sisteme kaydet!"</em> diyeceğiz. MySQL de bizim için arka planda bu karmaşık işlemleri ışık hızında yapacak.</p>
+        </section>
+
+        <section class="card">
+            <h2><span>🏗️</span> 3. Veritabanı ve Tablo Oluşturma</h2>
+            <p>MySQL ile konuşmak için kullandığımız özel dile <strong>SQL (Structured Query Language)</strong> denir. C#'tan farklıdır ama yazması çok eğlencelidir!</p>
+
+            <h3>Veritabanı Oluşturma</h3>
+            <p>Önce verilerimizi koyacağımız ana depomuzu oluşturalım:</p>
+            <pre><code class="language-sql">-- Yeni bir veritabanı yarat
+CREATE DATABASE OkulDB;
+
+-- İşlem yapacağımız veritabanını seç (Bu çok önemli!)
+USE OkulDB;</code></pre>
+
+            <h3>Tablo Oluşturma</h3>
+            <p>Şimdi bu veritabanı içine öğrencileri kaydedeceğimiz <strong>Ogrenciler</strong> adında bir tablo yapalım. Sütunların veri tiplerini (sayı mı, metin mi?) belirtmeliyiz.</p>
+            
+            <pre><code class="language-sql">CREATE TABLE Ogrenciler (
+    OgrenciID INT AUTO_INCREMENT PRIMARY KEY, -- Benzersiz numara, kendi kendine artar
+    Ad VARCHAR(50),                           -- Maks. 50 karakterlik metin
+    Soyad VARCHAR(50),                        -- Maks. 50 karakterlik metin
+    Sinif VARCHAR(10),                        -- Sınıf bilgisi (Örn: 10-A)
+    Puan INT                                  -- Tam sayı
+);</code></pre>
+            <div class="example-box">
+                <p><strong>C# ile Karşılaştırma:</strong> <br>
+                SQL'deki <span class="tag">VARCHAR(50)</span> = C#'taki <span class="tag">string</span><br>
+                SQL'deki <span class="tag">INT</span> = C#'taki <span class="tag">int</span><br>
+                <span class="tag">AUTO_INCREMENT</span> ise çok havalıdır! MySQL, her yeni kayıt eklendiğinde ID'yi 1, 2, 3 diye otomatik belirler, bizim uğraşmamıza gerek kalmaz.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>⚡</span> 4. Temel SQL Komutları (CRUD)</h2>
+            <p>Veritabanı dünyasında 4 temel eylem vardır: <b>C</b>reate (Oluştur/Ekle), <b>R</b>ead (Oku/Listele), <b>U</b>pdate (Güncelle), <b>D</b>elete (Sil). İngilizce baş harflerinden buna kısaca <strong>CRUD</strong> denir.</p>
+
+            <h3>A. Veri Ekleme (INSERT INTO)</h3>
+            <p>Tabloya yeni öğrenciler kaydedelim. <code>OgrenciID</code> vermiyoruz çünkü MySQL onu kendisi verecek.</p>
+            <pre><code class="language-sql">-- Tek bir öğrenci ekleme
+INSERT INTO Ogrenciler (Ad, Soyad, Sinif, Puan) 
+VALUES ('Ali', 'Yılmaz', '10-A', 85);
+
+-- Aynı anda birden fazla öğrenci ekleme (Çok daha hızlı!)
+INSERT INTO Ogrenciler (Ad, Soyad, Sinif, Puan) VALUES 
+('Ayşe', 'Demir', '10-B', 95),
+('Mehmet', 'Kaya', '11-C', 70),
+('Zeynep', 'Şahin', '10-A', 100);</code></pre>
+
+            <h3>B. Veri Okuma / Listeleme (SELECT)</h3>
+            <p>En çok kullanacağınız komut! Verileri çekmek ve filtrelemek için kullanırız.</p>
+            <pre><code class="language-sql">-- 1. Tablodaki TÜM öğrencileri ve tüm bilgileri getirir (* her şey demektir)
+SELECT * FROM Ogrenciler;
+
+-- 2. Sadece Ad ve Soyad sütunlarını getirir
+SELECT Ad, Soyad FROM Ogrenciler;
+
+-- 3. FİLTRELEME (WHERE): Sadece 10-A sınıfındaki öğrencileri getirir
+SELECT * FROM Ogrenciler WHERE Sinif = '10-A';
+
+-- 4. BİRDEN FAZLA ŞART: 10-A sınıfında olan VE puanı 90'dan büyük olanlar
+SELECT * FROM Ogrenciler WHERE Sinif = '10-A' AND Puan > 90;
+
+-- 5. SIRALAMA (ORDER BY): Öğrencileri puana göre yüksekten düşüğe (DESC) sıralar
+SELECT * FROM Ogrenciler ORDER BY Puan DESC;</code></pre>
+
+            <h3>C. Veri Güncelleme (UPDATE)</h3>
+            <p>Diyelim ki Mehmet'in sınav sonucuna itiraz edildi ve puanı 80 oldu. Bunu güncellemeliyiz.</p>
+            <pre><code class="language-sql">UPDATE Ogrenciler 
+SET Puan = 80 
+WHERE Ad = 'Mehmet' AND Soyad = 'Kaya';</code></pre>
+
+            <h3>D. Veri Silme (DELETE)</h3>
+            <p>Okuldan mezun olan veya ayrılan bir kaydı silmek için kullanılır.</p>
+            <pre><code class="language-sql">-- OgrenciID'si 2 olan öğrenciyi siler (En güvenli silme yöntemi ID kullanmaktır)
+DELETE FROM Ogrenciler WHERE OgrenciID = 2;</code></pre>
+            
+            <div class="warning-box">
+                <p><strong>⚠️ DİKKAT:</strong> DELETE veya UPDATE komutlarında <code>WHERE</code> şartını yazmayı unutursanız, tablodaki TÜM öğrencileri siler veya güncellersiniz! Sistemleri çökerten en büyük acemi hatası budur. Daima filtre kullanın!</p>
+            </div>
+        </section>
+
+        <section class="card" style="border: 2px solid var(--accent); background: rgba(30, 41, 59, 0.8);">
+            <h2 style="color: var(--accent); border-bottom: none; margin-top: 0;"><span>🎮</span> Sıra Sende! (Görev Zamanı)</h2>
+            <p>Şimdi klavye sende! C# ile yapacağımız bir "Oyun Kütüphanesi" programı için veritabanı altyapısını kurman gerekiyor.</p>
+            
+            <p style="color: #E2E8F0; font-weight: 600; margin-bottom: 1rem;">Görev Listesi:</p>
+            <ol class="task-list">
+                <li><code>OyunDunyasi</code> adında bir veritabanı oluştur ve seç.</li>
+                <li>İçine <code>Oyunlar</code> adında bir tablo oluştur. Tabloda şu özellikler (sütunlar) olsun:
+                    <ul class="sub-list">
+                        <li><b>ID</b> (Tam sayı, Birincil anahtar, Otomatik artan)</li>
+                        <li><b>OyunAdi</b> (Metin - Maks 100 karakter)</li>
+                        <li><b>Tur</b> (Metin - Aksiyon, RPG, Spor vb. Maks 50 karakter)</li>
+                        <li><b>MetacriticPuani</b> (Tam sayı - 100 üzerinden)</li>
+                    </ul>
+                </li>
+                <li>Tabloya en sevdiğin <strong>3 farklı oyunu</strong> tek bir sorgu ile ekle (INSERT).</li>
+                <li>Puanı 80'den büyük olan oyunları listele (SELECT).</li>
+                <li>Eklediğin oyunlardan birinin puanını 99 olarak güncelle (UPDATE).</li>
+                <li>Son olarak, türü 'Spor' olan oyunları veritabanından sil (DELETE). (Eğer spor oyunu eklemediysen, eklediğin bir türü sil)</li>
+            </ol>
+
+            <button class="btn btn-success" onclick="toggleSolutions()">
+                <span id="btn-text">Cevapları Göster</span>
+                <svg id="btn-icon" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            <div id="solutions-section">
+                <h3 style="color: var(--secondary);">✅ Çözümler</h3>
+                <p>Umarım önce kendin denemişsindir! Gelişmek için hata yapmak en güzel yoldur. İşte doğru SQL komutları:</p>
+
+                <p><strong>1. Veritabanı Oluşturma ve Seçme:</strong></p>
+                <pre><code class="language-sql">CREATE DATABASE OyunDunyasi;
+USE OyunDunyasi;</code></pre>
+
+                <p><strong>2. Tablo Oluşturma:</strong></p>
+                <pre><code class="language-sql">CREATE TABLE Oyunlar (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    OyunAdi VARCHAR(100),
+    Tur VARCHAR(50),
+    MetacriticPuani INT
+);</code></pre>
+
+                <p><strong>3. Oyun Ekleme:</strong></p>
+                <pre><code class="language-sql">INSERT INTO Oyunlar (OyunAdi, Tur, MetacriticPuani) VALUES 
+('Red Dead Redemption 2', 'Aksiyon-Macera', 97),
+('Elden Ring', 'RPG', 96),
+('EA Sports FC 24', 'Spor', 76);</code></pre>
+
+                <p><strong>4. Puanı 80'den Büyük Olanları Listeleme:</strong></p>
+                <pre><code class="language-sql">SELECT * FROM Oyunlar WHERE MetacriticPuani > 80;</code></pre>
+
+                <p><strong>5. Puan Güncelleme:</strong></p>
+                <pre><code class="language-sql">-- RDR2'nin puanını 99 yapalım
+UPDATE Oyunlar 
+SET MetacriticPuani = 99 
+WHERE OyunAdi = 'Red Dead Redemption 2';</code></pre>
+
+                <p><strong>6. Kayıt Silme:</strong></p>
+                <pre><code class="language-sql">-- Türü Spor olanları silelim
+DELETE FROM Oyunlar WHERE Tur = 'Spor';</code></pre>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Syntax Highlighting için Prism JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    
+    <script>
+        function toggleSolutions() {
+            const section = document.getElementById('solutions-section');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+            
+            if (section.style.display === 'none' || section.style.display === '') {
+                section.style.display = 'block';
+                btnText.textContent = 'Cevapları Gizle';
+                btnIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>';
+                // Scroll down smoothly to show solutions
+                section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                section.style.display = 'none';
+                btnText.textContent = 'Cevapları Göster';
+                btnIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>';
+            }
+        }
+    </script>
+</body>
+</html>

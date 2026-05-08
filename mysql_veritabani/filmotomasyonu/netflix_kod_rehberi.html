@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Mimari: Kod Rehberi (C# & Dapper)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+
+        :root {
+            --netflix-red: #e50914;
+            --netflix-black: #141414;
+            --accent: #00d4ff;
+            --bg-dark: #0b0b0b;
+            --card-bg: rgba(32, 32, 32, 0.7);
+            --text-main: #f5f5f5;
+            --text-muted: #a0a0a0;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(229, 9, 20, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(0, 212, 255, 0.05) 0%, transparent 40%);
+            background-attachment: fixed;
+            padding-bottom: 5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, rgba(20, 20, 20, 0) 0%, rgba(20, 20, 20, 0.8) 100%);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            color: var(--netflix-red);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--accent);
+            font-weight: 300;
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-btn:hover {
+            background: var(--netflix-red);
+            border-color: var(--netflix-red);
+        }
+
+        .section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 4rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--netflix-red);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 2rem;
+        }
+
+        .code-box {
+            background: #000;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .code-header {
+            background: #1a1a1a;
+            padding: 0.75rem 1.25rem;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #888;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .code-header .lang {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        pre {
+            margin: 0 !important;
+            border-radius: 0 !important;
+        }
+
+        .desc-box {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .desc-box h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .desc-box p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 3rem;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.2rem; }
+            .module-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>NETFLIX ARCHITECT</h1>
+            <p class="subtitle">Modüler C# & Dapper Kod Rehberi</p>
+        </header>
+
+        <!-- MODULE 1: USERS -->
+        <section class="section-card">
+            <h2><span>👤</span> 1. Kullanıcı Modülü (User Module)</h2>
+            <div class="desc-box">
+                <h4>Kapsam:</h4>
+                <p>Platforma üye olan kişilerin profil bilgilerini ve paket türlerini yönetir.</p>
+            </div>
+            
+            <div class="module-grid">
+                <!-- Model -->
+                <div class="code-box">
+                    <div class="code-header"><span>User.cs</span> <span class="lang">MODEL</span></div>
+                    <pre><code class="language-csharp">namespace NetflixApp.Models
+{
+    public class User 
+    {
+        public int KullaniciID { get; set; }
+        public string KullaniciAdi { get; set; }
+        public string Sifre { get; set; }
+        public string PaketTuru { get; set; }
+    }
+}</code></pre>
+                </div>
+                <!-- Service -->
+                <div class="code-box">
+                    <div class="code-header"><span>UserService.cs</span> <span class="lang">SERVICE</span></div>
+                    <pre><code class="language-csharp">using Dapper;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+using NetflixApp.Models;
+
+public class UserService 
+{
+    private readonly string _conn = "host=localhost;port=3306;user id=root;password=mtal123;database=filmdb;";
+
+    public async Task&lt;List&lt;User&gt;&gt; GetAllAsync() 
+    {
+        using var db = new MySqlConnection(_conn);
+        var liste = await db.QueryAsync&lt;User&gt;("SELECT * FROM Users");
+        return liste.ToList();
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 2: MOVIES -->
+        <section class="section-card">
+            <h2><span>🎬</span> 2. Film Modülü (Movie Module)</h2>
+            <div class="desc-box">
+                <h4>Kapsam:</h4>
+                <p>İçerik kütüphanesindeki filmlerin adını, türünü ve sürelerini yönetir.</p>
+            </div>
+
+            <div class="module-grid">
+                <!-- Model -->
+                <div class="code-box">
+                    <div class="code-header"><span>Movie.cs</span> <span class="lang">MODEL</span></div>
+                    <pre><code class="language-csharp">namespace NetflixApp.Models
+{
+    public class Movie 
+    {
+        public string FilmID { get; set; } // PK (M1, M2...)
+        public string FilmAdi { get; set; }
+        public string Tur { get; set; }
+        public int Sure { get; set; }
+    }
+}</code></pre>
+                </div>
+                <!-- Service -->
+                <div class="code-box">
+                    <div class="code-header"><span>MovieService.cs</span> <span class="lang">SERVICE</span></div>
+                    <pre><code class="language-csharp">using Dapper;
+using MySql.Data.MySqlClient;
+using System.Data;
+using System.Threading.Tasks;
+using NetflixApp.Models;
+
+public class MovieService 
+{
+    private readonly string _conn = "host=localhost;port=3306;user id=root;password=mtal123;database=filmdb;";
+
+    public async Task&lt;int&gt; AddMovieAsync(Movie m) 
+    {
+        using var db = new MySqlConnection(_conn);
+        string sql = "INSERT INTO Movies (FilmID, FilmAdi, Tür, Sure) VALUES (@FilmID, @FilmAdi, @Tur, @Sure)";
+        return await db.ExecuteAsync(sql, m);
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 3: WATCHLIST -->
+        <section class="section-card">
+            <h2><span>🍿</span> 3. İzleme Listesi Modülü (Watchlist Module)</h2>
+            <div class="desc-box">
+                <h4>Kapsam:</h4>
+                <p>Kullanıcılar ve filmler arasındaki ilişkiyi (puan ve durum) yöneten köprü modüldür.</p>
+            </div>
+
+            <div class="module-grid">
+                <!-- Model -->
+                <div class="code-box">
+                    <div class="code-header"><span>Watchlist.cs</span> <span class="lang">MODEL</span></div>
+                    <pre><code class="language-csharp">namespace NetflixApp.Models
+{
+    public class Watchlist 
+    {
+        public int KayitID { get; set; }
+        public int KullaniciID { get; set; } // FK
+        public string FilmID { get; set; }    // FK
+        public int VerilenPuan { get; set; }
+        public string Durum { get; set; }
+    }
+}</code></pre>
+                </div>
+                <!-- Service -->
+                <div class="code-box">
+                    <div class="code-header"><span>WatchlistService.cs</span> <span class="lang">SERVICE</span></div>
+                    <pre><code class="language-csharp">using Dapper;
+using MySql.Data.MySqlClient;
+using System.Data;
+using System.Threading.Tasks;
+using NetflixApp.Models;
+
+public class WatchlistService 
+{
+    private readonly string _conn = "host=localhost;port=3306;user id=root;password=mtal123;database=filmdb;";
+
+    public async Task&lt;int&gt; StartWatchingAsync(Watchlist w) 
+    {
+        using var db = new MySqlConnection(_conn);
+        string sql = "INSERT INTO Watchlist (KullaniciID, FilmID, VerilenPuan, Durum) VALUES (@KullaniciID, @FilmID, 0, 'İzleniyor')";
+        return await db.ExecuteAsync(sql, w);
+    }
+
+    public async Task&lt;int&gt; UpdateStatusAndRateAsync(Watchlist w) 
+    {
+        using var db = new MySqlConnection(_conn);
+        string sql = "UPDATE Watchlist SET VerilenPuan = @VerilenPuan, Durum = 'Tamamlandı' WHERE KullaniciID = @KullaniciID AND FilmID = @FilmID AND Durum = 'İzleniyor'";
+        return await db.ExecuteAsync(sql, w);
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 4: REPORTING -->
+        <section class="section-card" style="border: 1px solid var(--accent);">
+            <h2 style="color: var(--accent);"><span>📈</span> 4. Raporlama Modülü (Reporting Module)</h2>
+            <div class="desc-box">
+                <h4>Kapsam:</h4>
+                <p>Tabloları birleştirerek (JOIN) kullanıcıya anlamlı raporlar sunar.</p>
+            </div>
+
+            <div class="code-box">
+                <div class="code-header"><span>ReportService.cs</span> <span class="lang">REPORT SERVICE</span></div>
+                <pre><code class="language-csharp">using Dapper;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+public class UserMovieReport 
+{
+    public string KullaniciAdi { get; set; }
+    public string FilmAdi { get; set; }
+    public int VerilenPuan { get; set; }
+}
+
+public class ReportService 
+{
+    private readonly string _conn = "host=localhost;port=3306;user id=root;password=mtal123;database=filmdb;";
+
+    public async Task&lt;List&lt;UserMovieReport&gt;&gt; GetFullReportAsync() 
+    {
+        using var db = new MySqlConnection(_conn);
+        string sql = @"SELECT U.KullaniciAdi, M.FilmAdi, W.VerilenPuan 
+                       FROM Watchlist W
+                       INNER JOIN Users U ON W.KullaniciID = U.KullaniciID
+                       INNER JOIN Movies M ON W.FilmID = M.FilmID";
+        
+        var report = await db.QueryAsync&lt;UserMovieReport&gt;(sql);
+        return report.ToList();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 - Netflix Code Architect | Modüler Yazılım Geliştirme Rehberi</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+</body>
+
+</html>

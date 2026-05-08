@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sınav Hazırlık Rehberi: Öğrenci Yönetim Sistemi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+
+        :root {
+            --primary: #3b82f6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+            background-attachment: fixed;
+            padding-bottom: 5rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding: 4rem 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 2.5rem;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        h3 {
+            color: var(--success);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .ui-list {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+            list-style: none;
+            border-left: 4px solid var(--warning);
+        }
+
+        .ui-list li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 0.4rem;
+        }
+
+        .ui-list li span.obj { color: #facc15; font-weight: bold; font-family: monospace; }
+        .ui-list li span.desc { color: var(--text-muted); font-size: 0.9rem; }
+
+        .step-num {
+            background: var(--primary);
+            color: white;
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        pre {
+            border-radius: 1rem !important;
+            margin: 1.5rem 0 !important;
+            font-size: 0.9rem !important;
+        }
+
+        .alert {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 1.25rem;
+            border-radius: 0.5rem;
+            margin: 1.5rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="badge">Sınav Materyali</span>
+            <h1>Öğrenci Yönetim Sistemi</h1>
+            <p>Dapper, Fluent Validation ve Modüler Mimari Rehberi</p>
+        </header>
+
+        <!-- VERİTABANI -->
+        <section>
+            <div class="card">
+                <h2><span>🗄️</span> Veritabanı Hazırlığı</h2>
+                <p>Aşağıdaki SQL kodunu MySQL üzerinde çalıştırarak tabloyu oluşturun:</p>
+                <pre><code class="language-sql">CREATE DATABASE okuldb;
+USE okuldb;
+
+CREATE TABLE ogrenciler (
+    OgrenciID INT PRIMARY KEY AUTO_INCREMENT,
+    Ad VARCHAR(50) NOT NULL,
+    Soyad VARCHAR(50) NOT NULL,
+    Numara VARCHAR(10) NOT NULL,
+    Sinif VARCHAR(20),
+    Puan INT
+);</code></pre>
+            </div>
+        </section>
+
+        <!-- UI TASARIMI -->
+        <section>
+            <div class="card">
+                <h2><span>🎨</span> UI Nesne Adlandırma (Önemli)</h2>
+                <p>Form üzerindeki nesnelerin adlarını (Name özelliği) aşağıdaki gibi yapmanız kodlarla uyum için şarttır:</p>
+                <ul class="ui-list">
+                    <li><span class="obj">txtAd</span> <span class="desc">Ad girişi için TextBox</span></li>
+                    <li><span class="obj">txtSoyad</span> <span class="desc">Soyad girişi için TextBox</span></li>
+                    <li><span class="obj">txtNumara</span> <span class="desc">Okul numarası için TextBox</span></li>
+                    <li><span class="obj">txtSinif</span> <span class="desc">Sınıf bilgisi için TextBox</span></li>
+                    <li><span class="obj">txtPuan</span> <span class="desc">Puan girişi için TextBox</span></li>
+                    <li><span class="obj">txtAra</span> <span class="desc">Arama yapmak için TextBox</span></li>
+                    <li><span class="obj">btnEkle</span> <span class="desc">Ekleme Butonu</span></li>
+                    <li><span class="obj">btnGuncelle</span> <span class="desc">Güncelleme Butonu</span></li>
+                    <li><span class="obj">btnSil</span> <span class="desc">Silme Butonu</span></li>
+                    <li><span class="obj">dgvOgrenciler</span> <span class="desc">Listeleme için DataGridView</span></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ADIM 1: MODEL -->
+        <section>
+            <div class="card">
+                <h2><span class="step-num">1</span> Model Sınıfı</h2>
+                <span class="badge" style="background: #6366f1;">Ogrenci.cs</span>
+                <pre><code class="language-csharp">public class Ogrenci 
+{
+    public int OgrenciID { get; set; }
+    public string Ad { get; set; }
+    public string Soyad { get; set; }
+    public string Numara { get; set; }
+    public string Sinif { get; set; }
+    public int Puan { get; set; }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ADIM 2: VALIDATION -->
+        <section>
+            <div class="card">
+                <h2><span class="step-num">2</span> Fluent Validation (Doğrulama)</h2>
+                <p>Kullanıcının girdiği verilerin kurallara uyup uymadığını kontrol eder.</p>
+                <span class="badge" style="background: #ec4899;">OgrenciValidator.cs</span>
+                <pre><code class="language-csharp">using FluentValidation;
+
+public class OgrenciValidator : AbstractValidator&lt;Ogrenci&gt;
+{
+    public OgrenciValidator()
+    {
+        RuleFor(x => x.Ad).NotEmpty().WithMessage("Ad boş geçilemez.");
+        RuleFor(x => x.Soyad).NotEmpty().WithMessage("Soyad boş geçilemez.");
+        RuleFor(x => x.Numara).Length(1, 10).WithMessage("Numara 1-10 hane olmalı.");
+        RuleFor(x => x.Puan).InclusiveBetween(0, 100).WithMessage("Puan 0-100 arası olmalı.");
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ADIM 3: SERVICE -->
+        <section>
+            <div class="card">
+                <h2><span class="step-num">3</span> Veritabanı Servisi (Dapper)</h2>
+                <span class="badge" style="background: #10b981;">OgrenciService.cs</span>
+                <pre><code class="language-csharp">using Dapper;
+using MySql.Data.MySqlClient;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Threading.Tasks;
+
+public class OgrenciService
+{
+    private readonly string _conn = "host=localhost;port=3306;user id=root;password=mtal123;database=okuldb;";
+    private IDbConnection GetConn() => new MySqlConnection(_conn);
+
+    public async Task&lt;List&lt;Ogrenci&gt;&gt; GetListAsync() {
+        using var db = GetConn();
+        return (await db.QueryAsync&lt;Ogrenci&gt;("SELECT * FROM ogrenciler")).ToList();
+    }
+
+    public async Task&lt;int&gt; AddAsync(Ogrenci o) {
+        using var db = GetConn();
+        string sql = "INSERT INTO ogrenciler (Ad, Soyad, Numara, Sinif, Puan) VALUES (@Ad, @Soyad, @Numara, @Sinif, @Puan)";
+        return await db.ExecuteAsync(sql, o);
+    }
+
+    public async Task&lt;int&gt; UpdateAsync(Ogrenci o) {
+        using var db = GetConn();
+        string sql = "UPDATE ogrenciler SET Ad=@Ad, Soyad=@Soyad, Numara=@Numara, Sinif=@Sinif, Puan=@Puan WHERE OgrenciID=@OgrenciID";
+        return await db.ExecuteAsync(sql, o);
+    }
+
+    public async Task&lt;int&gt; DeleteAsync(int id) {
+        using var db = GetConn();
+        return await db.ExecuteAsync("DELETE FROM ogrenciler WHERE OgrenciID=@id", new { id });
+    }
+
+    public async Task&lt;List&lt;Ogrenci&gt;&gt; SearchAsync(string text) {
+        using var db = GetConn();
+        string sql = "SELECT * FROM ogrenciler WHERE Ad LIKE @t OR Soyad LIKE @t OR Numara LIKE @t";
+        return (await db.QueryAsync&lt;Ogrenci&gt;(sql, new { t = "%" + text + "%" })).ToList();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- ADIM 4: UI LOGIC -->
+        <section>
+            <div class="card">
+                <h2><span class="step-num">4</span> Form Olayları (UI Logic)</h2>
+                <p>Button Click ve Validation kullanımı.</p>
+                <pre><code class="language-csharp">OgrenciService _servis = new OgrenciService();
+int _seciliId = 0;
+
+// EKLEME BUTONU
+private async void btnEkle_Click(object sender, EventArgs e) {
+    var ogrenci = new Ogrenci {
+        Ad = txtAd.Text, Soyad = txtSoyad.Text, 
+        Numara = txtNumara.Text, Sinif = txtSinif.Text, 
+        Puan = int.Parse(txtPuan.Text)
+    };
+
+    var validator = new OgrenciValidator();
+    var sonuc = validator.Validate(ogrenci);
+
+    if (sonuc.IsValid) {
+        await _servis.AddAsync(ogrenci);
+        MessageBox.Show("Öğrenci başarıyla eklendi!");
+        await Listele();
+    } else {
+        string hatalar = string.Join("\n", sonuc.Errors.Select(x => x.ErrorMessage));
+        MessageBox.Show(hatalar, "Hata");
+    }
+}
+
+// GÜNCELLEME BUTONU
+private async void btnGuncelle_Click(object sender, EventArgs e) {
+    if (_seciliId == 0) { MessageBox.Show("Önce listeden bir öğrenci seçin!"); return; }
+
+    var ogrenci = new Ogrenci {
+        OgrenciID = _seciliId,
+        Ad = txtAd.Text, Soyad = txtSoyad.Text, 
+        Numara = txtNumara.Text, Sinif = txtSinif.Text, 
+        Puan = int.Parse(txtPuan.Text)
+    };
+
+    var validator = new OgrenciValidator();
+    if (validator.Validate(ogrenci).IsValid) {
+        await _servis.UpdateAsync(ogrenci);
+        MessageBox.Show("Bilgiler güncellendi!");
+        await Listele();
+    }
+}
+
+// SİLME BUTONU
+private async void btnSil_Click(object sender, EventArgs e) {
+    if (_seciliId == 0) return;
+
+    var cevap = MessageBox.Show("Seçili öğrenciyi silmek istediğinize emin misiniz?", "Onay", MessageBoxButtons.YesNo);
+    if (cevap == DialogResult.Yes) {
+        await _servis.DeleteAsync(_seciliId);
+        await Listele();
+        _seciliId = 0; // Seçimi temizle
+    }
+}
+
+// ARAMA OLAYI (TextChanged)
+private async void txtAra_TextChanged(object sender, EventArgs e) {
+    dgvOgrenciler.DataSource = await _servis.SearchAsync(txtAra.Text);
+}
+
+// DATAGRID TIKLAMA (ID Seçme ve Kutuları Doldurma)
+private void dgvOgrenciler_CellClick(object sender, DataGridViewCellEventArgs e) {
+    if (e.RowIndex >= 0) {
+        var satir = dgvOgrenciler.Rows[e.RowIndex];
+        _seciliId = (int)satir.Cells["OgrenciID"].Value;
+        
+        txtAd.Text = satir.Cells["Ad"].Value.ToString();
+        txtSoyad.Text = satir.Cells["Soyad"].Value.ToString();
+        txtNumara.Text = satir.Cells["Numara"].Value.ToString();
+        txtSinif.Text = satir.Cells["Sinif"].Value.ToString();
+        txtPuan.Text = satir.Cells["Puan"].Value.ToString();
+    }
+}</code></pre>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 - Nesne Yönelimli Programlama Sınav Hazırlık | MTAL Bilişim Teknolojileri</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+
+</html>

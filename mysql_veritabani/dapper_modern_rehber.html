@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dapper Rehberi: ORM ve Asenkron Programlama</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+
+        :root {
+            --primary: #8B5CF6;
+            /* Violet 500 */
+            --primary-hover: #7C3AED;
+            /* Violet 600 */
+            --secondary: #10B981;
+            /* Emerald 500 */
+            --bg-color: #0F172A;
+            /* Slate 900 */
+            --surface: #1E293B;
+            /* Slate 800 */
+            --surface-light: #334155;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --accent: #F59E0B;
+            /* Amber 500 */
+            --danger: #EF4444;
+            --info: #38BDF8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at top left, #312E81, transparent 40%),
+                radial-gradient(circle at bottom right, #064E3B, transparent 40%);
+            background-attachment: fixed;
+            padding-bottom: 3rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #A78BFA, #F472B6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #C4B5FD;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: #38BDF8;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--surface-light);
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.05rem;
+            color: var(--text-muted);
+        }
+
+        .card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1.25rem;
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(167, 139, 250, 0.3);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .concept-item {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border-left: 5px solid var(--primary);
+            transition: all 0.2s ease;
+        }
+
+        .concept-item:hover {
+            background: var(--surface-light);
+            transform: scale(1.02);
+        }
+
+        .concept-item h4 {
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .concept-item p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        pre {
+            background-color: #000 !important;
+            border-radius: 0.75rem !important;
+            padding: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+            border: 1px solid var(--surface-light);
+            overflow-x: auto;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--info);
+            padding: 1.25rem 1.5rem;
+            border-radius: 0 0.75rem 0.75rem 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-box p {
+            margin-bottom: 0;
+            color: #E0F2FE;
+        }
+
+        .info-box strong {
+            color: var(--info);
+        }
+
+        .highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface-light);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Modern Dapper Rehberi</h1>
+            <p class="subtitle">ORM Dünyasına ve Asenkron Programlamaya Giriş</p>
+        </header>
+
+        <section class="card">
+            <h2><span>📦</span> 1. ORM ve Dapper Nedir?</h2>
+
+            <div class="concept-grid">
+                <div class="concept-item">
+                    <h4>ORM Nedir?</h4>
+                    <p>Object-Relational Mapping (Nesne-İlişkisel Eşleme). Veritabanındaki tabloları C# içindeki
+                        sınıflara (class) otomatik olarak bağlayan bir köprüdür. SQL sorgularıyla uğraşırken verileri
+                        elle tek tek kutulara doldurmaktan bizi kurtarır.</p>
+                </div>
+                <div class="concept-item">
+                    <h4>Dapper Nedir?</h4>
+                    <p>Stack Overflow ekibi tarafından geliştirilen "Micro-ORM"dur. Çok hızlıdır, hafiftir ve SQL yazma
+                        özgürlüğünü bozmadan verileri otomatik olarak nesnelere dönüştürür. Yazılımcılar arasında "Hız
+                        canavarı" olarak bilinir.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>⏳</span> 2. Asenkron Programlama: Task, Async, Await</h2>
+            <p>Modern programlamada <strong>asenkron</strong> yapı çok önemlidir. Programımızın "donmamasını"
+                (kilitlenmemesini) sağlar.</p>
+
+            <div class="info-box">
+                <p><strong>Mutfak Metaforu:</strong><br>
+                    Bir mutfak düşünün. Makarnayı haşlamak için suyu ateşe koydunuz. Suyun kaynaması (veritabanından
+                    cevap gelmesi) 10 dakika sürecek. <br><br>
+                    <strong>Senkron (Eski Yöntem):</strong> Su kaynayana kadar ocağın başında put gibi beklersiniz.
+                    Başka hiçbir şey yapamazsınız. (Program donar!)<br>
+                    <strong>Asenkron (Modern Yöntem):</strong> Suyu koyarsınız, o kaynarken siz salatayı yapmaya
+                    (arayüzü canlı tutmaya, kullanıcıya cevap vermeye) devam edersiniz.
+                </p>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-item">
+                    <h4>Task (Görev)</h4>
+                    <p>Yapılacak, zaman alacak işin kendisidir. "Bu bir Görev'dir (Task), hemen bitmeyebilir, haberin
+                        olsun" demektir. Örneğin veritabanından binlerce öğrenci kaydını çekmek bir <span
+                            class="highlight">Task</span>'tır.</p>
+                </div>
+                <div class="concept-item">
+                    <h4>async (Asenkron Metot)</h4>
+                    <p>Bir metodun asenkron çalışacağını ve içinde <code>await</code> kullanılabileceğini bilgisayara
+                        bildiren etikettir.</p>
+                </div>
+                <div class="concept-item">
+                    <h4>await (Bekle)</h4>
+                    <p>O görev bitene kadar sadece o satırda "bekle", ama programın geri kalanını kilitleme! Görev
+                        bittiğinde içindeki sonucu al ve bir sonraki satırdan kodları çalıştırmaya devam et demektir.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>💻</span> 3. Dapper ile Tam Kapsamlı (Statik) Kodlar</h2>
+            <p>Şimdi bir öğrenci veritabanı üzerinden işlemleri görelim. Kullanıcıdan TextBox ile veri almak yerine,
+                daha iyi anlaman için verileri kodun içinde (statik olarak) verdik.</p>
+
+            <h3>Veritabanı Sınıfı (Entity Class)</h3>
+            <p>Veritabanımızdaki tablo ile birebir eşleşen sınıfımız. Özellik (Property) isimleri veritabanı
+                sütunlarıyla aynı olmalıdır.</p>
+            <pre><code class="language-csharp">public class Ogrenci 
+{
+    public int OgrenciID { get; set; }
+    public string Ad { get; set; }
+    public string Soyad { get; set; }
+    public string Sinif { get; set; }
+    public int Puan { get; set; }
+}</code></pre>
+
+            <h3>Bağlantı (Connection) Ayarları</h3>
+            <p>Veritabanının nerede olduğunu ve şifresini belirten <code>ConnectionString</code> ile bir kapı
+                oluşturuyoruz.</p>
+            <pre><code class="language-csharp">using Dapper;
+using MySql.Data.MySqlClient;
+using System.Data;
+using System.Threading.Tasks;
+using System.Linq;
+
+// ... sınıfın içi ...
+
+string connectionString = "host=localhost;port=3306;user id=root;password=mtal123;database=okuldb;";
+
+// Bağlantıyı tek bir yerden yöneten özellik
+private IDbConnection Connection => new MySqlConnection(connectionString);</code></pre>
+
+        </section>
+
+        <section class="card">
+            <h2><span>🔍</span> A. Listeleme İşlemi (Read)</h2>
+            <p>Veritabanından tüm kayıtları çekip C# listesine çevirme işlemi.</p>
+
+            <pre><code class="language-csharp">public async Task Listele()
+{
+    // using: İşimiz bitince veritabanı kapısını otomatik kapatır
+    using var db = Connection;
+    string sql = "SELECT * FROM ogrenciler";
+
+    // QueryAsync: Veritabanından veri (liste) ÇEKMEK için kullanılır
+    var liste = (await db.QueryAsync&lt;Ogrenci&gt;(sql)).ToList();
+   
+    dataGridView1.DataSource = liste;
+}</code></pre>
+            <div class="info-box">
+                <p><strong>QueryAsync&lt;Ogrenci&gt; :</strong> Dapper'ın en güçlü metodudur! SQL'den gelen her bir
+                    satırı otomatik olarak <code>Ogrenci</code> sınıfına dönüştürür. Sonunda <code>ToList()</code>
+                    diyerek bunları bir Listeye çeviririz. Çünkü veriyi veritabanından getirmek (<span
+                        class="highlight">Query</span>) istiyoruz.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>➕</span> B. Ekleme İşlemi (Create)</h2>
+            <p>Yeni bir öğrenciyi veritabanına kaydetme işlemi.</p>
+
+            <pre><code class="language-csharp">public async Task YeniOgrenciEkle()
+{
+    using var db = Connection;
+    
+    // Statik olarak verileri kendimiz dolduruyoruz
+    var yeniOgrenci = new Ogrenci {
+        Ad = "Ali",
+        Soyad = "Veli",
+        Sinif = "10-A",
+        Puan = 85
+    };
+
+    // @Ad, @Soyad gibi ifadeler Dapper'ın güvenli parametreleridir
+    string sql = "INSERT INTO ogrenciler (Ad, Soyad, Sinif, Puan) VALUES (@Ad, @Soyad, @Sinif, @Puan)";
+    
+    // ExecuteAsync: Veritabanında DEĞİŞİKLİK YAPMAK (Ekle, Sil, Güncelle) için kullanılır
+    await db.ExecuteAsync(sql, yeniOgrenci);
+    
+    await Listele(); // İşlem bitince listeyi yenile
+}</code></pre>
+            <div class="info-box">
+                <p><strong>ExecuteAsync :</strong> Veritabanında bir işlem "icra etmek" (çalıştırmak) içindir. Ekleme
+                    (Insert) işleminde geriye bir liste dönmesini beklemeyiz. Sadece eylemin gerçekleşmesini isteriz. Bu
+                    yüzden <span class="highlight">QueryAsync yerine ExecuteAsync</span> kullanılır. İkinci parametre
+                    olan <code>yeniOgrenci</code> içindeki verileri, Dapper otomatik olarak SQL'deki
+                    <code>@Ad, @Soyad</code> yerlerine yerleştirir.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>✏️</span> C. Güncelleme İşlemi (Update)</h2>
+            <p>Var olan bir kaydın bilgilerini ID'sine göre değiştirme işlemi.</p>
+
+            <pre><code class="language-csharp">public async Task OgrenciGuncelle()
+{
+    using var db = Connection;
+    
+    // ID'si 1 olan öğrencinin puanını 95 olarak güncelliyoruz
+    var guncelOgrenci = new Ogrenci {
+        OgrenciID = 1, // Hangi öğrenci?
+        Ad = "Ali",
+        Soyad = "Veli",
+        Sinif = "10-A",
+        Puan = 95     // Puan değişti
+    };
+
+    string sql = "UPDATE ogrenciler SET Ad=@Ad, Soyad=@Soyad, Sinif=@Sinif, Puan=@Puan WHERE OgrenciID=@OgrenciID";
+    
+    await db.ExecuteAsync(sql, guncelOgrenci);
+    
+    await Listele();
+}</code></pre>
+            <div class="info-box">
+                <p>Yine <strong>ExecuteAsync</strong> kullandık! Çünkü veritabanında bir güncelleme eylemi yapıyoruz.
+                    Dapper, <code>OgrenciID=@OgrenciID</code> kısmını bizim nesnemizdeki 1 değeri ile eşleştirip doğru
+                    kişiyi günceller.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>🗑️</span> D. Silme İşlemi (Delete)</h2>
+            <p>Sadece ID bilgisini göndererek veritabanından kaydı tamamen kaldırma.</p>
+
+            <pre><code class="language-csharp">public async Task OgrenciSil()
+{
+    using var db = Connection;
+    string sql = "DELETE FROM ogrenciler WHERE OgrenciID = @id";
+    
+    // Geçici (Anonymous) nesne oluşturarak id'yi Dapper'a gönderiyoruz
+    await db.ExecuteAsync(sql, new { id = 5 }); // ID'si 5 olanı sil
+    
+    await Listele();
+}</code></pre>
+            <div class="info-box">
+                <p><strong>new { id = 5 } :</strong> Tüm Ogrenci sınıfını göndermek yerine, sadece silmek için gereken
+                    <code>@id</code> bilgisini geçici (isimsiz/anonymous) bir nesne olarak Dapper'a gönderdik. Dapper
+                    bunu anında SQL'in içine gömer ve işlemi gerçekleştirir.</p>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2><span>🔎</span> E. Arama İşlemi (Search / Filter)</h2>
+            <p>Belirli bir kelimeyi (örn: "Ahmet") veritabanında Ad veya Soyad içinde arama işlemi.</p>
+
+            <pre><code class="language-csharp">public async Task OgrenciAra()
+{
+    using var db = Connection;
+    
+    // Statik olarak 'Ahmet' kelimesini arıyoruz
+    // % işaretleri SQL'de "öncesi ve sonrası önemli değil, içinde geçsin" demektir
+    string aranan = "%Ahmet%"; 
+    
+    string sql = "SELECT * FROM ogrenciler WHERE Ad LIKE @metin OR Soyad LIKE @metin";
+    
+    // Veri (Liste) geri DÖNECEĞİ için QueryAsync kullanıyoruz!
+    var sonuclar = (await db.QueryAsync&lt;Ogrenci&gt;(sql, new { metin = aranan })).ToList();
+    
+    dataGridView1.DataSource = sonuclar;
+}</code></pre>
+            <div class="info-box">
+                <p>Burada tekrar <strong>QueryAsync</strong> komutuna döndük! Çünkü arama sonucunda bize eşleşen
+                    öğrencilerin listesi (bir sonuç kümesi) geliyor. Arama kelimesini
+                    <code>new { metin = aranan }</code> ile güvenli bir şekilde SQL'e gönderiyoruz.</p>
+            </div>
+        </section>
+
+        <section class="card" style="border: 2px solid var(--accent); background: rgba(30, 41, 59, 0.8);">
+            <h2 style="color: var(--accent); border-bottom: none; margin-top: 0;">📌 Özet Hatırlatma</h2>
+            <ul style="list-style: none; padding-left: 0; color: #E2E8F0;">
+                <li style="margin-bottom: 1rem;">✅ <strong>ExecuteAsync:</strong> Veritabanında bir <span
+                        class="highlight">eylem/değişiklik</span> (Ekle, Sil, Güncelle) yapacağımızda kullanılır. Geriye
+                    veri (liste) dönmez.</li>
+                <li style="margin-bottom: 1rem;">✅ <strong>QueryAsync:</strong> Veritabanından <span
+                        class="highlight">veri çekmek</span> (Listeleme, Arama) istediğimizde kullanılır. Bize Dapper
+                    sayesinde doğrudan nesne listesi olarak geri döner.</li>
+                <li style="margin-bottom: 1rem;">✅ <strong>Using Bloğu:</strong> İşlem bittiğinde arka planda veritabanı
+                    kapısının (connection) otomatik kapanmasını sağlayıp sistemi rahatlatır.</li>
+                <li style="margin-bottom: 1rem;">✅ <strong>await:</strong> Asenkron işlemin (örneğin ExecuteAsync'nin)
+                    veritabanında çalışmasını tamamlayana kadar beklemesini, ardından sıradaki koda (örneğin Listele
+                    metoduna) geçmesini sağlar.</li>
+            </ul>
+        </section>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+
+</html>

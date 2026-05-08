@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dapper & C# Eğitim Portalı</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        :root {
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --accent: #10b981;
+            --bg: #0b0e14;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(99, 102, 241, 0.1), transparent 30%),
+                radial-gradient(circle at 90% 90%, rgba(236, 72, 153, 0.1), transparent 30%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+            flex-grow: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(135deg, #a5b4fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+
+        .category-label {
+            grid-column: 1 / -1;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-label::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card.secondary::before { background: var(--secondary); }
+        .card.accent::before { background: var(--accent); }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: white;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: gap 0.3s ease;
+        }
+
+        .card:hover .btn {
+            gap: 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Eğitim Portalı</h1>
+            <p class="subtitle">Dapper, C# Modüler Mimari ve Veritabanı Tasarımı Eğitim Materyalleri</p>
+        </header>
+
+        <div class="grid">
+            <!-- TEMEL REHBERLER -->
+            <div class="category-label">🚀 Temel Eğitimler</div>
+            
+            <a href="dapper_modern_rehber.html" class="card">
+                <div>
+                    <div class="card-icon">📘</div>
+                    <h3>Modern Dapper Rehberi</h3>
+                    <p>Dapper'a giriş, asenkron programlama ve temel CRUD operasyonlarını öğrenin.</p>
+                </div>
+                <div class="btn">İncele ➔</div>
+            </a>
+
+            <a href="dapper_moduler_rehber.html" class="card">
+                <div>
+                    <div class="card-icon">🏗️</div>
+                    <h3>Modüler Mimari Giriş</h3>
+                    <p>Kodlarınızı Model, Servis ve UI olarak parçalara ayırmanın mantığını keşfedin.</p>
+                </div>
+                <div class="btn">İncele ➔</div>
+            </a>
+
+            <!-- NETFLIX PROJESİ -->
+            <div class="category-label" style="color: var(--secondary);">🎬 Netflix Proje Serisi</div>
+
+            <a href="filmotomasyonu/netflix_db_rehberi.html" class="card secondary">
+                <div>
+                    <div class="card-icon">🗄️</div>
+                    <h3>Netflix Veri Tasarımı</h3>
+                    <p>İlişkisel veritabanı yapısı, tablolar arası bağlantılar ve SQL sorgu örnekleri.</p>
+                </div>
+                <div class="btn" style="color: var(--secondary);">İncele ➔</div>
+            </a>
+
+            <a href="filmotomasyonu/netflix_kod_rehberi.html" class="card secondary">
+                <div>
+                    <div class="card-icon">💻</div>
+                    <h3>Netflix Kod Mimarisi</h3>
+                    <p>C# Modelleri, Dapper servisleri ve modüler kod yapılandırması.</p>
+                </div>
+                <div class="btn" style="color: var(--secondary);">İncele ➔</div>
+            </a>
+
+            <a href="filmotomasyonu/netflix_arayuz_rehberi.html" class="card secondary">
+                <div>
+                    <div class="card-icon">📱</div>
+                    <h3>Netflix UI & Akış</h3>
+                    <p>Login ekranı, izleme/puanlama mantığı ve formlar arası veri taşıma.</p>
+                </div>
+                <div class="btn" style="color: var(--secondary);">İncele ➔</div>
+            </a>
+
+            <!-- SINAV HAZIRLIK -->
+            <div class="category-label" style="color: var(--accent);">📝 Sınav Hazırlık</div>
+
+            <a href="ogrenci_sinav_projesi/sinav_hazirlik_rehberi.html" class="card accent">
+                <div>
+                    <div class="card-icon">🎓</div>
+                    <h3>Öğrenci Yönetim Sistemi</h3>
+                    <p>Fluent Validation, Dapper ve tam kapsamlı CRUD projesi hazırlık rehberi.</p>
+                </div>
+                <div class="btn" style="color: var(--accent);">Sınava Başla ➔</div>
+            </a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Nesne Yönelimli Programlama Eğitim Serisi - MTAL Bilişim Teknolojileri</p>
+    </footer>
+</body>
+
+</html>

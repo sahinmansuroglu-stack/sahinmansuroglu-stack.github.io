@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix Veritabanı Mimarisi: İlişkisel Tasarım</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css');
+
+        :root {
+            --netflix-red: #e50914;
+            --netflix-black: #141414;
+            --netflix-dark: #181818;
+            --accent: #00d4ff;
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--netflix-black);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 5rem;
+            background-image: radial-gradient(circle at top right, rgba(229, 9, 20, 0.15), transparent 50%),
+                              radial-gradient(circle at bottom left, rgba(0, 212, 255, 0.1), transparent 50%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+            padding: 4rem 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 2rem;
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--netflix-red), var(--accent));
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--netflix-red);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--netflix-dark);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--netflix-red);
+            transform: scale(1.01);
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h3 {
+            color: var(--netflix-red);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .table-visual {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            border-radius: 1rem;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .table-visual th {
+            background: var(--netflix-red);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+
+        .table-visual td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+            font-size: 0.95rem;
+        }
+
+        .table-visual tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pk-badge {
+            background: #ffd700;
+            color: black;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .fk-badge {
+            background: #00ff88;
+            color: black;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        pre {
+            border-radius: 1rem !important;
+            margin: 1.5rem 0 !important;
+            font-size: 0.9rem !important;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border-left: 4px solid var(--netflix-red);
+        }
+
+        .feature-item h4 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .sql-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .lang-tag {
+            background: #333;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <span class="subtitle">Veri Mimarisi Dersi</span>
+            <h1>Netflix Benzeri Platform Tasarımı</h1>
+            <p>Kullanıcılar, Filmler ve İzleme Geçmişi Arasındaki İlişkisel Dünyayı Keşfedin.</p>
+        </header>
+
+        <section id="mantik">
+            <div class="card">
+                <h2><span>💡</span> Neden İlişkisel Veritabanı?</h2>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>Veri Tasarrufu</h4>
+                        <p>Filmin adını her izleme kaydına tekrar tekrar yazmak yerine sadece "M1" yazıyoruz. Binlerce kayıt olduğunu düşünürseniz bu devasa bir yer tasarrufu sağlar.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Merkezi Yönetim</h4>
+                        <p>Bir filmin adı değişirse (örneğin yazım hatası düzeltilirse), sadece tek bir yerden (Filmler Tablosu) değiştirmek yeterli olur.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h4>Güçlü Analiz</h4>
+                        <p>"Bilim kurgu seven kullanıcılar kim?" gibi soruları tabloları birbirine bağlayarak (JOIN) anında cevaplayabiliriz.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tablolar">
+            <div class="card">
+                <h2><span>📊</span> Tablo Yapıları ve Veri Örnekleri</h2>
+                
+                <h3>1. Kullanıcılar (Users)</h3>
+                <p>Platforma üye olan kişilerin temel bilgilerini tutar.</p>
+                <table class="table-visual">
+                    <thead>
+                        <tr>
+                            <th><span class="pk-badge">PK</span> KullaniciID</th>
+                            <th>KullaniciAdi</th>
+                            <th>Sifre</th>
+                            <th>PaketTuru</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>Mert_2024</td><td>123456</td><td>Premium</td></tr>
+                        <tr><td>2</td><td>Selin_Gezgin</td><td>selin123</td><td>Standart</td></tr>
+                        <tr><td>3</td><td>Robot_X</td><td>rx99</td><td>Temel</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>2. Filmler (Movies)</h3>
+                <p>İçerik kütüphanenizi yönettiğiniz tablodur.</p>
+                <table class="table-visual">
+                    <thead>
+                        <tr>
+                            <th><span class="pk-badge">PK</span> FilmID</th>
+                            <th>FilmAdi</th>
+                            <th>Tür</th>
+                            <th>Süre (Dk)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>M1</td><td>Inception</td><td>Bilim Kurgu</td><td>148</td></tr>
+                        <tr><td>M2</td><td>The Godfather</td><td>Suç</td><td>175</td></tr>
+                        <tr><td>M3</td><td>Interstellar</td><td>Bilim Kurgu</td><td>169</td></tr>
+                    </tbody>
+                </table>
+
+                <h3>3. İzleme ve Puanlama (Watchlist)</h3>
+                <p>Kullanıcı ve Film tablolarını birbirine bağlayan "Köprü" tablodur.</p>
+                <table class="table-visual">
+                    <thead>
+                        <tr>
+                            <th><span class="pk-badge">PK</span> KayitID</th>
+                            <th><span class="fk-badge">FK</span> KullaniciID</th>
+                            <th><span class="fk-badge">FK</span> FilmID</th>
+                            <th>Puan</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>501</td><td>1</td><td>M1</td><td>10</td><td>Tamamlandı</td></tr>
+                        <tr><td>502</td><td>1</td><td>M3</td><td>9</td><td>Tamamlandı</td></tr>
+                        <tr><td>503</td><td>2</td><td>M1</td><td>8</td><td>İzleniyor</td></tr>
+                        <tr><td>504</td><td>3</td><td>M2</td><td>10</td><td>Tamamlandı</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="sql">
+            <div class="card">
+                <h2><span>💻</span> SQL Sorguları (Tablo Oluşturma)</h2>
+                <p>Aşağıdaki sorguları MySQL veya SQL Server üzerinde çalıştırarak bu yapıyı kendi bilgisayarınızda kurabilirsiniz.</p>
+
+                <div class="sql-header"><span class="lang-tag">SQL SCRIPT</span></div>
+                <pre><code class="language-sql">-- 1. Kullanıcılar Tablosunu Oluştur
+CREATE TABLE Users (
+    KullaniciID INT PRIMARY KEY AUTO_INCREMENT,
+    KullaniciAdi VARCHAR(50) NOT NULL,
+    Sifre VARCHAR(100) NOT NULL,
+    PaketTuru VARCHAR(20)
+);
+
+-- 2. Filmler Tablosunu Oluştur
+CREATE TABLE Movies (
+    FilmID VARCHAR(10) PRIMARY KEY,
+    FilmAdi VARCHAR(100) NOT NULL,
+    Tür VARCHAR(50),
+    Sure INT
+);
+
+-- 3. İzleme Geçmişi Tablosunu Oluştur (İlişkili Tablo)
+CREATE TABLE Watchlist (
+    KayitID INT PRIMARY KEY AUTO_INCREMENT,
+    KullaniciID INT,
+    FilmID VARCHAR(10),
+    VerilenPuan INT CHECK (VerilenPuan <= 10),
+    Durum VARCHAR(20),
+    -- İlişkileri Kur (Foreign Keys)
+    FOREIGN KEY (KullaniciID) REFERENCES Users(KullaniciID),
+    FOREIGN KEY (FilmID) REFERENCES Movies(FilmID)
+);</code></pre>
+
+                <h3>Örnek Veri Ekleme</h3>
+                <pre><code class="language-sql">INSERT INTO Users (KullaniciAdi, Sifre, PaketTuru) VALUES ('Mert_2024', '123456', 'Premium');
+INSERT INTO Movies (FilmID, FilmAdi, Tür, Sure) VALUES ('M1', 'Inception', 'Bilim Kurgu', 148);
+INSERT INTO Watchlist (KullaniciID, FilmID, VerilenPuan, Durum) VALUES (1, 'M1', 10, 'Tamamlandı');</code></pre>
+            </div>
+        </section>
+
+        <section id="join-sorgulari">
+            <div class="card" style="border-left: 5px solid var(--accent);">
+                <h2><span>🔗</span> Verileri Birleştirme (JOIN Sorguları)</h2>
+                <p>Tabloları birbirine bağlayarak anlamlı raporlar oluşturabiliriz. İşte en çok kullanılan JOIN örnekleri:</p>
+
+                <h3>1. Hangi Kullanıcı Hangi Filmi İzledi? (İki Tablo)</h3>
+                <p>Sadece izleme geçmişini ve kullanıcı adlarını birleştiririz.</p>
+                <pre><code class="language-sql">SELECT 
+    Users.KullaniciAdi, 
+    Watchlist.FilmID, 
+    Watchlist.VerilenPuan 
+FROM Watchlist
+INNER JOIN Users ON Watchlist.KullaniciID = Users.KullaniciID;</code></pre>
+
+                <h3>2. Tam Detaylı Rapor (Üç Tabloyu Birleştirme)</h3>
+                <p>Kullanıcı adı, filmin gerçek adı, puanı ve durumunu tek bir tabloda görürüz.</p>
+                <pre><code class="language-sql">SELECT 
+    U.KullaniciAdi, 
+    M.FilmAdi, 
+    W.VerilenPuan, 
+    W.Durum
+FROM Watchlist W
+INNER JOIN Users U ON W.KullaniciID = U.KullaniciID
+INNER JOIN Movies M ON W.FilmID = M.FilmID;</code></pre>
+
+                <div class="alert" style="background: rgba(0, 212, 255, 0.1); border-left-color: var(--accent);">
+                    <h4 style="color: var(--accent);">💡 JOIN Mantığı</h4>
+                    <p style="margin-bottom: 0; color: var(--text-main);">JOIN işlemi, tablolar arasındaki ortak sütunları (Örn: <code>KullaniciID</code>) kullanarak sanki tek bir büyük tabloyormuş gibi verileri yan yana getirir.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 - Veritabanı Tasarım Rehberi | Netflix Case Study</p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+</body>
+
+</html>
