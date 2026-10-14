@@ -432,10 +432,10 @@
 
     &lt;div class=&quot;buton-grid&quot;&gt;
       &lt;button class=&quot;btn btn-topla&quot; onclick=&quot;islemYap('+')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Topla&lt;/span&gt;&lt;/button&gt;
-      &lt;button class=&quot;btn btn-cikar&quot; onclick=&quot;islemYap('-')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Çıkar&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-cikar&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Çıkar&lt;/span&gt;&lt;/button&gt;
       &lt;button class=&quot;btn btn-carp&quot;  onclick=&quot;islemYap('*')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Çarp&lt;/span&gt;&lt;/button&gt;
-      &lt;button class=&quot;btn btn-bol&quot;   onclick=&quot;islemYap('/')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Böl&lt;/span&gt;&lt;/button&gt;
-      &lt;button class=&quot;btn btn-kalan&quot; onclick=&quot;islemYap('%')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Kalan&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-bol&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Böl&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-kalan&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Kalan&lt;/span&gt;&lt;/button&gt;
       &lt;button class=&quot;btn btn-sil&quot;   onclick=&quot;temizle()&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Temizle&lt;/span&gt;&lt;/button&gt;
     &lt;/div&gt;
 
@@ -464,33 +464,6 @@
       // 2. ÖRNEK: Çarpma İşlemi
       else if (operator === '*') {
         sonuc = s1 * s2;
-      }
-
-      // -------------------------------------------------------------
-      // 🎯 SIRA SENDE / ÖĞRENCİ GÖREVLERİ:
-      // -------------------------------------------------------------
-
-      // 📌 GÖREV 1: Çıkarma İşlemini tamamla
-      // İPUCU: 1. sayıdan 2. sayıyı çıkarmak için (s1 - s2) kullanacaksın.
-      else if (operator === '-') {
-        // KODUNU BURAYA YAZ:
-        // sonuc = ...
-      }
-
-      // 📌 GÖREV 2: Bölme İşlemini tamamla
-      // İPUCU: (s1 / s2) kullanacaksın.
-      // DİKKAT (C# / Python Farkı): s2 sıfır (0) ise 'Sıfıra bölünemez' uyarısı verdir!
-      else if (operator === '/') {
-        // KODUNU BURAYA YAZ:
-        // if (s2 === 0) { alert("Sıfıra bölünemez!"); return; }
-        // sonuc = ...
-      }
-
-      // 📌 GÖREV 3: Kalan (Mod) İşlemini tamamla
-      // İPUCU: C# ve Python'daki gibi % operatörünü kullanacaksın (s1 % s2).
-      else if (operator === '%') {
-        // KODUNU BURAYA YAZ:
-        // sonuc = ...
       }
 
       // 3. Sonuçları ekrana yazdır
@@ -700,21 +673,6 @@ function carp() {
   let sonuc = s1 * s2;
   document.getElementById("lblIslem").innerText = s1 + " * " + s2;
   document.getElementById("lblSonuc").innerText = sonuc;
-}
-
-// 🎯 ÖĞRENCİ GÖREVİ 1: Çıkarma (İpucu: s1 - s2)
-function cikar() {
-  // Öğrenci tamamlayacak...
-}
-
-// 🎯 ÖĞRENCİ GÖREVİ 2: Bölme (İpucu: s1 / s2 ve s2 === 0 kontrolü)
-function bol() {
-  // Öğrenci tamamlayacak...
-}
-
-// 🎯 ÖĞRENCİ GÖREVİ 3: Kalan / Mod (İpucu: s1 % s2)
-function kalanBul() {
-  // Öğrenci tamamlayacak...
 }</code></pre>
                     </div>
 
@@ -736,17 +694,6 @@ function kalanBul() {
   } 
   else if (operator === '*') {
     sonuc = s1 * s2;
-  }
-  
-  // 🎯 ÖĞRENCİ GÖREVLERİ (Aşağıdaki ipuçlarını inceleyin):
-  else if (operator === '-') {
-    // GÖREV 1: Çıkarma kodunu buraya yazınız (İpucu: s1 - s2)
-  }
-  else if (operator === '/') {
-    // GÖREV 2: Bölme kodunu buraya yazınız (İpucu: s1 / s2 ve s2 === 0 kontrolü)
-  }
-  else if (operator === '%') {
-    // GÖREV 3: Kalan kodunu buraya yazınız (İpucu: s1 % s2)
   }
 
   // Sonuçları ekrana yazdırma
@@ -819,6 +766,71 @@ function kalanBul() {
                                 <p class="text-[11px] text-slate-400">C#'taki ve Python'daki <code class="text-pink-300">%</code> operatörünün tamamen aynısıdır. Çift/tek sayı bulmada da kullanılır.</p>
                             </div>
                         </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- EN TEMEL GİRİŞ: 1 BUTON VE 1 TEXT KUTUSU İLE VERİ OKUMA -->
+            <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-6 mt-8 shadow-xl">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="p-1 rounded bg-cyan-500/10 text-cyan-400 font-bold text-xs uppercase tracking-wider">Mini Başlangıç Örneği</span>
+                    <h3 class="text-lg font-bold text-white">En Basit Hali: 1 Buton ve 1 Metin Kutusu (TextBox) ile Veri Alma</h3>
+                </div>
+                <p class="text-xs text-slate-400 mb-6">
+                    Hesap makinesine geçmeden önce tahtada gösterilebilecek en sade örnek: Bir butona tıklandığında metin kutusundaki (<code>input</code>) yazıyı <code>.value</code> ile okuyup ekrana (<code>.innerText</code>) basma mantığı:
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- CANLI MİNİ ÖNİZLEME -->
+                    <div class="lg:col-span-5 bg-slate-950 border border-slate-800 rounded-xl p-5">
+                        <span class="text-xs font-bold text-cyan-400 block mb-3 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                            Canlı Deneme Alanı
+                        </span>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label for="txtMiniGirdi" class="block text-xs font-semibold text-slate-300 mb-1.5">Metin Kutusu (input):</label>
+                                <input type="text" id="txtMiniGirdi" placeholder="Adınızı veya bir kelime yazın..." class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-lg text-white text-sm focus:border-cyan-400 outline-none transition">
+                            </div>
+                            
+                            <button type="button" onclick="miniVeriGoster()" class="w-full py-2.5 px-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-lg text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/20">
+                                <span>Butona Tıkla (Veriyi Oku)</span>
+                            </button>
+
+                            <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-center">
+                                <span class="text-[10px] text-slate-500 uppercase tracking-wider block mb-1">Ekrana Yazdırılan Değer</span>
+                                <div id="lblMiniSonuc" class="text-sm font-semibold text-slate-400 min-h-[22px]">Henüz butona tıklanmadı</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KOD ŞABLONU -->
+                    <div class="lg:col-span-7">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-slate-300">Öğrencilere Gösterilecek En Basit Kod (HTML + JS):</span>
+                            <span class="text-[10px] bg-cyan-500/10 text-cyan-300 px-2 py-0.5 rounded">Tek Parça</span>
+                        </div>
+                        <pre class="language-html"><code class="language-html">&lt;!-- 1. Metin Kutusu (Verinin girildiği yer) --&gt;
+&lt;input type=&quot;text&quot; id=&quot;txtMetin&quot; placeholder=&quot;Bir şeyler yazın...&quot;&gt;
+
+&lt;!-- 2. Buton (Tıklanınca fonksiyona gider) --&gt;
+&lt;button onclick=&quot;veriyiGoster()&quot;&gt;Veriyi Oku&lt;/button&gt;
+
+&lt;!-- 3. Sonucun gösterileceği yer --&gt;
+&lt;h3 id=&quot;lblSonuc&quot;&gt;&lt;/h3&gt;
+
+&lt;script&gt;
+  function veriyiGoster() {
+    // 1. Kutudaki değeri .value ile al:
+    let gelenVeri = document.getElementById(&quot;txtMetin&quot;).value;
+
+    // 2. Ekrana .innerText ile yazdır:
+    document.getElementById(&quot;lblSonuc&quot;).innerText = &quot;Girilen Değer: &quot; + gelenVeri;
+  }
+&lt;/script&gt;</code></pre>
                     </div>
 
                 </div>
@@ -991,10 +1003,10 @@ function kalanBul() {
 
     <div class="buton-grid">
       <button class="btn btn-topla" onclick="islemYap('+')"><span class="sembol">+</span><span class="isim">Topla</span></button>
-      <button class="btn btn-cikar" onclick="islemYap('-')"><span class="sembol">-</span><span class="isim">Çıkar</span></button>
+      <button class="btn btn-cikar"><span class="sembol">-</span><span class="isim">Çıkar</span></button>
       <button class="btn btn-carp"  onclick="islemYap('*')"><span class="sembol">*</span><span class="isim">Çarp</span></button>
-      <button class="btn btn-bol"   onclick="islemYap('/')"><span class="sembol">/</span><span class="isim">Böl</span></button>
-      <button class="btn btn-kalan" onclick="islemYap('%')"><span class="sembol">%</span><span class="isim">Kalan</span></button>
+      <button class="btn btn-bol"><span class="sembol">/</span><span class="isim">Böl</span></button>
+      <button class="btn btn-kalan"><span class="sembol">%</span><span class="isim">Kalan</span></button>
       <button class="btn btn-sil"   onclick="temizle()"><span class="sembol">C</span><span class="isim">Temizle</span></button>
     </div>
 
@@ -1025,33 +1037,6 @@ function kalanBul() {
         sonuc = s1 * s2;
       }
 
-      // -------------------------------------------------------------
-      // 🎯 SIRA SENDE / ÖĞRENCİ GÖREVLERİ:
-      // -------------------------------------------------------------
-
-      // 📌 GÖREV 1: Çıkarma İşlemini tamamla
-      // İPUCU: 1. sayıdan 2. sayıyı çıkarmak için (s1 - s2) kullanacaksın.
-      else if (operator === '-') {
-        // KODUNU BURAYA YAZ:
-        // sonuc = ...
-      }
-
-      // 📌 GÖREV 2: Bölme İşlemini tamamla
-      // İPUCU: (s1 / s2) kullanacaksın.
-      // DİKKAT (C# / Python Farkı): s2 sıfır (0) ise 'Sıfıra bölünemez' uyarısı verdir!
-      else if (operator === '/') {
-        // KODUNU BURAYA YAZ:
-        // if (s2 === 0) { alert("Sıfıra bölünemez!"); return; }
-        // sonuc = ...
-      }
-
-      // 📌 GÖREV 3: Kalan (Mod) İşlemini tamamla
-      // İPUCU: C# ve Python'daki gibi % operatörünü kullanacaksın (s1 % s2).
-      else if (operator === '%') {
-        // KODUNU BURAYA YAZ:
-        // sonuc = ...
-      }
-
       // 3. Sonuçları ekrana yazdır
       document.getElementById("lblIslem").innerText = s1 + " " + operator + " " + s2 + " =";
       document.getElementById("lblSonuc").innerText = sonuc;
@@ -1077,6 +1062,19 @@ function kalanBul() {
                     btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg><span>Şablonu Kopyala (HTML+CSS)</span>`;
                 }, 2000);
             });
+        }
+
+        // EN BASİT VERİ OKUMA ÖRNEĞİ İÇİN FONKSİYON
+        function miniVeriGoster() {
+            const girdi = document.getElementById("txtMiniGirdi").value;
+            const sonuc = document.getElementById("lblMiniSonuc");
+            if (girdi.trim() === "") {
+                sonuc.innerText = "⚠️ Lütfen kutuya bir şeyler yazın!";
+                sonuc.style.color = "#f43f5e";
+            } else {
+                sonuc.innerText = "✅ Girilen Değer: " + girdi;
+                sonuc.style.color = "#38bdf8";
+            }
         }
     </script>
 </body>
