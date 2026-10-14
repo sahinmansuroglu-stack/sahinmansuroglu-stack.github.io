@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>11. Sınıf ATP - HTML5 Multimedya, Responsive Görseller ve Semantik Web</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --secondary: #0d9488;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --dark: #0f172a;
+      --gray-900: #1e293b;
+      --gray-800: #334155;
+      --gray-700: #475569;
+      --gray-600: #64748b;
+      --gray-300: #cbd5e1;
+      --gray-200: #e2e8f0;
+      --gray-100: #f1f5f9;
+      --gray-50: #f8fafc;
+      --card-bg: #ffffff;
+      --body-bg: #f8fafc;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --code-bg: #1e293b;
+      --code-text: #f8fafc;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05);
+      --radius: 12px;
+      --transition: all 0.25s ease;
+    }
+
+    /* Akıllı Tahta & Sunum Modu */
+    body.presentation-mode {
+      font-size: 19px;
+    }
+    body.presentation-mode .container {
+      max-width: 1400px;
+    }
+    body.presentation-mode pre code {
+      font-size: 1.05rem;
+    }
+
+    /* Koyu Tema */
+    body.dark-mode {
+      --card-bg: #1e293b;
+      --body-bg: #0f172a;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --gray-50: #1e293b;
+      --gray-100: #334155;
+      --primary-light: #1e3a8a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--body-bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: var(--transition);
+      scroll-behavior: smooth;
+    }
+
+    /* Header & Navbar */
+    .top-header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #0d9488 100%);
+      color: #ffffff;
+      padding: 3rem 1.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .top-header::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+    .badge-sub {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .top-header h1 {
+      font-size: 2.3rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 0.75rem;
+    }
+    .top-header p {
+      font-size: 1.1rem;
+      opacity: 0.92;
+      max-width: 800px;
+      margin-bottom: 1.5rem;
+    }
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+    .btn-light {
+      background: #ffffff;
+      color: var(--primary);
+    }
+    .btn-light:hover {
+      background: #f1f5f9;
+      transform: translateY(-1px);
+    }
+    .btn-glass {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    .btn-glass:hover {
+      background: rgba(255,255,255,0.28);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    /* Sticky Sub-nav */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    .nav-link {
+      padding: 0.45rem 0.9rem;
+      border-radius: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: var(--transition);
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    /* Main Container & Layout */
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Cards & Sections */
+    .lesson-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .lesson-section:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--gray-100);
+      padding-bottom: 1rem;
+    }
+    .section-num {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      font-size: 1.1rem;
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .section-title-wrap h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .section-title-wrap span {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1.25rem;
+    }
+    @media (max-width: 860px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Code Blocks */
+    .code-box {
+      background: var(--code-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 1rem 0;
+      border: 1px solid #334155;
+    }
+    .code-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #0f172a;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid #334155;
+      color: #94a3b8;
+      font-size: 0.8rem;
+      font-family: monospace;
+    }
+    .code-box pre {
+      padding: 1.2rem;
+      overflow-x: auto;
+      color: #e2e8f0;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .code-tag { color: #f472b6; }
+    .code-attr { color: #38bdf8; }
+    .code-val { color: #fde047; }
+    .code-comment { color: #64748b; font-style: italic; }
+
+    /* Interactive Live Previews */
+    .preview-card {
+      background: var(--gray-50);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin: 1.25rem 0;
+    }
+    .preview-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #10b981;
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .media-player-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      border-radius: 8px;
+      padding: 1rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .media-player-container audio {
+      width: 100%;
+      max-width: 500px;
+    }
+    .media-player-container video {
+      width: 100%;
+      max-width: 560px;
+      height: auto;
+      border-radius: 6px;
+      background: #000;
+    }
+
+    /* Controls Panel */
+    .interactive-toggles {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding: 0.85rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+    }
+    .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+    .toggle-label input[type="checkbox"] {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+    }
+
+    /* Info Callouts */
+    .callout {
+      border-left: 4px solid var(--primary);
+      background: var(--primary-light);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1rem 0;
+      font-size: 0.95rem;
+    }
+    .callout.tip {
+      border-left-color: var(--secondary);
+      background: #f0fdfa;
+      color: #115e59;
+    }
+    .callout.warning {
+      border-left-color: var(--accent);
+      background: #fffbeb;
+      color: #92400e;
+    }
+    body.dark-mode .callout.tip {
+      background: #042f2e;
+      color: #5eead4;
+    }
+    body.dark-mode .callout.warning {
+      background: #451a03;
+      color: #fde68a;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 1.25rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+      background: var(--card-bg);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+    th {
+      background: var(--gray-100);
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    code.inline-code {
+      background: var(--gray-200);
+      color: #d946ef;
+      font-family: monospace;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+    body.dark-mode code.inline-code {
+      background: var(--gray-800);
+      color: #f472b6;
+    }
+
+    /* Responsive Resim Görsel Simülatör */
+    .viewport-meter {
+      background: #1e293b;
+      color: #38bdf8;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .srcset-demo-img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      border: 2px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Semantik Yapı Şeması */
+    .semantic-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: #f1f5f9;
+      padding: 1.25rem;
+      border-radius: 12px;
+      border: 2px dashed #94a3b8;
+      margin: 1.5rem 0;
+    }
+    body.dark-mode .semantic-grid {
+      background: #0f172a;
+      border-color: #475569;
+    }
+    .sem-header, .sem-nav, .sem-footer {
+      background: #3b82f6;
+      color: white;
+      text-align: center;
+      padding: 0.75rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .sem-nav { background: #eab308; color: #1e293b; }
+    .sem-footer { background: #64748b; }
+    .sem-body-split {
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      gap: 0.75rem;
+    }
+    @media (max-width: 768px) {
+      .sem-body-split { grid-template-columns: 1fr; }
+    }
+    .sem-section {
+      background: #10b981;
+      color: white;
+      padding: 1rem;
+      border-radius: 6px;
+    }
+    .sem-article {
+      background: #ffffff;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
+      padding: 0.75rem;
+      border-radius: 6px;
+      margin-top: 0.5rem;
+    }
+    .sem-aside {
+      background: #ec4899;
+      color: white;
+      padding: 1rem;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Text formatting tags cards */
+    .tag-chips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .tag-chip {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      transition: var(--transition);
+    }
+    .tag-chip:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .tag-chip-title {
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+    }
+
+    /* Live Playground */
+    .playground-box {
+      border: 2px solid var(--primary);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 2rem 0;
+    }
+    .playground-header {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .playground-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 280px;
+    }
+    @media (max-width: 768px) {
+      .playground-body {
+        grid-template-columns: 1fr;
+      }
+    }
+    .playground-editor {
+      width: 100%;
+      height: 100%;
+      min-height: 250px;
+      background: #0f172a;
+      color: #38bdf8;
+      border: none;
+      padding: 1rem;
+      font-family: "Consolas", monospace;
+      font-size: 0.95rem;
+      resize: vertical;
+      outline: none;
+    }
+    .playground-preview {
+      background: #ffffff;
+      color: #000;
+      padding: 1rem;
+      overflow: auto;
+      border-left: 1px solid var(--border-color);
+    }
+
+    /* Quiz styling */
+    .quiz-card {
+      background: var(--gray-50);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .quiz-question {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.85rem;
+      color: var(--text-main);
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .quiz-btn {
+      text-align: left;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      font-size: 0.92rem;
+      color: var(--text-main);
+      transition: var(--transition);
+    }
+    .quiz-btn:hover {
+      background: var(--primary-light);
+      border-color: var(--primary);
+    }
+    .quiz-btn.correct {
+      background: #dcfce7 !important;
+      border-color: #22c55e !important;
+      color: #15803d !important;
+      font-weight: bold;
+    }
+    .quiz-btn.wrong {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+      color: #b91c1c !important;
+    }
+    .quiz-feedback {
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      display: none;
+    }
+
+    /* Footer */
+    footer.page-footer {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      margin-top: 3rem;
+      border-top: 1px solid #334155;
+    }
+    footer.page-footer p {
+      margin-bottom: 0.5rem;
+      font-size: 0.92rem;
+    }
+
+    /* Print / PDF Stilleri */
+    @media print {
+      .sticky-nav, .action-bar, .playground-box, .interactive-toggles, .btn {
+        display: none !important;
+      }
+      .lesson-section {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Üst Başlık & Kontroller -->
+  <header class="top-header">
+    <div class="header-container">
+      <span class="badge-sub">11. Sınıf ATP • Web Tabanlı Uygulama Geliştirme</span>
+      <h1>HTML5 Multimedya, Responsive Görseller & Semantik Yapı</h1>
+      <p>Öğrenciler için kapsamlı ders materyali: Ses (<code style="color:#fde047">&lt;audio&gt;</code>), Video (<code style="color:#fde047">&lt;video&gt;</code>), Duyarlı Resimler (<code style="color:#fde047">srcset/sizes</code>), Semantik Sayfa Düzeni ve Metin Etiketleri.</p>
+      
+      <div class="action-bar">
+        <a href="index.html" class="btn btn-light" style="background:#f59e0b; color:#0f172a; font-weight:700;">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          🏠 Ana Sayfa / Portal
+        </a>
+        <button class="btn btn-light" onclick="togglePresentationMode()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2zM9 9h6m-6 4h6"></path></svg>
+          <span id="presBtnText">Akıllı Tahta / Sunum Modu</span>
+        </button>
+        <button class="btn btn-glass" onclick="toggleDarkMode()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+          Karanlık / Aydınlık Tema
+        </button>
+        <a href="#playground" class="btn btn-glass">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+          Canlı HTML Editörü
+        </a>
+        <button class="btn btn-glass" onclick="window.print()">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2z"></path></svg>
+          Yazdır / PDF Kaydet
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sabit Hızlı Menü (Navbar) -->
+  <nav class="sticky-nav">
+    <div class="nav-container">
+      <a href="index.html" class="nav-link" style="color:#f59e0b; font-weight:700;">🏠 Portal</a>
+      <a href="#giris" class="nav-link active">Ders Kazanımları</a>
+      <a href="#audio-bolumu" class="nav-link">1. &lt;audio&gt; (Ses)</a>
+      <a href="#video-bolumu" class="nav-link">2. &lt;video&gt; (Video)</a>
+      <a href="#srcset-bolumu" class="nav-link">3. Responsive & srcset</a>
+      <a href="#semantik-bolumu" class="nav-link">4. Semantik Yapı</a>
+      <a href="#metin-etiketleri" class="nav-link">5. Metin & Biçim</a>
+      <a href="#playground" class="nav-link">6. Canlı Editör</a>
+      <a href="#quiz-bolumu" class="nav-link">7. Pekiştirme Testi</a>
+    </div>
+  </nav>
+
+  <!-- Ana İçerik -->
+  <main class="container">
+
+    <!-- Giriş ve Kazanımlar -->
+    <section id="giris" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">★</div>
+        <div class="section-title-wrap">
+          <h2>Modül Hakkında & Öğrenme Kazanımları</h2>
+          <span>Web Tabanlı Uygulama Geliştirme Dersi 11. Sınıf Müfredatı</span>
+        </div>
+      </div>
+      <p>Bu ders materyali, web sayfalarında ses, video, responsive görsel kullanımı ve semantik HTML5 sayfa yerleşimini pratik ve etkileşimli olarak öğrenmek için hazırlanmıştır.</p>
+      <div class="grid-2">
+        <div class="callout tip">
+          <strong>🎯 Bu Derste Neler Öğreneceğiz?</strong>
+          <ul style="margin-top: 0.5rem; margin-left: 1.25rem;">
+            <li>Web sayfasına harici eklenti olmadan ses (<code class="inline-code">&lt;audio&gt;</code>) ve video (<code class="inline-code">&lt;video&gt;</code>) eklemeyi,</li>
+            <li>Oynatma denetimleri (<code class="inline-code">controls</code>, <code class="inline-code">autoplay</code>, <code class="inline-code">muted</code>, <code class="inline-code">loop</code>),</li>
+            <li>Mobil ve masaüstü ekranlar için optimize görseller (<code class="inline-code">srcset</code> & <code class="inline-code">sizes</code>),</li>
+            <li><code class="inline-code">&lt;div&gt;</code> çöplüğünden kurtulup anlamsal (<code class="inline-code">&lt;header&gt;</code>, <code class="inline-code">&lt;nav&gt;</code>, <code class="inline-code">&lt;article&gt;</code> vb.) yapı kurmayı.</li>
+          </ul>
+        </div>
+        <div class="callout warning">
+          <strong>💡 Öğretmen Notu / Püf Noktası:</strong>
+          <p style="margin-top: 0.35rem;">Modern tarayıcılar (Chrome, Edge, Safari vb.), kullanıcı deneyimini korumak için <strong>sesli otomatik oynatmaya (autoplay) izin vermez</strong>. Otomatik oynatmanın çalışması için mutlaka <code class="inline-code">muted</code> (sessiz) özelliği eklenmelidir!</p>
+        </div>
+      </div>
+
+      <!-- Hazır Uygulama ve Örnek Sayfalar Kartı -->
+      <div style="margin-top: 1.5rem; padding: 1.25rem; background: var(--gray-50); border: 1px dashed var(--primary); border-radius: 8px;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--primary);">📂 Proje Klasöründeki Bağımsız Alıştırma Sayfaları:</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">Öğrencilerinize bağımsız sekmede veya VS Code editöründe açıp üzerinde değişiklik yaptırabileceğiniz hazır dosyalar:</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.6rem;">
+          <a href="audioornek/audiopreview.html" target="_blank" class="btn btn-sm btn-light" style="border: 1px solid var(--border-color);">🎵 audiopreview.html (Ses Örneği)</a>
+          <a href="videoornek/videoprew.html" target="_blank" class="btn btn-sm btn-light" style="border: 1px solid var(--border-color);">🎬 videoprew.html (Video Örneği)</a>
+          <a href="srcsetOrnek/srcset_ornek.html" target="_blank" class="btn btn-sm btn-light" style="border: 1px solid var(--border-color);">🖼️ srcset_ornek.html (Responsive Görsel)</a>
+          <a href="semantik_sayfa_ornek.html" target="_blank" class="btn btn-sm btn-light" style="border: 1px solid var(--border-color);">🏛️ semantik_sayfa_ornek.html (Sayfa Düzeni)</a>
+          <a href="metin_bicimlendirme_ornek.html" target="_blank" class="btn btn-sm btn-light" style="border: 1px solid var(--border-color);">📝 metin_bicimlendirme_ornek.html (Metin Etiketleri)</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 1: AUDIO (SES) -->
+    <section id="audio-bolumu" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">01</div>
+        <div class="section-title-wrap">
+          <h2>HTML5 &lt;audio&gt; (Ses) Etiketi</h2>
+          <span>Web sayfalarına ses dosyası ekleme, denetimler ve format uyumluluğu</span>
+        </div>
+      </div>
+
+      <p>HTML5 öncesinde web sayfalarında müzik ve ses oynatmak için Adobe Flash gibi 3. parti eklentiler gerekiyordu. HTML5 ile gelen <strong>&lt;audio&gt;</strong> etiketi sayesinde artık hiçbir eklentiye gerek kalmadan doğrudan tarayıcı içinde ses oynatabiliyoruz.</p>
+
+      <div class="grid-2">
+        <div>
+          <h3 style="margin-bottom: 0.5rem;">Örnek Kod Yapısı (audiopreview.html)</h3>
+          <div class="code-box">
+            <div class="code-box-header">
+              <span>audiopreview.html</span>
+              <button class="btn btn-sm btn-glass" onclick="copyCode('code-audio')">Kopyala</button>
+            </div>
+            <pre id="code-audio"><code><span class="code-tag">&lt;audio</span> <span class="code-attr">controls</span>
+       <span class="code-attr">autoplay</span>
+       <span class="code-attr">muted</span>
+       <span class="code-attr">loop</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;source</span> <span class="code-attr">src</span>=<span class="code-val">"audioornek/sound/sound1.mp3"</span> <span class="code-attr">type</span>=<span class="code-val">"audio/mpeg"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;source</span> <span class="code-attr">src</span>=<span class="code-val">"audioornek/sound/sound2.wav"</span> <span class="code-attr">type</span>=<span class="code-val">"audio/wav"</span><span class="code-tag">&gt;</span>
+  Tarayıcınız ses etiketini desteklemiyor.
+<span class="code-tag">&lt;/audio&gt;</span></code></pre>
+          </div>
+
+          <div class="callout tip">
+            <strong>Neden &lt;source&gt; Kullanıyoruz?</strong><br>
+            Her tarayıcının desteklediği ses formatı farklılık gösterebilir. Birden fazla <code class="inline-code">&lt;source&gt;</code> ekleyerek tarayıcının ilk desteklediği formatı sırayla seçmesini sağlarız.
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin-bottom: 0.5rem;">Canlı İnteraktif Önizleme</h3>
+          <div class="preview-card">
+            <span class="preview-badge">● Canlı Test Alanı</span>
+            
+            <div class="media-player-container">
+              <audio id="liveAudio" controls>
+                <source src="audioornek/sound/sound1.mp3" type="audio/mpeg">
+                <source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg">
+                Tarayıcınız audio etiketini desteklemiyor.
+              </audio>
+            </div>
+
+            <!-- İnteraktif Parametre Değiştirici -->
+            <div class="interactive-toggles">
+              <span style="width: 100%; font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">Özellikleri Canlı Dene:</span>
+              <label class="toggle-label">
+                <input type="checkbox" id="audioToggleControls" checked onchange="updateAudioProps()"> controls (Kontrol Paneli)
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="audioToggleLoop" onchange="updateAudioProps()"> loop (Sürekli Çal)
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="audioToggleMuted" onchange="updateAudioProps()"> muted (Sessiz)
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="audioToggleAutoplay" onchange="updateAudioProps()"> autoplay (Otomatik Başlat)
+              </label>
+            </div>
+
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-primary" onclick="switchAudioSource('https://www.w3schools.com/html/horse.mp3')">Örnek Ses 1 (MP3)</button>
+              <button class="btn btn-sm btn-glass" style="color:var(--text-main); border:1px solid var(--border-color);" onclick="switchAudioSource('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3')">Örnek Ses 2 (Melodi)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <h3 style="margin: 1.5rem 0 0.5rem;">&lt;audio&gt; Parametreleri ve Anlamları</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parametre (Attribute)</th>
+              <th>Açıklama</th>
+              <th>Örnek Değer / Kullanım</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="inline-code">controls</code></td>
+              <td>Oynat, durdur, ses seviyesi ve zaman çubuğunu ekranda gösterir.</td>
+              <td><code class="inline-code">&lt;audio controls&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code class="inline-code">autoplay</code></td>
+              <td>Sayfa yüklendiğinde ses dosyasını otomatik olarak başlatır. (Tarayıcı politikaları gereği genelde <code class="inline-code">muted</code> ile çalışır)</td>
+              <td><code class="inline-code">&lt;audio autoplay muted&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code class="inline-code">loop</code></td>
+              <td>Ses bittiğinde başa sararak sonsuz döngüde tekrar çalmasını sağlar.</td>
+              <td><code class="inline-code">&lt;audio loop&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code class="inline-code">muted</code></td>
+              <td>Sesin başlangıçta sessiz (mute) olarak açılmasını sağlar.</td>
+              <td><code class="inline-code">&lt;audio muted&gt;</code></td>
+            </tr>
+            <tr>
+              <td><code class="inline-code">preload</code></td>
+              <td>Sesin sayfa açılışında nasıl önbelleğe alınacağını belirler: <code class="inline-code">none</code>, <code class="inline-code">metadata</code>, <code class="inline-code">auto</code>.</td>
+              <td><code class="inline-code">preload="auto"</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 2: VIDEO (VİDEO) -->
+    <section id="video-bolumu" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">02</div>
+        <div class="section-title-wrap">
+          <h2>HTML5 &lt;video&gt; (Video) Etiketi</h2>
+          <span>Web sayfalarına video gömme, boyutlandırma ve kontroller</span>
+        </div>
+      </div>
+
+      <p>HTML5 <strong>&lt;video&gt;</strong> etiketi, modern web tarayıcılarında herhangi bir üçüncü parti oynatıcıya gerek duymadan video izletmeyi sağlar. MP4 (H.264), WebM ve Ogg theora gibi formatları yaygın olarak destekler.</p>
+
+      <div class="grid-2">
+        <div>
+          <h3 style="margin-bottom: 0.5rem;">Örnek Kod Yapısı (videoprew.html)</h3>
+          <div class="code-box">
+            <div class="code-box-header">
+              <span>videoprew.html</span>
+              <button class="btn btn-sm btn-glass" onclick="copyCode('code-video')">Kopyala</button>
+            </div>
+            <pre id="code-video"><code><span class="code-tag">&lt;video</span> <span class="code-attr">controls</span>
+       <span class="code-attr">controlsList</span>=<span class="code-val">"nofullscreen"</span>
+       <span class="code-attr">width</span>=<span class="code-val">"500px"</span>
+       <span class="code-attr">height</span>=<span class="code-val">"280px"</span>
+       <span class="code-attr">autoplay</span>
+       <span class="code-attr">muted</span>
+       <span class="code-attr">loop</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;source</span> <span class="code-attr">src</span>=<span class="code-val">"videoornek/video/video1.mp4"</span> <span class="code-attr">type</span>=<span class="code-val">"video/mp4"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;source</span> <span class="code-attr">src</span>=<span class="code-val">"videoornek/video/video2.ogg"</span> <span class="code-attr">type</span>=<span class="code-val">"video/ogg"</span><span class="code-tag">&gt;</span>
+  Tarayıcınız video etiketini desteklemiyor.
+<span class="code-tag">&lt;/video&gt;</span></code></pre>
+          </div>
+
+          <div class="callout warning">
+            <strong>📌 Özel Öznitelik: controlsList="nofullscreen"</strong><br>
+            Tarayıcının varsayılan video çubuğundaki tam ekran düğmesini veya indirme düğmesini gizlemek için kullanılır:
+            <code class="inline-code">controlsList="nodownload nofullscreen"</code>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin-bottom: 0.5rem;">Canlı Video Önizleme</h3>
+          <div class="preview-card">
+            <span class="preview-badge">● Canlı Test Alanı</span>
+            
+            <div class="media-player-container">
+              <video id="liveVideo" controls controlsList="nofullscreen" autoplay muted loop style="max-height: 280px;">
+                <source src="videoornek/video/video1.mp4" type="video/mp4">
+                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+                Tarayıcınız video etiketini desteklemiyor.
+              </video>
+            </div>
+
+            <!-- İnteraktif Kontroller -->
+            <div class="interactive-toggles">
+              <span style="width: 100%; font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">Video Özelliklerini Canlı Aç/Kapa:</span>
+              <label class="toggle-label">
+                <input type="checkbox" id="videoToggleControls" checked onchange="updateVideoProps()"> controls
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="videoToggleMuted" checked onchange="updateVideoProps()"> muted (Sessiz)
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="videoToggleLoop" checked onchange="updateVideoProps()"> loop (Döngü)
+              </label>
+              <label class="toggle-label">
+                <input type="checkbox" id="videoToggleNoFullscreen" checked onchange="updateVideoProps()"> controlsList="nofullscreen"
+              </label>
+            </div>
+
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-primary" onclick="switchVideoSource('videoornek/video/video1.mp4', 'video/mp4')">Video 1 (MP4)</button>
+              <button class="btn btn-sm btn-glass" style="color:var(--text-main); border:1px solid var(--border-color);" onclick="switchVideoSource('videoornek/video/video2.ogg', 'video/ogg')">Video 2 (OGG)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <h3 style="margin: 1.5rem 0 0.5rem;">&lt;video&gt; Özellikleri Tablosu</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Öznitelik</th>
+              <th>İşlevi</th>
+              <th>Önemli İpucu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code class="inline-code">width</code> & <code class="inline-code">height</code></td>
+              <td>Videonun genişliğini ve yüksekliğini belirler.</td>
+              <td>Piksel cinsinden verilir (ör: <code class="inline-code">width="500"</code>). Belirtilmezse video orijinal boyutunda açılıp sayfa düzenini bozabilir.</td>
+            </tr>
+            <tr>
+              <td><code class="inline-code">poster</code></td>
+              <td>Video henüz oynatılmadan önce görünen kapak resmi (thumbnail).</td>
+              <td>Örnek: <code class="inline-code">poster="kapak.jpg"</code>.</td>
+            </tr>
+            <tr>
+              <td><code class="inline-code">controlsList</code></td>
+              <td>Varsayılan denetim çubuğundaki belirli düğmeleri gizler.</td>
+              <td><code class="inline-code">nodownload</code>, <code class="inline-code">nofullscreen</code>, <code class="inline-code">noremoteplayback</code> değerlerini alabilir.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 3: SRCSET & RESPONSIVE GÖRSELLER -->
+    <section id="srcset-bolumu" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">03</div>
+        <div class="section-title-wrap">
+          <h2>Duyarlı Görseller: &lt;img srcset & sizes&gt;</h2>
+          <span>Farklı ekran genişlikleri ve çözünürlükler için en uygun görseli sunma</span>
+        </div>
+      </div>
+
+      <p>Geleneksel web sitelerinde tek bir büyük görsel yüklenirdi. Bu durum mobil cihazlarda yüksek internet kotası harcanmasına ve sayfanın yavaş açılmasına sebep olurdu. <strong>srcset</strong> ve <strong>sizes</strong> nitelikleri sayesinde tarayıcıya birden fazla görsel boyutu sunarız ve tarayıcı ekranına en uygun olanı kendisi seçer.</p>
+
+      <div class="grid-2">
+        <div>
+          <h3 style="margin-bottom: 0.5rem;">Örnek Kod (srcset_ornek.html)</h3>
+          <div class="code-box">
+            <div class="code-box-header">
+              <span>srcset_ornek.html</span>
+              <button class="btn btn-sm btn-glass" onclick="copyCode('code-srcset')">Kopyala</button>
+            </div>
+            <pre id="code-srcset"><code><span class="code-tag">&lt;p&gt;</span>Src set ornek<span class="code-tag">&lt;/p&gt;</span>
+
+<span class="code-tag">&lt;img</span> <span class="code-attr">src</span>=<span class="code-val">"srcsetOrnek/img/autum-800.jpg"</span>
+     <span class="code-attr">srcset</span>=<span class="code-val">"srcsetOrnek/img/autum-400.jpg 400w,
+             srcsetOrnek/img/autum-800.jpg 800w,
+             srcsetOrnek/img/autum-1200.jpg 1200w,
+             srcsetOrnek/img/autum-1600.jpg 1600w"</span>
+     <span class="code-attr">sizes</span>=<span class="code-val">"(max-width: 800px) 100vw, 1200px"</span>
+     <span class="code-attr">alt</span>=<span class="code-val">"autum"</span><span class="code-tag">&gt;</span></code></pre>
+          </div>
+
+          <div class="callout tip">
+            <strong>Kodun Mantıksal Çözümlemesi:</strong>
+            <ul style="margin-top: 0.5rem; margin-left: 1.25rem;">
+              <li><code class="inline-code">400w, 800w, 1200w...</code>: Resmin orijinal piksel genişliğini tarayıcıya bildirir.</li>
+              <li><code class="inline-code">sizes="(max-width: 800px) 100vw, 1200px"</code>: Ekran genişliği 800px ve altındaysa görsel ekranın %100'ünü kaplayacak, daha büyükse 1200px genişliğinde olacak demektir.</li>
+              <li>Tarayıcı ekran çözünürlüğüne (Retina/DPR) ve pencere genişliğine göre en tasarruflu ve net resmi otomatik olarak indirir.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <h3 style="margin-bottom: 0.5rem;">Canlı Responsive Test Alanı</h3>
+          <div class="preview-card">
+            <div class="viewport-meter">
+              <span>Mevcut Pencere Genişliği:</span>
+              <span id="windowWidthIndicator">1200px</span>
+            </div>
+
+            <div>
+              <img id="responsiveAutumnImg"
+                   class="srcset-demo-img"
+                   src="srcsetOrnek/img/autum-800.jpg"
+                   srcset="srcsetOrnek/img/autum-400.jpg 400w,
+                           srcsetOrnek/img/autum-800.jpg 800w,
+                           srcsetOrnek/img/autum-1200.jpg 1200w,
+                           srcsetOrnek/img/autum-1600.jpg 1600w"
+                   sizes="(max-width: 800px) 100vw, 1200px"
+                   alt="Sonbahar Manzarası - Autumn">
+            </div>
+
+            <div style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-muted); background: var(--card-bg); padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color);">
+              <strong>Şu an Yüklenen Kaynak:</strong>
+              <div id="currentLoadedSrc" style="word-break: break-all; font-family: monospace; color: var(--primary); margin-top: 0.25rem;">
+                (Görsel yüklendiğinde görünecektir)
+              </div>
+              <small style="display:block; margin-top:0.35rem;">*Tarayıcı penceresini daraltıp genişleterek veya F12 İncele aracını açarak görsel kaynağının değişimini gözlemleyebilirsiniz.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 4: SEMANTİK SAYFA DÜZENİ -->
+    <section id="semantik-bolumu" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">04</div>
+        <div class="section-title-wrap">
+          <h2>HTML5 Semantik (Anlamsal) Sayfa Yapısı</h2>
+          <span>&lt;div&gt; etiketlerinden anlamsal etiketlere geçiş</span>
+        </div>
+      </div>
+
+      <p>Eski HTML sürümlerinde tüm bölümler için <code class="inline-code">&lt;div class="header"&gt;</code> veya <code class="inline-code">&lt;div class="menu"&gt;</code> kullanılırdı (Bkz: <em>proj2.png</em>). HTML5 ile birlikte sayfa parçalarına özel anlamsal etiketler getirilmiştir. Bu etiketler arama motorları (SEO) ve görme engelli ekran okuyucuları için hayati önem taşır.</p>
+
+      <!-- İnteraktif Semantik Şema -->
+      <h3 style="margin-top: 1.5rem;">HTML5 Standart Sayfa Mimarisi</h3>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Aşağıdaki blokların üzerine tıklayarak hangi etiketin ne amaçla kullanıldığını öğrenebilirsiniz:</p>
+
+      <div class="semantic-grid">
+        <div class="sem-header" onclick="showSemanticDetail('&lt;header&gt;', 'Sayfanın veya bir bölümün başlık, logo, slogan ve ana arama kısmını içerir.')">
+          &lt;header&gt; Başlık & Logo Alanı
+        </div>
+        <div class="sem-nav" onclick="showSemanticDetail('&lt;nav&gt;', 'Sayfa içi veya sayfalar arası gezinme bağlantılarını (menüleri) barındırır.')">
+          &lt;nav&gt; Menü / Gezinme Linkleri (Ana Sayfa, Hakkımızda, İletişim...)
+        </div>
+        <div class="sem-body-split">
+          <div class="sem-section" onclick="showSemanticDetail('&lt;section&gt;', 'Belirli bir konu bütünlüğü olan tematik bölümü temsil eder (Örn: Haberler, Hizmetlerimiz, Duyurular).')">
+            <strong>&lt;section&gt; Ana İçerik Bölümü</strong>
+            <div class="sem-article" onclick="event.stopPropagation(); showSemanticDetail('&lt;article&gt;', 'Kendi başına anlam ifade eden, bağımsız paylaşılabilir içerikler (Blog yazısı, haber maddesi, ürün kartı vb.) için kullanılır.')">
+              &lt;article&gt; Bağımsız Haber / Makale Kartı 1
+            </div>
+            <div class="sem-article" onclick="event.stopPropagation(); showSemanticDetail('&lt;article&gt;', 'Kendi başına anlam ifade eden, bağımsız paylaşılabilir içerikler (Blog yazısı, haber maddesi, ürün kartı vb.) için kullanılır.')">
+              &lt;article&gt; Bağımsız Haber / Makale Kartı 2
+            </div>
+          </div>
+          <div class="sem-aside" onclick="showSemanticDetail('&lt;aside&gt;', 'Ana içerikle dolaylı bağlantısı olan yan menü, reklam alanı veya son yazılar gibi kenar çubuğunu temsil eder.')">
+            &lt;aside&gt;<br>Yan Çubuk (Sidebar, Reklam, İlgili Linkler)
+          </div>
+        </div>
+        <div class="sem-footer" onclick="showSemanticDetail('&lt;footer&gt;', 'Sayfa veya bölümün en alt kısmıdır. Telif hakkı, yazar bilgisi, gizlilik sözleşmesi gibi dipnotları barındırır.')">
+          &lt;footer&gt; Alt Bilgi (Telif Hakkı &copy;, İletişim, Yazar)
+        </div>
+      </div>
+
+      <div id="semDetailBox" class="callout tip" style="display: none;">
+        <strong id="semDetailTitle">Etiket</strong>: <span id="semDetailText">Açıklama</span>
+      </div>
+
+      <!-- Figure ve Figcaption İncelemesi (proje5.png örneği) -->
+      <div class="grid-2" style="margin-top: 1.5rem;">
+        <div>
+          <h3>&lt;figure&gt; ve &lt;figcaption&gt; Kullanımı</h3>
+          <p style="font-size: 0.92rem; margin: 0.5rem 0;">Görselleri ve altlarındaki açıklama metinlerini semantik olarak gruplamak için kullanılır (Bkz: <em>proje5.png</em>):</p>
+          <div class="code-box">
+            <div class="code-box-header"><span>proje5.png Örneği</span></div>
+            <pre><code><span class="code-tag">&lt;figure&gt;</span>
+  <span class="code-tag">&lt;img</span> <span class="code-attr">src</span>=<span class="code-val">"UCAK.png"</span> <span class="code-attr">alt</span>=<span class="code-val">"logom"</span> <span class="code-attr">width</span>=<span class="code-val">"200px"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;figcaption&gt;</span>
+    <span class="code-tag">&lt;a</span> <span class="code-attr">href</span>=<span class="code-val">"UCAK.png"</span><span class="code-tag">&gt;</span>Benim Logom<span class="code-tag">&lt;/a&gt;</span>, daha fazla bilgi için
+  <span class="code-tag">&lt;/figcaption&gt;</span>
+<span class="code-tag">&lt;/figure&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <div>
+          <h3>Canlı Önizleme:</h3>
+          <div class="preview-card" style="text-align: center;">
+            <figure style="display: inline-block; padding: 1rem; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px;">
+              <img src="UCAK.png" alt="Air Travel Uçak Logosu" style="max-width: 200px; height: auto;">
+              <figcaption style="margin-top: 0.75rem; font-size: 0.88rem; color: var(--text-muted);">
+                <a href="UCAK.png" target="_blank" style="color: var(--primary); font-weight: 600;">Benim Logom</a>, daha fazla bilgi için
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 5: METİN VE BİÇİMLENDİRME ETİKETLERİ -->
+    <section id="metin-etiketleri" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">05</div>
+        <div class="section-title-wrap">
+          <h2>Semantik Metin Biçimlendirme Etiketleri</h2>
+          <span>proj1.png, proj3.png ve proj4.png dosyalarındaki özel etiketlerin derlemesi</span>
+        </div>
+      </div>
+
+      <p>HTML5, arama motorlarının ve tarayıcıların metnin ne anlama geldiğini kavraması için çok sayıda semantik metin biçimlendirme etiketi sunar.</p>
+
+      <div class="tag-chips-grid">
+        <!-- abbr -->
+        <div class="tag-chip">
+          <div class="tag-chip-title">
+            <span>&lt;abbr&gt;</span>
+            <small>Kısaltma</small>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">Kısaltmaların açılımını <code class="inline-code">title</code> ile verir.</p>
+          <div style="background: var(--gray-50); padding: 0.4rem; border-radius: 4px; font-size: 0.9rem;">
+            Örnek: <abbr title="Hyper Text Markup Language" style="text-decoration: underline dotted; cursor: help;">HTML</abbr>
+          </div>
+        </div>
+
+        <!-- bdo -->
+        <div class="tag-chip">
+          <div class="tag-chip-title">
+            <span>&lt;bdo&gt;</span>
+            <small>Metin Yönü</small>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">Metnin yazılış yönünü tersine çevirir (<code class="inline-code">dir="rtl|ltr"</code>).</p>
+          <div style="background: var(--gray-50); padding: 0.4rem; border-radius: 4px; font-size: 0.9rem;">
+            <bdo dir="rtl">Bu metin sağdan sola yazıldı.</bdo>
+          </div>
+        </div>
+
+        <!-- cite -->
+        <div class="tag-chip">
+          <div class="tag-chip-title">
+            <span>&lt;cite&gt;</span>
+            <small>Eser / Kaynak</small>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">Kitap, makale, film gibi bir eserin adını belirtir (İtalik gösterir).</p>
+          <div style="background: var(--gray-50); padding: 0.4rem; border-radius: 4px; font-size: 0.9rem;">
+            <cite>Web Tabanlı Uygulama Geliştirme</cite>, MEB, 2021.
+          </div>
+        </div>
+
+        <!-- code & kbd -->
+        <div class="tag-chip">
+          <div class="tag-chip-title">
+            <span>&lt;kbd&gt; & &lt;code&gt;</span>
+            <small>Klavye & Kod</small>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">Klavye tuş vuruşları ve kod parçacıkları için.</p>
+          <div style="background: var(--gray-50); padding: 0.4rem; border-radius: 4px; font-size: 0.9rem;">
+            Kopyalama kısayolu: <kbd style="background:#e2e8f0; border:1px solid #94a3b8; border-radius:3px; padding:1px 5px; font-family:monospace;">Ctrl</kbd> + <kbd style="background:#e2e8f0; border:1px solid #94a3b8; border-radius:3px; padding:1px 5px; font-family:monospace;">C</kbd>
+          </div>
+        </div>
+
+        <!-- q -->
+        <div class="tag-chip">
+          <div class="tag-chip-title">
+            <span>&lt;q&gt;</span>
+            <small>Satır İçi Alıntı</small>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">Kısa alıntıları otomatik olarak tırnak işareti içine alır.</p>
+          <div style="background: var(--gray-50); padding: 0.4rem; border-radius: 4px; font-size: 0.9rem;">
+            Şair der ki: <q>Bayrakları bayrak yapan üstündeki kandır.</q>
+          </div>
+        </div>
+
+        <!-- var & samp -->
+        <div class="tag-chip">
+          <div class="tag-chip-title">
+            <span>&lt;var&gt; & &lt;samp&gt;</span>
+            <small>Değişken & Çıktı</small>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">Matematiksel değişkenler ve sistem çıktıları.</p>
+          <div style="background: var(--gray-50); padding: 0.4rem; border-radius: 4px; font-size: 0.9rem;">
+            <var>x</var>(<var>y</var> + <var>z</var>) = <samp>xy + xz</samp>
+          </div>
+        </div>
+
+        <!-- details & summary -->
+        <div class="tag-chip" style="grid-column: 1 / -1;">
+          <div class="tag-chip-title">
+            <span>&lt;details&gt; & &lt;summary&gt;</span>
+            <small>İnteraktif Açılır / Kapanır Kutu</small>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.5rem;">JavaScript yazmaya gerek kalmadan tıklandığında açılıp kapanan içerik alanı oluşturur (proj1.png).</p>
+          <details style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 6px; padding: 0.5rem 1rem; cursor: pointer;">
+            <summary style="font-weight: 600; color: var(--primary);">Göster / Gizle (Tıklayınız)</summary>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted);">Başlığa tıkladığınızda bu içeriğe ulaştınız! HTML5'in yerel akordeon öğesidir.</p>
+          </details>
+        </div>
+      </div>
+
+      <!-- BÖLÜM 5.1: div ve span Nedir? Karşılaştırmalı İnceleme (proj3.png ve proj4.png) -->
+      <div style="margin-top: 2.5rem; border-top: 2px dashed var(--border-color); padding-top: 2rem;">
+        <h3 style="display: flex; align-items: center; gap: 0.5rem; color: var(--primary);">
+          <span>📦</span> Semantik Olmayan Temel Etiketler: &lt;div&gt; ve &lt;span&gt; Nedir?
+        </h3>
+        <p style="margin-top: 0.5rem; font-size: 0.95rem; color: var(--text-muted);">
+          HTML'de anlamsal (semantik) bir rolü olmayan ancak web tasarımında CSS stilleri vermek, sayfa düzeni kurmak ve JavaScript ile öğeleri seçmek için en sık kullanılan iki genel amaçlı etiket <code>&lt;div&gt;</code> ve <code>&lt;span&gt;</code> etiketleridir.
+        </p>
+
+        <!-- Açıklama Kartları -->
+        <div class="grid-2" style="margin-top: 1.5rem;">
+          <!-- DIV KARTI -->
+          <div style="background: var(--card-bg); border: 2px solid #3b82f6; border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h4 style="color: #2563eb; font-size: 1.15rem; margin: 0;">&lt;div&gt; Etiketi (Division)</h4>
+              <span style="background: #dbeafe; color: #1e40af; font-size: 0.75rem; font-weight: bold; padding: 3px 8px; border-radius: 12px;">Blok Eleman (Block-level)</span>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem;">
+              <strong>Division (Bölüm/Bölme)</strong> kelimesinden gelir. Bulunduğu satırı <strong>yatayda %100 kaplar</strong> ve kendisinden önceki ile sonraki öğeleri yeni bir satıra iter.
+            </p>
+            <ul style="font-size: 0.88rem; color: var(--text-muted); margin-left: 1.25rem; margin-bottom: 1rem; line-height: 1.6;">
+              <li><strong>CSS Davranışı:</strong> <code>display: block;</code></li>
+              <li><strong>Boyutlandırma:</strong> CSS ile <code>width</code>, <code>height</code>, <code>padding</code>, <code>margin</code> doğrudan verilebilir.</li>
+              <li><strong>Kullanım Amacı:</strong> Kutu, panel, sayfa bölümleri, flexbox/grid taşıyıcıları (container) oluşturmak (<em>proj3.png</em>).</li>
+              <li><strong>İçerik:</strong> Hem blok hem de satır içi tüm etiketleri içine alabilir.</li>
+            </ul>
+
+            <div class="code-box">
+              <div class="code-box-header"><span>HTML & CSS Örneği (proj3.png)</span></div>
+              <pre><code><span class="code-tag">&lt;div</span> <span class="code-attr">style</span>=<span class="code-val">"background-color:red; color:white; padding:20px; border-radius:6px;"</span><span class="code-tag">&gt;</span>
+  <span class="code-tag">&lt;h3&gt;</span>div etiketim (Blok Eleman)<span class="code-tag">&lt;/h3&gt;</span>
+  <span class="code-tag">&lt;p&gt;</span>div etiketi bloku tarafından sarılmış ve stil uygulanmış bir paragraf.<span class="code-tag">&lt;/p&gt;</span>
+<span class="code-tag">&lt;/div&gt;</span></code></pre>
+            </div>
+
+            <!-- Canlı div Önizleme -->
+            <div style="margin-top: 1rem; padding: 1rem; background: #fee2e2; border: 2px dashed #ef4444; border-radius: 6px;">
+              <div style="background-color: #dc2626; color: white; padding: 12px 16px; border-radius: 6px;">
+                <strong style="display: block; font-size: 1rem; margin-bottom: 4px;">div etiketim (Canlı Önizleme)</strong>
+                <span style="font-size: 0.88rem;">Satırı boydan boya kaplar ve kutu oluşturur.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPAN KARTI -->
+          <div style="background: var(--card-bg); border: 2px solid #10b981; border-radius: var(--radius); padding: 1.25rem; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h4 style="color: #059669; font-size: 1.15rem; margin: 0;">&lt;span&gt; Etiketi (Aralık)</h4>
+              <span style="background: #d1fae5; color: #065f46; font-size: 0.75rem; font-weight: bold; padding: 3px 8px; border-radius: 12px;">Satır İçi (Inline)</span>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 0.75rem;">
+              <strong>Span (Mesafe/Aralık)</strong> kelimesinden gelir. Sadece <strong>içerdiği metin kadar</strong> yer kaplar; yeni bir satıra geçmez ve metnin akışını bölmez.
+            </p>
+            <ul style="font-size: 0.88rem; color: var(--text-muted); margin-left: 1.25rem; margin-bottom: 1rem; line-height: 1.6;">
+              <li><strong>CSS Davranışı:</strong> <code>display: inline;</code></li>
+              <li><strong>Boyutlandırma:</strong> Varsayılan olarak doğrudan <code>width</code> ve <code>height</code> almaz.</li>
+              <li><strong>Kullanım Amacı:</strong> Bir paragraf içindeki bir veya birkaç kelimeyi renklendirmek, arka plan vermek ya da stil uygulamak (<em>proj4.png</em>).</li>
+              <li><strong>İçerik:</strong> Yalnızca metin ve satır içi öğeleri içine almalıdır.</li>
+            </ul>
+
+            <div class="code-box">
+              <div class="code-box-header"><span>HTML & CSS Örneği (proj4.png)</span></div>
+              <pre><code><span class="code-tag">&lt;p&gt;</span>Bu bir paragraf 
+  <span class="code-tag">&lt;span</span> <span class="code-attr">style</span>=<span class="code-val">"color:green; font-weight:bold;"</span><span class="code-tag">&gt;</span>yeşil ve kalın metin<span class="code-tag">&lt;/span&gt;</span> 
+  devamı 
+  <span class="code-tag">&lt;span</span> <span class="code-attr">style</span>=<span class="code-val">"color:blue; font-weight:bold;"</span><span class="code-tag">&gt;</span>mavi ve kalın metin<span class="code-tag">&lt;/span&gt;</span>.
+<span class="code-tag">&lt;/p&gt;</span></code></pre>
+            </div>
+
+            <!-- Canlı span Önizleme -->
+            <div style="margin-top: 1rem; padding: 1rem; background: #ecfdf5; border: 2px dashed #10b981; border-radius: 6px;">
+              <p style="font-size: 0.92rem; color: var(--text-main); margin: 0; line-height: 1.7;">
+                Bu bir paragraftır. <span style="background: #a7f3d0; color: #065f46; font-weight: bold; padding: 2px 6px; border-radius: 4px;">span ile yeşil vurgulandı</span> ve cümle kesilmeden <span style="background: #bfdbfe; color: #1e40af; font-weight: bold; padding: 2px 6px; border-radius: 4px;">span ile mavi vurgulandı</span> aynı satırda devam eder.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Karşılaştırma Tablosu -->
+        <div class="table-wrap" style="margin-top: 1.5rem;">
+          <h4 style="margin-bottom: 0.5rem; color: var(--text-main);">📊 &lt;div&gt; ile &lt;span&gt; Karşılaştırma Özeti</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Özellik</th>
+                <th><code>&lt;div&gt;</code> (Block-level)</th>
+                <th><code>&lt;span&gt;</code> (Inline)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Görüntüleme Tipi</strong></td>
+                <td><code>display: block;</code></td>
+                <td><code>display: inline;</code></td>
+              </tr>
+              <tr>
+                <td><strong>Genişlik (Width)</strong></td>
+                <td>Satırı boydan boya (%100) kaplar</td>
+                <td>Yalnızca içerdiği metin kadar yer kaplar</td>
+              </tr>
+              <tr>
+                <td><strong>Satır Atlama</strong></td>
+                <td>Yeni bir satırdan başlar, sonrasını alt satıra atar</td>
+                <td>Satırı bölmez, metin akışında aynı hizada kalır</td>
+              </tr>
+              <tr>
+                <td><strong>CSS Boyutlandırma</strong></td>
+                <td><code>width</code> ve <code>height</code> uygulanabilir</td>
+                <td>Doğrudan <code>width</code>/<code>height</code> uygulanamaz</td>
+              </tr>
+              <tr>
+                <td><strong>İçine Alabileceği Öğeler</strong></td>
+                <td>Tüm blok ve satır içi öğeler (<code>&lt;p&gt;</code>, <code>&lt;h1&gt;</code>, <code>&lt;div&gt;</code> vb.)</td>
+                <td>Yalnızca satır içi öğeler ve metin (içine blok öğe konulmaz)</td>
+              </tr>
+              <tr>
+                <td><strong>Kullanım Amacı</strong></td>
+                <td>Sayfa iskeleti, kutular, kartlar, flex/grid sarmalayıcıları</td>
+                <td>Paragraf içindeki kelimeleri renklendirme, simgeler, rozetler</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Semantik Hatırlatma -->
+        <div class="callout tip" style="margin-top: 1.5rem;">
+          <strong>💡 Semantik HTML Kuralı:</strong>
+          <p style="margin-top: 0.35rem; font-size: 0.92rem;">
+            Eğer oluşturacağınız alanın HTML5'te anlamsal bir karşılığı varsa <code>&lt;div&gt;</code> yerine semantik etiketi tercih edin (Örn: Başlık için <code>&lt;header&gt;</code>, menü için <code>&lt;nav&gt;</code>, makale için <code>&lt;article&gt;</code>, alt bilgi için <code>&lt;footer&gt;</code>). <code>&lt;div&gt;</code> ve <code>&lt;span&gt;</code> etiketlerini ise semantik bir karşılık bulunmadığında yalnızca görsel stil (CSS) veya JavaScript amacıyla kullanınız.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 6: CANLI HTML DENEME ALANI (PLAYGROUND) -->
+    <section id="playground" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">06</div>
+        <div class="section-title-wrap">
+          <h2>Canlı HTML Laboratuvarı (Playground)</h2>
+          <span>Kodları doğrudan tarayıcıda düzenleyin ve sağ tarafta anında çalıştırın</span>
+        </div>
+      </div>
+
+      <div class="playground-box">
+        <div class="playground-header">
+          <span style="font-weight: 600;">Canlı Kodlama Editörü</span>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn btn-sm btn-light" onclick="loadPlaygroundTemplate('audio')">Ses Şablonu</button>
+            <button class="btn btn-sm btn-light" onclick="loadPlaygroundTemplate('video')">Video Şablonu</button>
+            <button class="btn btn-sm btn-light" onclick="loadPlaygroundTemplate('semantic')">Semantik Şablon</button>
+            <button class="btn btn-sm btn-light" onclick="loadPlaygroundTemplate('divspan')">div &amp; span Şablonu</button>
+            <button class="btn btn-sm btn-success" onclick="runPlayground()">▶ Çalıştır</button>
+          </div>
+        </div>
+        <div class="playground-body">
+          <textarea id="playgroundEditor" class="playground-editor" spellcheck="false">&lt;!-- Buraya HTML kodunuzu yazıp 'Çalıştır' butonuna basın --&gt;
+&lt;div style="padding: 15px; background: #e0f2fe; border-radius: 8px; color: #0369a1;"&gt;
+  &lt;h3&gt;Merhaba 11-ATP Sınıfı!&lt;/h3&gt;
+  &lt;p&gt;Aşağıdaki video ve ses örneklerini yukarıdaki şablon butonlarına basarak buraya aktarabilirsiniz.&lt;/p&gt;
+&lt;/div&gt;</textarea>
+          <div id="playgroundPreview" class="playground-preview">
+            <!-- Önizleme buraya render edilecek -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 7: PEKİŞTİRME TESTİ (QUIZ) -->
+    <section id="quiz-bolumu" class="lesson-section">
+      <div class="section-header">
+        <div class="section-num">07</div>
+        <div class="section-title-wrap">
+          <h2>Ders Sonu Mini Pekiştirme Testi</h2>
+          <span>Öğrendiklerinizi test edin ve anında geri bildirim alın</span>
+        </div>
+      </div>
+
+      <!-- Soru 1 -->
+      <div class="quiz-card" id="q1">
+        <div class="quiz-question">1. Modern web tarayıcılarında bir ses veya videonun otomatik olarak çalabilmesi (autoplay) için hangi özelliğin de eklenmesi zorunludur?</div>
+        <div class="quiz-options">
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. controls oynatma çubuğunu açar, otomatik oynatma engelini aşmaz.')">A) controls</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, true, 'Tebrikler! Modern tarayıcılar kullanıcı rahatsız olmasın diye sadece sessiz (muted) medyaların otomatik başlamasına izin verir.')">B) muted</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. loop sadece videonun başa sarmasını sağlar.')">C) loop</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. preload sayfa açılışında dosyanın indirilme durumunu yönetir.')">D) preload="auto"</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Soru 2 -->
+      <div class="quiz-card" id="q2">
+        <div class="quiz-question">2. Videonun varsayılan denetim çubuğundaki tam ekran düğmesini devre dışı bırakmak için hangi öznitelik kullanılır?</div>
+        <div class="quiz-options">
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. fullscreen=&quot;false&quot; geçerli bir HTML özniteliği değildir.')">A) fullscreen="false"</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, true, 'Doğru! controlsList=&quot;nofullscreen&quot; tam ekran ikonunu kontrollerden kaldırır.')">B) controlsList="nofullscreen"</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. disable-fullscreen şeklinde bir HTML özniteliği yoktur.')">C) disable-fullscreen</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. no-screen geçersizdir.')">D) no-screen</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Soru 3 -->
+      <div class="quiz-card" id="q3">
+        <div class="quiz-question">3. &lt;img srcset="..."&gt; kullanımında yer alan "800w" ifadesindeki "w" harfi neyi temsil eder?</div>
+        <div class="quiz-options">
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. Word (kelime) ile bir ilgisi yoktur.')">A) Resmin web sitesindeki kelime sayısını (word)</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, true, 'Harika! &quot;w&quot; (width descriptor), görselin piksel cinsinden gerçek genişliğini tarayıcıya bildirir.')">B) Görselin orijinal piksel genişliğini (Width descriptor)</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. Dosya ağırlığı (weight) KB veya MB ile ölçülür.')">C) Görselin dosya boyutunu / ağırlığını (Weight)</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. Ekran genişliğini vw belirler.')">D) Yalnızca mobil ekran genişliğini</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Soru 4 -->
+      <div class="quiz-card" id="q4">
+        <div class="quiz-question">4. Bir görseli ve o görsele ait açıklama yazısını semantik olarak sarmallayan HTML5 etiket ikilisi hangisidir?</div>
+        <div class="quiz-options">
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. image ve label form elemanlarında kullanılır.')">A) &lt;image&gt; ve &lt;label&gt;</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, true, 'Doğru! &lt;figure&gt; görseli, &lt;figcaption&gt; ise görsel açıklamasını sarmallar.')">B) &lt;figure&gt; ve &lt;figcaption&gt;</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. picture ve title birlikte bu amaçla kullanılmaz.')">C) &lt;picture&gt; ve &lt;title&gt;</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. div ve span semantik (anlamsal) etiketler değildir.')">D) &lt;div&gt; ve &lt;span&gt;</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+
+      <!-- Soru 5 -->
+      <div class="quiz-card" id="q5">
+        <div class="quiz-question">5. Tıklandığında açılıp kapanan &lt;details&gt; etiketi içinde her zaman görünen başlık kısmını tanımlayan etiket hangisidir?</div>
+        <div class="quiz-options">
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. &lt;title&gt; tarayıcı sekme başlığı içindir.')">A) &lt;title&gt;</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. &lt;header&gt; sayfa veya bölüm başlığı içindir.')">B) &lt;header&gt;</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, true, 'Tebrikler! &lt;summary&gt; etiketi, details bloğunun tıklanabilir başlık alanını oluşturur.')">C) &lt;summary&gt;</button>
+          <button class="quiz-btn" onclick="checkAnswer(this, false, 'Yanlış. &lt;caption&gt; tablo başlıkları içindir.')">D) &lt;caption&gt;</button>
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Alt Bilgi (Footer) -->
+  <footer class="page-footer">
+    <div class="container" style="margin: 0 auto;">
+      <p style="font-weight: 700; color: #f1f5f9; font-size: 1.1rem;">11_ATP Web Tabanlı Uygulama Geliştirme Dersi</p>
+      <p>HTML5 Ses, Video, Duyarlı Resimler ve Semantik Web Eğitimi</p>
+      <p style="font-size: 0.8rem; margin-top: 1rem; color: #64748b;">Bu materyal akıllı tahta ve öğrenci bilgisayarları için yerel ortamda çevrimdışı (offline) çalışacak şekilde tasarlanmıştır.</p>
+    </div>
+  </footer>
+
+  <!-- Etkileşim Scriptleri -->
+  <script>
+    // 1. Akıllı Tahta / Sunum Modu
+    function togglePresentationMode() {
+      const isPres = document.body.classList.toggle('presentation-mode');
+      const btnText = document.getElementById('presBtnText');
+      btnText.textContent = isPres ? 'Normal Görünüme Dön' : 'Akıllı Tahta / Sunum Modu';
+    }
+
+    // 2. Koyu Tema
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    // 3. Kod Kopyalama
+    function copyCode(elementId) {
+      const codeElement = document.getElementById(elementId);
+      navigator.clipboard.writeText(codeElement.innerText).then(() => {
+        alert('Kod panoya kopyalandı!');
+      }).catch(err => {
+        console.error('Kopyalama hatası:', err);
+      });
+    }
+
+    // 4. Audio Canlı Özellik Güncelleme
+    function updateAudioProps() {
+      const audio = document.getElementById('liveAudio');
+      audio.controls = document.getElementById('audioToggleControls').checked;
+      audio.loop = document.getElementById('audioToggleLoop').checked;
+      audio.muted = document.getElementById('audioToggleMuted').checked;
+      audio.autoplay = document.getElementById('audioToggleAutoplay').checked;
+    }
+
+    function switchAudioSource(srcPath) {
+      const audio = document.getElementById('liveAudio');
+      audio.src = srcPath;
+      audio.load();
+      audio.play().catch(() => {});
+    }
+
+    // 5. Video Canlı Özellik Güncelleme
+    function updateVideoProps() {
+      const video = document.getElementById('liveVideo');
+      video.controls = document.getElementById('videoToggleControls').checked;
+      video.muted = document.getElementById('videoToggleMuted').checked;
+      video.loop = document.getElementById('videoToggleLoop').checked;
+      
+      const noFs = document.getElementById('videoToggleNoFullscreen').checked;
+      if (noFs) {
+        video.setAttribute('controlsList', 'nofullscreen');
+      } else {
+        video.removeAttribute('controlsList');
+      }
+    }
+
+    function switchVideoSource(srcPath, type) {
+      const video = document.getElementById('liveVideo');
+      video.src = srcPath;
+      video.load();
+      video.play().catch(() => {});
+    }
+
+    // 6. Responsive Srcset Pencere Boyutu Takibi
+    function updateViewportIndicator() {
+      const width = window.innerWidth;
+      const indicator = document.getElementById('windowWidthIndicator');
+      if (indicator) {
+        indicator.textContent = width + 'px';
+      }
+      const img = document.getElementById('responsiveAutumnImg');
+      const loadedLabel = document.getElementById('currentLoadedSrc');
+      if (img && loadedLabel) {
+        loadedLabel.textContent = img.currentSrc ? img.currentSrc.split('/').pop() : 'autum-800.jpg';
+      }
+    }
+    window.addEventListener('resize', updateViewportIndicator);
+    window.addEventListener('load', () => {
+      updateViewportIndicator();
+      runPlayground();
+    });
+
+    // 7. Semantik Detay Gösterme
+    function showSemanticDetail(title, text) {
+      const box = document.getElementById('semDetailBox');
+      const titleEl = document.getElementById('semDetailTitle');
+      const textEl = document.getElementById('semDetailText');
+      titleEl.innerHTML = title;
+      textEl.textContent = text;
+      box.style.display = 'block';
+    }
+
+    // 8. Canlı Playground
+    function runPlayground() {
+      const code = document.getElementById('playgroundEditor').value;
+      const preview = document.getElementById('playgroundPreview');
+      preview.innerHTML = code;
+    }
+
+    function loadPlaygroundTemplate(type) {
+      const editor = document.getElementById('playgroundEditor');
+      if (type === 'audio') {
+        editor.value = `<audio controls autoplay muted loop>\n  <source src="audioornek/sound/sound1.mp3" type="audio/mpeg">\n  Tarayıcınız sesi desteklemiyor.\n</audio>`;
+      } else if (type === 'video') {
+        editor.value = `<video controls controlsList="nofullscreen" width="100%" height="auto" autoplay muted loop>\n  <source src="videoornek/video/video1.mp4" type="video/mp4">\n  Tarayıcınız videoyu desteklemiyor.\n</video>`;
+      } else if (type === 'semantic') {
+        editor.value = `<figure style="text-align:center;">\n  <img src="UCAK.png" width="150" alt="Uçak">\n  <figcaption><a href="#">Havacılık Kulübü</a></figcaption>\n</figure>`;
+      } else if (type === 'divspan') {
+        editor.value = `<!-- div (Blok) Örneği: Satırı boydan boya kaplar -->\n<div style="background-color: #ef4444; color: white; padding: 15px; border-radius: 8px; margin-bottom: 15px;">\n  <h3 style="margin-bottom: 5px;">div: Blok Eleman (Block-level)</h3>\n  <p>div etiketi tüm satırı kaplar ve bir kutu oluşturur.</p>\n</div>\n\n<!-- span (Satır İçi) Örneği: Satırı bölmez -->\n<p style="font-size: 16px; line-height: 1.8;">\n  Bu bir paragraftır. <span style="background-color: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">span etiketi</span> metin akışını bozmadan <span style="background-color: #3b82f6; color: white; padding: 2px 8px; border-radius: 4px; font-weight: bold;">aynı satır içinde</span> özel stil uygulamamızı sağlar.\n</p>`;
+      }
+      runPlayground();
+    }
+
+    // 9. Mini Quiz Kontrolü
+    function checkAnswer(button, isCorrect, explanation) {
+      const parentCard = button.closest('.quiz-card');
+      const buttons = parentCard.querySelectorAll('.quiz-btn');
+      const feedback = parentCard.querySelector('.quiz-feedback');
+
+      buttons.forEach(btn => {
+        btn.disabled = true;
+      });
+
+      if (isCorrect) {
+        button.classList.add('correct');
+        feedback.style.background = '#dcfce7';
+        feedback.style.color = '#15803d';
+        feedback.innerHTML = '<strong>Doğru!</strong> ' + explanation;
+      } else {
+        button.classList.add('wrong');
+        feedback.style.background = '#fee2e2';
+        feedback.style.color = '#b91c1c';
+        feedback.innerHTML = '<strong>Yanlış!</strong> ' + explanation;
+      }
+      feedback.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

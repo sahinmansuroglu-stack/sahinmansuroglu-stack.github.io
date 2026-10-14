@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Görsel - srcset_ornek.html</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; text-align: center; }
+    .card { max-width: 900px; margin: 2rem auto; background: #1e293b; padding: 2rem; border-radius: 12px; border: 1px solid #334155; }
+    img { max-width: 100%; height: auto; border-radius: 8px; margin: 1.5rem 0; border: 1px solid #475569; }
+    a { color: #38bdf8; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🖼️ Duyarlı Görsel (srcset & sizes) Örneği</h2>
+    <p>Tarayıcı genişliğini değiştirerek tarayıcının en uygun çözünürlüğü seçmesini test edin.</p>
+    <img src="img/autum-800.jpg"
+         srcset="https://picsum.photos/id/10/400/250 400w,
+                 https://picsum.photos/id/10/800/500 800w,
+                 https://picsum.photos/id/10/1200/750 1200w"
+         sizes="(max-width: 800px) 100vw, 1200px"
+         alt="Duyarlı Manzara Görseli">
+    <p><a href="../html5_multimedya_semantik.html">← Ders Dokümanına Geri Dön</a></p>
+  </div>
+</body>
+</html>

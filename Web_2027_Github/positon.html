@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Position Özelliği (Canlı Örnekler)</title>
+    <!-- Tailwind CSS'i yüklüyoruz (Modern bir görünüm için) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google'dan Inter font ailesini yüklüyoruz -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Sayfanın tamamı için Inter fontunu varsayılan yapıyoruz */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Sticky footer'ın düzgün çalışması için */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Ana içerik alanı */
+        main {
+            flex-grow: 1;
+        }
+
+        /* Kod blokları için basit stil */
+        pre {
+            background-color: #282c34; /* Koyu tema */
+            color: #abb2bf; /* Açık renk yazı */
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto; /* Yatayda kaydırma */
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        pre code.language-css { color: #98c379; } /* CSS */
+        pre code.language-html { color: #e06c75; } /* HTML */
+        pre .comment { color: #5c6370; } /* Yorumlar */
+
+        /* Örnek kutular için temel stiller */
+        .demo-container {
+            position: relative; /* Bu, içindeki absolute elemanlar için bir referans noktası olur */
+            height: 200px;
+            background-color: #f3f4f6; /* Açık gri arka plan */
+            border: 2px dashed #9ca3af; /* Kesikli gri çizgi */
+            border-radius: 8px;
+            margin-top: 1rem;
+            overflow: hidden; /* Taşmaları gizle */
+        }
+        .demo-box {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ====================================
+           "SIRA SENDE" BÖLÜMÜ İÇİN ÖZEL STİLLER
+           ==================================== */
+        
+        /* Görev 1 */
+        #goreceli {
+            position: relative;
+            top: 10px; /* Normal yerinden 10px aşağı kayar */
+            background-color: #3b82f6; /* Mavi */
+        }
+
+        /* Görev 2 */
+        #sabit {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: #ef4444; /* Kırmızı */
+            z-index: 50; /* Diğer her şeyin üstünde */
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Görev 3 */
+        #kapsayici {
+            position: relative;
+            height: 150px;
+            border: 2px solid #10b981; /* Yeşil */
+            background-color: #f0fdf4;
+            margin-top: 2rem;
+        }
+        #mutlak {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: #10b981; /* Yeşil */
+            width: 120px;
+            height: 60px;
+        }
+        
+        /* Görev 4 */
+        .z-index-kapsayici {
+            position: relative;
+            height: 150px;
+            border: 2px dashed #8b5cf6; /* Mor */
+            margin-top: 1rem;
+        }
+        #ustte, #altta {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+        #ustte {
+            background-color: #8b5cf6; /* Mor */
+            top: 10px;
+            left: 10px;
+            z-index: 2; /* Yüksek değer, üstte */
+        }
+        #altta {
+            background-color: #d8b4fe; /* Açık Mor */
+            top: 40px;
+            left: 40px;
+            z-index: 1; /* Düşük değer, altta */
+        }
+
+        /* Görev 5 */
+        #yapiskan {
+            position: sticky;
+            top: 0; /* Ekranın en üstüne gelince yapış */
+            background-color: #f59e0b; /* Sarı */
+            padding: 1rem;
+            color: white;
+            font-weight: 700;
+            border-radius: 4px;
+            z-index: 40; /* Sabit kutunun altında, ama içeriğin üstünde */
+        }
+
+        /* Görev 6 */
+        .input-kapsayici {
+            position: relative;
+            width: 250px;
+            margin-top: 1rem;
+        }
+        .input-kapsayici input {
+            width: 100%;
+            padding: 0.75rem;
+            padding-right: 2.5rem; /* İkon için yer aç */
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .input-ikon {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%); /* Dikey olarak tam ortala */
+            color: #6b7280;
+            pointer-events: none; /* İkonun tıklanmasını engelle */
+        }
+
+        /* Görev 7 */
+        .bildirim-kapsayici {
+            position: relative;
+            width: 60px; /* Avatar boyutu */
+            height: 60px;
+            margin-top: 1rem;
+        }
+        .avatar {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%; /* Yuvarlak */
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .bildirim-sayaci {
+            position: absolute;
+            top: -5px; /* Hafifçe yukarıda */
+            right: -5px; /* Hafifçe sağda */
+            background-color: #ef4444; /* Kırmızı */
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white; /* Beyaz çerçeve */
+        }
+
+        /* Görev 9 (Sticky Footer) */
+        footer {
+            position: sticky;
+            bottom: 0; /* En alta yapış */
+            background-color: #1f2937; /* Koyu Gri */
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: auto; /* DÜZELTME: İçerik kısayken en alta itilmesi için 'auto' yapıldı */
+        }
+
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <!-- Ana İçerik Alanı -->
+    <main class="max-w-5xl mx-auto p-6 md:p-12 w-full">
+
+        <div class="mb-8 flex items-center justify-between flex-wrap gap-4 border-b pb-4">
+            <a href="index.html" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow transition">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                🏠 11 ATP Portal Ana Sayfası
+            </a>
+            <span class="text-xs text-slate-500 font-medium">11. Sınıf Web Tabanlı Uygulama Geliştirme • CSS Position Laboratuvarı</span>
+        </div>
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-indigo-600 mb-4">
+                CSS Position Özelliği Haritası 🗺️
+            </h1>
+            <p class="text-lg text-slate-600">
+                Kutuları (elemanları) sayfada nasıl konumlandıracağımızı öğrenelim!
+            </p>
+        </header>
+
+        <!-- Tanım Bölümü -->
+        <section class="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 mb-3">Position Nedir?</h2>
+            <p class="text-base leading-relaxed">
+                <code>position</code> özelliği, bir elemanın web sayfasındaki yerleştirme yöntemini belirler. 
+                Bu özelliği kullandığımızda, ona <code>top</code> (üst), <code>right</code> (sağ), <code>bottom</code> (alt) ve <code>left</code> (sol) gibi yardımcı özellikler vererek tam olarak nerede duracağını söyleriz.
+            </p>
+            <p class="mt-4 p-4 bg-indigo-50 border-l-4 border-indigo-400 rounded-md text-indigo-800">
+                <strong>Bilmen Gerekenler:</strong> <code>position</code> özelliğinin 5 ana değeri vardır. Hadi hepsini tek tek inceleyelim!
+            </p>
+        </section>
+
+        <!-- Position Türleri -->
+        <div class="space-y-10">
+
+            <!-- 1. STATIC (Varsayılan) -->
+            <section class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">1. position: static (Varsayılan 🏠)</h3>
+                <p class="text-base mb-4">
+                    Bu, tüm HTML elemanlarının <strong>varsayılan</strong> değeridir. "Statik", "durgun" demektir.
+                    Elemanlar sayfaya eklendikleri sırayla (yukarıdan aşağıya, soldan sağa) normal bir şekilde dizilirler.
+                    <code>position: static</code> olan bir eleman <code>top</code>, <code>left</code> gibi komutları <strong>dinlemez</strong>.
+                </p>
+                <div class="demo-container">
+                    <div class="demo-box" style="background-color: #a855f7;">Kutu 1 (Statik)</div>
+                    <div class="demo-box" style="background-color: #d946ef; position: static; top: 50px; left: 50px;">Kutu 2 (Statik)</div>
+                </div>
+                <div class="mt-4 p-3 bg-red-50 border-l-4 border-red-400 rounded-md">
+                    <p class="text-red-800"><strong>Gördün mü?</strong> Kutu 2'ye <code>top: 50px</code> vermemize rağmen hiç kımıldamadı! Çünkü o "statik".</p>
+                </div>
+                <pre class="mt-4"><code class="language-html">&lt;div class="kutu"&gt;Kutu 1 (Statik)&lt;/div&gt;
+&lt;div class="kutu" style="position: static; top: 50px;"&gt;Kutu 2 (Statik)&lt;/div&gt;</code></pre>
+            </section>
+
+            <!-- 2. RELATIVE -->
+            <section class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="text-3xl font-bold text-blue-800 mb-4">2. position: relative (Göreli 🎯)</h3>
+                <p class="text-base mb-4">
+                    "Relative", "göreli" demektir. Elemanı normalde olması gereken yere (statik konumuna) <strong>göre</strong> kaydırmamızı sağlar.
+                    En önemli özelliği: Kaydırılsa bile, normal akıştaki <strong>eski yerini korumaya devam eder</strong>. Diğer elemanlar onun eski yerine göre dizilir.
+                    Ayrıca, içindeki <code>absolute</code> elemanlar için bir "ata" (parent) görevi görür!
+                </p>
+                <div class="demo-container">
+                    <div class="demo-box" style="background-color: #22c55e;">Kutu 1 (Statik)</div>
+                    <div class="demo-box" style="background-color: #3b82f6; position: relative; top: 20px; left: 30px; z-index: 1;">Kutu 2 (Relative)</div>
+                    <div class="demo-box" style="background-color: #6366f1;">Kutu 3 (Statik)</div>
+                </div>
+                <div class="mt-4 p-3 bg-blue-50 border-l-4 border-blue-400 rounded-md">
+                    <p class="text-blue-800"><strong>Dikkat et:</strong> Kutu 2, normal yerinden 20px aşağı ve 30px sağa kaydı. Kutu 3 ise Kutu 2'nin *eski* yerinin altına yerleşti.</p>
+                </div>
+                <pre class="mt-4"><code class="language-html">&lt;div class="kutu"&gt;Kutu 1 (Statik)&lt;/div&gt;
+&lt;div class="kutu relative"&gt;Kutu 2 (Relative)&lt;/div&gt;
+&lt;div class="kutu"&gt;Kutu 3 (Statik)&lt;/div&gt;</code>
+<code class="language-css">.relative {
+  position: relative;
+  top: 20px;
+  left: 30px;
+}</code></pre>
+            </section>
+            
+            <!-- 3. ABSOLUTE -->
+            <section class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="text-3xl font-bold text-green-800 mb-4">3. position: absolute (Mutlak 🚀)</h3>
+                <p class="text-base mb-4">
+                    Bu en ilginç olanıdır! Elemanı normal akıştan <strong>tamamen koparır</strong>. Artık diğer elemanlar onu görmezden gelir ve onun bıraktığı boşluk kaybolur.
+                    <code>absolute</code> bir eleman, kendisine en yakın <code>position</code> değeri <code>static</code> <strong>OLMAYAN</strong> (yani relative, absolute, fixed veya sticky) atasını (parent) arar ve kendini ona göre hizalar.
+                    Eğer böyle bir ata bulamazsa, en son çare olarak sayfanın <code>&lt;body&gt;</code> etiketine göre hizalanır.
+                </p>
+                <div class="demo-container" style="background-color: #f0fdf4; border-color: #10b981;">
+                    <div class="demo-box" style="background-color: #22c55e;">Kutu 1 (Statik)</div>
+                    <div class="demo-box" style="background-color: #10b981; position: absolute; top: 10px; right: 10px; width: 120px; height: 60px;">Absolute Kutu</div>
+                    <div class="demo-box" style="background-color: #22c55e;">Kutu 2 (Statik)</div>
+                </div>
+                <div class="mt-4 p-3 bg-green-50 border-l-4 border-green-400 rounded-md">
+                    <p class="text-green-800"><strong>Bak:</strong> "Absolute Kutu", dıştaki yeşil kesikli çizgi olan kapsayıcıya (çünkü o <code>position: relative</code>) göre kendini sağ üst köşeye hizaladı. Kutu 1 ve Kutu 2 ise onu hiç görmeden alt alta dizildi.</p>
+                </div>
+                <pre class="mt-4"><code class="language-html">&lt;div class="kapsayici"&gt;
+  &lt;div class="kutu"&gt;Kutu 1 (Statik)&lt;/div&gt;
+  &lt;div class="kutu absolute"&gt;Absolute Kutu&lt;/div&gt;
+  &lt;div class="kutu"&gt;Kutu 2 (Statik)&lt;/div&gt;
+&lt;/div&gt;</code>
+<code class="language-css">.kapsayici {
+  position: relative; <comment>/* Atayı belirliyoruz! */</comment>
+  border: 2px dashed green;
+  height: 200px;
+}
+.absolute {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}</code></pre>
+            </section>
+
+            <!-- 4. FIXED -->
+            <section class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="text-3xl font-bold text-red-800 mb-4">4. position: fixed (Sabit 📌)</h3>
+                <p class="text-base mb-4">
+                    Elemanı ekrana <strong>yapıştırır</strong>. Sen sayfayı aşağı kaydırsan bile o hep aynı yerde kalır.
+                    <code>absolute</code>'den farkı, atasına göre değil, her zaman doğrudan tarayıcı penceresine (viewport) göre kendini hizalamasıdır.
+                    Genellikle "sayfanın en üstüne git" butonları veya çerez (cookie) bildirimleri için kullanılır.
+                </p>
+                <div class="demo-container" style="height: 100px;">
+                    <p class="text-center p-4">Bu kutu normal. Şimdi sayfayı aşağı kaydır...</p>
+                    <div class="demo-box" style="background-color: #ef4444; position: fixed; bottom: 20px; right: 20px; z-index: 100; width: 130px; height: 60px;">Ben FIXED'im!</div>
+                </div>
+                <pre class="mt-4"><code class="language-html">&lt;div class="kutu fixed"&gt;Ben FIXED'im!&lt;/div&gt;</code>
+<code class="language-css">.fixed {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 100; <comment>/* Diğer şeylerin üstünde kalsın diye */</comment>
+}</code></pre>
+            </section>
+
+            <!-- 5. STICKY -->
+            <section class="bg-white p-6 rounded-lg shadow-sm">
+                <h3 class="text-3xl font-bold text-yellow-800 mb-4">5. position: sticky (Yapışkan 🍯)</h3>
+                <p class="text-base mb-4">
+                    Bu, <code>relative</code> ve <code>fixed</code>'in akıllı bir karışımıdır.
+                    Eleman, normalde <code>relative</code> gibi davranır, yani akışta durur.
+                    Ancak sen sayfayı kaydırıp, eleman tarayıcı penceresinin belli bir noktasına (örneğin <code>top: 0</code>) ulaştığında, orada <strong>yapışır</strong> ve <code>fixed</code> gibi davranır.
+                </p>
+                <div class="text-base p-4 bg-gray-100 rounded-lg">
+                    <p>...kaydır...</p>
+                    <p>...kaydır...</p>
+                    <h4 id="yapiskan-ornek" class="text-xl font-bold bg-yellow-400 text-yellow-900 p-4 rounded-md shadow-lg" style="position: sticky; top: 10px; z-index: 30;">
+                        Ben STICKY Başlığım!
+                    </h4>
+                    <p class="mt-4">...kaydırmaya devam et...</p>
+                    <p>...gördün mü nasıl yapıştı?...</p>
+                    <p>...ve şimdi yukarı kaydırınca eski yerine dönüyor...</p>
+                </div>
+                <pre class="mt-4"><code class="language-html">&lt;h4 class="sticky-baslik"&gt;Ben STICKY Başlığım!&lt;/h4&gt;</code>
+<code class="language-css">.sticky-baslik {
+  position: sticky;
+  top: 10px; <comment>/* Ekranın üstüne 10px kala yapış */</comment>
+  background-color: yellow;
+}</code></pre>
+            </section>
+
+        </div>
+
+        <!-- Çözümlü Örnekler -->
+        <section class="mt-16">
+            <h2 class="text-4xl font-bold text-center text-indigo-600 mb-10">
+                Çözümlü Örnekler 💡
+            </h2>
+            <div class="grid md:grid-cols-2 gap-8">
+
+                <!-- Örnek: Absolute ile Ortalama -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold mb-3">1. `absolute` ile Elemanı Ortalama</h4>
+                    <p class="text-sm mb-4">Bir elemanı (kutu) hem dikey hem de yatayda ortalamanın en popüler yolu:</p>
+                    <div class="demo-container" style="height: 150px;">
+                        <div class="demo-box" style="width: 80px; height: 80px; background-color: #ec4899; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                            Ortadayım!
+                        </div>
+                    </div>
+                    <pre class="mt-4"><code class="language-html">&lt;div class="kapsayici"&gt;
+  &lt;div class="ortalanmis"&gt;Ortadayım!&lt;/div&gt;
+&lt;/div&gt;</code>
+<code class="language-css">.kapsayici {
+  position: relative;
+}
+.ortalanmis {
+  position: absolute;
+  top: 50%; <comment>/* Üstten %50 it */</comment>
+  left: 50%; <comment>/* Soldan %50 it */</comment>
+  transform: translate(-50%, -50%); <comment>/* Kendi boyunun yarısı kadar geri çek */</comment>
+}</code></pre>
+                </div>
+
+                <!-- Örnek: z-index -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold mb-3">2. `z-index` ile Katman Sırası</h4>
+                    <p class="text-sm mb-4"><code>position</code> (static hariç) değeri olan elemanlar üst üste binebilir. <code>z-index</code> hangisinin en üstte olacağını belirler. Büyük sayı = en üstte.</p>
+                    <div class="demo-container" style="height: 150px;">
+                        <div class="demo-box" style="background-color: #f97316; position: absolute; top: 20px; left: 20px; z-index: 2;">
+                            Üstte (z-index: 2)
+                        </div>
+                        <div class="demo-box" style="background-color: #fbbf24; position: absolute; top: 50px; left: 50px; z-index: 1;">
+                            Altta (z-index: 1)
+                        </div>
+                    </div>
+                    <pre class="mt-4"><code class="language-html">&lt;div class="onde"&gt;Üstte (z-index: 2)&lt;/div&gt;
+&lt;div class="arkada"&gt;Altta (z-index: 1)&lt;/div&gt;</code>
+<code class="language-css">.onde {
+  position: absolute;
+  z-index: 2;
+}
+.arkada {
+  position: absolute;
+  z-index: 1;
+}</code></pre>
+                </div>
+
+                <!-- Örnek: Overlay -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold mb-3">3. Overlay (Kaplama) Efekti</h4>
+                    <p class="text-sm mb-4">Sayfanın üzerine her şeyi kaplayan yarı şeffaf bir katman eklemek için <code>fixed</code> kullanılır.</p>
+                    <div class="demo-container" style="height: 150px;">
+                        <p class="p-4">Arkada kalan içerik...</p>
+                        <div class="overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">
+                            Bu bir Overlay Katmanı
+                        </div>
+                    </div>
+                    <pre class="mt-4"><code class="language-html">&lt;div class="overlay"&gt;...&lt;/div&gt;</code>
+<code class="language-css">.overlay {
+  position: fixed; <comment>/* Veya ata'ya göre 'absolute' */</comment>
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5); <comment>/* Siyah ama %50 şeffaf */</comment>
+  z-index: 10;
+}</code></pre>
+                </div>
+                
+                <!-- Örnek: static vs relative -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold mb-3">4. `static` vs `relative` Farkı</h4>
+                    <p class="text-sm mb-4"><code>static</code> elemanlar <code>top/left</code> dinlemez, <code>relative</code> dinler.</p>
+                    <div class="demo-container" style="height: 150px;">
+                        <div class="demo-box" style="width: 120px; height: 50px; background-color: #6b7280; position: static; top: 50px;">
+                            static (kımıldamaz)
+                        </div>
+                        <div class="demo-box" style="width: 120px; height: 50px; background-color: #14b8a6; position: relative; top: 10px;">
+                            relative (kayar)
+                        </div>
+                    </div>
+                    <pre class="mt-4"><code class="language-css">.static {
+  position: static;
+  top: 50px; <comment>/* BU ÇALIŞMAZ */</comment>
+}
+.relative {
+  position: relative;
+  top: 10px; <comment>/* BU ÇALIŞIR */</comment>
+}</code></pre>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- Sıra Sende (ÇÖZÜMLER) -->
+        <section class="mt-16">
+            <h2 class="text-4xl font-bold text-center text-indigo-600 mb-10">
+                Sıra Sende! (Görevler ve Çözümleri) 📌
+            </h2>
+            <p class="text-center text-lg text-slate-600 mb-8">İşte senden istenen görevlerin canlı, çalışan çözümleri!</p>
+
+            <div class="space-y-8">
+            
+                <!-- Görev 1, 2, 3, 4 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold mb-3">Görev 1, 2, 3 ve 4: Temel Konumlandırma</h4>
+                    <p class="text-sm mb-4">İşte <code>relative</code>, <code>fixed</code>, <code>absolute</code> ve <code>z-index</code> kullanımı:</p>
+                    
+                    <!-- Bu eleman Görev 2'den gelir -->
+                    <div id="sabit" class="demo-box" style="width: 130px; height: 50px;">Ben FIXED'im!</div>
+
+                    <!-- Bu eleman Görev 1'den gelir -->
+                    <div id="goreceli" class="demo-box" style="width: 150px; height: 50px;">Ben Relative'im</div>
+                    
+                    <!-- Bu elemanlar Görev 3'ten gelir -->
+                    <div id="kapsayici">
+                        <div id="mutlak" class="demo-box">Ben Absolute'um</div>
+                    </div>
+                    
+                    <!-- Bu elemanlar Görev 4'ten gelir -->
+                    <div class="z-index-kapsayici">
+                        <div id="ustte">Üstteyim (z: 2)</div>
+                        <div id="altta">Alttayım (z: 1)</div>
+                    </div>
+
+                    <pre class="mt-4"><code class="language-css"><comment>/* Görev 1: #goreceli'yi 10px aşağı kaydır */</comment>
+#goreceli {
+  position: relative;
+  top: 10px;
+}
+<comment>/* Görev 2: #sabit'i sağ üste sabitle */</comment>
+#sabit {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 50; <comment>/* Üstte kalması için */</comment>
+}
+<comment>/* Görev 3: #mutlak'ı kapsayıcısının sol altına yerleştir */</comment>
+#kapsayici {
+  position: relative; <comment>/* Ata (parent) bu olmalı! */</comment>
+  height: 150px;
+  border: 2px solid #10b981;
+}
+#mutlak {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+<comment>/* Görev 4: #ustte elemanını üste çıkar */</comment>
+.z-index-kapsayici {
+  position: relative;
+  height: 150px;
+}
+#ustte, #altta {
+  position: absolute;
+}
+#ustte {
+  z-index: 2; <comment>/* Yüksek değer */</comment>
+  top: 10px; left: 10px;
+}
+#altta {
+  z-index: 1; <comment>/* Düşük değer */</comment>
+  top: 40px; left: 40px;
+}</code></pre>
+                </div>
+                
+                <!-- Görev 5 -->
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h4 class="text-xl font-bold mb-3">Görev 5: Yapışkan Başlık</h4>
+                    <p class="text-sm mb-4">Aşağı kaydırınca bu başlık (<code>#yapiskan</code>) en üste yapışacak.</p>
+                    
+                    <!-- Bu eleman Görev 5'ten gelir -->
+                    <h2 id="yapiskan">Yapışkan Başlık 🍯</h2>
+                    
+                    <pre class="mt-4"><code class="language-css"><comment>/* Görev 5: Başlığı en üste yapışkan yap */</comment>
+#yapiskan {
+  position: sticky;
+  top: 0; <comment>/* En üste gelince yapış */</comment>
+  background-color: #f59e0b;
+}</code></pre>
+                </div>
+
+                <!-- Görev 6 ve 7 -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h4 class="text-xl font-bold mb-3">Görev 6: Input İçine İkon</h4>
+                        <p class="text-sm mb-4">Input'u bir kapsayıcıya alıp ikonu <code>absolute</code> ile yerleştirmek:</p>
+                        
+                        <!-- Bu elemanlar Görev 6'dan gelir -->
+                        <div class="input-kapsayici">
+                            <input type="text" placeholder="Ara...">
+                            <div class="input-ikon">
+                                <!-- Basit bir SVG arama ikonu -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <pre class="mt-4"><code class="language-css">.input-kapsayici {
+  position: relative;
+}
+.input-ikon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}</code></pre>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h4 class="text-xl font-bold mb-3">Görev 7: Bildirim Sayacı</h4>
+                        <p class="text-sm mb-4">Avatarı kapsayıcıya alıp sayacı <code>absolute</code> ile sağ üstüne atmak:</p>
+                        
+                        <!-- Bu elemanlar Görev 7'den gelir -->
+                        <div class="bildirim-kapsayici">
+                            <img src="https://placehold.co/60x60/e0e7ff/4f46e5?text=AV" alt="Avatar" class="avatar">
+                            <span class="bildirim-sayaci">3</span>
+                        </div>
+
+                        <pre class="mt-4"><code class="language-css">.bildirim-kapsayici {
+  position: relative;
+}
+.bildirim-sayaci {
+  position: absolute;
+  top: -5px;  <comment>/* Negatif değerle dışarı taşır */</comment>
+  right: -5px; <comment>/* Negatif değerle dışarı taşır */</comment>
+  background: red;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kaydırma Alanı (Sticky/Fixed'i test etmek için) -->
+        <div class="h-[1000px] bg-gray-100 rounded-lg flex items-center justify-center my-10">
+            <p class="text-gray-500 font-bold text-2xl">Scroll (Kaydırma) Alanı</p>
+        </div>
+
+    </main>
+
+    <!-- Görev 9 (Sticky Footer) -->
+    <footer class="mt-auto">
+        Bu bir 'position: sticky' ve 'bottom: 0' kullanan footer.
+        <br>
+        (İçerik kısaysa en altta durur, uzunsa içerikle birlikte kayar ama en alta gelince yapışır)
+        <pre class="mt-4 !bg-gray-700 !text-gray-300 max-w-md mx-auto"><code class="language-css">footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto; <comment>/* İçerik kısaysa en alta iter */</comment>
+}</code></pre>
+    </footer>
+
+</body>
+</html>
+

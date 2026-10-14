@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Ölçü Birimleri (px, %, em, rem, vw, vh)</title>
+    <!-- Tailwind CSS'i yüklüyoruz -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Genel Stiller */
+        .kutu-ortak {
+            padding: 0.5rem 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .birim-kutu {
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Örnek 1: Pixel (px) */
+        .px-kutu {
+            background-color: #ef4444; /* Kırmızı */
+            width: 200px; /* Sabit Genişlik */
+            height: 50px;
+            font-size: 24px;
+        }
+
+        /* Örnek 2: Yüzde (%) */
+        .yuzde-kutu {
+            background-color: #22c55e; /* Yeşil */
+            width: 50%; /* Üst elementin %50'si */
+            height: 50px;
+        }
+
+        /* Örnek 3: Em */
+        .em-ana-kutu {
+            font-size: 16px; /* Ana kutunun font büyüklüğü */
+            background-color: #3b82f6; /* Mavi */
+            color: white;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        .em-alt-kutu {
+            /* Font büyüklüğü: Ana kutunun (16px) 1.5 katı = 24px */
+            font-size: 1.5em; 
+            background-color: #0087ff; 
+            padding: 0.5em; /* Padding: Font büyüklüğünün (24px) 0.5 katı */
+        }
+
+        /* Örnek 4: Rem */
+        .rem-alt-kutu {
+            /* Font büyüklüğü: Sayfanın (root) varsayılan (16px) 1.5 katı = 24px */
+            font-size: 1.5rem; 
+            background-color: #f97316; /* Turuncu */
+            padding: 0.5rem; /* Padding: Sayfanın (root) varsayılan (16px) 0.5 katı = 8px */
+        }
+
+        /* Örnek 5: Viewport (vw/vh) */
+        .vw-kutu {
+            background-color: #a855f7; /* Mor */
+            /* Genişlik: Ekran genişliğinin %30'u */
+            width: 30vw; 
+            /* Font büyüklüğü: Ekran genişliğinin %3'ü */
+            font-size: 3vw; 
+            height: 10vh; /* Yükseklik: Ekran yüksekliğinin %10'u */
+        }
+
+        /* Kod Blok Stili */
+        .kod-block {
+            background-color: #1f2937;
+            color: #d1d5db;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            white-space: pre-wrap;
+        }
+
+        h2 {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 sm:p-8 font-sans">
+
+    <div class="max-w-5xl mx-auto bg-white p-6 sm:p-10 rounded-xl shadow-2xl">
+        <div class="mb-6 flex items-center justify-between flex-wrap gap-4 border-b pb-4">
+            <a href="index.html" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded-lg text-sm shadow transition">
+                <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                🏠 11 ATP Portal Ana Sayfası
+            </a>
+            <span class="text-xs text-gray-500 font-medium">11. Sınıf Web Tabanlı Uygulama Geliştirme • Ölçü Birimleri</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-indigo-700 mb-8 pb-3 border-b-4 border-indigo-200">
+            CSS Ölçü Birimleri: Web Kutu Boyutları
+        </h1>
+        <p class="text-gray-600 mb-8">
+            Web'de bir kutunun boyutunu belirlerken farklı ölçü birimleri kullanılır. Bunlar temelde ikiye ayrılır: **Sabit (Absolute)** ve **Göreceli (Relative)** birimler.
+        </p>
+
+        <!-- Örnek 1: Pixel (px) -->
+        <section class="mb-8 p-4 border rounded-lg bg-red-50">
+            <h2 class="text-xl font-bold text-red-700 mb-4">1. px (Pixel) - Sabit Birim</h2>
+            <p class="mb-4 text-gray-700">
+                **Tanım:** Ekranda sabit bir noktayı temsil eder. Her zaman aynı boyuttadır.
+                <br> **Kullanım:** Küçük detaylar ve sabit boyutlar için idealdir. (Ancak responsive tasarımlarda çok önerilmez.)
+            </p>
+            <div class="birim-kutu px-kutu">200px Genişlik, 24px Yazı</div>
+            
+            <h3 class="text-lg font-semibold text-red-700 mt-6 mb-2">Kullanılan Kodlar</h3>
+            <pre class="kod-block"><code>
+&lt;!-- HTML Kodu --&gt;
+&lt;div class="birim-kutu px-kutu"&gt;200px Genişlik, 24px Yazı&lt;/div&gt;
+
+&lt;!-- İlgili CSS Kodu --&gt;
+.px-kutu {
+    background-color: #ef4444; 
+    width: 200px; /* Sabit Genişlik */
+    height: 50px;
+    font-size: 24px;
+}
+            </code></pre>
+        </section>
+
+        <!-- Örnek 2: Yüzde (%) -->
+        <section class="mb-8 p-4 border rounded-lg bg-green-50">
+            <h2 class="text-xl font-bold text-green-700 mb-4">2. % (Yüzde) - Göreceli Birim</h2>
+            <p class="mb-4 text-gray-700">
+                **Tanım:** İçinde bulunduğu ana kutunun boyutuna göre belirlenir.
+                <br> **Kullanım:** Ana elementin boyutuna bağlı kalmak için kullanılır. (Örn: Bir div'in %50'si)
+            </p>
+            <div class="kutu-ortak bg-gray-300 text-gray-800">
+                Ana Kutu (Genişlik: %100)
+                <div class="birim-kutu yuzde-kutu">50% Genişlik</div>
+            </div>
+            
+            <h3 class="text-lg font-semibold text-green-700 mt-6 mb-2">Kullanılan Kodlar</h3>
+            <pre class="kod-block"><code>
+&lt;!-- HTML Kodu --&gt;
+&lt;div class="kutu-ortak bg-gray-300"&gt;
+    Ana Kutu
+    &lt;div class="birim-kutu yuzde-kutu"&gt;50% Genişlik&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- İlgili CSS Kodu --&gt;
+/* Ana kutu (kutu-ortak) genişliği %100 kabul edilir */
+.yuzde-kutu {
+    background-color: #22c55e;
+    width: 50%; /* Ana kutunun %50'si */
+    height: 50px;
+}
+            </code></pre>
+        </section>
+
+        <!-- Örnek 3: em -->
+        <section class="mb-8 p-4 border rounded-lg bg-blue-50">
+            <h2 class="text-xl font-bold text-blue-700 mb-4">3. em - Göreceli Birim (Kendi Ebeveynine Bağlı)</h2>
+            <p class="mb-4 text-gray-700">
+                **Tanım:** Kendi ebeveyn (ana) elementinin **font büyüklüğüne** göre belirlenir.
+                <br> **Risk:** İç içe geçtikçe değerler katlanarak artabilir.
+            </p>
+            <div class="em-ana-kutu">
+                Ana Kutu Font: 16px
+                <div class="birim-kutu em-alt-kutu">
+                    1.5em Font = 24px
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-semibold text-blue-700 mt-6 mb-2">Kullanılan Kodlar</h3>
+            <pre class="kod-block"><code>
+&lt;!-- HTML Kodu --&gt;
+&lt;div class="em-ana-kutu"&gt;
+    Ana Kutu Font: 16px
+    &lt;div class="birim-kutu em-alt-kutu"&gt;1.5em Font&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- İlgili CSS Kodu --&gt;
+.em-ana-kutu {
+    font-size: 16px; /* 1em buradan hesaplanır */
+}
+.em-alt-kutu {
+    /* Font: Ebeveynin 16px'inin 1.5 katı = 24px */
+    font-size: 1.5em; 
+    /* Padding: KENDİ fontu (24px) baz alınır! */
+    padding: 0.5em; 
+    background-color: #0087ff; 
+}
+            </code></pre>
+        </section>
+
+        <!-- Örnek 4: rem -->
+        <section class="mb-8 p-4 border rounded-lg bg-orange-50">
+            <h2 class="text-xl font-bold text-orange-700 mb-4">4. rem (Root em) - Göreceli Birim (Sayfa Köküne Bağlı)</h2>
+            <p class="mb-4 text-gray-700">
+                **Tanım:** Her zaman sayfanın en üstündeki `&lt;html&gt;` elementinin **font büyüklüğüne** göre belirlenir.
+                <br> **Kullanım:** En popüler ve önerilen göreceli birimdir. İç içe geçse bile katlanmaz. (Varsayılan: 1rem = 16px)
+            </p>
+            <div class="em-ana-kutu bg-gray-400">
+                Ana Kutu Font: 16px
+                <div class="birim-kutu rem-alt-kutu">
+                    1.5rem Font = 24px
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-semibold text-orange-700 mt-6 mb-2">Kullanılan Kodlar</h3>
+            <pre class="kod-block"><code>
+&lt;!-- HTML Kodu --&gt;
+&lt;div class="em-ana-kutu bg-gray-400"&gt;
+    Ana Kutu Font: 16px
+    &lt;div class="birim-kutu rem-alt-kutu"&gt;1.5rem Font&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- İlgili CSS Kodu --&gt;
+/* Sayfa kökünde (&lt;html&gt;) varsayılan font 16px'tir. */
+.rem-alt-kutu {
+    /* Font: Sayfa kökünün 1.5 katı = 24px. Ebeveyne bakmaz. */
+    font-size: 1.5rem; 
+    /* Padding: Sayfa kökünün 0.5 katı = 8px */
+    padding: 0.5rem; 
+    background-color: #f97316;
+}
+            </code></pre>
+        </section>
+
+        <!-- Örnek 5: Viewport (vw/vh) -->
+        <section class="mb-8 p-4 border rounded-lg bg-purple-50">
+            <h2 class="text-xl font-bold text-purple-700 mb-4">5. vw / vh (Viewport Width / Height)</h2>
+            <p class="mb-4 text-gray-700">
+                **Tanım:** Tarayıcı ekranının (Viewport) genişlik ve yüksekliğine göre belirlenir.
+                <br> **Kullanım:** Ekran boyutu değiştiğinde otomatik olarak küçülüp büyüyen (fluid) elementler için kullanılır.
+            </p>
+            <div class="birim-kutu vw-kutu">30vw Genişlik, 3vw Yazı</div>
+            <p class="mt-4 text-sm text-gray-500">
+                *Tarayıcı penceresinin boyutunu değiştirin. Kutu ve yazı da boyutuyla beraber değişecektir.*
+            </p>
+            
+            <h3 class="text-lg font-semibold text-purple-700 mt-6 mb-2">Kullanılan Kodlar</h3>
+            <pre class="kod-block"><code>
+&lt;!-- HTML Kodu --&gt;
+&lt;div class="birim-kutu vw-kutu"&gt;30vw Genişlik, 3vw Yazı&lt;/div&gt;
+
+&lt;!-- İlgili CSS Kodu --&gt;
+.vw-kutu {
+    background-color: #a855f7;
+    /* Genişlik: Ekran genişliğinin %30'u (responsive) */
+    width: 30vw; 
+    /* Yükseklik: Ekran yüksekliğinin %10'u */
+    height: 10vh; 
+    /* Font: Ekran genişliğinin %3'ü (ekran küçüldükçe yazı küçülür) */
+    font-size: 3vw; 
+}
+            </code></pre>
+        </section>
+
+        <!-- Sıra Sende Bölümü -->
+        <section class="border-4 border-dashed border-indigo-400 p-6 rounded-xl bg-indigo-50 mt-12">
+            <h2 class="text-2xl font-extrabold text-indigo-700 mb-6 border-none pb-0">Sıra Sende! (Bölüm 2) 📏</h2>
+            <p class="mb-4 text-gray-700">
+                Şimdi öğrendiğin ölçü birimlerini kullanarak aşağıdaki görevleri gerçekleştir. Kendi CSS kurallarını `&lt;style&gt;` bloğuna ekleyebilirsin.
+            </p>
+            
+            <h3 class="font-bold text-lg mb-3 text-indigo-600">Başlangıç HTML Yapısı:</h3>
+            <pre class="bg-black text-gray-200 p-4 rounded-lg overflow-x-auto text-sm mb-6"><code>
+&lt;div class="gorev-kutu-ana bg-gray-200 p-4"&gt;
+    &lt;div class="gorev-px bg-red-500"&gt;Sabit 150px&lt;/div&gt;
+    &lt;div class="gorev-yuzde bg-green-500"&gt;%75 Genişlik&lt;/div&gt;
+    &lt;div class="gorev-rem bg-orange-500"&gt;1.2rem Yazı&lt;/div&gt;
+    &lt;div class="gorev-vw bg-purple-500"&gt;10vw Yükseklik&lt;/div&gt;
+&lt;/div&gt;
+            </code></pre>
+
+            <h3 class="font-bold text-xl mb-3 text-indigo-700">Yapılacaklar (CSS Kuralları):</h3>
+            <ul class="list-decimal list-inside space-y-3 text-gray-700 bg-white p-4 rounded-lg">
+                <li><code>.gorev-px</code> elemanına **<code>width: 150px;</code>** verin.</li>
+                <li><code>.gorev-yuzde</code> elemanına **<code>width: 75%;</code>** verin.</li>
+                <li><code>.gorev-rem</code> elemanına **<code>font-size: 1.2rem;</code>** ve **<code>padding: 0.8rem;</code>** verin.</li>
+                <li><code>.gorev-vw</code> elemanına **<code>height: 10vw;</code>** ve **<code>width: 50vw;</code>** verin. (Tarayıcı boyutunu değiştirerek responsive etkisini gözlemleyin.)</li>
+            </ul>
+
+            <details class="mt-4 bg-white p-4 rounded-lg border border-indigo-200">
+                <summary class="font-bold text-indigo-700 cursor-pointer">💡 Örnek CSS Çözümünü Gör / Gizle</summary>
+                <pre class="kod-block mt-3"><code>.gorev-px {
+    width: 150px;
+}
+.gorev-yuzde {
+    width: 75%;
+}
+.gorev-rem {
+    font-size: 1.2rem;
+    padding: 0.8rem;
+}
+.gorev-vw {
+    width: 50vw;
+    height: 10vw;
+}</code></pre>
+            </details>
+
+        </section>
+    </div>
+
+</body>
+</html>

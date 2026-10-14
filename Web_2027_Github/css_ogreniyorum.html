@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CSS Öğreniyorum! (10 Yaş İçin)</title>
+    <style>
+        /* Sayfa stili */
+        :root{--mavi:#2d7ff9;--lacivert:#0f265c;--yesil:#18b36b;--turuncu:#ff7a00;--gri:#f4f6f8}
+        html,body{margin:0;padding:0}
+        body{font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#ffffff; color:#222}
+        .kap{max-width:1000px; margin:0 auto; padding:24px}
+        header{background:linear-gradient(135deg, var(--mavi), var(--lacivert)); color:white; border-bottom:6px solid var(--turuncu)}
+        header .kap{padding:32px 24px}
+        h1{margin:0 0 6px}
+        .alt-baslik{opacity:.9}
+
+        nav{background:var(--gri); border-bottom:1px solid #e3e7eb}
+        nav .kap{display:flex; gap:12px; flex-wrap:wrap}
+        nav a{display:inline-block; padding:10px 14px; background:white; border:1px solid #e3e7eb; border-radius:8px; color:#0f265c; text-decoration:none; font-weight:600}
+        nav a:hover{background:#f9fbff; border-color:#d6deea}
+
+        section{padding:28px 0; border-bottom:1px dashed #e1e5ea}
+        section:last-of-type{border-bottom:none}
+        h2{color:var(--lacivert)}
+        .kutu{background:#fff; border:1px solid #e5e9ef; border-radius:12px; padding:16px; margin:14px 0}
+        .ipucu{background:#fff7e6; border:1px solid #ffd699}
+        .ornek-alani{display:flex; gap:16px; flex-wrap:wrap}
+        .canli{flex:1 1 280px; min-width:260px}
+        .canli .goster{border:2px dashed #c9d3e3; border-radius:12px; padding:16px; min-height:80px}
+        .kod{flex:1 1 320px; min-width:280px}
+        pre{margin:0; background:#0f172a; color:#e2e8f0; padding:16px; border-radius:10px; overflow:auto}
+        code{font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+        .btn{display:inline-block; padding:8px 12px; background:var(--mavi); color:white; border:none; border-radius:8px; cursor:pointer; font-weight:700}
+        .btn:hover{filter:brightness(0.95)}
+        .mini{font-size:12px; opacity:.8}
+
+        .odev{border-left:6px solid var(--yesil)}
+        .odev h3{margin-top:0}
+
+        /* Sol menülü düzen */
+        .govde{display:grid; grid-template-columns: 250px 1fr; gap:16px}
+        .sol-nav{position:sticky; top:16px; align-self:start; max-height: calc(100vh - 32px); overflow:auto}
+        .sol-nav h3{margin:0 0 10px; color:var(--lacivert)}
+        .sol-nav a{display:block; padding:10px 12px; margin-bottom:8px; background:#fff; border:1px solid #e3e7eb; border-radius:8px; color:#0f265c; text-decoration:none; font-weight:600}
+        .sol-nav a:hover{background:#f9fbff; border-color:#d6deea}
+        /* Üstteki nav'ı gizle, sol menü kullanılsın */
+        nav{display:none}
+
+        /* Sıra Sende bloğu */
+        .sira-sende{border-left:6px solid var(--turuncu)}
+        .sira-sende h3{margin-top:0}
+        .sira-sende ol{margin:0 0 0 18px}
+
+        footer{background:#0f172a; color:#cbd5e1}
+        footer .kap{padding:28px 24px}
+
+        /* Küçük ekranlar */
+        @media (max-width: 600px){
+            nav .kap{gap:8px}
+            nav a{padding:8px 10px}
+            .govde{display:block}
+            .sol-nav{position:static; max-height:none; margin-bottom:12px}
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="kap">
+            <a href="index.html" style="display:inline-block; padding:6px 12px; background:rgba(255,255,255,0.2); color:white; border-radius:6px; text-decoration:none; font-weight:bold; margin-bottom:12px; font-size:14px;">🏠 11 ATP Portal Ana Sayfası</a>
+            <h1>CSS Öğreniyorum! 🎨</h1>
+            <div class="alt-baslik">CSS, web sayfalarına renk, şekil ve düzen verir. Haydi birlikte öğrenelim!</div>
+        </div>
+    </header>
+
+    <nav>
+        <div class="kap">
+            <a href="#css-nedir">CSS Nedir?</a>
+            <a href="#nasil-eklenir">Nasıl Eklenir?</a>
+            <a href="#renkler">Renkler</a>
+            <a href="#yazi">Yazılar</a>
+            <a href="#kutular">Kutular</a>
+            <a href="#seciciler">Seçiciler</a>
+            <a href="#odevler">Mini Ödevler</a>
+        </div>
+    </nav>
+
+    <div class="kap">
+        <div class="govde">
+            <aside class="sol-nav">
+                <a href="index.html" style="background:#fff3cd; color:#856404; font-weight:bold; border-color:#ffeeba;">🏠 Portala Dön</a>
+                <h3>Konu Geçişi</h3>
+                <a href="#dokumantasyon">CSS Dokümantasyonu 🎨</a>
+                <a href="#giris">Giriş</a>
+                <a href="#nasil-eklenir">CSS Nasıl Eklenir?</a>
+                <a href="#seciciler">Seçiciler</a>
+                <a href="#renkler">Renkler</a>
+                <a href="#arka-plan">Arka Plan</a>
+                <a href="#kutular">Kutu Modeli (Box Model)</a>
+                <a href="#yazi">Metin Biçimlendirme</a>
+                <a href="#display">Display Özelliği</a>
+                <a href="#flexbox">Flexbox</a>
+                <a href="#grid">Grid</a>
+                <a href="#position">Position Özelliği</a>
+                <a href="#sozde-siniflar">Sözde Sınıflar</a>
+                <a href="#gecisler">Geçişler (Transitions)</a>
+                <a href="#odevler">Mini Ödevler</a>
+            </aside>
+            <main class="icerik">
+        <section id="dokumantasyon">
+            <h2>CSS Dokümantasyonu 🎨</h2>
+            <div class="kutu">
+                Bu sayfa, CSS'in temel konularını adım adım ve uygulamalı örneklerle açıklar. Soldaki menüden konular arasında gezinebilirsin.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Yapı Kapsayıcı</strong>: <em>Çözüm</em>: <code>&lt;div class="kap"&gt;&lt;/div&gt;</code> + <code>.kap{max-width:1000px;margin:0 auto;padding:24px}</code></li>
+                    <li><strong>Renk Değişkeni</strong>: <em>Çözüm</em>: <code>:root{--ana:#2563eb}</code> ve <code>color:var(--ana)</code></li>
+                    <li><strong>Başlık Stili</strong>: <em>Çözüm</em>: <code>h2{color:#0f265c;margin:0 0 6px}</code></li>
+                    <li><strong>Kart</strong>: <em>Çözüm</em>: <code>.kutu{border:1px solid #e5e9ef;border-radius:12px;padding:16px}</code></li>
+                    <li><strong>Buton Hover</strong>: <em>Çözüm</em>: <code>.btn:hover{filter:brightness(.95)}</code></li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 0) 📚</h3>
+                <p>Aşağıdaki HTML yapısını kullanarak dokümantasyonun için bir kap oluştur.</p>
+                <pre><code>&lt;div id="dok-kap" style="border:1px dashed #ccc; padding:12px"&gt;Dokümantasyon alanı&lt;/div&gt;</code></pre>
+                <ol>
+                    <li>Kutunun arka planını açık gri yap.</li>
+                    <li>Kenarlık köşelerini 8px yuvarla.</li>
+                    <li>Başlığa lacivert bir renk ver.</li>
+                    <li>İç boşluğu 16px yap.</li>
+                    <li>Metni okunur kılmak için satır yüksekliğini artır.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="arka-plan">
+            <h2>Arka Plan 🏞️</h2>
+            <div class="kutu">
+                Arka plan rengi, görseli, konumu, tekrarı ve boyutlandırması CSS ile kontrol edilir.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Görsel Ekleme</strong>: <em>Çözüm</em>: <code>background-image:url('resimler/bg1.jpg')</code></li>
+                    <li><strong>Kaplama</strong>: <em>Çözüm</em>: <code>background-size:cover</code> ve <code>background-position:center</code></li>
+                    <li><strong>Tekrar</strong>: <em>Çözüm</em>: <code>background-repeat:no-repeat</code></li>
+                    <li><strong>Gradyan</strong>: <em>Çözüm</em>: <code>background-image:linear-gradient(180deg,#3b82f6,#8b5cf6)</code></li>
+                    <li><strong>Sabit Arka Plan</strong>: <em>Çözüm</em>: <code>background-attachment:fixed</code></li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 3) 🏞️</h3>
+                <p>Aşağıdaki HTML yapısını kullanarak istenen stilleri uygulayın:</p>
+                <pre><code>&lt;div id="resimli-kutu" style="height: 300px; border: 1px solid white;"&gt;&lt;/div&gt;</code></pre>
+                <ol>
+                    <li><code>id="resimli-kutu"</code> olan &lt;div&gt; elemanının arka planına 'arkaplan.jpg' adında bir görsel ekleyin.</li>
+                    <li>Görselin yatayda (x ekseninde) tekrar etmesini sağlayın (<code>background-repeat: repeat-x;</code>).</li>
+                    <li>Görselin konumunu sağ alt köşe olarak ayarlayın (<code>background-position: right bottom;</code>).</li>
+                    <li>Görselin kutuya tam sığacak şekilde, en-boy oranını koruyarak boyutlanmasını sağlayın (<code>background-size: contain;</code>).</li>
+                    <li>Maviden mora doğru giden dikey bir doğrusal gradyan arka planı oluşturun.</li>
+                    <li>Arka plan görselinin sayfa ile birlikte kaymamasını, sabit kalmasını sağlayın (<code>background-attachment: fixed;</code>).</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="giris">
+            <h2>Giriş</h2>
+            <div class="kutu">
+                CSS; renkleri, yazıları, kutuları ve yerleşimi kontrol ederek web sayfalarını güzel ve düzenli yapar.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Başlık Rengi</strong>: <em>Çözüm</em>: <code>h1{color:#0f265c}</code></li>
+                    <li><strong>Arka Plan</strong>: <em>Çözüm</em>: <code>body{background:#ffffff}</code></li>
+                    <li><strong>Merkezleme</strong>: <em>Çözüm</em>: <code>.kap{max-width:1000px;margin:0 auto}</code></li>
+                    <li><strong>Kart</strong>: <em>Çözüm</em>: <code>.kutu{border:1px solid #e5e9ef;border-radius:12px}</code></li>
+                    <li><strong>Buton</strong>: <em>Çözüm</em>: <code>.btn{background:#2d7ff9;color:#fff}</code></li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 1) 👋</h3>
+                <p>Aşağıdaki HTML'i kullanarak bir karşılama kutusu oluştur.</p>
+                <pre><code>&lt;div id="giris-kutu" style="border:1px solid #e5e7eb; padding:12px"&gt;Hoş geldin!&lt;/div&gt;</code></pre>
+                <ol>
+                    <li>Arka planı açık mavi yap.</li>
+                    <li>Yazıyı ortaya hizala.</li>
+                    <li>Yazı boyutunu 20px yap.</li>
+                    <li>Metne hafif bir gölge ekle.</li>
+                    <li>Kutuyu sayfada ortala.</li>
+                </ol>
+            </div>
+        </section>
+        <section id="css-nedir">
+            <h2>CSS Nedir?</h2>
+            <div class="kutu">
+                CSS = Cascading Style Sheets. Yani: “Stil Kuralları”. HTML ile yazdığın şeylerin (yazı, resim, kutu) görünüşünü güzelleştirir.
+            </div>
+            <div class="kutu ipucu">
+                <strong>Unutma:</strong> HTML = iskelet ve kelimeler. CSS = renk, boyut, yerleşim.
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende ✍️</h3>
+                <ol>
+                    <li>CSS neyin kısaltmasıdır?</li>
+                    <li>CSS ne işe yarar? Bir cümleyle yaz.</li>
+                    <li>HTML ile CSS arasındaki fark nedir?</li>
+                    <li>Bir web sayfasında neden CSS kullanırız?</li>
+                    <li>"Stil" kelimesi sence ne ifade ediyor?</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="nasil-eklenir">
+            <h2>CSS Nasıl Eklenir?</h2>
+            <div class="kutu">
+                1) Sayfanın <code>&lt;head&gt;</code> kısmında <code>&lt;style&gt;</code> ile<br>
+                2) Ayrı bir <code>.css</code> dosyasıyla (<code>&lt;link&gt;</code> kullanılır)<br>
+                3) Tek etikete <code>style="..."</code> yazarak
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Dahili Stil</strong>: <em>Çözüm</em>: <code>&lt;style&gt;body{color:#222}&lt;/style&gt;</code></li>
+                    <li><strong>Harici Stil</strong>: <em>Çözüm</em>: <code>&lt;link rel="stylesheet" href="stil.css"&gt;</code></li>
+                    <li><strong>Satır İçi</strong>: <em>Çözüm</em>: <code>&lt;p style="color:red"&gt;Merhaba&lt;/p&gt;</code></li>
+                    <li><strong>Öncelik</strong>: <em>Çözüm</em>: inline &gt; dahili &gt; harici (eşitlikte son tanım baskın)</li>
+                    <li><strong>Performans</strong>: <em>Çözüm</em>: CSS dosyalarını <code>&lt;head&gt;</code> içinde yüklemek FOUC'u azaltır</li>
+                </ol>
+            </div>
+
+            <div class="ornek-alani">
+                <div class="canli">
+                    <div class="goster" id="goster-nasil">
+                        Merhaba! Ben bir kutuyum.
+                    </div>
+                    <div style="margin-top:10px">
+                        <button class="btn" onclick="uygulaNasil()">Stili Uygula</button>
+                        <span class="mini">(Butona bas ve değişimi gör)</span>
+                    </div>
+                </div>
+                <div class="kod">
+                    <pre><code>/* Basit CSS kuralı */
+#goster-nasil {
+  background: #e6f0ff;
+  border: 2px solid #2d7ff9;
+  padding: 12px;
+  border-radius: 10px;
+}</code></pre>
+                </div>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende ✍️</h3>
+                <ol>
+                    <li>CSS'i sayfaya eklemenin 3 yolunu yaz.</li>
+                    <li>Harici stil dosyası için hangi HTML etiketi kullanılır?</li>
+                    <li>Satır içi (inline) stil nerede yazılır?</li>
+                    <li><code>#goster-nasil</code> seçicisi ne tür bir seçicidir?</li>
+                    <li>Bir stil kuralında süslü parantezler neyi kapsar?</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="renkler">
+            <h2>Renkler 🎨</h2>
+            <div class="kutu">
+                Renkleri isimle (<code>red</code>, <code>blue</code>), kodla (<code>#ff0000</code>) veya RGB ile (<code>rgb(255,0,0)</code>) yazabiliriz.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>İsimle</strong>: <em>Çözüm</em>: <code>color:red;</code></li>
+                    <li><strong>Hex ile</strong>: <em>Çözüm</em>: <code>background:#3b82f6;</code></li>
+                    <li><strong>RGB ile</strong>: <em>Çözüm</em>: <code>border-color: rgb(34,197,94);</code></li>
+                    <li><strong>RGBA</strong>: <em>Çözüm</em>: <code>background: rgba(0,0,0,.1);</code></li>
+                    <li><strong>Değişkenle</strong>: <em>Çözüm</em>: <code>--tema:#22c55e; color:var(--tema);</code></li>
+                </ol>
+            </div>
+            <div class="ornek-alani">
+                <div class="canli">
+                    <div class="goster" id="kutu-renk">Bu kutunun arka plan rengini değiştir.</div>
+                    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+                        <button class="btn" style="background:#ef4444" onclick="renkDegistir('#ef4444')">Kırmızı</button>
+                        <button class="btn" style="background:#22c55e" onclick="renkDegistir('#22c55e')">Yeşil</button>
+                        <button class="btn" style="background:#3b82f6" onclick="renkDegistir('#3b82f6')">Mavi</button>
+                        <button class="btn" style="background:#f59e0b" onclick="renkDegistir('#f59e0b')">Turuncu</button>
+                    </div>
+                </div>
+                <div class="kod">
+                    <pre><code>/* Arka plan rengini değiştir */
+#kutu-renk { background: #ffffff; }
+
+/* Örnek: */
+#kutu-renk { background: #3b82f6; }</code></pre>
+                </div>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 2) 🎨</h3>
+                <p>Aşağıdaki yapıyı kullanarak renkleri dene.</p>
+                <pre><code>&lt;div id="renk-kutu" style="height:80px; border:1px solid #ddd"&gt;&lt;/div&gt;</code></pre>
+                <ol>
+                    <li>Arka planı kırmızı yapmanın üç farklı yolunu uygula (isim, hex, rgb).</li>
+                    <li>Metin rengini beyaz yap.</li>
+                    <li>Kutunun kenarlığını mor yap.</li>
+                    <li>Köşeleri 12px yuvarla.</li>
+                    <li>Renk paletinden sevdiğin bir tonu seçip uygula.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="yazi">
+            <h2>Metin Biçimlendirme ✍️</h2>
+            <div class="kutu">
+                Metin boyutu, kalınlık, eğiklik, hizalama ve gölge gibi özelliklerle okuma deneyimi iyileştirilir.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Kalın Yazı</strong>: <em>Çözüm</em>: <code>font-weight:700;</code></li>
+                    <li><strong>Büyük Yazı</strong>: <em>Çözüm</em>: <code>font-size:22px;</code></li>
+                    <li><strong>İtalik</strong>: <em>Çözüm</em>: <code>font-style:italic;</code></li>
+                    <li><strong>Gölge</strong>: <em>Çözüm</em>: <code>text-shadow:2px 2px 0 #d1d5db;</code></li>
+                    <li><strong>Hizalama</strong>: <em>Çözüm</em>: <code>text-align:center;</code></li>
+                </ol>
+            </div>
+            <div class="ornek-alani">
+                <div class="canli">
+                    <div class="goster" id="yazi-alani">
+                        Bu bir başlık!<br>
+                        Bu da normal bir yazı.
+                    </div>
+                    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+                        <button class="btn" onclick="yaziYap('boyut')">Büyüt</button>
+                        <button class="btn" onclick="yaziYap('kalin')">Kalın</button>
+                        <button class="btn" onclick="yaziYap('italik')">İtalik</button>
+                        <button class="btn" onclick="yaziYap('golge')">Gölge</button>
+                    </div>
+                </div>
+                <div class="kod">
+                    <pre><code>/* Yazı stili örnekleri */
+#yazi-alani {
+  font-size: 16px;      /* yazı boyutu */
+  font-weight: 400;     /* 700 = kalın */
+  font-style: normal;   /* italic */
+  text-shadow: none;    /* gölge */
+}</code></pre>
+                </div>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 4) ✍️</h3>
+                <p>Bu HTML ile metni biçimlendir.</p>
+                <pre><code>&lt;p id="metin"&gt;Metin biçimlendirme örneği&lt;/p&gt;</code></pre>
+                <ol>
+                    <li>Yazıyı kalın yap.</li>
+                    <li>Yazı boyutunu 22px yap.</li>
+                    <li>Satır yüksekliğini 1.6 yap.</li>
+                    <li>Harf aralığını 1px artır.</li>
+                    <li>Metni ortala ve altına hafif gölge ekle.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="kutular">
+            <h2>Kutu Modeli (Box Model) 📦</h2>
+            <div class="kutu">
+                CSS kutu modeli: içerik → iç boşluk (padding) → kenarlık (border) → dış boşluk (margin)
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Padding</strong>: <em>Çözüm</em>: <code>padding:12px;</code></li>
+                    <li><strong>Border</strong>: <em>Çözüm</em>: <code>border:2px solid #94a3b8;</code></li>
+                    <li><strong>Radius</strong>: <em>Çözüm</em>: <code>border-radius:10px;</code></li>
+                    <li><strong>Margin</strong>: <em>Çözüm</em>: <code>margin:8px 0;</code></li>
+                    <li><strong>Box-Sizing</strong>: <em>Çözüm</em>: <code>box-sizing:border-box;</code> genişlik hesaplamasını kolaylaştırır.</li>
+                </ol>
+            </div>
+            <div class="ornek-alani">
+                <div class="canli">
+                    <div class="goster" id="kutu-model">
+                        Ben bir kutuyum. Padding, border ve margin değerlerimi değiştir!
+                    </div>
+                    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+                        <button class="btn" onclick="kutuAyar('padding')">Padding +</button>
+                        <button class="btn" onclick="kutuAyar('border')">Border +</button>
+                        <button class="btn" onclick="kutuAyar('radius')">Köşe Yuvarla +</button>
+                        <button class="btn" onclick="kutuAyar('reset')">Sıfırla</button>
+                    </div>
+                </div>
+                <div class="kod">
+                    <pre><code>/* Kutu modeli */
+#kutu-model {
+  background: #f8fafc;
+  padding: 8px;          /* iç boşluk */
+  border: 2px solid #94a3b8; /* kenarlık */
+  border-radius: 8px;    /* köşe yuvarlama */
+  margin: 8px 0;         /* dış boşluk */
+}</code></pre>
+                </div>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 5) 📦</h3>
+                <p>Kutu modelini uygula.</p>
+                <pre><code>&lt;div id="kutu" style="border:1px solid #ddd"&gt;Kutu&lt;/div&gt;</code></pre>
+                <ol>
+                    <li>Padding'i 16px yap.</li>
+                    <li>Margin'i üst-alt 12px, sağ-sol 0 yap.</li>
+                    <li>Border'ı 3px ve mavi yap.</li>
+                    <li>Border-radius'u 10px yap.</li>
+                    <li>Kutuyu genişlik olarak 300px yap ve ortala.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="display">
+            <h2>Display Özelliği</h2>
+            <div class="kutu">
+                Öğelerin yerleşim davranışı display ile belirlenir: <code>block</code>, <code>inline</code>, <code>inline-block</code>, <code>flex</code>, <code>grid</code>.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Block</strong>: <em>Çözüm</em>: tam satır kaplar, <code>display:block</code>.</li>
+                    <li><strong>Inline</strong>: <em>Çözüm</em>: genişlik/height almaz, <code>display:inline</code>.</li>
+                    <li><strong>Inline-Block</strong>: <em>Çözüm</em>: satır içi + boyut, <code>display:inline-block</code>.</li>
+                    <li><strong>Flex</strong>: <em>Çözüm</em>: tek eksende düzen, <code>display:flex</code>.</li>
+                    <li><strong>Grid</strong>: <em>Çözüm</em>: iki eksen düzen, <code>display:grid</code>.</li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 6) 📦</h3>
+                <pre><code>&lt;div id="d-kap"&gt;
+  &lt;span class="d-og"&gt;A&lt;/span&gt;
+  &lt;span class="d-og"&gt;B&lt;/span&gt;
+  &lt;span class="d-og"&gt;C&lt;/span&gt;
+&lt;/div&gt;</code></pre>
+                <ol>
+                    <li><code>.d-og</code> öğelerini <code>inline-block</code> yap ve genişlik ver.</li>
+                    <li>Kap'ı <code>display:flex</code> yapıp öğeleri aralıklı yerleştir.</li>
+                    <li>Kap'ı <code>display:grid</code> yapıp 3 sütun oluştur.</li>
+                    <li>Her modda dikey hizalamayı dene.</li>
+                    <li>Hangi mod hangi durumda uygun? Kısaca yaz.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="flexbox">
+            <h2>Flexbox</h2>
+            <div class="kutu">
+                Esnek kutu düzeni ile tek boyutlu (satır/sütun) hizalama ve dağıtım yapılır.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Başlat</strong>: <em>Çözüm</em>: <code>display:flex</code></li>
+                    <li><strong>Yön</strong>: <em>Çözüm</em>: <code>flex-direction:row</code> veya <code>column</code></li>
+                    <li><strong>Dağıtım</strong>: <em>Çözüm</em>: <code>justify-content:space-between</code></li>
+                    <li><strong>Hizalama</strong>: <em>Çözüm</em>: <code>align-items:center</code></li>
+                    <li><strong>Sarma ve Boşluk</strong>: <em>Çözüm</em>: <code>flex-wrap:wrap; gap:12px;</code></li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 7) 🧭</h3>
+                <pre><code>&lt;div id="flex-kap"&gt;
+  &lt;div class="el"&gt;1&lt;/div&gt;
+  &lt;div class="el"&gt;2&lt;/div&gt;
+  &lt;div class="el"&gt;3&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                <ol>
+                    <li>Kap'a <code>display:flex</code> ver.</li>
+                    <li>Öğeleri yatayda eşit boşlukla dağıt (<code>justify-content: space-between</code>).</li>
+                    <li>Dikeyde ortala (<code>align-items: center</code>).</li>
+                    <li>Sarmayı aç (<code>flex-wrap: wrap</code>) ve boşluk ekle (<code>gap</code>).</li>
+                    <li>Mobilde sütun düzenine geç (<code>flex-direction: column</code>).</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="grid">
+            <h2>Grid</h2>
+            <div class="kutu">
+                İki boyutlu yerleşim için güçlü bir sistem: satırlar ve sütunlar.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Sütunlar</strong>: <em>Çözüm</em>: <code>grid-template-columns:1fr 1fr</code></li>
+                    <li><strong>Boşluk</strong>: <em>Çözüm</em>: <code>gap:12px</code></li>
+                    <li><strong>Alan Kaplama</strong>: <em>Çözüm</em>: <code>.k:nth-child(3){grid-column:1 / span 2}</code></li>
+                    <li><strong>Satır Yüksekliği</strong>: <em>Çözüm</em>: <code>grid-auto-rows:minmax(80px,auto)</code></li>
+                    <li><strong>Duyarlı</strong>: <em>Çözüm</em>: media query ile 1 sütuna düş.</li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 8) 🧩</h3>
+                <pre><code>&lt;div id="grid-kap"&gt;
+  &lt;div class="k"&gt;1&lt;/div&gt;
+  &lt;div class="k"&gt;2&lt;/div&gt;
+  &lt;div class="k"&gt;3&lt;/div&gt;
+  &lt;div class="k"&gt;4&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                <ol>
+                    <li>Kap'a 2 sütunlu grid ver (<code>grid-template-columns: 1fr 1fr</code>).</li>
+                    <li>Satırlar arası ve sütun arası boşluk ekle (<code>gap</code>).</li>
+                    <li>3. öğeyi 2 sütunu kaplayacak şekilde genişlet.</li>
+                    <li>Küçük ekranda 1 sütuna düş.</li>
+                    <li>Satır yüksekliğini otomatikle ayarla.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="position">
+            <h2>Position Özelliği</h2>
+            <div class="kutu">
+                Öğelerin konumlandırması: <code>static</code>, <code>relative</code>, <code>absolute</code>, <code>fixed</code>, <code>sticky</code>.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Relative</strong>: <em>Çözüm</em>: <code>position:relative</code> ile referans oluştur.</li>
+                    <li><strong>Absolute</strong>: <em>Çözüm</em>: <code>position:absolute; top:0; right:0;</code></li>
+                    <li><strong>Fixed</strong>: <em>Çözüm</em>: <code>position:fixed; top:0; width:100%;</code></li>
+                    <li><strong>Sticky</strong>: <em>Çözüm</em>: <code>position:sticky; top:16px;</code></li>
+                    <li><strong>Z-index</strong>: <em>Çözüm</em>: <code>z-index:10</code> ile üstte göster.</li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 9) 📌</h3>
+                <pre><code>&lt;div id="pos-kap" style="height:200px; position:relative; border:1px solid #ddd"&gt;
+  &lt;div id="kutu-a"&gt;A&lt;/div&gt;
+  &lt;div id="kutu-b"&gt;B&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                <ol>
+                    <li><code>#kutu-a</code>'yı sağ üstte sabitle (<code>position:absolute</code>, <code>top:0; right:0;</code>).</li>
+                    <li><code>#kutu-b</code>'yi altta sabitle (<code>bottom:0; left:0;</code>).</li>
+                    <li>Sayfaya sabit bir başlık oluştur (<code>position: fixed</code>).</li>
+                    <li>Bir öğeyi <code>position: sticky</code> yap ve yapışmayı dene.</li>
+                    <li>Relative ile absolute farkını not et.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="sozde-siniflar">
+            <h2>Sözde Sınıflar</h2>
+            <div class="kutu">
+                Etkileşim ve durumlara göre stiller: <code>:hover</code>, <code>:focus</code>, <code>:active</code>, <code>:first-child</code>, <code>:nth-child()</code> vb.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Hover</strong>: <em>Çözüm</em>: <code>button:hover{background:#2563eb}</code></li>
+                    <li><strong>Focus</strong>: <em>Çözüm</em>: <code>input:focus{outline:2px solid #22c55e}</code></li>
+                    <li><strong>Active</strong>: <em>Çözüm</em>: <code>a:active{opacity:.8}</code></li>
+                    <li><strong>İlk Öğe</strong>: <em>Çözüm</em>: <code>li:first-child{font-weight:700}</code></li>
+                    <li><strong>Seçimli</strong>: <em>Çözüm</em>: <code>li:nth-child(odd){background:#f8fafc}</code></li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 10) 🧪</h3>
+                <pre><code>&lt;button class="ps-btn"&gt;Düğme&lt;/button&gt;
+&lt;ul id="liste"&gt;
+  &lt;li&gt;Elma&lt;/li&gt;
+  &lt;li&gt;Armut&lt;/li&gt;
+  &lt;li&gt;Muz&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+                <ol>
+                    <li>Düğmeye gelince arka planı değiştir (<code>:hover</code>).</li>
+                    <li>Düğme odaklanınca kenarlık rengini değiştir (<code>:focus</code>).</li>
+                    <li>Liste elemanlarının tek sayılılarını renklendir (<code>:nth-child(odd)</code>).</li>
+                    <li>İlk elemanı kalın yap (<code>:first-child</code>).</li>
+                    <li>Tıklanınca kısa süreli efekt ekle (<code>:active</code>).</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="gecisler">
+            <h2>Geçişler (Transitions)</h2>
+            <div class="kutu">
+                Geçişler, bir CSS özelliği değiştiğinde yumuşak animasyon sağlar: <code>transition-property</code>, <code>transition-duration</code>, <code>transition-timing-function</code>.
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Temel</strong>: <em>Çözüm</em>: <code>transition: background 300ms ease;</code></li>
+                    <li><strong>Birden Fazla</strong>: <em>Çözüm</em>: <code>transition: width .3s, border-radius .3s;</code></li>
+                    <li><strong>Hover Etkisi</strong>: <em>Çözüm</em>: <code>.kutu:hover{width:200px}</code></li>
+                    <li><strong>Zamanlama</strong>: <em>Çözüm</em>: <code>transition-timing-function: ease-in-out;</code></li>
+                    <li><strong>Gecikme</strong>: <em>Çözüm</em>: <code>transition-delay: 100ms;</code></li>
+                </ol>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende! (Bölüm 11) 🪄</h3>
+                <pre><code>&lt;div id="tr-kutu" style="width:120px; height:60px; background:#93c5fd"&gt;&lt;/div&gt;</code></pre>
+                <ol>
+                    <li>Kutuya arka plan rengi geçişi ekle (300ms).</li>
+                    <li>Üzerine gelince genişliği 200px olsun.</li>
+                    <li>Köşe yarıçapına da geçiş ekle.</li>
+                    <li>Timing fonksiyonunu <code>ease-in-out</code> yap.</li>
+                    <li>Geçişi birden fazla özelliğe tek satırda tanımla.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="seciciler">
+            <h2>Seçiciler (Selector) 🔎</h2>
+            <div class="kutu">
+                <strong>Etiket seçici:</strong> <code>p { ... }</code> tüm paragraflar<br>
+                <strong>Sınıf (class):</strong> <code>.kirmizi { ... }</code> class'ı olanlar<br>
+                <strong>Kimlik (id):</strong> <code>#ozel { ... }</code> sadece 1 öğe
+            </div>
+            <div class="kutu">
+                <h3>Çözümlü Örnekler</h3>
+                <ol>
+                    <li><strong>Etiket</strong>: <em>Çözüm</em>: <code>p{color:#334155}</code></li>
+                    <li><strong>Sınıf</strong>: <em>Çözüm</em>: <code>.kirmizi{color:#ef4444}</code></li>
+                    <li><strong>ID</strong>: <em>Çözüm</em>: <code>#ozel{font-weight:700}</code></li>
+                    <li><strong>Birleşik</strong>: <em>Çözüm</em>: <code>div.kart p{margin:0}</code></li>
+                    <li><strong>Özellik</strong>: <em>Çözüm</em>: <code>a[target="_blank"]{color:#0ea5e9}</code></li>
+                </ol>
+            </div>
+            <div class="ornek-alani">
+                <div class="canli">
+                    <div class="goster" id="secici-alan">
+                        <p>Bu bir paragraf.</p>
+                        <p class="kirmizi">Ben kirmizi sınıfına sahibim.</p>
+                        <p id="ozel">Benim id'im ozel.</p>
+                    </div>
+                    <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+                        <button class="btn" onclick="seciciUygula('p')">Paragrafları Boya</button>
+                        <button class="btn" onclick="seciciUygula('class')">Sınıfı Boya</button>
+                        <button class="btn" onclick="seciciUygula('id')">ID'yi Boya</button>
+                        <button class="btn" onclick="seciciUygula('reset')">Sıfırla</button>
+                    </div>
+                </div>
+                <div class="kod">
+                    <pre><code>/* Seçici örnekleri */
+p { color: #334155; }
+.kirmizi { color: #ef4444; }
+#ozel { color: #22c55e; }</code></pre>
+                </div>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende ✍️</h3>
+                <ol>
+                    <li><code>p</code>, <code>.kirmizi</code> ve <code>#ozel</code> arasındaki fark nedir?</li>
+                    <li>Bir öğeye birden fazla class eklenebilir mi?</li>
+                    <li>ID neden sayfada benzersiz olmalı?</li>
+                    <li>Yalnızca paragrafları mavi yapmak için hangi seçici kullanılır?</li>
+                    <li>Class seçicisi örnek bir ad ver.</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="odevler">
+            <h2>Mini Ödevler 🧩</h2>
+            <div class="kutu odev">
+                <h3>1) Favori Renk Kartın</h3>
+                <p>Aşağıdaki kutunun arka planını favori renklerinle değiştir, kenarlıkları yuvarla.</p>
+                <div class="goster" id="odev1" style="margin-bottom:10px">Benim stilimi güzelleştir!</div>
+                <pre><code>/* Buradaki değerleri değiştirerek dene */
+#odev1 {
+  background: #ffffff;
+  color: #111827;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+}</code></pre>
+                <div style="margin-top:10px"><button class="btn" onclick="odev1Uygula()">Stili Uygula</button></div>
+            </div>
+
+            <div class="kutu odev">
+                <h3>2) Başlık Afişi</h3>
+                <p>Bir başlığı büyüt, kalın yap, gölge ekle. Metni ortaya hizala.</p>
+                <div class="goster" id="odev2" style="text-align:center">Ben bir başlığım</div>
+                <pre><code>#odev2 {
+  font-size: 24px;
+  font-weight: 700;
+  text-shadow: 2px 2px 0 #cbd5e1;
+  padding: 10px;
+}</code></pre>
+                <div style="margin-top:10px"><button class="btn" onclick="odev2Uygula()">Stili Uygula</button></div>
+            </div>
+
+            <div class="kutu odev">
+                <h3>3) Kutu Modeli Ustası</h3>
+                <p>Padding, border ve margin değerlerini artırıp azaltarak ideal kartını oluştur.</p>
+                <div class="goster" id="odev3">Kutumu düzenle!</div>
+                <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap">
+                    <button class="btn" onclick="odev3Degis('padding', +4)">Padding +</button>
+                    <button class="btn" onclick="odev3Degis('padding', -4)">Padding -</button>
+                    <button class="btn" onclick="odev3Degis('border', +1)">Border +</button>
+                    <button class="btn" onclick="odev3Degis('border', -1)">Border -</button>
+                    <button class="btn" onclick="odev3Degis('radius', +4)">Radius +</button>
+                    <button class="btn" onclick="odev3Degis('radius', -4)">Radius -</button>
+                </div>
+            </div>
+            <div class="kutu sira-sende">
+                <h3>Sıra Sende ✍️</h3>
+                <ol>
+                    <li>Ödev 1'de hangi CSS özelliklerini değiştirdin?</li>
+                    <li>Ödev 2'de metni nasıl daha okunur yaptın?</li>
+                    <li>Ödev 3'te border ve padding farkını açıklayın.</li>
+                    <li>Her ödev için eklemek istediğin bir geliştirme yaz.</li>
+                    <li>Kendi hayalindeki yeni bir mini ödev fikri üret.</li>
+                </ol>
+            </div>
+        </section>
+            </main>
+        </div>
+    </div>
+
+    <footer>
+        <div class="kap">
+            CSS çalışırken bol bol dene, boz, tekrar dene. En iyi öğrenme yolu budur! ✨
+        </div>
+    </footer>
+
+    <script>
+        // Bölüm: Nasıl Eklenir – buton aksiyonu
+        function uygulaNasil(){
+            const el = document.getElementById('goster-nasil');
+            el.style.background = '#e6f0ff';
+            el.style.border = '2px solid #2d7ff9';
+            el.style.padding = '12px';
+            el.style.borderRadius = '10px';
+        }
+
+        // Bölüm: Renkler
+        function renkDegistir(renk){
+            const el = document.getElementById('kutu-renk');
+            el.style.background = renk;
+            el.style.color = '#0f172a';
+            el.style.borderRadius = '10px';
+            el.style.border = '2px solid rgba(0,0,0,.1)';
+            el.style.padding = '12px';
+        }
+
+        // Bölüm: Yazılar
+        function yaziYap(tip){
+            const el = document.getElementById('yazi-alani');
+            if(tip === 'boyut') el.style.fontSize = '22px';
+            if(tip === 'kalin') el.style.fontWeight = '700';
+            if(tip === 'italik') el.style.fontStyle = 'italic';
+            if(tip === 'golge') el.style.textShadow = '2px 2px 0 #d1d5db';
+        }
+
+        // Bölüm: Kutular
+        let pad=8, bor=2, rad=8;
+        function kutuAyar(ne){
+            const el = document.getElementById('kutu-model');
+            if(ne==='padding') pad += 6;
+            if(ne==='border') bor += 1;
+            if(ne==='radius') rad += 6;
+            if(ne==='reset'){ pad=8; bor=2; rad=8; }
+            el.style.background = '#f8fafc';
+            el.style.padding = pad + 'px';
+            el.style.border = bor + 'px solid #94a3b8';
+            el.style.borderRadius = rad + 'px';
+            el.style.margin = '8px 0';
+        }
+
+        // Bölüm: Seçiciler
+        function seciciUygula(tur){
+            const alan = document.getElementById('secici-alan');
+            const ps = alan.querySelectorAll('p');
+            const pClass = alan.querySelector('.kirmizi');
+            const pId = alan.querySelector('#ozel');
+            // sıfırla
+            ps.forEach(p=>{ p.style.color = '#334155'; p.style.fontWeight='400'; });
+            if(tur==='p') ps.forEach(p=> p.style.color = '#0ea5e9');
+            if(tur==='class' && pClass) pClass.style.color = '#ef4444';
+            if(tur==='id' && pId){ pId.style.color = '#22c55e'; pId.style.fontWeight='700'; }
+        }
+
+        // Ödevler
+        function odev1Uygula(){
+            const el = document.getElementById('odev1');
+            el.style.background = '#dbeafe';
+            el.style.color = '#0f172a';
+            el.style.border = '3px solid #60a5fa';
+            el.style.borderRadius = '14px';
+            el.style.padding = '16px';
+        }
+
+        function odev2Uygula(){
+            const el = document.getElementById('odev2');
+            el.style.fontSize = '28px';
+            el.style.fontWeight = '800';
+            el.style.textShadow = '3px 3px 0 #94a3b8';
+            el.style.letterSpacing = '1px';
+            el.style.padding = '14px';
+        }
+
+        let o3pad=8,o3bor=2,o3rad=8;
+        function odev3Degis(ne, deg){
+            const el = document.getElementById('odev3');
+            if(ne==='padding') o3pad = Math.max(0, o3pad + deg);
+            if(ne==='border') o3bor = Math.max(0, o3bor + deg);
+            if(ne==='radius') o3rad = Math.max(0, o3rad + deg);
+            el.style.background = '#fff';
+            el.style.border = o3bor + 'px solid #64748b';
+            el.style.padding = o3pad + 'px';
+            el.style.borderRadius = o3rad + 'px';
+            el.style.marginTop = '8px';
+        }
+    </script>
+</body>
+</html>
+
+
+

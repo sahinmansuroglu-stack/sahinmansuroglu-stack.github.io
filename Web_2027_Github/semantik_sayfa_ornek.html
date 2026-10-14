@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantik Sayfa Düzeni Örneği</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 1.5rem; max-width: 1000px; margin: 0 auto; }
+    header { background: #2563eb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; }
+    nav { background: #1e293b; padding: 0.75rem 1.5rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid #334155; }
+    nav a { color: #38bdf8; text-decoration: none; margin-right: 1.5rem; font-weight: bold; }
+    .layout { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+    main { background: #1e293b; padding: 1.5rem; border-radius: 8px; border: 1px solid #334155; }
+    article { background: #0f172a; padding: 1rem; border-radius: 6px; margin-bottom: 1rem; border-left: 4px solid #10b981; }
+    aside { background: #1e293b; padding: 1.5rem; border-radius: 8px; border: 1px solid #334155; }
+    footer { background: #1e293b; padding: 1.25rem; border-radius: 8px; text-align: center; border: 1px solid #334155; font-size: 0.9rem; }
+    .back { display: inline-block; margin-top: 1rem; color: #f59e0b; font-weight: bold; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏛️ Semantik Web Mimarisi (11 ATP)</h1>
+    <p>header, nav, main, article, section, aside ve footer etiketleri</p>
+  </header>
+
+  <nav>
+    <a href="#">Ana Sayfa</a>
+    <a href="#">Hakkımızda</a>
+    <a href="#">Dersler</a>
+    <a href="#">İletişim</a>
+  </nav>
+
+  <div class="layout">
+    <main>
+      <section>
+        <h2 style="margin-bottom: 1rem; color: #38bdf8;">Son Eklenen Makaleler</h2>
+        <article>
+          <h3>HTML5 Semantik Etiketlerin SEO'ya Etkisi</h3>
+          <p style="margin-top: 0.5rem; color: #94a3b8;">Arama motorları botları sayfayı tararken semantik hiyerarşiyi kullanarak içeriğin değerini anlar.</p>
+        </article>
+        <article>
+          <h3>Erişilebilirlik ve Ekran Okuyucular</h3>
+          <p style="margin-top: 0.5rem; color: #94a3b8;">Görme engelli kullanıcılar ekran okuyucularla doğrudan nav veya main alanına atlayabilir.</p>
+        </article>
+      </section>
+    </main>
+
+    <aside>
+      <h3 style="color: #f59e0b; margin-bottom: 0.75rem;">Yan Menü (Aside)</h3>
+      <ul style="list-style-position: inside; color: #94a3b8; line-height: 1.8;">
+        <li>Faydalı Kaynaklar</li>
+        <li>Haftanın Kod Örneği</li>
+        <li>Sınıf Duyuruları</li>
+      </ul>
+    </aside>
+  </div>
+
+  <footer>
+    <p>© 2026-2027 11 ATP Sınıfı Web Tabanlı Uygulama Geliştirme • Tüm Hakları Saklıdır.</p>
+    <a class="back" href="html5_multimedya_semantik.html">← Ders Dokümanına Geri Dön</a>
+  </footer>
+</body>
+</html>

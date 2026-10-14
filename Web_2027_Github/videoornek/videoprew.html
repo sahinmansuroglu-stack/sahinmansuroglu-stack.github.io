@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Örneği - videoprew.html</title>
+  <style>
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; text-align: center; }
+    .card { max-width: 600px; margin: 2rem auto; background: #1e293b; padding: 2rem; border-radius: 12px; border: 1px solid #334155; }
+    video { width: 100%; border-radius: 8px; margin: 1.5rem 0; }
+    a { color: #38bdf8; text-decoration: none; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>🎬 HTML5 Video Örneği</h2>
+    <p>Web sayfasına video ekleme ve controlsList denetimi.</p>
+    <video controls controlsList="nofullscreen" autoplay muted loop>
+      <source src="video/video1.mp4" type="video/mp4">
+      <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4">
+      Tarayıcınız video etiketini desteklemiyor.
+    </video>
+    <p><a href="../html5_multimedya_semantik.html">← Ders Dokümanına Geri Dön</a></p>
+  </div>
+</body>
+</html>
