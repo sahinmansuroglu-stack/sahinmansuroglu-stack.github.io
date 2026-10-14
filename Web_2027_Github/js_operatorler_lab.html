@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Aritmetik Operatörler & Hesaplama Atölyesi (11 ATP)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        pre[class*="language-"] {
+            border-radius: 0.75rem;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            background: #0f172a !important;
+            border: 1px solid #334155;
+            padding: 1.25rem;
+        }
+        code:not(pre code) {
+            background-color: #1e293b;
+            color: #38bdf8;
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+        }
+
+        /* ÖĞRENCİLERE VERİLECEK SAF CSS HESAP MAKİNESİ STİLLERİ (Harici bağımlılık gerektirmez) */
+        .ogrenci-hesap-karti {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 1px solid #334155;
+            border-radius: 20px;
+            padding: 28px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.1);
+            color: #f8fafc;
+            margin: 0 auto;
+        }
+        .ogrenci-hesap-karti h3 {
+            text-align: center;
+            margin: 0 0 6px 0;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: -0.02em;
+        }
+        .ogrenci-hesap-karti p.alt-baslik {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin: 0 0 20px 0;
+        }
+        .hesap-girdi-grubu {
+            margin-bottom: 14px;
+        }
+        .hesap-girdi-grubu label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #cbd5e1;
+        }
+        .hesap-girdi-grubu input {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0b1322;
+            border: 1.5px solid #334155;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-family: inherit;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .hesap-girdi-grubu input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+        }
+        .hesap-buton-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 18px;
+            margin-bottom: 18px;
+        }
+        .hesap-btn {
+            padding: 12px 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.15s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .hesap-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        }
+        .hesap-btn:active {
+            transform: translateY(1px);
+        }
+        .hesap-btn .op-sembol {
+            font-size: 1.35rem;
+            line-height: 1;
+            font-family: 'Fira Code', monospace;
+            font-weight: 800;
+        }
+        .hesap-btn .op-ad {
+            font-size: 0.7rem;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+        .btn-topla   { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .btn-cikar   { background: linear-gradient(135deg, #d97706, #b45309); }
+        .btn-carp    { background: linear-gradient(135deg, #059669, #047857); }
+        .btn-bol     { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
+        .btn-kalan   { background: linear-gradient(135deg, #db2777, #be185d); }
+        .btn-temizle { background: linear-gradient(135deg, #475569, #334155); }
+
+        .hesap-sonuc-kutusu {
+            background: #090e17;
+            border: 1.5px solid #1e293b;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-top: 10px;
+            transition: border-color 0.3s;
+        }
+        .hesap-sonuc-baslik {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .hesap-sonuc-islem {
+            font-size: 0.95rem;
+            color: #38bdf8;
+            font-family: 'Fira Code', monospace;
+            min-height: 22px;
+            margin-bottom: 4px;
+        }
+        .hesap-sonuc-deger {
+            font-size: 2.1rem;
+            font-weight: 800;
+            color: #4ade80;
+            min-height: 42px;
+            line-height: 1.2;
+            word-break: break-all;
+        }
+        .hesap-sonuc-rozet {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-cyan-500 selection:text-black">
+
+    <!-- ÜST BİLGİ & NAVİGASYON -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-black text-slate-950 text-lg shadow-lg shadow-cyan-500/20 hover:scale-105 transition">
+                    &lt;/&gt;
+                </a>
+                <div>
+                    <span class="text-sm font-bold tracking-tight text-white block">2026-2027 11 ATP</span>
+                    <span class="text-xs text-slate-400 block -mt-0.5">JS Aritmetik Operatörler Laboratuvarı</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg border border-slate-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Portala Dön</span>
+                </a>
+                <a href="javascript_full.html" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 px-3.5 py-2 rounded-lg border border-cyan-500/30 transition">
+                    <span>JS Tam Rehber →</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- BAŞLIK & AÇIKLAMA -->
+        <div class="mb-10 text-center max-w-3xl mx-auto">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 mb-4">
+                <span>⚡ İnteraktif Atölye & Canlı Kod Laboratuvarı</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+                Aritmetik Operatörler & DOM Hesaplama Atölyesi
+            </h1>
+            <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                C# ve Python temelini JavaScript dünyasına taşıyoruz! Form girdilerini okuma, String tuzağı, <code class="text-cyan-300">Number()</code> dönüşümü ve 5 temel aritmetik operatörün (<code class="text-cyan-300">+ - * / %</code>) canlı incelemesi.
+            </p>
+        </div>
+
+        <!-- 2 SÜTUNLU ANA DÜZEN: SOL CANLI FORM / SAĞ HIZLI BİLGİ & KARŞILAŞTIRMA -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 items-start">
+            
+            <!-- SOL SÜTUN: CANLI ÇALIŞAN HESAP MAKİNESİ (Öğrencilere Verilecek Formun Birebir Canlı Hali) -->
+            <div class="lg:col-span-5 flex flex-col items-center">
+                <div class="w-full mb-3 flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        Canlı Önizleme (Çalışır Durumda)
+                    </span>
+                    <span class="text-xs text-slate-500">Saf CSS + JS</span>
+                </div>
+
+                <!-- FORM KARTI BAŞLANGICI -->
+                <div class="ogrenci-hesap-karti">
+                    <h3>Aritmetik İşlemler</h3>
+                    <p class="alt-baslik">İki sayı girin ve bir işlem operatörüne tıklayın</p>
+
+                    <div class="hesap-girdi-grubu">
+                        <label for="sayi1">1. Sayı (Birinci Terim)</label>
+                        <input type="number" id="sayi1" placeholder="Örn: 25" step="any">
+                    </div>
+
+                    <div class="hesap-girdi-grubu">
+                        <label for="sayi2">2. Sayı (İkinci Terim)</label>
+                        <input type="number" id="sayi2" placeholder="Örn: 4" step="any">
+                    </div>
+
+                    <!-- 5 İŞLEM BUTONU + TEMİZLEME -->
+                    <div class="hesap-buton-grid">
+                        <button type="button" class="hesap-btn btn-topla" onclick="hesapla('+')">
+                            <span class="op-sembol">+</span>
+                            <span class="op-ad">Topla</span>
+                        </button>
+                        <button type="button" class="hesap-btn btn-cikar" onclick="hesapla('-')">
+                            <span class="op-sembol">-</span>
+                            <span class="op-ad">Çıkar</span>
+                        </button>
+                        <button type="button" class="hesap-btn btn-carp" onclick="hesapla('*')">
+                            <span class="op-sembol">*</span>
+                            <span class="op-ad">Çarp</span>
+                        </button>
+                        <button type="button" class="hesap-btn btn-bol" onclick="hesapla('/')">
+                            <span class="op-sembol">/</span>
+                            <span class="op-ad">Böl</span>
+                        </button>
+                        <button type="button" class="hesap-btn btn-kalan" onclick="hesapla('%')">
+                            <span class="op-sembol">%</span>
+                            <span class="op-ad">Kalan (Mod)</span>
+                        </button>
+                        <button type="button" class="hesap-btn btn-temizle" onclick="formuTemizle()">
+                            <span class="op-sembol">C</span>
+                            <span class="op-ad">Temizle</span>
+                        </button>
+                    </div>
+
+                    <!-- SONUÇ EKRANI -->
+                    <div class="hesap-sonuc-kutusu" id="sonuc-kutusu">
+                        <div class="hesap-sonuc-baslik">İşlem ve Sonuç</div>
+                        <div class="hesap-sonuc-islem" id="islem-metni">25 % 4 = ?</div>
+                        <div class="hesap-sonuc-deger" id="sonuc-degeri">1</div>
+                        <div class="hesap-sonuc-rozet" id="rozet-bilgi">% Mod Operatörü (Kalan: 1)</div>
+                    </div>
+                </div>
+                <!-- FORM KARTI BİTİŞİ -->
+
+                <div class="mt-4 text-center">
+                    <p class="text-xs text-slate-400">
+                        💡 Deneyin: <button onclick="hizliDoldur(25, 4)" class="text-cyan-400 hover:underline">25 ve 4</button> • 
+                        <button onclick="hizliDoldur(10, 0)" class="text-rose-400 hover:underline">10 ve 0 (Sıfıra Bölme!)</button> • 
+                        <button onclick="hizliDoldur(7, 2)" class="text-amber-400 hover:underline">7 ve 2 (JS vs C# Bölmesi)</button>
+                    </p>
+                </div>
+            </div>
+
+            <!-- SAĞ SÜTUN: C# VE PYTHON'DAN GELENLER İÇİN 3 BÜYÜK FARK TABLOSU -->
+            <div class="lg:col-span-7 space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 text-sm">🐍 💻 🌐</span>
+                        <h2 class="text-lg font-bold text-white">C# ve Python Bilenler İçin JS Karşılaştırma Rehberi</h2>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                        Öğrencileriniz daha önce C# veya Python gördüyse döngü, şart ve operatör mantığını zaten biliyorlar. JavaScript'e geçerken tek yapmaları gereken şu 3 temel farkı kavramaktır:
+                    </p>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead>
+                                <tr class="border-b border-slate-800 text-slate-400 bg-slate-950/60">
+                                    <th class="py-2.5 px-3 font-semibold">Konu / Özellik</th>
+                                    <th class="py-2.5 px-3 font-semibold text-blue-400">C#</th>
+                                    <th class="py-2.5 px-3 font-semibold text-amber-400">Python</th>
+                                    <th class="py-2.5 px-3 font-semibold text-cyan-400">JavaScript (Web)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800/60 text-slate-300">
+                                <tr>
+                                    <td class="py-2.5 px-3 font-semibold text-white">Girdi Okuma Tipi</td>
+                                    <td class="py-2.5 px-3 font-mono">Console.ReadLine()<br><span class="text-slate-500">(string döner)</span></td>
+                                    <td class="py-2.5 px-3 font-mono">input()<br><span class="text-slate-500">(str döner)</span></td>
+                                    <td class="py-2.5 px-3 font-mono text-cyan-300">input.value<br><span class="text-slate-500">(Daima String döner!)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-semibold text-white">Sayıya Dönüştürme</td>
+                                    <td class="py-2.5 px-3 font-mono">Convert.ToDouble()<br>int.Parse()</td>
+                                    <td class="py-2.5 px-3 font-mono">int(x)<br>float(x)</td>
+                                    <td class="py-2.5 px-3 font-mono text-cyan-300">Number(x)<br>parseFloat(x)</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-semibold text-white">Bölme İşlemi (7 / 2)</td>
+                                    <td class="py-2.5 px-3 font-mono text-rose-300">3 <span class="text-slate-500">(Tamsayı bölmesi)</span></td>
+                                    <td class="py-2.5 px-3 font-mono text-emerald-300">3.5 <span class="text-slate-500">(Kayan noktalı)</span></td>
+                                    <td class="py-2.5 px-3 font-mono text-emerald-300">3.5 <span class="text-slate-500">(Ondalıklı üretir!)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-semibold text-white">Kalan / Mod (10 % 3)</td>
+                                    <td class="py-2.5 px-3 font-mono text-purple-300">1</td>
+                                    <td class="py-2.5 px-3 font-mono text-purple-300">1</td>
+                                    <td class="py-2.5 px-3 font-mono text-purple-300">1 <span class="text-slate-500">(Birebir aynı!)</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2.5 px-3 font-semibold text-white">Sıfıra Bölme (10 / 0)</td>
+                                    <td class="py-2.5 px-3 font-mono text-rose-400">Hata fırlatır (Crash!)</td>
+                                    <td class="py-2.5 px-3 font-mono text-rose-400">ZeroDivisionError</td>
+                                    <td class="py-2.5 px-3 font-mono text-amber-300">Infinity döner <span class="text-slate-500">(Çökmez!)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- HIZLI KOPYALAMA BUTONLARI -->
+                <div class="bg-gradient-to-r from-cyan-950/40 via-slate-900 to-blue-950/40 border border-cyan-800/40 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h4 class="text-sm font-bold text-white mb-1">📦 Öğrencilere Doğrudan Dağıtılacak Paket</h4>
+                        <p class="text-xs text-slate-400">CSS'i anlatmanıza gerek yok; öğrenciler formu yapıştırıp doğrudan JavaScript yazmaya odaklanacaklar.</p>
+                    </div>
+                    <button onclick="kopyalaOgrenciKodu()" id="btn-kopyala-ogrenci" class="shrink-0 inline-flex items-center gap-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        <span>Şablonu Kopyala (HTML+CSS)</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- BÖLÜM 1: ÖĞRENCİLERE VERİLECEK ŞABLON (HTML + CSS) -->
+        <section class="mb-12">
+            <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="p-1 rounded bg-amber-500/10 text-amber-400 font-bold text-xs">ADIM 0</span>
+                    <h2 class="text-xl font-bold text-white">Öğrencilere Verilecek Hazır Şablon (HTML + Harici CSS Gerektirmeyen Kod)</h2>
+                </div>
+                <span class="text-xs text-slate-400 hidden sm:inline">CSS'i doğrudan verin, JavaScript'i birlikte yazın</span>
+            </div>
+
+            <p class="text-xs text-slate-400 mb-3">
+                Aşağıdaki kodu öğrencilere <code class="text-amber-300">hesap_makinesi.html</code> olarak kaydettirin. Sayfa açıldığında form mükemmel görünür; ardından aşağıdaki JavaScript adımlarını dersinizde tahtada satır satır yazdırabilirsiniz:
+            </p>
+
+            <pre class="language-html"><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;tr&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Aritmetik Operatörler Laboratuvarı&lt;/title&gt;
+  &lt;style&gt;
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background-color: #0f172a; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .kart { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); color: #f8fafc; }
+    .kart h2 { text-align: center; color: #38bdf8; margin-bottom: 6px; font-size: 1.5rem; }
+    .kart p.aciklama { text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px; }
+    .girdi-kutu { margin-bottom: 14px; }
+    .girdi-kutu label { display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+    .girdi-kutu input { width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 1rem; outline: none; }
+    .girdi-kutu input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+    .buton-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+    .btn { padding: 12px 6px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .btn .sembol { font-size: 1.3rem; }
+    .btn .isim { font-size: 0.72rem; opacity: 0.85; }
+    .btn-topla { background: #2563eb; }
+    .btn-cikar { background: #d97706; }
+    .btn-carp  { background: #059669; }
+    .btn-bol   { background: #7c3aed; }
+    .btn-kalan { background: #db2777; }
+    .btn-sil   { background: #475569; }
+    .sonuc-alani { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 16px; text-align: center; }
+    .sonuc-alani span.etiket { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; }
+    .sonuc-alani .islem { font-size: 0.9rem; color: #38bdf8; min-height: 20px; margin: 4px 0; }
+    .sonuc-alani .deger { font-size: 2rem; font-weight: 800; color: #4ade80; min-height: 38px; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;div class=&quot;kart&quot;&gt;
+    &lt;h2&gt;Aritmetik Operatörler&lt;/h2&gt;
+    &lt;p class=&quot;aciklama&quot;&gt;İki sayı girip butonlara basarak sonucu gözlemleyin&lt;/p&gt;
+
+    &lt;div class=&quot;girdi-kutu&quot;&gt;
+      &lt;label for=&quot;txtSayi1&quot;&gt;1. Sayı&lt;/label&gt;
+      &lt;input type=&quot;number&quot; id=&quot;txtSayi1&quot; placeholder=&quot;Bir sayı yazın&quot;&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;girdi-kutu&quot;&gt;
+      &lt;label for=&quot;txtSayi2&quot;&gt;2. Sayı&lt;/label&gt;
+      &lt;input type=&quot;number&quot; id=&quot;txtSayi2&quot; placeholder=&quot;Bir sayı yazın&quot;&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;buton-grid&quot;&gt;
+      &lt;button class=&quot;btn btn-topla&quot; onclick=&quot;islemYap('+')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Topla&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-cikar&quot; onclick=&quot;islemYap('-')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Çıkar&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-carp&quot;  onclick=&quot;islemYap('*')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Çarp&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-bol&quot;   onclick=&quot;islemYap('/')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Böl&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-kalan&quot; onclick=&quot;islemYap('%')&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;%&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Kalan&lt;/span&gt;&lt;/button&gt;
+      &lt;button class=&quot;btn btn-sil&quot;   onclick=&quot;temizle()&quot;&gt;&lt;span class=&quot;sembol&quot;&gt;C&lt;/span&gt;&lt;span class=&quot;isim&quot;&gt;Temizle&lt;/span&gt;&lt;/button&gt;
+    &lt;/div&gt;
+
+    &lt;div class=&quot;sonuc-alani&quot;&gt;
+      &lt;span class=&quot;etiket&quot;&gt;İşlem &amp; Sonuç&lt;/span&gt;
+      &lt;div class=&quot;islem&quot; id=&quot;lblIslem&quot;&gt;Henüz işlem yapılmadı&lt;/div&gt;
+      &lt;div class=&quot;deger&quot; id=&quot;lblSonuc&quot;&gt;0&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+    // Buraya adım adım JavaScript kodlarımızı yazacağız!
+  &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+        </section>
+
+        <!-- BÖLÜM 2: ADIM ADIM JAVASCRIPT ANLATIM REHBERİ (ÖĞRETMEN DERS AKIŞI) -->
+        <section class="space-y-8">
+            <div class="border-b border-slate-800 pb-3">
+                <div class="flex items-center gap-2">
+                    <span class="p-1 rounded bg-sky-500/10 text-sky-400 font-bold text-xs">DERS ANLATIMI</span>
+                    <h2 class="text-xl sm:text-2xl font-bold text-white">Adım Adım JavaScript Kodlaması ve Mantığı</h2>
+                </div>
+                <p class="text-slate-400 text-xs sm:text-sm mt-1">Öğrencilerinize C# ve Python benzerlikleri üzerinden JavaScript mantığını 4 ana adımda anlatın:</p>
+            </div>
+
+            <!-- ADIM 1 -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 font-black flex items-center justify-center text-sm border border-sky-500/30">1</span>
+                    <h3 class="text-lg font-bold text-white">HTML Elemanlarına Ulaşmak (<code class="text-sky-300">document.getElementById</code>)</h3>
+                </div>
+                <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                    C#'ta Form üzerindeki bir kutuya <code class="text-blue-300">txtSayi1.Text</code> ile, Python Tkinter'da <code class="text-amber-300">entry.get()</code> ile erişiriz. 
+                    JavaScript'te web sayfasındaki bir etiketi yakalamak için onun <strong>ID</strong> değerini kullanırız:
+                </p>
+                <pre class="language-javascript"><code class="language-javascript">// ID'si 'txtSayi1' olan input etiketini bellek nesnesi olarak yakalar:
+let s1Eleman = document.getElementById("txtSayi1");
+let s2Eleman = document.getElementById("txtSayi2");
+
+// Kutunun içindeki yazıyı okumak için .value özelliği kullanılır:
+let girilenYazi = s1Eleman.value;</code></pre>
+                <div class="mt-3 p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs text-slate-400">
+                    💡 <strong>Pratik Not:</strong> Tek satırda doğrudan değeri de alabiliriz: <code class="text-sky-300">document.getElementById("txtSayi1").value</code>
+                </div>
+            </div>
+
+            <!-- ADIM 2: BÜYÜK TUZAK -->
+            <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 font-black flex items-center justify-center text-sm border border-amber-500/30">2</span>
+                    <h3 class="text-lg font-bold text-amber-300">En Büyük JS Tuzağı: "String Birleştirme (+)" vs "Toplama"</h3>
+                </div>
+                <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                    Tüm web tarayıcılarında <code class="text-sky-300">&lt;input type="number"&gt;</code> olsa bile <code class="text-amber-300">.value</code> daima <strong>String (Metin)</strong> tipinde veri getirir! 
+                    C#'taki <code class="text-blue-300">Console.ReadLine()</code> ve Python'daki <code class="text-amber-300">input()</code> fonksiyonlarının daima string getirmesiyle tamamen aynıdır!
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="p-4 rounded-xl bg-rose-950/20 border border-rose-500/30">
+                        <span class="text-xs font-bold text-rose-400 block mb-2">❌ HATA: Dönüştürmeden Toplarsak</span>
+                        <pre class="language-javascript"><code class="language-javascript">let a = document.getElementById("txtSayi1").value; // "5"
+let b = document.getElementById("txtSayi2").value; // "3"
+
+let sonuc = a + b;
+console.log(sonuc); 
+// Sonuç 8 DEĞİL, "53" olur! (Metin birleşti)</code></pre>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/30">
+                        <span class="text-xs font-bold text-emerald-400 block mb-2">✅ DOĞRU: Number() ile Sayıya Çevirmek</span>
+                        <pre class="language-javascript"><code class="language-javascript">let a = Number(document.getElementById("txtSayi1").value); // 5
+let b = Number(document.getElementById("txtSayi2").value); // 3
+
+let sonuc = a + b;
+console.log(sonuc); 
+// Sonuç: 8 (Gerçek matematiksel toplam!)</code></pre>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200 leading-relaxed">
+                    <strong>🧐 İlginç Soru:</strong> "Hocam çıkarma yaparken <code class="text-white">"10" - "3"</code> yazınca çalışıyor da <code class="text-white">"10" + "3"</code> neden çalışmıyor?"<br>
+                    <strong>Cevap:</strong> Çünkü JavaScript'te <code class="text-white">+</code> operatörü hem matematiksel toplama hem de string birleştirme için kullanılır. Metin görünce hemen birleştirmeyi seçer. Fakat <code class="text-white">- * / %</code> operatörlerinin metinlerde bir anlamı olmadığı için JavaScript otomatik olarak string'i sayıya dönüştürür (Type Coercion). Ancak iyi bir yazılımcı işini şansa bırakmaz, daima <code class="text-white">Number()</code> kullanır!
+                </div>
+            </div>
+
+            <!-- ADIM 3: 5 TEMEL ARİTMETİK OPERATÖR -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 font-black flex items-center justify-center text-sm border border-emerald-500/30">3</span>
+                    <h3 class="text-lg font-bold text-white">5 Aritmetik Operatörün Davranışı</h3>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-blue-500/30">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-black text-blue-400">+ Toplama</span>
+                            <span class="text-xs text-slate-500 font-mono">Addition</span>
+                        </div>
+                        <code class="text-xs text-slate-300 block mb-1">let s = n1 + n2;</code>
+                        <span class="text-[11px] text-slate-400">İki sayıyı toplar. Number dönüşümü zorunludur!</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-amber-500/30">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-black text-amber-400">- Çıkarma</span>
+                            <span class="text-xs text-slate-500 font-mono">Subtraction</span>
+                        </div>
+                        <code class="text-xs text-slate-300 block mb-1">let s = n1 - n2;</code>
+                        <span class="text-[11px] text-slate-400">1. sayıdan 2. sayıyı çıkarır.</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-emerald-500/30">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-black text-emerald-400">* Çarpma</span>
+                            <span class="text-xs text-slate-500 font-mono">Multiply</span>
+                        </div>
+                        <code class="text-xs text-slate-300 block mb-1">let s = n1 * n2;</code>
+                        <span class="text-[11px] text-slate-400">İki sayıyı birbiriyle çarpar.</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-purple-500/30">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-black text-purple-400">/ Bölme</span>
+                            <span class="text-xs text-slate-500 font-mono">Division</span>
+                        </div>
+                        <code class="text-xs text-slate-300 block mb-1">let s = n1 / n2;</code>
+                        <span class="text-[11px] text-slate-400">7 / 2 = 3.5 (C#'taki gibi 3'e yuvarlamaz!)</span>
+                    </div>
+
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-pink-500/30">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-black text-pink-400">% Kalan (Mod)</span>
+                            <span class="text-xs text-slate-500 font-mono">Modulus</span>
+                        </div>
+                        <code class="text-xs text-slate-300 block mb-1">let s = n1 % n2;</code>
+                        <span class="text-[11px] text-slate-400">Bölümden kalan sayıyı verir. 14 % 4 = 2</span>
+                    </div>
+                </div>
+
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-300">
+                    <strong>⚠️ Sıfıra Bölme Kuralı:</strong> <code class="text-cyan-300">10 / 0</code> yaptığınızda C# programı çöker (Exception), Python ise hata verir. JavaScript ise çökmez, <code class="text-amber-400">Infinity</code> (Sonsuzluk) sonucunu döndürür! Bu yüzden JavaScript'te bölme işleminden önce <code class="text-cyan-300">if (sayi2 === 0)</code> kontrolü yapmak iyi bir alışkanlıktır.
+                </div>
+            </div>
+
+            <!-- ADIM 4: SONUCU EKRANA YAZDIRMA -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-3">
+                    <span class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 font-black flex items-center justify-center text-sm border border-purple-500/30">4</span>
+                    <h3 class="text-lg font-bold text-white">Sonucu HTML Sayfasında Göstermek (<code class="text-purple-300">innerText</code>)</h3>
+                </div>
+                <p class="text-sm text-slate-300 leading-relaxed mb-3">
+                    C#'ta sonucu ekrana basmak için <code class="text-blue-300">lblSonuc.Text = sonuc.ToString();</code> yazıyorduk.
+                    JavaScript'te ise HTML etiketinin içeriğini değiştirmek için <code class="text-purple-300">innerText</code> veya <code class="text-purple-300">textContent</code> kullanılır:
+                </p>
+                <pre class="language-javascript"><code class="language-javascript">// ID'si 'lblSonuc' olan div'in içindeki yazıyı değiştir:
+document.getElementById("lblSonuc").innerText = sonuc;
+
+// Yapılan işlemi açıklayıcı olarak göstermek için:
+document.getElementById("lblIslem").innerText = sayi1 + " " + operator + " " + sayi2 + " =";</code></pre>
+            </div>
+
+            <!-- ADIM 5: KODUN TAMAMI (İKİ YÖNTEM) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 font-black flex items-center justify-center text-sm border border-teal-500/30">5</span>
+                    <h3 class="text-lg font-bold text-white">Tam Kod: Sınıfta Kullanabileceğiniz 2 Farklı Mimari</h3>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- YAKLAŞIM 1 -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">Yöntem 1: Ayrı Ayrı Fonksiyonlar (En Kolay Anlaşılan)</span>
+                            <span class="text-[11px] bg-sky-500/10 text-sky-300 px-2 py-0.5 rounded">Yeni Başlayanlar</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Her buton kendi fonksiyonunu çağırır: <code>onclick="topla()"</code>, <code>onclick="cikar()"</code> vb.</p>
+                        <pre class="language-javascript"><code class="language-javascript">function topla() {
+  let s1 = Number(document.getElementById("txtSayi1").value);
+  let s2 = Number(document.getElementById("txtSayi2").value);
+  let sonuc = s1 + s2;
+  document.getElementById("lblIslem").innerText = s1 + " + " + s2;
+  document.getElementById("lblSonuc").innerText = sonuc;
+}
+
+function cikar() {
+  let s1 = Number(document.getElementById("txtSayi1").value);
+  let s2 = Number(document.getElementById("txtSayi2").value);
+  let sonuc = s1 - s2;
+  document.getElementById("lblIslem").innerText = s1 + " - " + s2;
+  document.getElementById("lblSonuc").innerText = sonuc;
+}
+
+function carp() {
+  let s1 = Number(document.getElementById("txtSayi1").value);
+  let s2 = Number(document.getElementById("txtSayi2").value);
+  let sonuc = s1 * s2;
+  document.getElementById("lblIslem").innerText = s1 + " * " + s2;
+  document.getElementById("lblSonuc").innerText = sonuc;
+}
+
+function bol() {
+  let s1 = Number(document.getElementById("txtSayi1").value);
+  let s2 = Number(document.getElementById("txtSayi2").value);
+  if (s2 === 0) {
+    document.getElementById("lblSonuc").innerText = "Sıfıra bölünemez!";
+    return;
+  }
+  let sonuc = s1 / s2;
+  document.getElementById("lblIslem").innerText = s1 + " / " + s2;
+  document.getElementById("lblSonuc").innerText = sonuc;
+}
+
+function kalanBul() {
+  let s1 = Number(document.getElementById("txtSayi1").value);
+  let s2 = Number(document.getElementById("txtSayi2").value);
+  let sonuc = s1 % s2;
+  document.getElementById("lblIslem").innerText = s1 + " % " + s2;
+  document.getElementById("lblSonuc").innerText = sonuc;
+}</code></pre>
+                    </div>
+
+                    <!-- YAKLAŞIM 2 -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Yöntem 2: Tek Parametreli Profesyonel Fonksiyon</span>
+                            <span class="text-[11px] bg-teal-500/10 text-teal-300 px-2 py-0.5 rounded">Tavsiye Edilen (C# & Python)</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Tek bir fonksiyon operatörü parametre olarak alır: <code>onclick="islemYap('+')"</code>.</p>
+                        <pre class="language-javascript"><code class="language-javascript">function islemYap(operator) {
+  // 1. Kutulardan değerleri oku ve Number() ile sayıya dönüştür
+  let s1 = Number(document.getElementById("txtSayi1").value);
+  let s2 = Number(document.getElementById("txtSayi2").value);
+  let sonuc = 0;
+
+  // 2. Operatöre göre işlemi belirle (C#'taki switch-case)
+  switch (operator) {
+    case '+':
+      sonuc = s1 + s2;
+      break;
+    case '-':
+      sonuc = s1 - s2;
+      break;
+    case '*':
+      sonuc = s1 * s2;
+      break;
+    case '/':
+      if (s2 === 0) {
+        alert("Matematikte bir sayı 0'a bölünemez!");
+        document.getElementById("lblSonuc").innerText = "Tanımsız";
+        return;
+      }
+      sonuc = s1 / s2;
+      break;
+    case '%':
+      sonuc = s1 % s2;
+      break;
+  }
+
+  // 3. Sonuçları ekrana yazdır
+  document.getElementById("lblIslem").innerText = s1 + " " + operator + " " + s2 + " =";
+  document.getElementById("lblSonuc").innerText = sonuc;
+}
+
+function temizle() {
+  document.getElementById("txtSayi1").value = "";
+  document.getElementById("txtSayi2").value = "";
+  document.getElementById("lblIslem").innerText = "Temizlendi";
+  document.getElementById("lblSonuc").innerText = "0";
+}</code></pre>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ADIM 6: ÖĞRENCİLER İÇİN 3 AKILLI TAHTA MEYDAN OKUMASI (SIRA SENDE) -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="p-1 rounded bg-rose-500/10 text-rose-400 font-bold text-xs">MEYDAN OKUMA</span>
+                    <h3 class="text-lg font-bold text-white">Öğrencilere Yaptırabileceğiniz Canlı Tahta Görevleri</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="font-bold text-cyan-400 block mb-1">Görev 1: Üs Alma Operatörü (**)</span>
+                            <p class="text-slate-400 leading-relaxed">
+                                Formumuza yeni bir <code class="text-cyan-300">^</code> (Üs Alma) butonu ekleyin. JavaScript'te Python gibi <code class="text-cyan-300">s1 ** s2</code> operatörünü kullanarak 2 üzeri 3'ün 8 olduğunu hesaplatın.
+                            </p>
+                        </div>
+                        <span class="mt-3 text-slate-500 font-mono">İpucu: s1 ** s2</span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="font-bold text-amber-400 block mb-1">Görev 2: Çift / Tek Kontrolü</span>
+                            <p class="text-slate-400 leading-relaxed">
+                                1. sayı kutusuna girilen sayının çift mi tek mi olduğunu bulan bir buton ekleyin. Mod operatörü ile <code class="text-amber-300">s1 % 2 === 0</code> şartını test edin.
+                            </p>
+                        </div>
+                        <span class="mt-3 text-slate-500 font-mono">İpucu: s1 % 2 == 0</span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+                        <div>
+                            <span class="font-bold text-emerald-400 block mb-1">Görev 3: Boş Kutu Uyarısı</span>
+                            <p class="text-slate-400 leading-relaxed">
+                                Eğer kullanıcı hiçbir sayı yazmadan butona basarsa ekranda <code class="text-emerald-300">NaN</code> (Not a Number) çıkmasını engelleyin; <code class="text-emerald-300">isNaN()</code> ile "Lütfen iki sayı girin!" uyarısı verin.
+                            </p>
+                        </div>
+                        <span class="mt-3 text-slate-500 font-mono">İpucu: isNaN(s1)</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </div>
+
+    <!-- ALT BİLGİ -->
+    <footer class="border-t border-slate-800 bg-slate-900/60 mt-16 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-400 space-y-2">
+            <p class="font-semibold text-slate-300">
+                2026-2027 11 ATP Sınıfı Web Tabanlı Uygulama Geliştirme Dersi
+            </p>
+            <div class="flex justify-center items-center gap-4 pt-2">
+                <a href="index.html" class="hover:text-cyan-400 transition">Ana Sayfa</a>
+                <span>•</span>
+                <a href="javascript_full.html" class="hover:text-cyan-400 transition">JavaScript Notları</a>
+                <span>•</span>
+                <a href="html_form_dokuman.html" class="hover:text-cyan-400 transition">Form Kılavuzu</a>
+                <span>•</span>
+                <a href="CSS_FULL.html" class="hover:text-cyan-400 transition">CSS Rehberi</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PRISM JS & ÇALIŞTIRMA SCRİPTİ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script>
+        // CANLI ÖNİZLEMEDEKİ HESAP MAKİNESİNİN ÇALIŞMA KODU
+        function hesapla(operator) {
+            const txt1 = document.getElementById("sayi1");
+            const txt2 = document.getElementById("sayi2");
+            const sonucDegeri = document.getElementById("sonuc-degeri");
+            const islemMetni = document.getElementById("islem-metni");
+            const rozetBilgi = document.getElementById("rozet-bilgi");
+            const sonucKutusu = document.getElementById("sonuc-kutusu");
+
+            if (txt1.value.trim() === "" || txt2.value.trim() === "") {
+                sonucDegeri.innerText = "Sayı Giriniz!";
+                sonucDegeri.style.color = "#f43f5e";
+                islemMetni.innerText = "Eksik Girdi";
+                rozetBilgi.innerText = "Lütfen her iki kutuya da sayı yazın";
+                return;
+            }
+
+            const n1 = Number(txt1.value);
+            const n2 = Number(txt2.value);
+
+            if (isNaN(n1) || isNaN(n2)) {
+                sonucDegeri.innerText = "Geçersiz Sayı!";
+                sonucDegeri.style.color = "#f43f5e";
+                return;
+            }
+
+            let sonuc = 0;
+            let rozet = "";
+            let renk = "#4ade80"; // Yeşil varsayılan
+
+            switch (operator) {
+                case '+':
+                    sonuc = n1 + n2;
+                    rozet = "+ Toplama Operatörü (Sayısal Toplam)";
+                    renk = "#60a5fa"; // Mavi
+                    break;
+                case '-':
+                    sonuc = n1 - n2;
+                    rozet = "- Çıkarma Operatörü (Fark)";
+                    renk = "#fbbf24"; // Sarı/Kehribar
+                    break;
+                case '*':
+                    sonuc = n1 * n2;
+                    rozet = "* Çarpma Operatörü (Çarpım)";
+                    renk = "#34d399"; // Zümrüt
+                    break;
+                case '/':
+                    if (n2 === 0) {
+                        sonucDegeri.innerText = "Tanımsız (Sıfıra Bölünemez)";
+                        sonucDegeri.style.color = "#f43f5e";
+                        islemMetni.innerText = `${n1} / 0 = Sonsuz (Infinity)`;
+                        rozetBilgi.innerText = "⚠️ JavaScript'te sıfıra bölme Infinity üretir!";
+                        return;
+                    }
+                    sonuc = n1 / n2;
+                    // Eğer çok basamaklı ondalık varsa en fazla 4 basamak göster
+                    sonuc = Number.isInteger(sonuc) ? sonuc : Number(sonuc.toFixed(4));
+                    rozet = "/ Bölme Operatörü (Ondalıklı Bölüm)";
+                    renk = "#a78bfa"; // Mor
+                    break;
+                case '%':
+                    sonuc = n1 % n2;
+                    rozet = `% Mod Operatörü (${n1} sayısının ${n2} ile bölümünden KALAN)`;
+                    renk = "#f472b6"; // Pembe
+                    break;
+            }
+
+            islemMetni.innerText = `${n1} ${operator} ${n2} =`;
+            sonucDegeri.innerText = sonuc;
+            sonucDegeri.style.color = renk;
+            rozetBilgi.innerText = rozet;
+        }
+
+        function formuTemizle() {
+            document.getElementById("sayi1").value = "";
+            document.getElementById("sayi2").value = "";
+            document.getElementById("islem-metni").innerText = "Hazır";
+            const res = document.getElementById("sonuc-degeri");
+            res.innerText = "0";
+            res.style.color = "#4ade80";
+            document.getElementById("rozet-bilgi").innerText = "İşlem yapmak için bir butona basın";
+        }
+
+        function hizliDoldur(s1, s2) {
+            document.getElementById("sayi1").value = s1;
+            document.getElementById("sayi2").value = s2;
+            hesapla(s2 === 0 ? '/' : (s1 === 7 ? '/' : '%'));
+        }
+
+        // KOD KOPYALAMA İŞLEVİ
+        const ogrenciKoduMetni = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aritmetik Operatörler Laboratuvarı</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { background-color: #0f172a; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+    .kart { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 28px; width: 100%; max-width: 420px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); color: #f8fafc; }
+    .kart h2 { text-align: center; color: #38bdf8; margin-bottom: 6px; font-size: 1.5rem; }
+    .kart p.aciklama { text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px; }
+    .girdi-kutu { margin-bottom: 14px; }
+    .girdi-kutu label { display: block; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
+    .girdi-kutu input { width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #fff; font-size: 1rem; outline: none; }
+    .girdi-kutu input:focus { border-color: #38bdf8; box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2); }
+    .buton-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+    .btn { padding: 12px 6px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: white; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .btn:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .btn .sembol { font-size: 1.3rem; }
+    .btn .isim { font-size: 0.72rem; opacity: 0.85; }
+    .btn-topla { background: #2563eb; }
+    .btn-cikar { background: #d97706; }
+    .btn-carp  { background: #059669; }
+    .btn-bol   { background: #7c3aed; }
+    .btn-kalan { background: #db2777; }
+    .btn-sil   { background: #475569; }
+    .sonuc-alani { background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 16px; text-align: center; }
+    .sonuc-alani span.etiket { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; }
+    .sonuc-alani .islem { font-size: 0.9rem; color: #38bdf8; min-height: 20px; margin: 4px 0; }
+    .sonuc-alani .deger { font-size: 2rem; font-weight: 800; color: #4ade80; min-height: 38px; }
+  </style>
+</head>
+<body>
+
+  <div class="kart">
+    <h2>Aritmetik Operatörler</h2>
+    <p class="aciklama">İki sayı girip butonlara basarak sonucu gözlemleyin</p>
+
+    <div class="girdi-kutu">
+      <label for="txtSayi1">1. Sayı</label>
+      <input type="number" id="txtSayi1" placeholder="Bir sayı yazın">
+    </div>
+
+    <div class="girdi-kutu">
+      <label for="txtSayi2">2. Sayı</label>
+      <input type="number" id="txtSayi2" placeholder="Bir sayı yazın">
+    </div>
+
+    <div class="buton-grid">
+      <button class="btn btn-topla" onclick="islemYap('+')"><span class="sembol">+</span><span class="isim">Topla</span></button>
+      <button class="btn btn-cikar" onclick="islemYap('-')"><span class="sembol">-</span><span class="isim">Çıkar</span></button>
+      <button class="btn btn-carp"  onclick="islemYap('*')"><span class="sembol">*</span><span class="isim">Çarp</span></button>
+      <button class="btn btn-bol"   onclick="islemYap('/')"><span class="sembol">/</span><span class="isim">Böl</span></button>
+      <button class="btn btn-kalan" onclick="islemYap('%')"><span class="sembol">%</span><span class="isim">Kalan</span></button>
+      <button class="btn btn-sil"   onclick="temizle()"><span class="sembol">C</span><span class="isim">Temizle</span></button>
+    </div>
+
+    <div class="sonuc-alani">
+      <span class="etiket">İşlem & Sonuç</span>
+      <div class="islem" id="lblIslem">Henüz işlem yapılmadı</div>
+      <div class="deger" id="lblSonuc">0</div>
+    </div>
+  </div>
+
+  <script>
+    function islemYap(operator) {
+      let s1 = Number(document.getElementById("txtSayi1").value);
+      let s2 = Number(document.getElementById("txtSayi2").value);
+      let sonuc = 0;
+
+      if (operator === '+') sonuc = s1 + s2;
+      else if (operator === '-') sonuc = s1 - s2;
+      else if (operator === '*') sonuc = s1 * s2;
+      else if (operator === '/') {
+        if (s2 === 0) {
+          alert("Sıfıra bölünemez!");
+          return;
+        }
+        sonuc = s1 / s2;
+      }
+      else if (operator === '%') sonuc = s1 % s2;
+
+      document.getElementById("lblIslem").innerText = s1 + " " + operator + " " + s2 + " =";
+      document.getElementById("lblSonuc").innerText = sonuc;
+    }
+
+    function temizle() {
+      document.getElementById("txtSayi1").value = "";
+      document.getElementById("txtSayi2").value = "";
+      document.getElementById("lblIslem").innerText = "Temizlendi";
+      document.getElementById("lblSonuc").innerText = "0";
+    }
+  </script>
+
+</body>
+</html>`;
+
+        function kopyalaOgrenciKodu() {
+            navigator.clipboard.writeText(ogrenciKoduMetni).then(() => {
+                const btn = document.getElementById("btn-kopyala-ogrenci");
+                btn.innerHTML = `<span>✅ Şablon Kopyalandı!</span>`;
+                setTimeout(() => {
+                    btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg><span>Şablonu Kopyala (HTML+CSS)</span>`;
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
