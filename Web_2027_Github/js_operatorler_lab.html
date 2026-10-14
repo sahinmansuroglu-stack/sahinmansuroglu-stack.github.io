@@ -447,7 +447,64 @@
   &lt;/div&gt;
 
   &lt;script&gt;
-    // Buraya adım adım JavaScript kodlarımızı yazacağız!
+    function islemYap(operator) {
+      // 1. Kutulardan değerleri oku ve Number() ile sayıya dönüştür
+      let s1 = Number(document.getElementById("txtSayi1").value);
+      let s2 = Number(document.getElementById("txtSayi2").value);
+      let sonuc = 0;
+
+      // -------------------------------------------------------------
+      // 👩‍🏫 DERSTE BİRLİKTE YAPTIĞIMIZ İŞLEMLER:
+      // -------------------------------------------------------------
+      
+      // 1. ÖRNEK: Toplama İşlemi (Number dönüşümüne dikkat!)
+      if (operator === '+') {
+        sonuc = s1 + s2;
+      }
+      // 2. ÖRNEK: Çarpma İşlemi
+      else if (operator === '*') {
+        sonuc = s1 * s2;
+      }
+
+      // -------------------------------------------------------------
+      // 🎯 SIRA SENDE / ÖĞRENCİ GÖREVLERİ:
+      // -------------------------------------------------------------
+
+      // 📌 GÖREV 1: Çıkarma İşlemini tamamla
+      // İPUCU: 1. sayıdan 2. sayıyı çıkarmak için (s1 - s2) kullanacaksın.
+      else if (operator === '-') {
+        // KODUNU BURAYA YAZ:
+        // sonuc = ...
+      }
+
+      // 📌 GÖREV 2: Bölme İşlemini tamamla
+      // İPUCU: (s1 / s2) kullanacaksın.
+      // DİKKAT (C# / Python Farkı): s2 sıfır (0) ise 'Sıfıra bölünemez' uyarısı verdir!
+      else if (operator === '/') {
+        // KODUNU BURAYA YAZ:
+        // if (s2 === 0) { alert("Sıfıra bölünemez!"); return; }
+        // sonuc = ...
+      }
+
+      // 📌 GÖREV 3: Kalan (Mod) İşlemini tamamla
+      // İPUCU: C# ve Python'daki gibi % operatörünü kullanacaksın (s1 % s2).
+      else if (operator === '%') {
+        // KODUNU BURAYA YAZ:
+        // sonuc = ...
+      }
+
+      // 3. Sonuçları ekrana yazdır
+      document.getElementById("lblIslem").innerText = s1 + " " + operator + " " + s2 + " =";
+      document.getElementById("lblSonuc").innerText = sonuc;
+    }
+
+    // Temizleme butonu
+    function temizle() {
+      document.getElementById("txtSayi1").value = "";
+      document.getElementById("txtSayi2").value = "";
+      document.getElementById("lblIslem").innerText = "Henüz işlem yapılmadı";
+      document.getElementById("lblSonuc").innerText = "0";
+    }
   &lt;/script&gt;
 
 &lt;/body&gt;
@@ -524,62 +581,70 @@ console.log(sonuc);
                 </div>
             </div>
 
-            <!-- ADIM 3: 5 TEMEL ARİTMETİK OPERATÖR -->
+            <!-- ADIM 3: OPERATÖRLERİN DAĞILIMI (2 MODEL + 3 ÖĞRENCİ GÖREVİ) -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <div class="flex items-center gap-3 mb-3">
                     <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 font-black flex items-center justify-center text-sm border border-emerald-500/30">3</span>
-                    <h3 class="text-lg font-bold text-white">5 Aritmetik Operatörün Davranışı</h3>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Operatörlerin Dağılımı (2 Model + 3 Öğrenci Görevi)</h3>
+                        <p class="text-xs text-slate-400">Öğretmen tahtada <code class="text-blue-300">+</code> ve <code class="text-emerald-300">*</code> işlemlerini kodlar; kalan 3 işlem öğrenciye verilir.</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
-                    <div class="bg-slate-950 p-3.5 rounded-xl border border-blue-500/30">
+                    <!-- 1. MODEL -->
+                    <div class="bg-blue-950/30 p-3.5 rounded-xl border border-blue-500/50">
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-base font-black text-blue-400">+ Toplama</span>
-                            <span class="text-xs text-slate-500 font-mono">Addition</span>
+                            <span class="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-bold">MODEL 1</span>
                         </div>
-                        <code class="text-xs text-slate-300 block mb-1">let s = n1 + n2;</code>
-                        <span class="text-[11px] text-slate-400">İki sayıyı toplar. Number dönüşümü zorunludur!</span>
+                        <code class="text-xs text-slate-200 block mb-1">let s = n1 + n2;</code>
+                        <span class="text-[11px] text-slate-400">Derste çözülür. Number() dönüşümünün şart olduğu yerdir.</span>
                     </div>
 
+                    <!-- 2. MODEL -->
+                    <div class="bg-emerald-950/30 p-3.5 rounded-xl border border-emerald-500/50">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="text-base font-black text-emerald-400">* Çarpma</span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-bold">MODEL 2</span>
+                        </div>
+                        <code class="text-xs text-slate-200 block mb-1">let s = n1 * n2;</code>
+                        <span class="text-[11px] text-slate-400">Derste çözülür. İki sayıyı birbiriyle çarpar.</span>
+                    </div>
+
+                    <!-- GÖREV 1 -->
                     <div class="bg-slate-950 p-3.5 rounded-xl border border-amber-500/30">
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-base font-black text-amber-400">- Çıkarma</span>
-                            <span class="text-xs text-slate-500 font-mono">Subtraction</span>
+                            <span class="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded">GÖREV 1</span>
                         </div>
-                        <code class="text-xs text-slate-300 block mb-1">let s = n1 - n2;</code>
-                        <span class="text-[11px] text-slate-400">1. sayıdan 2. sayıyı çıkarır.</span>
+                        <code class="text-xs text-slate-300 block mb-1">s1 - s2</code>
+                        <span class="text-[11px] text-slate-400">Öğrenci Görevi. Fark alma işlemi.</span>
                     </div>
 
-                    <div class="bg-slate-950 p-3.5 rounded-xl border border-emerald-500/30">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="text-base font-black text-emerald-400">* Çarpma</span>
-                            <span class="text-xs text-slate-500 font-mono">Multiply</span>
-                        </div>
-                        <code class="text-xs text-slate-300 block mb-1">let s = n1 * n2;</code>
-                        <span class="text-[11px] text-slate-400">İki sayıyı birbiriyle çarpar.</span>
-                    </div>
-
+                    <!-- GÖREV 2 -->
                     <div class="bg-slate-950 p-3.5 rounded-xl border border-purple-500/30">
                         <div class="flex items-center justify-between mb-1">
                             <span class="text-base font-black text-purple-400">/ Bölme</span>
-                            <span class="text-xs text-slate-500 font-mono">Division</span>
+                            <span class="text-[10px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded">GÖREV 2</span>
                         </div>
-                        <code class="text-xs text-slate-300 block mb-1">let s = n1 / n2;</code>
-                        <span class="text-[11px] text-slate-400">7 / 2 = 3.5 (C#'taki gibi 3'e yuvarlamaz!)</span>
+                        <code class="text-xs text-slate-300 block mb-1">s1 / s2</code>
+                        <span class="text-[11px] text-slate-400">Öğrenci Görevi. Ondalıklı sonuç & sıfıra bölme güvenliği.</span>
                     </div>
 
+                    <!-- GÖREV 3 -->
                     <div class="bg-slate-950 p-3.5 rounded-xl border border-pink-500/30">
                         <div class="flex items-center justify-between mb-1">
-                            <span class="text-base font-black text-pink-400">% Kalan (Mod)</span>
-                            <span class="text-xs text-slate-500 font-mono">Modulus</span>
+                            <span class="text-base font-black text-pink-400">% Kalan</span>
+                            <span class="text-[10px] bg-pink-500/20 text-pink-300 px-1.5 py-0.5 rounded">GÖREV 3</span>
                         </div>
-                        <code class="text-xs text-slate-300 block mb-1">let s = n1 % n2;</code>
-                        <span class="text-[11px] text-slate-400">Bölümden kalan sayıyı verir. 14 % 4 = 2</span>
+                        <code class="text-xs text-slate-300 block mb-1">s1 % s2</code>
+                        <span class="text-[11px] text-slate-400">Öğrenci Görevi. C# ve Python ile aynı mod alma mantığı.</span>
                     </div>
                 </div>
 
                 <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 text-xs text-slate-300">
-                    <strong>⚠️ Sıfıra Bölme Kuralı:</strong> <code class="text-cyan-300">10 / 0</code> yaptığınızda C# programı çöker (Exception), Python ise hata verir. JavaScript ise çökmez, <code class="text-amber-400">Infinity</code> (Sonsuzluk) sonucunu döndürür! Bu yüzden JavaScript'te bölme işleminden önce <code class="text-cyan-300">if (sayi2 === 0)</code> kontrolü yapmak iyi bir alışkanlıktır.
+                    <strong>🎯 Ders Pedagojisi Notu:</strong> Sınıfta toplama ve çarpma işlemlerini tahtada adım adım yaparak öğrencilerin mantığı (HTML girdisi string'dir, <code>Number()</code> ile çevrilir, sonuç <code>innerText</code> ile basılır) kavramasını sağlayın. Ardından çıkarma, bölme ve kalan işlemlerini aşağıdaki ipuçlarıyla öğrencilerin kendilerinin çözmesini isteyin.
                 </div>
             </div>
 
@@ -600,11 +665,14 @@ document.getElementById("lblSonuc").innerText = sonuc;
 document.getElementById("lblIslem").innerText = sayi1 + " " + operator + " " + sayi2 + " =";</code></pre>
             </div>
 
-            <!-- ADIM 5: KODUN TAMAMI (İKİ YÖNTEM) -->
+            <!-- ADIM 5: KODUN MODELİ (SADECE TOPLA VE ÇARP ÇÖZÜMLÜ) -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <div class="flex items-center gap-3 mb-4">
                     <span class="w-8 h-8 rounded-lg bg-teal-500/20 text-teal-400 font-black flex items-center justify-center text-sm border border-teal-500/30">5</span>
-                    <h3 class="text-lg font-bold text-white">Tam Kod: Sınıfta Kullanabileceğiniz 2 Farklı Mimari</h3>
+                    <div>
+                        <h3 class="text-lg font-bold text-white">Öğretmen Modeli: Sadece Topla (+) ve Çarp (*) Kodlaması</h3>
+                        <p class="text-xs text-slate-400">Öğrencilere sadece bu iki temel işlem gösterilir; kalan 3 işlem öğrenciye görev olarak bırakılır.</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -612,11 +680,12 @@ document.getElementById("lblIslem").innerText = sayi1 + " " + operator + " " + s
                     <!-- YAKLAŞIM 1 -->
                     <div class="space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">Yöntem 1: Ayrı Ayrı Fonksiyonlar (En Kolay Anlaşılan)</span>
-                            <span class="text-[11px] bg-sky-500/10 text-sky-300 px-2 py-0.5 rounded">Yeni Başlayanlar</span>
+                            <span class="text-xs font-bold text-sky-400 uppercase tracking-wider">Yöntem 1: Ayrı Fonksiyonlar (Başlangıç)</span>
+                            <span class="text-[11px] bg-sky-500/10 text-sky-300 px-2 py-0.5 rounded">Model Kod</span>
                         </div>
-                        <p class="text-xs text-slate-400">Her buton kendi fonksiyonunu çağırır: <code>onclick="topla()"</code>, <code>onclick="cikar()"</code> vb.</p>
-                        <pre class="language-javascript"><code class="language-javascript">function topla() {
+                        <p class="text-xs text-slate-400"><code>topla()</code> ve <code>carp()</code> derste çözülür, diğerleri boş bırakılır.</p>
+                        <pre class="language-javascript"><code class="language-javascript">// 1. MODEL: Toplama İşlemi (Derste birlikte yazılır)
+function topla() {
   let s1 = Number(document.getElementById("txtSayi1").value);
   let s2 = Number(document.getElementById("txtSayi2").value);
   let sonuc = s1 + s2;
@@ -624,14 +693,7 @@ document.getElementById("lblIslem").innerText = sayi1 + " " + operator + " " + s
   document.getElementById("lblSonuc").innerText = sonuc;
 }
 
-function cikar() {
-  let s1 = Number(document.getElementById("txtSayi1").value);
-  let s2 = Number(document.getElementById("txtSayi2").value);
-  let sonuc = s1 - s2;
-  document.getElementById("lblIslem").innerText = s1 + " - " + s2;
-  document.getElementById("lblSonuc").innerText = sonuc;
-}
-
+// 2. MODEL: Çarpma İşlemi (Derste birlikte yazılır)
 function carp() {
   let s1 = Number(document.getElementById("txtSayi1").value);
   let s2 = Number(document.getElementById("txtSayi2").value);
@@ -640,117 +702,125 @@ function carp() {
   document.getElementById("lblSonuc").innerText = sonuc;
 }
 
-function bol() {
-  let s1 = Number(document.getElementById("txtSayi1").value);
-  let s2 = Number(document.getElementById("txtSayi2").value);
-  if (s2 === 0) {
-    document.getElementById("lblSonuc").innerText = "Sıfıra bölünemez!";
-    return;
-  }
-  let sonuc = s1 / s2;
-  document.getElementById("lblIslem").innerText = s1 + " / " + s2;
-  document.getElementById("lblSonuc").innerText = sonuc;
+// 🎯 ÖĞRENCİ GÖREVİ 1: Çıkarma (İpucu: s1 - s2)
+function cikar() {
+  // Öğrenci tamamlayacak...
 }
 
+// 🎯 ÖĞRENCİ GÖREVİ 2: Bölme (İpucu: s1 / s2 ve s2 === 0 kontrolü)
+function bol() {
+  // Öğrenci tamamlayacak...
+}
+
+// 🎯 ÖĞRENCİ GÖREVİ 3: Kalan / Mod (İpucu: s1 % s2)
 function kalanBul() {
-  let s1 = Number(document.getElementById("txtSayi1").value);
-  let s2 = Number(document.getElementById("txtSayi2").value);
-  let sonuc = s1 % s2;
-  document.getElementById("lblIslem").innerText = s1 + " % " + s2;
-  document.getElementById("lblSonuc").innerText = sonuc;
+  // Öğrenci tamamlayacak...
 }</code></pre>
                     </div>
 
                     <!-- YAKLAŞIM 2 -->
                     <div class="space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Yöntem 2: Tek Parametreli Profesyonel Fonksiyon</span>
-                            <span class="text-[11px] bg-teal-500/10 text-teal-300 px-2 py-0.5 rounded">Tavsiye Edilen (C# & Python)</span>
+                            <span class="text-xs font-bold text-teal-400 uppercase tracking-wider">Yöntem 2: Tek Fonksiyon (C# & Python Bilenler İçin)</span>
+                            <span class="text-[11px] bg-teal-500/10 text-teal-300 px-2 py-0.5 rounded">Tavsiye Edilen Şablon</span>
                         </div>
-                        <p class="text-xs text-slate-400">Tek bir fonksiyon operatörü parametre olarak alır: <code>onclick="islemYap('+')"</code>.</p>
+                        <p class="text-xs text-slate-400">Tek fonksiyon içinde <code>+</code> ve <code>*</code> hazır verilir, diğerleri öğrenciye bırakılır.</p>
                         <pre class="language-javascript"><code class="language-javascript">function islemYap(operator) {
-  // 1. Kutulardan değerleri oku ve Number() ile sayıya dönüştür
   let s1 = Number(document.getElementById("txtSayi1").value);
   let s2 = Number(document.getElementById("txtSayi2").value);
   let sonuc = 0;
 
-  // 2. Operatöre göre işlemi belirle (C#'taki switch-case)
-  switch (operator) {
-    case '+':
-      sonuc = s1 + s2;
-      break;
-    case '-':
-      sonuc = s1 - s2;
-      break;
-    case '*':
-      sonuc = s1 * s2;
-      break;
-    case '/':
-      if (s2 === 0) {
-        alert("Matematikte bir sayı 0'a bölünemez!");
-        document.getElementById("lblSonuc").innerText = "Tanımsız";
-        return;
-      }
-      sonuc = s1 / s2;
-      break;
-    case '%':
-      sonuc = s1 % s2;
-      break;
+  // 👩‍🏫 DERSTE BİRLİKTE YAZILAN KISIM
+  if (operator === '+') {
+    sonuc = s1 + s2;
+  } 
+  else if (operator === '*') {
+    sonuc = s1 * s2;
+  }
+  
+  // 🎯 ÖĞRENCİ GÖREVLERİ (Aşağıdaki ipuçlarını inceleyin):
+  else if (operator === '-') {
+    // GÖREV 1: Çıkarma kodunu buraya yazınız (İpucu: s1 - s2)
+  }
+  else if (operator === '/') {
+    // GÖREV 2: Bölme kodunu buraya yazınız (İpucu: s1 / s2 ve s2 === 0 kontrolü)
+  }
+  else if (operator === '%') {
+    // GÖREV 3: Kalan kodunu buraya yazınız (İpucu: s1 % s2)
   }
 
-  // 3. Sonuçları ekrana yazdır
+  // Sonuçları ekrana yazdırma
   document.getElementById("lblIslem").innerText = s1 + " " + operator + " " + s2 + " =";
   document.getElementById("lblSonuc").innerText = sonuc;
-}
-
-function temizle() {
-  document.getElementById("txtSayi1").value = "";
-  document.getElementById("txtSayi2").value = "";
-  document.getElementById("lblIslem").innerText = "Temizlendi";
-  document.getElementById("lblSonuc").innerText = "0";
 }</code></pre>
                     </div>
 
                 </div>
             </div>
 
-            <!-- ADIM 6: ÖĞRENCİLER İÇİN 3 AKILLI TAHTA MEYDAN OKUMASI (SIRA SENDE) -->
+            <!-- ADIM 6: ÖĞRENCİ GÖREV KARTLARI VE İPUÇLARI -->
             <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
                 <div class="flex items-center gap-2 mb-4">
-                    <span class="p-1 rounded bg-rose-500/10 text-rose-400 font-bold text-xs">MEYDAN OKUMA</span>
-                    <h3 class="text-lg font-bold text-white">Öğrencilere Yaptırabileceğiniz Canlı Tahta Görevleri</h3>
+                    <span class="p-1 rounded bg-amber-500/10 text-amber-400 font-bold text-xs">SIRA SENDE</span>
+                    <h3 class="text-lg font-bold text-white">Öğrencilere Verilecek 3 Görev ve İpuçları</h3>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+                    
+                    <!-- GÖREV 1: ÇIKARMA -->
+                    <div class="p-4 rounded-xl bg-slate-950 border border-amber-500/30 flex flex-col justify-between">
                         <div>
-                            <span class="font-bold text-cyan-400 block mb-1">Görev 1: Üs Alma Operatörü (**)</span>
-                            <p class="text-slate-400 leading-relaxed">
-                                Formumuza yeni bir <code class="text-cyan-300">^</code> (Üs Alma) butonu ekleyin. JavaScript'te Python gibi <code class="text-cyan-300">s1 ** s2</code> operatörünü kullanarak 2 üzeri 3'ün 8 olduğunu hesaplatın.
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-amber-400 text-sm">Görev 1: Çıkarma İşlemi (-)</span>
+                                <span class="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded">Kolay</span>
+                            </div>
+                            <p class="text-slate-300 leading-relaxed mb-3">
+                                1. sayıdan 2. sayıyı çıkaran kodu yazınız. C# ve Python'daki çıkarma işlemiyle birebir aynıdır.
                             </p>
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                                <span class="text-amber-300 font-semibold block">💡 İpucu:</span>
+                                <code class="text-slate-300 block">sonuc = s1 - s2;</code>
+                                <p class="text-[11px] text-slate-400">Çıkarma operatöründe JS otomatik sayıya çevirir ama Number() ile çalışmak daima en temizidir.</p>
+                            </div>
                         </div>
-                        <span class="mt-3 text-slate-500 font-mono">İpucu: s1 ** s2</span>
                     </div>
 
-                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+                    <!-- GÖREV 2: BÖLME -->
+                    <div class="p-4 rounded-xl bg-slate-950 border border-purple-500/30 flex flex-col justify-between">
                         <div>
-                            <span class="font-bold text-amber-400 block mb-1">Görev 2: Çift / Tek Kontrolü</span>
-                            <p class="text-slate-400 leading-relaxed">
-                                1. sayı kutusuna girilen sayının çift mi tek mi olduğunu bulan bir buton ekleyin. Mod operatörü ile <code class="text-amber-300">s1 % 2 === 0</code> şartını test edin.
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-purple-400 text-sm">Görev 2: Bölme & Sıfır Kontrolü (/)</span>
+                                <span class="text-[10px] bg-purple-500/10 text-purple-300 px-2 py-0.5 rounded">Orta</span>
+                            </div>
+                            <p class="text-slate-300 leading-relaxed mb-3">
+                                1. sayıyı 2. sayıya bölün. Ancak kullanıcı 2. sayıyı <code class="text-white">0</code> girerse ekrana uyarı verdirin!
                             </p>
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                                <span class="text-purple-300 font-semibold block">💡 İpucu & C# / Python Farkı:</span>
+                                <code class="text-slate-300 block">if (s2 === 0) { ... } else { sonuc = s1 / s2; }</code>
+                                <p class="text-[11px] text-slate-400">C# ve Python sıfıra bölünce çöker; JS ise <code class="text-purple-300">Infinity</code> üretir. Bu yüzden if şartı ile sıfırı yakalayın!</p>
+                            </div>
                         </div>
-                        <span class="mt-3 text-slate-500 font-mono">İpucu: s1 % 2 == 0</span>
                     </div>
 
-                    <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 flex flex-col justify-between">
+                    <!-- GÖREV 3: KALAN (MOD) -->
+                    <div class="p-4 rounded-xl bg-slate-950 border border-pink-500/30 flex flex-col justify-between">
                         <div>
-                            <span class="font-bold text-emerald-400 block mb-1">Görev 3: Boş Kutu Uyarısı</span>
-                            <p class="text-slate-400 leading-relaxed">
-                                Eğer kullanıcı hiçbir sayı yazmadan butona basarsa ekranda <code class="text-emerald-300">NaN</code> (Not a Number) çıkmasını engelleyin; <code class="text-emerald-300">isNaN()</code> ile "Lütfen iki sayı girin!" uyarısı verin.
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="font-bold text-pink-400 text-sm">Görev 3: Kalan / Mod Alma (%)</span>
+                                <span class="text-[10px] bg-pink-500/10 text-pink-300 px-2 py-0.5 rounded">Kolay</span>
+                            </div>
+                            <p class="text-slate-300 leading-relaxed mb-3">
+                                1. sayının 2. sayıya bölümünden kalanı bulun. Örneğin 14 ile 4 girildiğinde kalan <code class="text-white">2</code> olmalıdır.
                             </p>
+                            <div class="p-2.5 rounded-lg bg-slate-900 border border-slate-800 space-y-1">
+                                <span class="text-pink-300 font-semibold block">💡 İpucu & Benzerlik:</span>
+                                <code class="text-slate-300 block">sonuc = s1 % s2;</code>
+                                <p class="text-[11px] text-slate-400">C#'taki ve Python'daki <code class="text-pink-300">%</code> operatörünün tamamen aynısıdır. Çift/tek sayı bulmada da kullanılır.</p>
+                            </div>
                         </div>
-                        <span class="mt-3 text-slate-500 font-mono">İpucu: isNaN(s1)</span>
                     </div>
+
                 </div>
             </div>
 
@@ -937,30 +1007,61 @@ function temizle() {
 
   <script>
     function islemYap(operator) {
+      // 1. Kutulardan değerleri oku ve Number() ile sayıya dönüştür
       let s1 = Number(document.getElementById("txtSayi1").value);
       let s2 = Number(document.getElementById("txtSayi2").value);
       let sonuc = 0;
 
-      if (operator === '+') sonuc = s1 + s2;
-      else if (operator === '-') sonuc = s1 - s2;
-      else if (operator === '*') sonuc = s1 * s2;
-      else if (operator === '/') {
-        if (s2 === 0) {
-          alert("Sıfıra bölünemez!");
-          return;
-        }
-        sonuc = s1 / s2;
+      // -------------------------------------------------------------
+      // 👩‍🏫 DERSTE BİRLİKTE YAPTIĞIMIZ İŞLEMLER:
+      // -------------------------------------------------------------
+      
+      // 1. ÖRNEK: Toplama İşlemi (Number dönüşümüne dikkat!)
+      if (operator === '+') {
+        sonuc = s1 + s2;
       }
-      else if (operator === '%') sonuc = s1 % s2;
+      // 2. ÖRNEK: Çarpma İşlemi
+      else if (operator === '*') {
+        sonuc = s1 * s2;
+      }
 
+      // -------------------------------------------------------------
+      // 🎯 SIRA SENDE / ÖĞRENCİ GÖREVLERİ:
+      // -------------------------------------------------------------
+
+      // 📌 GÖREV 1: Çıkarma İşlemini tamamla
+      // İPUCU: 1. sayıdan 2. sayıyı çıkarmak için (s1 - s2) kullanacaksın.
+      else if (operator === '-') {
+        // KODUNU BURAYA YAZ:
+        // sonuc = ...
+      }
+
+      // 📌 GÖREV 2: Bölme İşlemini tamamla
+      // İPUCU: (s1 / s2) kullanacaksın.
+      // DİKKAT (C# / Python Farkı): s2 sıfır (0) ise 'Sıfıra bölünemez' uyarısı verdir!
+      else if (operator === '/') {
+        // KODUNU BURAYA YAZ:
+        // if (s2 === 0) { alert("Sıfıra bölünemez!"); return; }
+        // sonuc = ...
+      }
+
+      // 📌 GÖREV 3: Kalan (Mod) İşlemini tamamla
+      // İPUCU: C# ve Python'daki gibi % operatörünü kullanacaksın (s1 % s2).
+      else if (operator === '%') {
+        // KODUNU BURAYA YAZ:
+        // sonuc = ...
+      }
+
+      // 3. Sonuçları ekrana yazdır
       document.getElementById("lblIslem").innerText = s1 + " " + operator + " " + s2 + " =";
       document.getElementById("lblSonuc").innerText = sonuc;
     }
 
+    // Temizleme butonu
     function temizle() {
       document.getElementById("txtSayi1").value = "";
       document.getElementById("txtSayi2").value = "";
-      document.getElementById("lblIslem").innerText = "Temizlendi";
+      document.getElementById("lblIslem").innerText = "Henüz işlem yapılmadı";
       document.getElementById("lblSonuc").innerText = "0";
     }
   </script>
