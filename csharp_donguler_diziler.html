@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C# Döngüler & Tek Boyutlu Diziler | Genel Tekrar & İnteraktif Laboratuvar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Prism.js Syntax Highlighting (Okaidia Theme) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace'],
+                    },
+                    colors: {
+                        csbrand: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090d16;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        pre[class*="language-"] {
+            border-radius: 0.75rem;
+            margin-top: 0.75rem;
+            margin-bottom: 0.75rem;
+            background: #0b1120 !important;
+            border: 1px solid #1e293b;
+            padding: 1.25rem;
+            font-size: 0.88rem;
+            line-height: 1.6;
+        }
+        code:not(pre code) {
+            background-color: #1e293b;
+            color: #a78bfa;
+            padding: 0.15rem 0.45rem;
+            border-radius: 0.35rem;
+            font-size: 0.88em;
+            font-weight: 500;
+        }
+        .glow-box {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glow-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -10px rgba(139, 92, 246, 0.2);
+        }
+        .array-cell {
+            transition: all 0.3s ease;
+        }
+        .array-cell.highlight {
+            transform: scale(1.08);
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            background: #0284c7 !important;
+        }
+        .array-cell.found {
+            transform: scale(1.12);
+            border-color: #4ade80 !important;
+            box-shadow: 0 0 25px rgba(74, 222, 128, 0.5);
+            background: #15803d !important;
+        }
+        .terminal-screen {
+            background: #020617;
+            font-family: 'Fira Code', monospace;
+            border: 1px solid #1e293b;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-purple-600 selection:text-white">
+
+    <!-- ARKA PLAN IŞIKLARI -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/15 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 left-1/3 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+    </div>
+
+    <!-- ÜST BİLGİ & NAVİGASYON -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 via-indigo-600 to-blue-600 flex items-center justify-center font-black text-white text-base shadow-lg shadow-purple-500/25 hover:scale-105 transition">
+                    C#
+                </a>
+                <div>
+                    <span class="text-sm font-bold tracking-tight text-white block">C# Programlama Genel Tekrar</span>
+                    <span class="text-xs text-purple-400 block -mt-0.5">Döngüler & Tek Boyutlu Diziler (1D Arrays)</span>
+                </div>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-1.5 text-xs font-semibold text-slate-300">
+                <a href="#donguler" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 hover:text-white transition">🌀 Döngüler</a>
+                <a href="#diziler" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 hover:text-white transition">🧱 Tek Boyutlu Diziler</a>
+                <a href="#lab-simulator" class="px-3 py-1.5 rounded-lg hover:bg-purple-500/20 text-purple-300 transition border border-purple-500/30">⚡ Canlı Lablar</a>
+                <a href="#algoritmalar" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 hover:text-white transition">🛠️ Algoritmalar</a>
+                <a href="#array-metotlari" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 hover:text-white transition">🧩 Array Sınıfı</a>
+                <a href="#sorular" class="px-3 py-1.5 rounded-lg hover:bg-slate-800 hover:text-white transition">🎯 Sınav Soruları</a>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg border border-slate-700 transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    <span>Portala Dön</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-14">
+
+        <!-- HERO GİRİŞ ALANI -->
+        <section class="text-center pt-4 pb-6 max-w-4xl mx-auto">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-purple-500/10 border border-purple-500/30 text-purple-300 mb-4 shadow-sm">
+                <span>⚡ Yeni Nesil İnteraktif C# Atölyesi</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                <span>11 ATP Genel Tekrar & Sınav Hazırlık</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                C# Döngüler & <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400">Tek Boyutlu Diziler</span>
+                <br>Genel Tekrar Rehberi
+            </h1>
+
+            <p class="text-sm sm:text-base text-slate-300 leading-relaxed mb-6">
+                Yazılım geliştirmenin bel kemiği olan kontrol döngüleri (<code class="text-purple-300">for, while, do-while, foreach</code>) ve tek boyutlu dizilerin bellek mimarisi, sınır kontrolleri, algoritma klasikleri ve canlı simülatörlerle eksiksiz genel tekrarı.
+            </p>
+
+            <!-- HIZLI ÖZET KARTLARI (METRİKLER) -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 glow-box">
+                    <div class="text-xs text-slate-400 font-medium">4 Temel Döngü</div>
+                    <div class="text-xl font-black text-purple-400 mt-0.5">for • while • do • foreach</div>
+                    <div class="text-[11px] text-slate-400 mt-1">Sayaç & Koşul Kontrolü</div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 glow-box">
+                    <div class="text-xs text-slate-400 font-medium">Tek Boyutlu Dizi</div>
+                    <div class="text-xl font-black text-indigo-400 mt-0.5">T[ ] Dizi Mimarisi</div>
+                    <div class="text-[11px] text-slate-400 mt-1">0 İndeks & Length Sınırı</div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 glow-box">
+                    <div class="text-xs text-slate-400 font-medium">3 İnteraktif Lab</div>
+                    <div class="text-xl font-black text-pink-400 mt-0.5">Canlı Simülatör</div>
+                    <div class="text-[11px] text-slate-400 mt-1">Trace, RAM & Konsol</div>
+                </div>
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 glow-box">
+                    <div class="text-xs text-slate-400 font-medium">Sınav & Mülakat</div>
+                    <div class="text-xl font-black text-emerald-400 mt-0.5">10 Çözümlü Soru</div>
+                    <div class="text-[11px] text-slate-400 mt-1">Açılır-Kapanır Çözümler</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BÖLÜM 1: C# DÖNGÜLERİ (LOOPS) -->
+        <!-- ========================================== -->
+        <section id="donguler" class="scroll-mt-20">
+            <div class="border-b border-slate-800 pb-4 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">1. BÖLÜM</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">C# Döngü Yapıları (Loops)</h2>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Belirli kod bloklarını bir koşula bağlı olarak tekrarlı çalıştırma mekanizmaları.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1 rounded-lg">DRY İlkesi: "Kendini Tekrar Etme"</span>
+                </div>
+            </div>
+
+            <!-- DÖNGÜLERİN ÖZET KARŞILAŞTIRMA TABLOSU -->
+            <div class="overflow-x-auto bg-slate-900/70 border border-slate-800 rounded-2xl mb-8 shadow-xl">
+                <table class="w-full text-left text-xs sm:text-sm text-slate-300">
+                    <thead class="bg-slate-950/80 text-slate-400 uppercase text-[11px] font-bold border-b border-slate-800">
+                        <tr>
+                            <th class="p-3.5">Döngü Türü</th>
+                            <th class="p-3.5">Koşul Kontrolü</th>
+                            <th class="p-3.5">Min. Çalışma Sayısı</th>
+                            <th class="p-3.5">Tipik Kullanım Alanı</th>
+                            <th class="p-3.5">C# Sözdizimi (Syntax)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/60 font-mono">
+                        <tr class="hover:bg-purple-950/20 transition">
+                            <td class="p-3.5 font-bold text-purple-400 font-sans">for</td>
+                            <td class="p-3.5 font-sans">Başta (Ön koşullu)</td>
+                            <td class="p-3.5 text-amber-400 font-bold">0</td>
+                            <td class="p-3.5 font-sans">Tekrar sayısı kesin belliyken</td>
+                            <td class="p-3.5 text-xs text-purple-300">for(int i=0; i&lt;n; i++)</td>
+                        </tr>
+                        <tr class="hover:bg-purple-950/20 transition">
+                            <td class="p-3.5 font-bold text-sky-400 font-sans">while</td>
+                            <td class="p-3.5 font-sans">Başta (Ön koşullu)</td>
+                            <td class="p-3.5 text-amber-400 font-bold">0</td>
+                            <td class="p-3.5 font-sans">Tekrar sayısı belirsiz, bir durum devam ettikçe</td>
+                            <td class="p-3.5 text-xs text-sky-300">while (kosul) { ... }</td>
+                        </tr>
+                        <tr class="hover:bg-purple-950/20 transition">
+                            <td class="p-3.5 font-bold text-emerald-400 font-sans">do-while</td>
+                            <td class="p-3.5 font-sans">Sonda (Son koşullu)</td>
+                            <td class="p-3.5 text-emerald-400 font-bold">1 (Garantili)</td>
+                            <td class="p-3.5 font-sans">Konsol menüleri, kullanıcıdan en az bir kez girdi alma</td>
+                            <td class="p-3.5 text-xs text-emerald-300">do { ... } while (kosul);</td>
+                        </tr>
+                        <tr class="hover:bg-purple-950/20 transition">
+                            <td class="p-3.5 font-bold text-pink-400 font-sans">foreach</td>
+                            <td class="p-3.5 font-sans">Otomatik (Koleksiyon sonuna kadar)</td>
+                            <td class="p-3.5 text-amber-400 font-bold">0 (Dizi boşsa 0)</td>
+                            <td class="p-3.5 font-sans">Dizileri temiz ve güvenli okuma (Salt-okunur / Read-only)</td>
+                            <td class="p-3.5 text-xs text-pink-300">foreach(var oge in dizi)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- DÖNGÜLERİN AYRINTILI KARTLARI -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- KART 1: FOR DÖNGÜSÜ -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between glow-box">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-400 font-bold font-mono flex items-center justify-center text-sm">for</span>
+                                <h3 class="text-lg font-bold text-white">for Döngüsü (Sayaçlı Döngü)</h3>
+                            </div>
+                            <span class="text-[11px] bg-purple-500/10 text-purple-300 px-2.5 py-0.5 rounded-full font-semibold border border-purple-500/20">Klasik Sayaç</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                            Tekrar sayısı önceden bilindiğinde en çok tercih edilen döngüdür. 3 temel bileşenden oluşur:
+                            <code class="text-purple-300">başlangıç</code>, <code class="text-purple-300">koşul</code> ve <code class="text-purple-300">artış/azalış</code>.
+                        </p>
+                        <div class="bg-slate-950 rounded-xl p-3 border border-slate-800/80 mb-3 text-xs text-slate-300 space-y-1">
+                            <div class="text-purple-400 font-bold">📌 Çalışma Sırası (Execution Cycle):</div>
+                            <div>1. <span class="text-amber-300 font-mono">int i = 0</span> (Sadece başlangıçta 1 defa çalışır)</div>
+                            <div>2. <span class="text-sky-300 font-mono">i &lt; 5</span> (Koşul True mu? Değilse döngüden çıkılır)</div>
+                            <div>3. <span class="text-emerald-300">Döngü gövdesi çalıştırılır</span></div>
+                            <div>4. <span class="text-pink-300 font-mono">i++</span> (Sayaç 1 artırılır, tekrar 2. adıma dönülür)</div>
+                        </div>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">// 1'den 10'a kadar olan tek sayıları toplayan döngü
+int tekToplam = 0;
+for (int i = 1; i <= 10; i += 2)
+{
+    tekToplam += i;
+    Console.WriteLine($"i = {i}, Ara Toplam: {tekToplam}");
+}
+Console.WriteLine($"Sonuç: {tekToplam}"); // 1+3+5+7+9 = 25</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KART 2: WHILE DÖNGÜSÜ -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between glow-box">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-sky-500/20 text-sky-400 font-bold font-mono flex items-center justify-center text-sm">while</span>
+                                <h3 class="text-lg font-bold text-white">while Döngüsü (Ön Koşullu)</h3>
+                            </div>
+                            <span class="text-[11px] bg-sky-500/10 text-sky-300 px-2.5 py-0.5 rounded-full font-semibold border border-sky-500/20">Durum / Bayrak</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                            Koşul sağlandığı sürece (<code class="text-sky-300">true</code> oldukça) gövde çalışır. Eğer koşul en başta <code class="text-rose-400">false</code> ise kod bloğu <strong>hiç çalışmaz</strong>.
+                        </p>
+                        <div class="bg-amber-950/20 border border-amber-500/30 rounded-xl p-3 mb-3 text-xs text-amber-200">
+                            <strong>⚠️ Sonsuz Döngü Uyarısı (Infinite Loop):</strong>
+                            <p class="mt-0.5 text-slate-300">Gövde içinde koşulu <code class="text-sky-300">false</code> yapacak artırma/güncelleme adımını unutursanız program kilitlenir!</p>
+                        </div>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">// Sayı 1 olana kadar 2'ye bölen algoritma
+int sayi = 32;
+int adim = 0;
+
+while (sayi > 1)
+{
+    sayi /= 2;
+    adim++;
+    Console.WriteLine($"Adım {adim}: Kalan Sayı = {sayi}");
+}</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KART 3: DO-WHILE DÖNGÜSÜ -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between glow-box">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold font-mono flex items-center justify-center text-sm">do</span>
+                                <h3 class="text-lg font-bold text-white">do-while Döngüsü (Son Koşullu)</h3>
+                            </div>
+                            <span class="text-[11px] bg-emerald-500/10 text-emerald-300 px-2.5 py-0.5 rounded-full font-semibold border border-emerald-500/20">En Az 1 Kez</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                            Koşul kontrolü bloğun sonunda yapılır. Bu sebeple koşul yanlış bile olsa <strong>en az bir kez kesinlikle çalışır</strong>. Menü ve kullanıcı girişi doğrulamada vazgeçilmezdir.
+                        </p>
+                        <div class="bg-slate-950 rounded-xl p-3 border border-slate-800/80 mb-3 text-xs text-slate-300">
+                            <div class="text-emerald-400 font-bold mb-1">💡 Kritik Fark:</div>
+                            Sonda noktalı virgül (<code class="text-emerald-300">while (koşul);</code>) unutulmamalıdır!
+                        </div>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">// Kullanıcıdan 1-100 arasında sayı alma simülasyonu
+int girilenSayi;
+do
+{
+    Console.Write("1-100 arası sayı giriniz: ");
+    girilenSayi = int.Parse(Console.ReadLine()); // En az 1 kez sorar
+} while (girilenSayi < 1 || girilenSayi > 100);
+
+Console.WriteLine($"Geçerli sayı kabul edildi: {girilenSayi}");</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KART 4: FOREACH DÖNGÜSÜ -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between glow-box">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center gap-2">
+                                <span class="w-8 h-8 rounded-lg bg-pink-500/20 text-pink-400 font-bold font-mono flex items-center justify-center text-sm">each</span>
+                                <h3 class="text-lg font-bold text-white">foreach Döngüsü (Dizi Gezici)</h3>
+                            </div>
+                            <span class="text-[11px] bg-pink-500/10 text-pink-300 px-2.5 py-0.5 rounded-full font-semibold border border-pink-500/20">Salt Okunur</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                            Diziler ve koleksiyonlar için özel tasarlanmıştır. Sayaç, indeks veya dizi boyutu ile uğraşmadan her elemana sırayla erişir.
+                        </p>
+                        <div class="bg-rose-950/20 border border-rose-500/30 rounded-xl p-3 mb-3 text-xs text-rose-200">
+                            <strong>🚫 Mülakat & Sınav Tuzağı (Read-Only Kuralı):</strong>
+                            <p class="mt-0.5 text-slate-300">
+                                <code class="text-pink-300">foreach (int sayi in dizi) { sayi = 10; }</code> derleme hatası verir! Dizi elemanlarının değerini güncellemek istiyorsanız mutlaka <code class="text-purple-300">for</code> döngüsü ve indeks kullanmalısınız.
+                            </p>
+                        </div>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">string[] diller = { "C#", "JavaScript", "Python", "SQL" };
+
+foreach (string dil in diller)
+{
+    Console.WriteLine($"Öğrenilen Teknoloji: {dil}");
+}</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DÖNGÜ KONTROL İFADELERİ: BREAK & CONTINUE -->
+            <div class="mt-8 bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+                <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                    <span class="text-amber-400">⚡</span> Döngü Kontrol İfadeleri: break vs continue
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-400 mb-4">Döngünün doğal akışını değiştirmek istediğimizde bu iki anahtar kelimeden yararlanırız.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-rose-400 font-mono font-bold text-sm">break (Döngüyü Kır / Çık)</span>
+                            <span class="text-[10px] bg-rose-500/10 text-rose-300 px-2 py-0.5 rounded">Erken Sonlandırma</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-2">Döngü koşulu henüz bitmemiş olsa bile döngüyü o anda tamamen terk eder.</p>
+                        <pre class="language-csharp"><code class="language-csharp">// 7 sayısını bulunca döngüyü durdur
+for (int i = 1; i <= 10; i++)
+{
+    if (i == 7) break; // 7'ye gelince döngü biter!
+    Console.Write(i + " "); // Çıktı: 1 2 3 4 5 6
+}</code></pre>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-amber-400 font-mono font-bold text-sm">continue (Bu Turu Atla)</span>
+                            <span class="text-[10px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded">Pas Geçme</span>
+                        </div>
+                        <p class="text-xs text-slate-300 mb-2">Altındaki kodları çalıştırmadan hemen bir sonraki döngü adımına zıplar.</p>
+                        <pre class="language-csharp"><code class="language-csharp">// 5 sayısını yazdırmadan atla
+for (int i = 1; i <= 7; i++)
+{
+    if (i == 5) continue; // 5'i yazdırma, sonraki adıma geç!
+    Console.Write(i + " "); // Çıktı: 1 2 3 4 6 7
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BÖLÜM 2: C# TEK BOYUTLU DİZİLER (ARRAYS) -->
+        <!-- ========================================== -->
+        <section id="diziler" class="scroll-mt-20">
+            <div class="border-b border-slate-800 pb-4 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 font-mono text-xs font-bold">2. BÖLÜM</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Tek Boyutlu Diziler (Single-Dimensional Arrays)</h2>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Aynı veri türünden birden fazla veriyi bellekte ardışık olarak tutan sabit boyutlu koleksiyonlar.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-indigo-300 bg-indigo-950/40 border border-indigo-500/30 px-3 py-1 rounded-lg">Referans Türüdür (Reference Type)</span>
+                </div>
+            </div>
+
+            <!-- DİZİ MİMARİSİ VE BELLEK AÇIKLAMASI -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 glow-box">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center font-bold text-lg mb-3">
+                        [0]
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-2">Sıfır Tabanlı İndeksleme</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        C#'ta dizilerin ilk elemanı her zaman <strong>0. indekstedir</strong>. N elemanlı bir dizinin son elemanının indeksi <code class="text-purple-300">N - 1</code> olur.
+                    </p>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300">
+                        Eleman Sayısı = 5<br>
+                        İndeksler = 0, 1, 2, 3, 4
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 glow-box">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-lg mb-3">
+                        RAM
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-2">Stack & Heap Bellek Mantığı</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        Dizi değişkeni (<code class="text-indigo-300">sayilar</code>) <strong>Stack</strong> bölgesinde bir referans adresi tutar. Gerçek elemanlar ise <strong>Heap</strong> bölgesinde ardışık olarak depolanır.
+                    </p>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300">
+                        Stack (Adres: 0x4F) ➔ Heap [10, 20, 30]
+                    </div>
+                </div>
+
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 glow-box">
+                    <div class="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/30 text-pink-400 flex items-center justify-center font-bold text-lg mb-3">
+                        🔒
+                    </div>
+                    <h3 class="text-base font-bold text-white mb-2">Sabit Boyut & Length</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        Dizi bir kez oluşturulduğunda boyutu sabittir. <code class="text-pink-300">Length</code> özelliği toplam eleman sayısını verir. Boyut sonradan doğrudan genişletilemez.
+                    </p>
+                    <div class="bg-slate-950 p-2.5 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300">
+                        dizi.Length (Parantezsiz özellik!)
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- DİZİ TANIMLAMA YÖNTEMLERİ -->
+            <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 mb-8">
+                <h3 class="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <span class="text-purple-400">📝</span> C#'ta Tek Boyutlu Dizi Tanımlama Yolları
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- YOL 1 -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[11px] font-bold text-purple-400 uppercase tracking-wider block mb-1">1. Yöntem (Boyut Belirterek)</span>
+                        <p class="text-xs text-slate-400 mb-2">Boyut bilinir, elemanlar daha sonra atanır. Elemanlar varsayılan değerle başlar (int için 0).</p>
+                        <pre class="language-csharp"><code class="language-csharp">// 5 elemanlı boş sayı dizisi
+int[] sayilar = new int[5];
+
+sayilar[0] = 10;
+sayilar[1] = 20;
+// Diğerleri 0 olarak bekler</code></pre>
+                    </div>
+
+                    <!-- YOL 2 -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[11px] font-bold text-sky-400 uppercase tracking-wider block mb-1">2. Yöntem (İlk Değer Ataması)</span>
+                        <p class="text-xs text-slate-400 mb-2">En pratik yöntem. Boyut yazmaya gerek yoktur; süslü parantezdeki eleman sayısı kadar oluşur.</p>
+                        <pre class="language-csharp"><code class="language-csharp">// Boyut otomatik 4 olur
+string[] sehirler = { 
+    "Ankara", "İstanbul", 
+    "İzmir", "Bursa" 
+};</code></pre>
+                    </div>
+
+                    <!-- YOL 3 -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[11px] font-bold text-emerald-400 uppercase tracking-wider block mb-1">3. Yöntem (new ile Başlatma)</span>
+                        <p class="text-xs text-slate-400 mb-2">Hem new anahtar kelimesi hem de eleman listesi verilir. Metotlara parametre verirken çok sık kullanılır.</p>
+                        <pre class="language-csharp"><code class="language-csharp">double[] oranlar = new double[] { 
+    1.25, 2.50, 3.75 
+};</code></pre>
+                    </div>
+                </div>
+
+                <!-- DİZİ VARSAYILAN DEĞERLERİ TABLOSU -->
+                <div class="mt-4 pt-4 border-t border-slate-800/80 flex flex-wrap items-center gap-4 text-xs text-slate-400">
+                    <span class="font-bold text-slate-300">Varsayılan Başlangıç Değerleri:</span>
+                    <span>Sayısal tipler (int, double): <code class="text-sky-300">0</code></span>
+                    <span>Mantıksal (bool): <code class="text-amber-300">false</code></span>
+                    <span>Metinsel / Nesne (string, object): <code class="text-rose-400">null</code></span>
+                    <span>Karakter (char): <code class="text-purple-300">'\0'</code></span>
+                </div>
+            </div>
+
+            <!-- ÖLÜMCÜL HATA: IndexOutOfRangeException -->
+            <div class="bg-gradient-to-r from-rose-950/40 to-slate-900 border border-rose-500/40 rounded-2xl p-5 mb-8">
+                <div class="flex items-start gap-3">
+                    <div class="text-2xl mt-1">🚨</div>
+                    <div class="flex-1">
+                        <h4 class="text-base font-bold text-rose-300">En Yaygın Dizi Hatası: IndexOutOfRangeException</h4>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                            Bir dizinin sınırları dışındaki bir indekse erişmeye çalıştığınızda C# çalışma zamanı (Runtime) bu ölümcül hatayı fırlatır ve program anında çöker.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                            <div class="bg-slate-950/90 p-3 rounded-lg border border-rose-500/30 text-xs">
+                                <div class="text-rose-400 font-bold mb-1">❌ HATALI KOD (ÇÖKER):</div>
+                                <code class="text-slate-300 block font-mono">
+                                    int[] notlar = new int[5]; // İndeksler: 0,1,2,3,4<br>
+                                    notlar[5] = 100; // ÇÖKTÜ! 5. indeks yoktur!<br>
+                                    for(int i = 0; i &lt;= notlar.Length; i++) // &lt;= ÇÖKTÜRÜR!
+                                </code>
+                            </div>
+                            <div class="bg-slate-950/90 p-3 rounded-lg border border-emerald-500/30 text-xs">
+                                <div class="text-emerald-400 font-bold mb-1">✅ DOĞRU KOD:</div>
+                                <code class="text-slate-300 block font-mono">
+                                    int[] notlar = new int[5];<br>
+                                    notlar[4] = 100; // Son eleman [Length - 1]<br>
+                                    for(int i = 0; i &lt; notlar.Length; i++) // &lt; ile sınır korunur
+                                </code>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BÖLÜM 3: CANLI İNTERAKTİF LABORATUVARLAR -->
+        <!-- ========================================== -->
+        <section id="lab-simulator" class="scroll-mt-20">
+            <div class="border-b border-slate-800 pb-4 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">3. BÖLÜM</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Canlı İnteraktif Simülatörler & Atölye</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Döngü adımlarını canlı izleyin, bellek hücreleriyle oynayın ve C# algoritmalarını tarayıcıda simüle edin.</p>
+            </div>
+
+            <!-- LAB 1: DÖNGÜ ADIM İZİ SİMÜLATÖRÜ (LOOP TRACE VISUALIZER) -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 mb-8 shadow-2xl">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-800 mb-6 gap-3">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-purple-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
+                            Simülatör 1: C# for Döngüsü Adım İzi (Trace) Görselleştirici
+                        </span>
+                        <h3 class="text-xl font-bold text-white mt-1">Döngü Döngü Olalı Böyle İncelenmedi!</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="btn-trace-step" onclick="traceSonrakiAdim()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-purple-600/30 flex items-center gap-1.5">
+                            <span>▶ Bir Sonraki Adım</span>
+                        </button>
+                        <button onclick="traceSifirla()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold transition">
+                            Yeniden Başlat ↺
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- KOD GÖRÜNÜMÜ & VURGULAMA -->
+                    <div class="lg:col-span-5 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <div class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">İncelenen C# Kodu:</div>
+                        <div class="font-mono text-xs space-y-1.5 text-slate-300">
+                            <div id="code-line-1" class="p-1 rounded transition">int toplam = 0;</div>
+                            <div id="code-line-2" class="p-1 rounded transition text-purple-300">for (int i = 1; i &lt;= 4; i++)</div>
+                            <div class="pl-4 space-y-1.5">
+                                <div id="code-line-3" class="p-1 rounded transition">{</div>
+                                <div id="code-line-4" class="p-1 rounded transition pl-4 text-emerald-300">toplam += i;</div>
+                                <div id="code-line-5" class="p-1 rounded transition pl-4 text-sky-300">Console.WriteLine($"i: {i}, Toplam: {toplam}");</div>
+                                <div id="code-line-6" class="p-1 rounded transition">}</div>
+                            </div>
+                            <div id="code-line-7" class="p-1 rounded transition text-amber-300">Console.WriteLine("Döngü Bitti!");</div>
+                        </div>
+
+                        <!-- KONTROL DEĞERLERİ AYARI -->
+                        <div class="mt-4 pt-4 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+                            <span>Döngü Sınırı: <strong>i &lt;= 4</strong></span>
+                            <span id="trace-step-counter" class="text-purple-400 font-bold font-mono">Adım: 0 / 13</span>
+                        </div>
+                    </div>
+
+                    <!-- DEĞİŞKENLER VE KONSOL ÇIKTISI -->
+                    <div class="lg:col-span-7 space-y-4">
+                        <!-- DEĞİŞKEN DURUM KUTULARI -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Sayaç (i)</span>
+                                <span id="trace-val-i" class="text-2xl font-black text-purple-400 font-mono">1</span>
+                            </div>
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Koşul (i &lt;= 4)</span>
+                                <span id="trace-val-cond" class="text-2xl font-black text-emerald-400 font-mono">TRUE</span>
+                            </div>
+                            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center">
+                                <span class="text-[11px] text-slate-400 font-semibold block">Akümülatör (toplam)</span>
+                                <span id="trace-val-total" class="text-2xl font-black text-amber-400 font-mono">0</span>
+                            </div>
+                        </div>
+
+                        <!-- ADIM AÇIKLAMASI -->
+                        <div class="bg-purple-950/20 border border-purple-500/30 p-3.5 rounded-xl text-xs text-purple-200">
+                            <span class="font-bold text-white block mb-0.5">Şu Anda Ne Oluyor?</span>
+                            <span id="trace-explanation" class="text-slate-300">Başlamak için "Bir Sonraki Adım" butonuna tıklayın.</span>
+                        </div>
+
+                        <!-- SİMÜLE EDİLEN KONSOL PENCERESİ -->
+                        <div class="terminal-screen rounded-xl p-3">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-800 text-[10px] text-slate-500 mb-2">
+                                <span>C:\ConsoleApp\bin\Debug\net8.0\App.exe</span>
+                                <span class="flex gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500/50"></span><span class="w-2 h-2 rounded-full bg-yellow-500/50"></span><span class="w-2 h-2 rounded-full bg-green-500/50"></span></span>
+                            </div>
+                            <div id="trace-console" class="text-xs text-emerald-400 space-y-1 min-h-[70px]">
+                                <span class="text-slate-600">// Konsol çıktısı burada belirecek...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAB 2: TEK BOYUTLU DİZİ BELLEK ATÖLYESİ (ARRAY RAM VISUALIZER) -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 mb-8 shadow-2xl">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-800 mb-6 gap-3">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+                            Simülatör 2: Tek Boyutlu Dizi Bellek Hücreleri & Array Metotları Laboratuvarı
+                        </span>
+                        <h3 class="text-xl font-bold text-white mt-1">Hücrelerle Oynayın, Metotların Etkisini Görün</h3>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="arrayRastgeleDoldur()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold transition">
+                            🎲 Rastgele Sayılar
+                        </button>
+                        <button onclick="arraySirala()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold transition">
+                            Array.Sort()
+                        </button>
+                        <button onclick="arrayTersCevir()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition">
+                            Array.Reverse()
+                        </button>
+                        <button onclick="arraySifirla()" class="px-3 py-1.5 bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 rounded-lg text-xs font-semibold transition">
+                            Array.Clear()
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BELLEK HÜCRELERİ ÇİZİMİ -->
+                <div class="mb-6">
+                    <div class="text-xs text-slate-400 mb-3 flex items-center justify-between">
+                        <span>Bellekteki Tek Boyutlu <code class="text-indigo-300">int[] sayilar = new int[6];</code> Dizisi:</span>
+                        <span class="font-mono text-indigo-400">Length = 6</span>
+                    </div>
+
+                    <div id="array-cells-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                        <!-- JS Tarafından Dinamik Üretilecek Hücreler -->
+                    </div>
+                </div>
+
+                <!-- DEĞER GÜNCELLEME VE ARAMA KONTROLLERİ -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <!-- DEĞER ATAMA -->
+                    <div>
+                        <div class="text-xs font-bold text-slate-300 mb-2">Hücre Değerini Değiştir (<code class="text-purple-300">dizi[indeks] = deger</code>):</div>
+                        <div class="flex gap-2">
+                            <input type="number" id="txt-update-idx" min="0" max="5" placeholder="İndeks (0-5)" class="w-28 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-white focus:outline-none focus:border-indigo-400">
+                            <input type="number" id="txt-update-val" placeholder="Yeni Değer" class="w-32 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-white focus:outline-none focus:border-indigo-400">
+                            <button onclick="arrayDegerGuncelle()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold transition">
+                                Ata ✓
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- DEĞER ARAMA (IndexOf) -->
+                    <div>
+                        <div class="text-xs font-bold text-slate-300 mb-2">Eleman Ara (<code class="text-sky-300">Array.IndexOf(sayilar, aranan)</code>):</div>
+                        <div class="flex gap-2">
+                            <input type="number" id="txt-search-val" placeholder="Aranacak Sayı" class="w-36 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-white focus:outline-none focus:border-sky-400">
+                            <button onclick="arrayAramaYap()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-lg text-xs font-bold transition">
+                                Ara 🔍
+                            </button>
+                            <span id="lbl-search-result" class="text-xs text-slate-400 self-center font-mono"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAB 3: C# CANLI ALGORİTMA KONSOLU -->
+            <div class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-2xl">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-800 mb-6 gap-3">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                            Simülatör 3: C# Hazır Algoritma Test Konsolu
+                        </span>
+                        <h3 class="text-xl font-bold text-white mt-1">Klasik Dizi Algoritmalarını Çalıştırın</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="sel-algo-select" onchange="algoSecimDegisti()" class="bg-slate-800 text-white text-xs px-3 py-2 rounded-xl border border-slate-700 focus:outline-none focus:border-emerald-400">
+                            <option value="ortalama">1. Ortalama & Geçti/Kaldı Sayacı</option>
+                            <option value="maxmin">2. En Büyük (Max) ve En Küçük (Min)</option>
+                            <option value="cifttek">3. Çift Sayı Filtresi & Toplamı</option>
+                            <option value="arama">4. Doğrusal Arama (Linear Search)</option>
+                        </select>
+                        <button onclick="algoCalistir()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-emerald-600/30 flex items-center gap-1.5">
+                            <span>▶ Kodu Çalıştır</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TEST VERİSİ GİRDİSİ -->
+                <div class="mb-4 flex flex-col sm:flex-row sm:items-center gap-2 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                    <span class="text-xs text-slate-400 whitespace-nowrap">Dizi Elemanları (Virgülle Ayırın):</span>
+                    <input type="text" id="txt-algo-array-input" value="45, 78, 12, 90, 34, 60, 85, 23" class="flex-1 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded-lg text-xs text-white font-mono focus:outline-none focus:border-emerald-400">
+                    <button onclick="algoRastgeleVeri()" class="text-xs text-slate-400 hover:text-white px-2 py-1 bg-slate-800 rounded">
+                        Rastgele Dizi
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- KOD GÖSTERİMİ -->
+                    <div class="lg:col-span-7">
+                        <div class="text-xs font-bold text-slate-400 mb-1 flex items-center justify-between">
+                            <span>Arka Plandaki C# Kodu:</span>
+                            <span class="text-[11px] text-slate-500 font-mono">Algorithm.cs</span>
+                        </div>
+                        <pre class="language-csharp h-[260px] overflow-y-auto"><code id="code-algo-display" class="language-csharp"></code></pre>
+                    </div>
+
+                    <!-- KONSOL ÇIKTISI -->
+                    <div class="lg:col-span-5">
+                        <div class="text-xs font-bold text-slate-400 mb-1 flex items-center justify-between">
+                            <span>Canlı Konsol Çıktısı (Simülasyon):</span>
+                            <span class="text-emerald-400 text-[11px] font-mono">Standard Output</span>
+                        </div>
+                        <div class="terminal-screen rounded-xl p-3.5 h-[260px] overflow-y-auto">
+                            <div class="text-[11px] text-slate-500 mb-2 border-b border-slate-800/80 pb-1">Program çalıştırılıyor...</div>
+                            <div id="algo-console-output" class="text-xs text-emerald-400 font-mono space-y-1">
+                                // "Kodu Çalıştır" butonuna basarak konsol çıktısını test edin...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BÖLÜM 4: OLMAZSA OLMAZ DİZİ ALGORİTMALARI -->
+        <!-- ========================================== -->
+        <section id="algoritmalar" class="scroll-mt-20">
+            <div class="border-b border-slate-800 pb-4 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">4. BÖLÜM</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Olmazsa Olmaz Dizi Algoritmaları</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Yazılı sınavlarda ve proje ödevlerinde en çok sorulan standart tek boyutlu dizi algoritmaları.</p>
+            </div>
+
+            <div class="space-y-6">
+
+                <!-- ALGORİTMA 1: DİZİ ELEMANLARININ TOPLAMI VE ORTALAMASI -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 glow-box">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold flex items-center justify-center text-xs">1</span>
+                            <h3 class="text-lg font-bold text-white">Dizi Elemanlarının Toplamı ve Ortalaması</h3>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Akümülatör Mantığı</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        Bir sayaç değişkeni (<code class="text-purple-300">toplam = 0</code>) açılır, döngüyle her eleman bu değişkene eklenir. Ortalama hesaplanırken tamsayı bölme tuzağına düşmemek için <code class="text-purple-300">(double)</code> tip dönüşümü (type casting) yapılır.
+                    </p>
+                    <div class="relative">
+                        <pre class="language-csharp"><code class="language-csharp">int[] notlar = { 65, 80, 45, 90, 70 };
+int toplam = 0;
+
+for (int i = 0; i < notlar.Length; i++)
+{
+    toplam += notlar[i]; // Her elemanı sepete at
+}
+
+// DİKKAT: (double) dönüşümü yapılmazsa küsurat kaybolur!
+double ortalama = (double)toplam / notlar.Length;
+
+Console.WriteLine($"Toplam: {toplam}");
+Console.WriteLine($"Sınıf Ortalaması: {ortalama:F2}"); // 70.00</code></pre>
+                        <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                    </div>
+                </div>
+
+                <!-- ALGORİTMA 2: EN BÜYÜK (MAX) VE EN KÜÇÜK (MIN) BULMA -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 glow-box">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-sky-500/20 text-sky-400 font-bold flex items-center justify-center text-xs">2</span>
+                            <h3 class="text-lg font-bold text-white">En Büyük (Max) ve En Küçük (Min) Elemanı & İndeksini Bulma</h3>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20">Referans Kıyaslama</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        <strong>Önemli Püf Nokta:</strong> <code class="text-sky-300">enBuyuk</code> değişkenine <code class="text-rose-400">0</code> DEĞİL, dizinin ilk elemanı olan <code class="text-sky-300">sayilar[0]</code> değeri atanmalıdır. Aksi halde tüm sayılar negatifse (<code class="text-slate-300">-10, -5, -20</code>) algoritma hatalı sonuç üretir!
+                    </p>
+                    <div class="relative">
+                        <pre class="language-csharp"><code class="language-csharp">int[] sayilar = { 42, 17, 89, 5, 63, 89, 21 };
+
+int enBuyuk = sayilar[0];
+int enBuyukIndis = 0;
+
+int enKucuk = sayilar[0];
+int enKucukIndis = 0;
+
+for (int i = 1; i < sayilar.Length; i++)
+{
+    if (sayilar[i] > enBuyuk)
+    {
+        enBuyuk = sayilar[i];
+        enBuyukIndis = i;
+    }
+
+    if (sayilar[i] < enKucuk)
+    {
+        enKucuk = sayilar[i];
+        enKucukIndis = i;
+    }
+}
+
+Console.WriteLine($"En Büyük Değer: {enBuyuk} (İndeks: {enBuyukIndis})");
+Console.WriteLine($"En Küçük Değer: {enKucuk} (İndeks: {enKucukIndis})");</code></pre>
+                        <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                    </div>
+                </div>
+
+                <!-- ALGORİTMA 3: DOĞRUSAL ARAMA (LINEAR SEARCH) & BAYRAK MANTIĞI -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 glow-box">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold flex items-center justify-center text-xs">3</span>
+                            <h3 class="text-lg font-bold text-white">Doğrusal Arama (Linear Search) & Bayrak (Flag) Mantığı</h3>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Var mı / Yok mu?</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        Kullanıcının girdiği bir elemanın dizide bulunup bulunmadığını kontrol etmek için bir <code class="text-emerald-300">bool bulundu = false;</code> bayrağı açılır. Eleman bulunduğu anda <code class="text-emerald-300">break;</code> ile döngüden çıkılarak gereksiz turların önüne geçilir.
+                    </p>
+                    <div class="relative">
+                        <pre class="language-csharp"><code class="language-csharp">string[] ogrenciler = { "Ahmet", "Ayşe", "Mehmet", "Fatma", "Zeynep" };
+string aranan = "Fatma";
+
+bool bulundu = false;
+int bulunanIndis = -1;
+
+for (int i = 0; i < ogrenciler.Length; i++)
+{
+    if (ogrenciler[i].Equals(aranan, StringComparison.OrdinalIgnoreCase))
+    {
+        bulundu = true;
+        bulunanIndis = i;
+        break; // Bulduk! Kalan elemanları boşuna gezme!
+    }
+}
+
+if (bulundu)
+    Console.WriteLine($"✅ {aranan} bulundu! Listedeki sırası (indeks): {bulunanIndis}");
+else
+    Console.WriteLine($"❌ {aranan} listede bulunamadı.");</code></pre>
+                        <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                    </div>
+                </div>
+
+                <!-- ALGORİTMA 4: ÇİFT VE TEK SAYILARI AYIKLAMA / FİLTRELEME -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-6 glow-box">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-lg bg-pink-500/20 text-pink-400 font-bold flex items-center justify-center text-xs">4</span>
+                            <h3 class="text-lg font-bold text-white">Çift ve Tek Sayıları Ayıklama & Filtreleme</h3>
+                        </div>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded bg-pink-500/10 text-pink-300 border border-pink-500/20">Mod (%) Operatörü</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                        <code class="text-pink-300">sayi % 2 == 0</code> ifadesi ile sayının çift mi tek mi olduğu saptanır; çift ve tek sayı adetleri ile toplamları ayrı sayaçlarda biriktirilir.
+                    </p>
+                    <div class="relative">
+                        <pre class="language-csharp"><code class="language-csharp">int[] sayilar = { 14, 25, 36, 47, 58, 69, 70 };
+int ciftAdet = 0, tekAdet = 0;
+int ciftToplam = 0, tekToplam = 0;
+
+foreach (int s in sayilar)
+{
+    if (s % 2 == 0)
+    {
+        ciftAdet++;
+        ciftToplam += s;
+    }
+    else
+    {
+        tekAdet++;
+        tekToplam += s;
+    }
+}
+
+Console.WriteLine($"Çift Sayılar: {ciftAdet} adet, Toplamları = {ciftToplam}");
+Console.WriteLine($"Tek Sayılar : {tekAdet} adet, Toplamları = {tekToplam}");</code></pre>
+                        <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kopyala</button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BÖLÜM 5: HAZIR ARRAY SINIFI METOTLARI -->
+        <!-- ========================================== -->
+        <section id="array-metotlari" class="scroll-mt-20">
+            <div class="border-b border-slate-800 pb-4 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">5. BÖLÜM</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">C# Hazır Array Sınıfı Metotları</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">.NET Framework / .NET Core içerisinde dizi yönetimini kolaylaştıran statik metotlar.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Array.Sort -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 glow-box">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-purple-400 font-mono">Array.Sort(dizi)</h3>
+                        <span class="text-[10px] bg-purple-500/10 text-purple-300 px-2 py-0.5 rounded">Sıralama</span>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-3">
+                        Dizinin elemanlarını <strong>küçükten büyüğe (A'dan Z'ye)</strong> artan sırada düzenler. Orijinal diziyi doğrudan değiştirir.
+                    </p>
+                    <pre class="language-csharp"><code class="language-csharp">int[] sayilar = { 50, 10, 40, 20 };
+Array.Sort(sayilar);
+// sayilar artık: { 10, 20, 40, 50 }</code></pre>
+                </div>
+
+                <!-- Array.Reverse -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 glow-box">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-sky-400 font-mono">Array.Reverse(dizi)</h3>
+                        <span class="text-[10px] bg-sky-500/10 text-sky-300 px-2 py-0.5 rounded">Ters Çevirme</span>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-3">
+                        Diziyi olduğu gibi <strong>baştan sona tersine</strong> çevirir. (Büyükten küçüğe sıralamak için önce <code class="text-sky-300">Sort</code> sonra <code class="text-sky-300">Reverse</code> yapılır).
+                    </p>
+                    <pre class="language-csharp"><code class="language-csharp">string[] harfler = { "A", "B", "C" };
+Array.Reverse(harfler);
+// harfler artık: { "C", "B", "A" }</code></pre>
+                </div>
+
+                <!-- Array.IndexOf -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 glow-box">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-emerald-400 font-mono">Array.IndexOf(dizi, aranan)</h3>
+                        <span class="text-[10px] bg-emerald-500/10 text-emerald-300 px-2 py-0.5 rounded">İndeks Bulucu</span>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-3">
+                        Aranan elemanın ilk karşılaşıldığı <strong>indeksi</strong> döner. Eğer eleman dizide yoksa kesinlikle <strong>-1</strong> döndürür.
+                    </p>
+                    <pre class="language-csharp"><code class="language-csharp">int[] notlar = { 70, 85, 90, 100 };
+int sira = Array.IndexOf(notlar, 90);  // 2 döner
+int yok  = Array.IndexOf(notlar, 55);  // -1 döner</code></pre>
+                </div>
+
+                <!-- Array.Clear -->
+                <div class="bg-slate-900/70 border border-slate-800 rounded-2xl p-5 glow-box">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="text-base font-bold text-rose-400 font-mono">Array.Clear(dizi, index, adet)</h3>
+                        <span class="text-[10px] bg-rose-500/10 text-rose-300 px-2 py-0.5 rounded">Sıfırlama</span>
+                    </div>
+                    <p class="text-xs text-slate-300 mb-3">
+                        Diziyi bellekten silmez! Belirtilen indeksten başlayarak istenilen adette elemanı <strong>varsayılan değerine</strong> (sayılar için 0, string için null) çeker.
+                    </p>
+                    <pre class="language-csharp"><code class="language-csharp">int[] veriler = { 10, 20, 30, 40, 50 };
+// 1. indeksten itibaren 2 elemanı sıfırla:
+Array.Clear(veriler, 1, 2);
+// veriler: { 10, 0, 0, 40, 50 }</code></pre>
+                </div>
+
+            </div>
+
+            <!-- SABİT DİZİ (T[]) VS DİNAMİK LİSTE (List<T>) KARŞILAŞTIRMASI -->
+            <div class="mt-8 bg-slate-900/50 border border-slate-800 rounded-2xl p-6">
+                <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                    <span class="text-indigo-400">⚖️</span> Sabit Dizi (T[ ]) ile Dinamik Liste (List&lt;T&gt;) Arasındaki Fark
+                </h3>
+                <p class="text-xs text-slate-400 mb-4">C# projelerinde ne zaman klasik dizi, ne zaman dinamik koleksiyon tercih edilmelidir?</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-purple-400 font-bold block mb-1">Klasik Tek Boyutlu Dizi (int[ ])</span>
+                        <ul class="space-y-1 text-slate-300 list-disc list-inside">
+                            <li>Boyutu sabittir (Tanımlanırken belirtilir).</li>
+                            <li>Bellek yönetimi son derece hızlı ve az maliyetlidir.</li>
+                            <li>Haftanın günleri, aylar, 10 kişilik sabit grup gibi sayısı net veriler için idealdir.</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                        <span class="text-sky-400 font-bold block mb-1">Dinamik Koleksiyon (List&lt;int&gt;)</span>
+                        <ul class="space-y-1 text-slate-300 list-disc list-inside">
+                            <li>Boyutu dinamiktir; <code class="text-sky-300">.Add()</code> ve <code class="text-sky-300">.Remove()</code> ile esner.</li>
+                            <li>Kaç adet eleman geleceği önceden kestirilemeyen senaryolarda (Örn: Veritabanından çekilen ürünler) tercih edilir.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BÖLÜM 6: 10 ADET ÇÖZÜMLÜ SINAV VE MÜLAKAT TİPİ SORU -->
+        <!-- ========================================== -->
+        <section id="sorular" class="scroll-mt-20">
+            <div class="border-b border-slate-800 pb-4 mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">6. BÖLÜM</span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">10 Adet Sınav & Mülakat Tipi Çözümlü Soru</h2>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">Öğrendiklerinizi pekiştirin. Soruyu okuyun, önce zihninizde veya kağıtta çözün, ardından çözümü açın.</p>
+                </div>
+                <div>
+                    <button onclick="tumCozumleriAcKapat()" id="btn-toggle-all" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition">
+                        Tüm Çözümleri Aç / Kapat
+                    </button>
+                </div>
+            </div>
+
+            <!-- SORULAR AKORDEON LİSTESİ -->
+            <div class="space-y-4" id="sorular-container">
+
+                <!-- SORU 1 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(1)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q1</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Ortalamadan Büyük Sayıları Ekrana Yazdıran Program</h3>
+                                <span class="text-[11px] text-slate-400">İki geçişli (Two-pass) döngü algoritması</span>
+                            </div>
+                        </div>
+                        <span id="chevron-1" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-1" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <p class="leading-relaxed">
+                            <strong>Algoritma Mantığı:</strong> Önce 1. döngü ile dizinin tüm elemanları toplanıp aritmetik ortalaması bulunur. Ardından 2. bir döngü kurularak ortalamadan büyük olan elemanlar tek tek ekrana basılır.
+                        </p>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">int[] sayilar = { 45, 80, 20, 95, 60, 30, 85 };
+int toplam = 0;
+
+// 1. Döngü: Toplamı bul
+foreach (int s in sayilar)
+{
+    toplam += s;
+}
+
+double ortalama = (double)toplam / sayilar.Length;
+Console.WriteLine($"Sınıf Ortalaması: {ortalama:F2}\n--- Ortalamanın Üstündekiler ---");
+
+// 2. Döngü: Ortalamadan büyükleri filtrele
+foreach (int s in sayilar)
+{
+    if (s > ortalama)
+    {
+        Console.WriteLine($"-> {s}");
+    }
+}</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 2 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(2)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q2</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Bir Dizideki En Büyük İkinci Sayıyı Bulma</h3>
+                                <span class="text-[11px] text-slate-400">Klasik teknik mülakat sorusu</span>
+                            </div>
+                        </div>
+                        <span id="chevron-2" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-2" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <p class="leading-relaxed">
+                            <strong>İki Farklı Çözüm:</strong> 1) <code class="text-purple-300">Array.Sort()</code> yapıp son elemandan bir öncekini almak. 2) Tek bir for döngüsü ile <code class="text-purple-300">enBuyuk</code> ve <code class="text-purple-300">ikinciBuyuk</code> değişkenlerini aynı anda güncellemek (Daha performanslı).
+                        </p>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">int[] dizi = { 12, 55, 84, 92, 45, 88 };
+
+int enBuyuk = int.MinValue;
+int ikinciBuyuk = int.MinValue;
+
+foreach (int sayi in dizi)
+{
+    if (sayi > enBuyuk)
+    {
+        ikinciBuyuk = enBuyuk; // Eski şampiyon ikinci olur
+        enBuyuk = sayi;        // Yeni şampiyon atanır
+    }
+    else if (sayi > ikinciBuyuk && sayi != enBuyuk)
+    {
+        ikinciBuyuk = sayi;
+    }
+}
+
+Console.WriteLine($"En Büyük: {enBuyuk}");
+Console.WriteLine($"En Büyük İkinci: {ikinciBuyuk}"); // 88</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 3 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(3)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q3</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Hazır Metot Kullanmadan Bir Diziyi Tersten Başka Diziye Kopyalama</h3>
+                                <span class="text-[11px] text-slate-400">Çift sayaçlı for döngüsü pratiği</span>
+                            </div>
+                        </div>
+                        <span id="chevron-3" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-3" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <p class="leading-relaxed">
+                            <strong>İpucu:</strong> Orijinal dizinin son indeksinden (<code class="text-purple-300">Length - 1</code>) 0'a doğru geri geri giderken, hedef dizinin 0'ıncı indeksinden başlayıp ileri doğru yazarız.
+                        </p>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">int[] orijinal = { 10, 20, 30, 40, 50 };
+int[] tersDizi = new int[orijinal.Length];
+
+for (int i = 0; i < orijinal.Length; i++)
+{
+    // i = 0 iken tersDizi[0] = orijinal[4]
+    // i = 1 iken tersDizi[1] = orijinal[3] ...
+    tersDizi[i] = orijinal[orijinal.Length - 1 - i];
+}
+
+Console.WriteLine("Ters Dizi: " + string.Join(", ", tersDizi)); // 50, 40, 30, 20, 10</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 4 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(4)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q4</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Sayı Tahmin Oyunu (while + Random + Hak Sayacı)</h3>
+                                <span class="text-[11px] text-slate-400">Şartlı döngü ve durum kontrolü</span>
+                            </div>
+                        </div>
+                        <span id="chevron-4" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-4" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <p class="leading-relaxed">
+                            <strong>Senaryo:</strong> Bilgisayar 1-100 arasında rastgele sayı tutar. Kullanıcının 5 hakkı vardır. Her tahminde "Daha büyük" veya "Daha küçük" diyerek yönlendirir.
+                        </p>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">Random rnd = new Random();
+int gizliSayi = rnd.Next(1, 101); // 1 ile 100 arası
+int hak = 5;
+bool bildiMi = false;
+
+Console.WriteLine("1-100 arasında bir sayı tuttum. 5 hakkın var!");
+
+while (hak > 0)
+{
+    Console.Write($"Kalan Hak: {hak}. Tahmininiz: ");
+    int tahmin = int.Parse(Console.ReadLine());
+
+    if (tahmin == gizliSayi)
+    {
+        Console.WriteLine("🎉 TEBRİKLER! Sayıyı bildiniz!");
+        bildiMi = true;
+        break;
+    }
+    else if (tahmin < gizliSayi)
+    {
+        Console.WriteLine("⬆️ Daha BÜYÜK bir sayı deneyin.");
+    }
+    else
+    {
+        Console.WriteLine("⬇️ Daha KÜÇÜK bir sayı deneyin.");
+    }
+    hak--;
+}
+
+if (!bildiMi)
+{
+    Console.WriteLine($"😢 Haklarınız bitti. Tuttuğum sayı: {gizliSayi}");
+}</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 5 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(5)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q5</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Dizi İçinde Belirli Bir Değerin Kaç Kez Geçtiğini (Frekansını) Bulma</h3>
+                                <span class="text-[11px] text-slate-400">Sayaç artırma algoritması</span>
+                            </div>
+                        </div>
+                        <span id="chevron-5" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-5" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">int[] zarAtislari = { 6, 2, 4, 6, 1, 6, 5, 3, 6, 4 };
+int arananDeger = 6;
+int adet = 0;
+
+foreach (int zar in zarAtislari)
+{
+    if (zar == arananDeger)
+    {
+        adet++;
+    }
+}
+
+Console.WriteLine($"Zar atışlarında {arananDeger} sayısı tam {adet} defa gelmiştir.");</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 6 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(6)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q6</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Dizideki Tüm Negatif Sayıları Sıfıra Çeviren Kod</h3>
+                                <span class="text-[11px] text-slate-400">Neden foreach değil de for kullanılır?</span>
+                            </div>
+                        </div>
+                        <span id="chevron-6" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-6" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <p class="leading-relaxed text-amber-300">
+                            <strong>Dikkat:</strong> Dizi elemanını değiştirmek için <code class="text-white">dizi[i] = 0;</code> yapmamız gerekir. Bu işlem <code class="text-white">foreach</code> ile yapılamaz; derleyici hata verir. Mutlaka <code class="text-white">for</code> döngüsü kullanılmalıdır.
+                        </p>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">int[] sayilar = { 15, -4, 23, -8, -12, 45, -1 };
+
+for (int i = 0; i < sayilar.Length; i++)
+{
+    if (sayilar[i] < 0)
+    {
+        sayilar[i] = 0; // Negatifi sıfırla
+    }
+}
+
+Console.WriteLine("Düzenlenen Dizi: " + string.Join(", ", sayilar));
+// Çıktı: 15, 0, 23, 0, 0, 45, 0</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 7 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(7)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q7</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Kullanıcı "çıkış" Yazana Kadar Girilen Sayıları Toplayan Döngü</h3>
+                                <span class="text-[11px] text-slate-400">while (true) ve break kalıbı</span>
+                            </div>
+                        </div>
+                        <span id="chevron-7" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-7" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">int genelToplam = 0;
+
+while (true)
+{
+    Console.Write("Bir sayı girin (Bitirmek için 'cikis'): ");
+    string girdi = Console.ReadLine();
+
+    if (girdi.ToLower() == "cikis")
+    {
+        break; // Sonsuz döngüden emniyetli çıkış
+    }
+
+    if (int.TryParse(girdi, out int girilenSayi))
+    {
+        genelToplam += girilenSayi;
+    }
+    else
+    {
+        Console.WriteLine("Geçersiz giriş! Lütfen sayı yazın.");
+    }
+}
+
+Console.WriteLine($"Toplam: {genelToplam}");</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 8 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(8)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q8</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">1 ile 100 Arasında Hem 3'e Hem 5'e Bölünen Sayıları Bulan Kod</h3>
+                                <span class="text-[11px] text-slate-400">Mantıksal VE (&&) ve mod aritmetiği</span>
+                            </div>
+                        </div>
+                        <span id="chevron-8" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-8" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">// 3 ve 5'e bölünen = 15'in katı demektir
+int adet = 0;
+for (int i = 1; i <= 100; i++)
+{
+    if (i % 3 == 0 && i % 5 == 0)
+    {
+        Console.Write(i + " "); // 15 30 45 60 75 90
+        adet++;
+    }
+}
+Console.WriteLine($"\nToplam {adet} adet sayı bulundu.");</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 9 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(9)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q9</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">Bir Dizide Tekrar Eden (Mükerrer) Elemanları Tespit Etme</h3>
+                                <span class="text-[11px] text-slate-400">İç içe for döngüsü ile çift karşılaştırma</span>
+                            </div>
+                        </div>
+                        <span id="chevron-9" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-9" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">int[] dizi = { 10, 25, 40, 10, 80, 25, 90 };
+
+Console.WriteLine("Tekrar Eden Elemanlar:");
+for (int i = 0; i < dizi.Length; i++)
+{
+    for (int j = i + 1; j < dizi.Length; j++)
+    {
+        if (dizi[i] == dizi[j])
+        {
+            Console.WriteLine($"-> {dizi[i]} (İndeksler: {i} ve {j})");
+        }
+    }
+}</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SORU 10 -->
+                <div class="question-card bg-slate-900/70 border border-slate-800 rounded-2xl overflow-hidden transition">
+                    <div class="p-5 cursor-pointer flex items-center justify-between hover:bg-slate-800/40" onclick="toggleCozum(10)">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs flex items-center justify-center font-mono">Q10</span>
+                            <div>
+                                <h3 class="text-sm sm:text-base font-bold text-white">foreach Döngüsünde Neden Dizi Elemanları Güncellenemez?</h3>
+                                <span class="text-[11px] text-slate-400">Teorik mülakat sorusu & CS1656 derleme hatası</span>
+                            </div>
+                        </div>
+                        <span id="chevron-10" class="text-slate-400 transition transform duration-200">▼</span>
+                    </div>
+                    <div id="cozum-10" class="hidden px-5 pb-5 pt-2 border-t border-slate-800/80 bg-slate-950/60 text-xs text-slate-300 space-y-3">
+                        <p class="leading-relaxed">
+                            <strong>Açıklama:</strong> <code class="text-purple-300">foreach</code> döngüsü arka planda .NET'in <code class="text-purple-300">IEnumerator</code> arayüzünü (Current özelliğini) kullanır. Bu özellik salt okunurdur (<code class="text-purple-300">get</code> accessor). Dizi elemanını değiştirmeye çalışırsanız C# derleyicisi <code class="text-rose-400">"CS1656: Cannot assign to 'x' because it is a 'foreach iteration variable'"</code> hatası verir.
+                        </p>
+                        <div class="relative">
+                            <pre class="language-csharp"><code class="language-csharp">// ❌ DERLEME HATASI VERİR:
+// foreach (int sayi in dizi) {
+//     sayi *= 2; 
+// }
+
+// ✅ DOĞRU YÖNTEM:
+for (int i = 0; i < dizi.Length; i++)
+{
+    dizi[i] *= 2; // İndeks üzerinden bellekteki orijinal değer güncellenir
+}</code></pre>
+                            <button onclick="kopyalaKodu(this)" class="absolute top-3 right-3 text-[11px] bg-slate-800 text-slate-300 px-2 py-1 rounded">Kopyala</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- BÖLÜM 7: SIK YAPILAN HATALAR & CHEAT SHEET -->
+        <!-- ========================================== -->
+        <section class="scroll-mt-20">
+            <div class="border-b border-slate-800 pb-4 mb-8">
+                <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-0.5 rounded-md bg-purple-500/20 text-purple-300 font-mono text-xs font-bold">7. BÖLÜM</span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Hızlı Hile Sayfası (Cheat Sheet) & Hap Bilgiler</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-slate-400 mt-1">Sınav öncesi son 5 dakikada göz gezdirilecek altın kurallar.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <span class="text-amber-400 font-bold block mb-1">💡 İndeks Kuralı</span>
+                    <p class="text-slate-300 leading-relaxed">
+                        Diziler 0'dan başlar. N elemanlı dizinin son indeksi <code class="text-amber-300">N - 1</code>'dir. Döngü koşulunu asla <code class="text-rose-400">&lt;= dizi.Length</code> yapmayın, daima <code class="text-emerald-300">&lt; dizi.Length</code> kullanın.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <span class="text-sky-400 font-bold block mb-1">💡 Tamsayı Bölme Tuzağı</span>
+                    <p class="text-slate-300 leading-relaxed">
+                        C#'ta iki tamsayı bölünürse sonuç tamsayı olur (<code class="text-sky-300">10 / 4 = 2</code>). Ortalamayı doğru (2.5) bulmak için payı <code class="text-sky-300">(double)toplam / adet</code> şeklinde dönüştürün.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <span class="text-emerald-400 font-bold block mb-1">💡 Max / Min Başlangıç Değeri</span>
+                    <p class="text-slate-300 leading-relaxed">
+                        En büyük veya en küçük sayıyı ararken değişkene kafadan <code class="text-rose-400">0</code> vermeyin! Mutlaka dizinin ilk elemanını (<code class="text-emerald-300">dizi[0]</code>) başlangıç kabul edin.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <span class="text-purple-400 font-bold block mb-1">💡 break vs continue</span>
+                    <p class="text-slate-300 leading-relaxed">
+                        <code class="text-purple-300">break</code> döngüyü tamamen öldürür. <code class="text-purple-300">continue</code> ise sadece o anki turu pas geçip bir sonraki tura zıplatır.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <span class="text-pink-400 font-bold block mb-1">💡 Array.IndexOf Sonucu</span>
+                    <p class="text-slate-300 leading-relaxed">
+                        <code class="text-pink-300">Array.IndexOf()</code> aranan elemanı bulamazsa hata vermez; sessizce <code class="text-rose-400">-1</code> döndürür. Kontrolü <code class="text-pink-300">!= -1</code> ile yapın.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <span class="text-indigo-400 font-bold block mb-1">💡 Dizi vs Değişken (Heap)</span>
+                    <p class="text-slate-300 leading-relaxed">
+                        Diziler referans türüdür. <code class="text-indigo-300">int[] b = a;</code> yaptığınızda yeni bir dizi oluşmaz; iki değişken de bellekte aynı hücreleri gösterir!
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ALT BİLGİ (FOOTER) -->
+    <footer class="border-t border-slate-800 bg-slate-900/80 backdrop-blur-sm mt-20 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-400 space-y-2">
+            <p class="font-semibold text-slate-200 text-sm">
+                2026-2027 11 ATP Sınıfı C# Programlama & Web Tabanlı Uygulama Geliştirme Portalı
+            </p>
+            <p>
+                Döngüler & Tek Boyutlu Diziler Genel Tekrar Materyali • Eğitimci Dokümantasyonu
+            </p>
+            <div class="flex justify-center items-center gap-4 pt-3 text-slate-400 text-xs">
+                <a href="index.html" class="hover:text-purple-400 transition">Ana Portal</a>
+                <span>•</span>
+                <a href="javascript_full.html" class="hover:text-purple-400 transition">JavaScript Dokümanı</a>
+                <span>•</span>
+                <a href="js_operatorler_lab.html" class="hover:text-purple-400 transition">JS Operatörler Lab</a>
+                <span>•</span>
+                <a href="CSS_FULL.html" class="hover:text-purple-400 transition">CSS Rehberi</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Prism.js Core + C# Component -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+
+    <!-- İNTERAKTİF SİMÜLATÖR VE ÇÖZÜM BETİKLERİ -->
+    <script>
+        // ==========================================
+        // 1. SİMÜLATÖR: DÖNGÜ ADIM İZİ (TRACE)
+        // ==========================================
+        const traceSteps = [
+            {
+                line: 1,
+                i: "-",
+                cond: "-",
+                total: 0,
+                text: "int toplam = 0; çalıştırıldı. Toplam değişkeni bellekte 0 olarak oluşturuldu.",
+                console: ""
+            },
+            {
+                line: 2,
+                i: 1,
+                cond: "1 <= 4 ➔ TRUE",
+                total: 0,
+                text: "1. Tur Başladı: int i = 1 başlangıç değeri atandı. Koşul (1 <= 4) kontrol edildi: DOĞRU (TRUE). Gövdeye giriliyor.",
+                console: ""
+            },
+            {
+                line: 4,
+                i: 1,
+                cond: "TRUE",
+                total: 1,
+                text: "toplam += i; çalıştı. toplam = 0 + 1 ➔ 1 oldu.",
+                console: ""
+            },
+            {
+                line: 5,
+                i: 1,
+                cond: "TRUE",
+                total: 1,
+                text: "Console.WriteLine çalıştı. 1. turun çıktısı konsola yazdırıldı.",
+                console: "i: 1, Toplam: 1"
+            },
+            {
+                line: 2,
+                i: 2,
+                cond: "2 <= 4 ➔ TRUE",
+                total: 1,
+                text: "i++ çalıştı (i = 2 oldu). Koşul (2 <= 4) kontrol edildi: DOĞRU (TRUE). Gövdeye giriliyor.",
+                console: ""
+            },
+            {
+                line: 4,
+                i: 2,
+                cond: "TRUE",
+                total: 3,
+                text: "toplam += i; çalıştı. toplam = 1 + 2 ➔ 3 oldu.",
+                console: ""
+            },
+            {
+                line: 5,
+                i: 2,
+                cond: "TRUE",
+                total: 3,
+                text: "Console.WriteLine çalıştı. 2. turun çıktısı konsola yazdırıldı.",
+                console: "i: 2, Toplam: 3"
+            },
+            {
+                line: 2,
+                i: 3,
+                cond: "3 <= 4 ➔ TRUE",
+                total: 3,
+                text: "i++ çalıştı (i = 3 oldu). Koşul (3 <= 4) kontrol edildi: DOĞRU (TRUE). Gövdeye giriliyor.",
+                console: ""
+            },
+            {
+                line: 4,
+                i: 3,
+                cond: "TRUE",
+                total: 6,
+                text: "toplam += i; çalıştı. toplam = 3 + 3 ➔ 6 oldu.",
+                console: ""
+            },
+            {
+                line: 5,
+                i: 3,
+                cond: "TRUE",
+                total: 6,
+                text: "Console.WriteLine çalıştı. 3. turun çıktısı konsola yazdırıldı.",
+                console: "i: 3, Toplam: 6"
+            },
+            {
+                line: 2,
+                i: 4,
+                cond: "4 <= 4 ➔ TRUE",
+                total: 6,
+                text: "i++ çalıştı (i = 4 oldu). Koşul (4 <= 4) kontrol edildi: DOĞRU (TRUE). Gövdeye giriliyor.",
+                console: ""
+            },
+            {
+                line: 4,
+                i: 4,
+                cond: "TRUE",
+                total: 10,
+                text: "toplam += i; çalıştı. toplam = 6 + 4 ➔ 10 oldu.",
+                console: ""
+            },
+            {
+                line: 5,
+                i: 4,
+                cond: "TRUE",
+                total: 10,
+                text: "Console.WriteLine çalıştı. 4. turun çıktısı konsola yazdırıldı.",
+                console: "i: 4, Toplam: 10"
+            },
+            {
+                line: 2,
+                i: 5,
+                cond: "5 <= 4 ➔ FALSE",
+                total: 10,
+                text: "i++ çalıştı (i = 5 oldu). Koşul (5 <= 4) kontrol edildi: YANLIŞ (FALSE)! Döngü sona erdi.",
+                console: ""
+            },
+            {
+                line: 7,
+                i: 5,
+                cond: "BİTTİ",
+                total: 10,
+                text: "Döngü dışındaki son satır çalıştı. Program başarıyla tamamlandı.",
+                console: "Döngü Bitti!"
+            }
+        ];
+
+        let currentTraceIndex = -1;
+
+        function traceSonrakiAdim() {
+            if (currentTraceIndex < traceSteps.length - 1) {
+                currentTraceIndex++;
+                traceGuncelle();
+            } else {
+                traceSifirla();
+            }
+        }
+
+        function traceSifirla() {
+            currentTraceIndex = -1;
+            document.getElementById("trace-step-counter").innerText = `Adım: 0 / ${traceSteps.length - 1}`;
+            document.getElementById("trace-val-i").innerText = "-";
+            document.getElementById("trace-val-cond").innerText = "-";
+            document.getElementById("trace-val-total").innerText = "0";
+            document.getElementById("trace-explanation").innerText = "Başlamak için 'Bir Sonraki Adım' butonuna tıklayın.";
+            document.getElementById("trace-console").innerHTML = '<span class="text-slate-600">// Konsol çıktısı burada belirecek...</span>';
+
+            // Satır vurgularını temizle
+            for (let l = 1; l <= 7; l++) {
+                const el = document.getElementById(`code-line-${l}`);
+                if (el) el.classList.remove("bg-purple-600/30", "border-l-2", "border-purple-400", "pl-2");
+            }
+            document.getElementById("btn-trace-step").innerHTML = "<span>▶ Bir Sonraki Adım</span>";
+        }
+
+        function traceGuncelle() {
+            const step = traceSteps[currentTraceIndex];
+
+            // Sayaçlar
+            document.getElementById("trace-step-counter").innerText = `Adım: ${currentTraceIndex + 1} / ${traceSteps.length}`;
+            document.getElementById("trace-val-i").innerText = step.i;
+            document.getElementById("trace-val-cond").innerText = step.cond;
+            document.getElementById("trace-val-cond").className = step.cond.includes("FALSE") ? "text-2xl font-black text-rose-400 font-mono" : "text-2xl font-black text-emerald-400 font-mono";
+            document.getElementById("trace-val-total").innerText = step.total;
+            document.getElementById("trace-explanation").innerText = step.text;
+
+            // Konsol çıktısı
+            if (step.console) {
+                const con = document.getElementById("trace-console");
+                if (con.innerHTML.includes("//")) con.innerHTML = "";
+                const line = document.createElement("div");
+                line.innerText = "> " + step.console;
+                con.appendChild(line);
+            }
+
+            // Satır vurgusu
+            for (let l = 1; l <= 7; l++) {
+                const el = document.getElementById(`code-line-${l}`);
+                if (el) el.classList.remove("bg-purple-600/30", "border-l-2", "border-purple-400", "pl-2");
+            }
+            const activeLine = document.getElementById(`code-line-${step.line}`);
+            if (activeLine) {
+                activeLine.classList.add("bg-purple-600/30", "border-l-2", "border-purple-400", "pl-2");
+            }
+
+            // Buton metni
+            if (currentTraceIndex === traceSteps.length - 1) {
+                document.getElementById("btn-trace-step").innerHTML = "<span>Başa Dön ↺</span>";
+            }
+        }
+
+        // ==========================================
+        // 2. SİMÜLATÖR: TEK BOYUTLU DİZİ BELLEK ATÖLYESİ
+        // ==========================================
+        let memoryArray = [45, 12, 89, 7, 23, 64];
+
+        function renderArrayCells(highlightIdx = -1, foundIdx = -1) {
+            const container = document.getElementById("array-cells-container");
+            container.innerHTML = "";
+
+            memoryArray.forEach((val, idx) => {
+                const card = document.createElement("div");
+                card.className = "array-cell bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center relative shadow-md";
+
+                if (idx === foundIdx) {
+                    card.classList.add("found");
+                } else if (idx === highlightIdx) {
+                    card.classList.add("highlight");
+                }
+
+                card.innerHTML = `
+                    <span class="text-[10px] font-mono text-slate-500 uppercase">İndeks [${idx}]</span>
+                    <span class="text-2xl font-black text-white font-mono my-1">${val}</span>
+                    <span class="text-[9px] font-mono text-indigo-400/80">0x0${idx * 4 + 10}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function arrayRastgeleDoldur() {
+            memoryArray = memoryArray.map(() => Math.floor(Math.random() * 90) + 10);
+            renderArrayCells();
+            document.getElementById("lbl-search-result").innerText = "";
+        }
+
+        function arraySirala() {
+            memoryArray.sort((a, b) => a - b);
+            renderArrayCells();
+            document.getElementById("lbl-search-result").innerText = "✅ Array.Sort() uygulandı (Küçükten büyüğe)";
+        }
+
+        function arrayTersCevir() {
+            memoryArray.reverse();
+            renderArrayCells();
+            document.getElementById("lbl-search-result").innerText = "✅ Array.Reverse() uygulandı (Ters çevrildi)";
+        }
+
+        function arraySifirla() {
+            memoryArray = memoryArray.map(() => 0);
+            renderArrayCells();
+            document.getElementById("lbl-search-result").innerText = "⚠️ Array.Clear() uygulandı (Tüm elemanlar 0 yapıldı)";
+        }
+
+        function arrayDegerGuncelle() {
+            const idx = parseInt(document.getElementById("txt-update-idx").value);
+            const val = parseInt(document.getElementById("txt-update-val").value);
+
+            if (isNaN(idx) || isNaN(val) || idx < 0 || idx >= memoryArray.length) {
+                alert("Lütfen geçerli bir indeks (0 - 5) ve sayısal değer girin!");
+                return;
+            }
+
+            memoryArray[idx] = val;
+            renderArrayCells(idx);
+            document.getElementById("lbl-search-result").innerText = `✅ sayilar[${idx}] = ${val} atandı.`;
+        }
+
+        function arrayAramaYap() {
+            const val = parseInt(document.getElementById("txt-search-val").value);
+            if (isNaN(val)) {
+                alert("Lütfen aranacak bir sayı girin!");
+                return;
+            }
+
+            const foundIdx = memoryArray.indexOf(val);
+            const lbl = document.getElementById("lbl-search-result");
+
+            if (foundIdx !== -1) {
+                renderArrayCells(-1, foundIdx);
+                lbl.innerText = `🎯 Bulundu! Array.IndexOf() ➔ İndeks: ${foundIdx}`;
+                lbl.className = "text-xs text-emerald-400 self-center font-mono font-bold";
+            } else {
+                renderArrayCells();
+                lbl.innerText = `❌ Bulunamadı! Array.IndexOf() ➔ -1`;
+                lbl.className = "text-xs text-rose-400 self-center font-mono font-bold";
+            }
+        }
+
+        // ==========================================
+        // 3. SİMÜLATÖR: C# ALGORİTMA TESTİ
+        // ==========================================
+        const algorithmTemplates = {
+            ortalama: {
+                code: `// 1. Ortalama ve Geçti/Kaldı Sayacı
+int toplam = 0;
+int gecenAdet = 0, kalanAdet = 0;
+
+for (int i = 0; i < dizi.Length; i++)
+{
+    toplam += dizi[i];
+    if (dizi[i] >= 50)
+        gecenAdet++;
+    else
+        kalanAdet++;
+}
+
+double ortalama = (double)toplam / dizi.Length;
+Console.WriteLine($"Eleman Sayısı : {dizi.Length}");
+Console.WriteLine($"Toplam Değer  : {toplam}");
+Console.WriteLine($"Ortalama      : {ortalama:F2}");
+Console.WriteLine($"50 ve Üzeri   : {gecenAdet} kişi (GEÇTİ)");
+Console.WriteLine($"50 Altı       : {kalanAdet} kişi (KALDI)");`,
+                run: function(arr) {
+                    let toplam = 0, gecen = 0, kalan = 0;
+                    for (let n of arr) {
+                        toplam += n;
+                        if (n >= 50) gecen++; else kalan++;
+                    }
+                    let ort = toplam / arr.length;
+                    return [
+                        `Eleman Sayısı : ${arr.length}`,
+                        `Toplam Değer  : ${toplam}`,
+                        `Ortalama      : ${ort.toFixed(2)}`,
+                        `50 ve Üzeri   : ${gecen} kişi (GEÇTİ)`,
+                        `50 Altı       : ${kalan} kişi (KALDI)`
+                    ];
+                }
+            },
+            maxmin: {
+                code: `// 2. En Büyük (Max) ve En Küçük (Min) Bulucu
+int enBuyuk = dizi[0];
+int enBuyukIndis = 0;
+int enKucuk = dizi[0];
+int enKucukIndis = 0;
+
+for (int i = 1; i < dizi.Length; i++)
+{
+    if (dizi[i] > enBuyuk)
+    {
+        enBuyuk = dizi[i];
+        enBuyukIndis = i;
+    }
+    if (dizi[i] < enKucuk)
+    {
+        enKucuk = dizi[i];
+        enKucukIndis = i;
+    }
+}
+
+Console.WriteLine($"En Büyük Eleman : {enBuyuk} (İndeks: {enBuyukIndis})");
+Console.WriteLine($"En Küçük Eleman : {enKucuk} (İndeks: {enKucukIndis})");
+Console.WriteLine($"Aralık (Fark)   : {enBuyuk - enKucuk}");`,
+                run: function(arr) {
+                    let max = arr[0], maxIdx = 0;
+                    let min = arr[0], minIdx = 0;
+                    for (let i = 1; i < arr.length; i++) {
+                        if (arr[i] > max) { max = arr[i]; maxIdx = i; }
+                        if (arr[i] < min) { min = arr[i]; minIdx = i; }
+                    }
+                    return [
+                        `En Büyük Eleman : ${max} (İndeks: ${maxIdx})`,
+                        `En Küçük Eleman : ${min} (İndeks: ${minIdx})`,
+                        `Aralık (Fark)   : ${max - min}`
+                    ];
+                }
+            },
+            cifttek: {
+                code: `// 3. Çift Sayı Filtresi & Toplamı
+int ciftToplam = 0, ciftAdet = 0;
+int tekToplam = 0, tekAdet = 0;
+
+foreach (int s in dizi)
+{
+    if (s % 2 == 0)
+    {
+        ciftAdet++;
+        ciftToplam += s;
+    }
+    else
+    {
+        tekAdet++;
+        tekToplam += s;
+    }
+}
+
+Console.WriteLine($"Çift Sayı Adedi : {ciftAdet} adet");
+Console.WriteLine($"Çiftlerin Toplamı: {ciftToplam}");
+Console.WriteLine($"Tek Sayı Adedi  : {tekAdet} adet");
+Console.WriteLine($"Teklerin Toplamı : {tekToplam}");`,
+                run: function(arr) {
+                    let cAdet = 0, cTop = 0, tAdet = 0, tTop = 0;
+                    for (let s of arr) {
+                        if (s % 2 === 0) { cAdet++; cTop += s; }
+                        else { tAdet++; tTop += s; }
+                    }
+                    return [
+                        `Çift Sayı Adedi : ${cAdet} adet`,
+                        `Çiftlerin Toplamı: ${cTop}`,
+                        `Tek Sayı Adedi  : ${tAdet} adet`,
+                        `Teklerin Toplamı : ${tTop}`
+                    ];
+                }
+            },
+            arama: {
+                code: `// 4. Doğrusal Arama (Linear Search)
+int aranan = 90;
+bool bulundu = false;
+int bulunanIndis = -1;
+
+for (int i = 0; i < dizi.Length; i++)
+{
+    if (dizi[i] == aranan)
+    {
+        bulundu = true;
+        bulunanIndis = i;
+        break; // İlk buluşta döngüyü kır
+    }
+}
+
+if (bulundu)
+    Console.WriteLine($"Hedef {aranan} sayısı {bulunanIndis}. indekste tespit edildi!");
+else
+    Console.WriteLine($"Hedef {aranan} sayısı dizide bulunamadı.");`,
+                run: function(arr) {
+                    let aranan = 90;
+                    let idx = arr.indexOf(aranan);
+                    if (idx !== -1) {
+                        return [`Hedef ${aranan} sayısı ${idx}. indekste tespit edildi!`];
+                    } else {
+                        return [
+                            `Hedef ${aranan} sayısı dizide bulunamadı.`,
+                            `(İpucu: Diziye 90 sayısını ekleyip tekrar deneyin)`
+                        ];
+                    }
+                }
+            }
+        };
+
+        function algoSecimDegisti() {
+            const sel = document.getElementById("sel-algo-select").value;
+            const codeEl = document.getElementById("code-algo-display");
+            codeEl.textContent = algorithmTemplates[sel].code;
+            if (window.Prism) {
+                Prism.highlightElement(codeEl);
+            }
+        }
+
+        function algoCalistir() {
+            const raw = document.getElementById("txt-algo-array-input").value;
+            const arr = raw.split(",").map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+
+            if (arr.length === 0) {
+                alert("Lütfen en az bir geçerli sayı girin!");
+                return;
+            }
+
+            const sel = document.getElementById("sel-algo-select").value;
+            const lines = algorithmTemplates[sel].run(arr);
+
+            const out = document.getElementById("algo-console-output");
+            out.innerHTML = "";
+            lines.forEach(l => {
+                const div = document.createElement("div");
+                div.innerText = "> " + l;
+                out.appendChild(div);
+            });
+        }
+
+        function algoRastgeleVeri() {
+            const arr = Array.from({length: 8}, () => Math.floor(Math.random() * 90) + 10);
+            document.getElementById("txt-algo-array-input").value = arr.join(", ");
+            algoCalistir();
+        }
+
+        // ==========================================
+        // 4. KOD KOPYALAMA & AKORDEON FONKSİYONLARI
+        // ==========================================
+        function kopyalaKodu(btn) {
+            const pre = btn.parentElement.querySelector("pre");
+            if (!pre) return;
+            navigator.clipboard.writeText(pre.innerText).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = "Kopyalandı! ✓";
+                btn.classList.add("bg-emerald-600", "text-white");
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove("bg-emerald-600", "text-white");
+                }, 2000);
+            });
+        }
+
+        function toggleCozum(id) {
+            const realCozum = document.getElementById(`cozum-${id}`);
+            const chevron = document.getElementById(`chevron-${id}`);
+            if (realCozum) {
+                realCozum.classList.toggle("hidden");
+                if (chevron) {
+                    chevron.classList.toggle("rotate-180");
+                }
+            }
+        }
+
+        let tumuAcik = false;
+        function tumCozumleriAcKapat() {
+            tumuAcik = !tumuAcik;
+            for (let i = 1; i <= 10; i++) {
+                const c = document.getElementById(`cozum-${i}`);
+                const ch = document.getElementById(`chevron-${i}`);
+                if (c) {
+                    if (tumuAcik) {
+                        c.classList.remove("hidden");
+                        if (ch) ch.classList.add("rotate-180");
+                    } else {
+                        c.classList.add("hidden");
+                        if (ch) ch.classList.remove("rotate-180");
+                    }
+                }
+            }
+            document.getElementById("btn-toggle-all").innerText = tumuAcik ? "Tüm Çözümleri Kapat" : "Tüm Çözümleri Aç";
+        }
+
+        // Sayfa yüklendiğinde ilk değerleri kur
+        document.addEventListener("DOMContentLoaded", () => {
+            renderArrayCells();
+            algoSecimDegisti();
+        });
+    </script>
+</body>
+</html>

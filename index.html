@@ -1,928 +1,611 @@
 <!DOCTYPE html>
-<html lang="tr">
-
+<html lang="tr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Şahin Mansuroğlu - Eğitim Portalı</title>
+    <title>2026-2027 11 ATP Sınıfı Web Tabanlı Uygulama Geliştirme dersi Dokumanları</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.5);
-            --accent: #a855f7;
-            --secondary: #0f172a;
-            --background: #020617;
-            --surface: rgba(30, 41, 59, 0.7);
-            --surface-hover: rgba(30, 41, 59, 0.9);
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --border: rgba(255, 255, 255, 0.1);
-            --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        ::-webkit-scrollbar-track {
+            background: #090d16;
         }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--background);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.15) 0%, transparent 40%);
-            background-attachment: fixed;
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
         }
-
-        /* Hero Header */
-        header {
-            padding: 5rem 1rem 6rem;
-            text-align: center;
+        ::-webkit-scrollbar-thumb:hover {
+            background: #334155;
+        }
+        .glow-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            z-index: 10;
         }
-
-        .header-glow {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 320px;
-            height: 320px;
-            background: var(--primary);
-            filter: blur(130px);
-            opacity: 0.25;
-            z-index: -1;
-            border-radius: 50%;
-        }
-
-        header h1 {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 800;
-            background: linear-gradient(to right, #fff, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.04em;
-            margin-bottom: 0.75rem;
-            animation: titleFade 1s ease-out;
-        }
-
-        header p {
-            font-size: 1.25rem;
-            color: var(--text-dim);
-            max-width: 650px;
-            margin: 0 auto;
-            font-weight: 300;
-            animation: subtitleFade 1s ease-out 0.2s backwards;
-        }
-
-        /* Container */
-        main {
-            max-width: 1200px;
-            margin: -3rem auto 4rem;
-            padding: 0 1.5rem;
-            position: relative;
-            z-index: 20;
-        }
-
-        section {
-            margin-bottom: 4rem;
-        }
-
-        .section-header {
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1.25rem;
-        }
-
-        .section-title {
-            font-size: 1.65rem;
-            font-weight: 700;
-            color: #fff;
-            position: relative;
-            white-space: nowrap;
-        }
-
-        .section-line {
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, var(--border), transparent);
-        }
-
-        /* Grid & Cards */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--surface);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 1.85rem;
-            text-decoration: none;
-            color: inherit;
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-            background: var(--surface-hover);
-        }
-
-        .card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            color: #fff;
-            line-height: 1.4;
-        }
-
-        .card h3 svg {
-            width: 26px;
-            height: 26px;
-            color: var(--primary);
-            flex-shrink: 0;
-            transition: var(--transition);
-        }
-
-        .card:hover h3 svg {
-            color: var(--accent);
-            transform: scale(1.1) rotate(-6deg);
-        }
-
-        .card p {
-            color: var(--text-dim);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-            flex-grow: 1;
-            line-height: 1.6;
-        }
-
-        .card-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--primary);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 1rem;
-        }
-
-        .card-footer span {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: var(--transition);
-        }
-
-        .card:hover .card-footer span {
-            gap: 0.75rem;
-            color: #fff;
-        }
-
-        /* Featured Card Variation */
-        .featured-card {
-            grid-column: 1 / -1;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1));
-            border: 1px solid rgba(99, 102, 241, 0.3);
-        }
-
-        /* Footer */
-        footer {
-            padding: 4rem 2rem;
-            text-align: center;
-            border-top: 1px solid var(--border);
-            color: var(--text-dim);
-            font-size: 0.9rem;
-            background: rgba(2, 6, 23, 0.8);
-        }
-
-        /* Animations */
-        @keyframes titleFade {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes subtitleFade {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            header { padding: 4rem 1rem 5rem; }
-            .grid { grid-template-columns: 1fr; }
-            .section-header { margin-bottom: 1.5rem; }
+        .glow-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px -10px rgba(14, 165, 233, 0.15);
         }
     </style>
 </head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen selection:bg-teal-500 selection:text-black">
 
-<body>
+    <!-- Arka Plan Dekoratif Işıklar -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-teal-600/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-10 left-1/3 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
+    </div>
 
-    <header>
-        <div class="header-glow"></div>
-        <h1>Şahin Mansuroğlu</h1>
-        <p>Bilişim Teknolojileri & Yazılım Geliştirme Eğitim Portalı</p>
-    </header>
+    <div class="relative z-10 flex flex-col min-h-screen">
+        
+        <!-- ÜST BİLGİ & NAVİGASYON -->
+        <header class="border-b border-slate-800/80 bg-slate-900/60 backdrop-blur-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 via-sky-500 to-indigo-600 flex items-center justify-center font-black text-slate-950 text-xl shadow-lg shadow-teal-500/20">
+                        &lt;/&gt;
+                    </div>
+                    <div>
+                        <span class="text-sm font-bold tracking-tight text-white block">2026-2027 11 ATP</span>
+                        <span class="text-xs text-slate-400 block -mt-0.5">Web Tabanlı Uygulama Geliştirme</span>
+                    </div>
+                </div>
 
-    <main>
-
-        <!-- 1. BÖLÜM: HIZLI ERİŞİM & ANA PORTALLAR -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">Hızlı Erişim & Ana Portallar</h2>
-                <div class="section-line"></div>
+                <div class="flex items-center gap-3">
+                    <a href="#moduller" class="text-xs sm:text-sm font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-lg hover:bg-slate-800/60 transition">
+                        Ana Modüller
+                    </a>
+                    <a href="#atolye" class="text-xs sm:text-sm font-medium text-slate-300 hover:text-white px-3 py-1.5 rounded-lg hover:bg-slate-800/60 transition">
+                        Atölyeler & Laboratuvarlar
+                    </a>
+                </div>
             </div>
-            <div class="grid">
-                <!-- 2026-2027 11 ATP WEB TABANLI UYGULAMA GELİŞTİRME DERSİ DOKÜMANLARI (YENİ EKLENEN) -->
-                <a href="Web_2027_Github/index.html" class="card featured-card" target="_blank" style="background: linear-gradient(135deg, rgba(20, 184, 166, 0.15), rgba(99, 102, 241, 0.15)); border: 1px solid rgba(20, 184, 166, 0.4);">
-                    <div style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
-                        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.2rem 0.6rem; border-radius: 9999px; background: rgba(20, 184, 166, 0.2); color: #2dd4bf; border: 1px solid rgba(20, 184, 166, 0.3);">
-                            Yeni Müfredat • 2026 - 2027
-                        </span>
-                    </div>
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #2dd4bf;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                        </svg>
-                        2026-2027 11 ATP Sınıfı Web Tabanlı Uygulama Geliştirme Dersi Dokümanları
-                    </h3>
-                    <p>HTML5, CSS3 ve Modern JavaScript (ES6+) konuları, çözümlü alıştırmalar, interaktif form, grid, multimedya ve görsel laboratuvarları.</p>
-                    <div class="card-footer" style="color: #2dd4bf;">
-                        <span>Doküman Portalı'na Git <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+        </header>
 
-                <!-- Mobil, .NET MVC & C# Form Portalı -->
-                <a href="web_mobil_nesne/index.html" class="card featured-card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                        Mobil, .NET MVC & C# Form Güncel Notlar
-                    </h3>
-                    <p>İkinci Dönem işlenen tüm konuların toplu dokümanları, ders modülleri ve uygulama örnekleri.</p>
-                    <div class="card-footer">
-                        <span>Hemen İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+        <!-- HERO (GİRİŞ) ALANI -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-10 text-center">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-teal-500/10 via-sky-500/10 to-purple-500/10 border border-teal-500/20 text-teal-300 mb-6 shadow-sm">
+                <span>🎓 11. Sınıf ATP Ders Materyalleri Portalı</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
+                <span>2026 - 2027 Eğitim Öğretim Yılı</span>
+            </div>
 
-                <!-- MySQL Veritabanı Portalı -->
-                <a href="mysql_veritabani/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f59e0b;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                        </svg>
-                        MySQL Veritabanı & Dapper Rehberi
-                    </h3>
-                    <p>MySQL veritabanı yönetimi, SQL sorguları, Dapper ORM ve otomasyon projeleri ana sayfası.</p>
-                    <div class="card-footer" style="color: #f59e0b;">
-                        <span>Portala Git <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-tight sm:leading-none mb-6">
+                2026-2027 11 ATP Sınıfı <br class="hidden sm:inline">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 via-sky-400 to-indigo-400">
+                    Web Tabanlı Uygulama Geliştirme
+                </span><br>
+                Dersi Dokümanları
+            </h1>
 
-                <!-- WinFormsDocsTemel Portalı -->
-                <a href="WinFormsDocsTemel/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                        C# Windows Forms Temel Rehberi
-                    </h3>
-                    <p>Temel kontroller, diyalog pencereleri ve çözümlü Windows Forms projeleri dokümantasyonu.</p>
-                    <div class="card-footer">
-                        <span>Rehberi Aç <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+            <p class="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed mb-8">
+                HTML5, CSS3 ve Modern JavaScript (ES6+) konularını kapsayan interaktif ders notları, çözümlü alıştırmalar, canlı önizleme laboratuvarları ve uygulama görevleri merkezi.
+            </p>
 
-                <!-- Kalıtım Modülü -->
-                <a href="Kalitim/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+            <!-- İSTATİSTİK ŞERİDİ -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto mb-10">
+                <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl backdrop-blur-sm">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-teal-400">3</div>
+                    <div class="text-xs text-slate-400 mt-1">Kapsamlı Ana Modül</div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl backdrop-blur-sm">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-sky-400">8</div>
+                    <div class="text-xs text-slate-400 mt-1">İnteraktif Laboratuvar</div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl backdrop-blur-sm">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-amber-400">120+</div>
+                    <div class="text-xs text-slate-400 mt-1">Çözümlü Kod Örneği</div>
+                </div>
+                <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-xl backdrop-blur-sm">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-purple-400">90+</div>
+                    <div class="text-xs text-slate-400 mt-1">Sıra Sende Görevi</div>
+                </div>
+            </div>
+
+            <!-- CANLI ARAMA KUTUSU -->
+            <div class="max-w-2xl mx-auto relative mb-4">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
-                        C# Kalıtım (Inheritance) Portalı
-                    </h3>
-                    <p>Nesne Yönelimli Programlamada kalıtım, ezme (override) ve çok biçimlilik interaktif eğitim modülü.</p>
-                    <div class="card-footer">
-                        <span>Modüle Git <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
                     </div>
-                </a>
+                    <input type="text" id="global-search" placeholder="Konu, etiket veya kavram ara... (Örn: flexbox, grid, form, video, diziler, position)" 
+                           class="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 pl-11 pr-24 py-3.5 rounded-2xl border border-slate-700/80 focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-400/20 text-sm shadow-xl transition" />
+                    <button id="clear-search" class="hidden absolute inset-y-0 right-0 pr-4 flex items-center text-xs text-slate-400 hover:text-white">
+                        Temizle ✕
+                    </button>
+                </div>
+                <div id="search-feedback" class="text-xs text-slate-400 mt-2 h-4"></div>
             </div>
         </section>
 
+        <!-- 1. BÖLÜM: 3 KAPSAMLI ANA MODÜL -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-16">
+            
+            <section id="moduller" class="scroll-mt-24">
+                <div class="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="p-1.5 rounded-lg bg-teal-500/10 text-teal-400 font-bold text-sm">BÖLÜM 1</span>
+                            <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Kapsamlı Müfredat Ana Modülleri</h2>
+                        </div>
+                        <p class="text-sm text-slate-400 mt-1">Her bir teknoloji için tüm üniteleri, çözümlü örnekleri ve görevleri tek sayfada toplayan ana rehberler.</p>
+                    </div>
+                </div>
 
-        <!-- 2. BÖLÜM: C# & MASAÜSTÜ YAZILIM GELİŞTİRME -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">C# & Masaüstü Yazılım Geliştirme</h2>
-                <div class="section-line"></div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                    <!-- KART 1: HTML5 -->
+                    <div class="glow-card group bg-slate-900/70 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-purple-500/50" data-searchable="html temel yapi basliklar paragraflar baglantilar a gorseller img listeler ul ol tablolar table formlar form input girdi elemanlari semantik html div span yorumlar multimedya audio video">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center font-bold text-xl">
+                                    &lt;H&gt;
+                                </div>
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                                    14 Ünite • Çözümlü
+                                </span>
+                            </div>
+
+                            <h3 class="text-2xl font-bold text-white group-hover:text-purple-400 transition mb-2">
+                                HTML5 Dokümantasyonu
+                            </h3>
+                            <p class="text-sm text-slate-300 leading-relaxed mb-5">
+                                Web sayfalarının iskeleti! Temel yapıdan semantik etiketlere, tablolardan formlara ve multimedyaya kadar eksiksiz rehber.
+                            </p>
+
+                            <div class="space-y-1.5 border-t border-slate-800 pt-4 mb-6">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Önemli Konu Başlıkları:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <a href="html_full_cozumlu.html#temel-yapi" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Temel Yapı</a>
+                                    <a href="html_full_cozumlu.html#basliklar" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">&lt;h1&gt;-&lt;h6&gt;</a>
+                                    <a href="html_full_cozumlu.html#tablolar" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Tablolar</a>
+                                    <a href="html_full_cozumlu.html#formlar" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Formlar</a>
+                                    <a href="html_full_cozumlu.html#inputlar" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Inputlar</a>
+                                    <a href="html_full_cozumlu.html#semantik" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Semantik Yapı</a>
+                                    <a href="html_full_cozumlu.html#multimedya" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Multimedya</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-slate-500 font-mono">html_full_cozumlu.html</span>
+                            <a href="html_full_cozumlu.html" class="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold px-4 py-2 rounded-xl text-sm transition shadow-lg shadow-purple-600/20">
+                                <span>Dokümanı Aç</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- KART 2: CSS3 -->
+                    <div class="glow-card group bg-slate-900/70 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-teal-500/50" data-searchable="css seciciler selectors renkler arka plan background kutu modeli box model olcu birimleri px em rem vw vh display flexbox grid position sozde siniflar pseudo transitions gecisler animasyon">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/30 text-teal-400 flex items-center justify-center font-bold text-xl">
+                                    {CSS}
+                                </div>
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-500/10 text-teal-300 border border-teal-500/20">
+                                    14 Ünite • Etkileşimli
+                                </span>
+                            </div>
+
+                            <h3 class="text-2xl font-bold text-white group-hover:text-teal-400 transition mb-2">
+                                CSS Dokümantasyonu
+                            </h3>
+                            <p class="text-sm text-slate-300 leading-relaxed mb-5">
+                                Web sayfalarını güzelleştirin! Seçiciler, renkler, kutu modeli, ölçü birimleri, modern Flexbox, Grid ve Position düzenleri.
+                            </p>
+
+                            <div class="space-y-1.5 border-t border-slate-800 pt-4 mb-6">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Önemli Konu Başlıkları:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <a href="CSS_FULL.html#seciciler" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Seçiciler</a>
+                                    <a href="CSS_FULL.html#kutu-modeli" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Kutu Modeli</a>
+                                    <a href="CSS_FULL.html#olcu-birimleri" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Ölçü Birimleri</a>
+                                    <a href="CSS_FULL.html#flexbox" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Flexbox</a>
+                                    <a href="CSS_FULL.html#grid" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Grid</a>
+                                    <a href="CSS_FULL.html#position" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Position</a>
+                                    <a href="CSS_FULL.html#gecisler" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Geçişler</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-slate-500 font-mono">CSS_FULL.html</span>
+                            <a href="CSS_FULL.html" class="inline-flex items-center gap-1.5 bg-teal-600 hover:bg-teal-500 text-white font-semibold px-4 py-2 rounded-xl text-sm transition shadow-lg shadow-teal-600/20">
+                                <span>Dokümanı Aç</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- KART 3: JAVASCRIPT -->
+                    <div class="glow-card group bg-slate-900/70 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between hover:border-yellow-500/50" data-searchable="javascript js es6 degiskenler let const kosullar if else switch donguler for while fonksiyonlar arrow functions diziler arrays metotlar map filter nesneler objects json dom seciciler manipulasyon olaylar event listeners zamanlayicilar timers setInterval setTimeout mini projeler python csharp karsilastirma">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 flex items-center justify-center font-bold text-xl">
+                                    JS
+                                </div>
+                                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-300 border border-yellow-500/20">
+                                    11 Ünite • 55 Örnek + 55 Görev
+                                </span>
+                            </div>
+
+                            <h3 class="text-2xl font-bold text-white group-hover:text-yellow-400 transition mb-2">
+                                JavaScript Eğitim Portalı
+                            </h3>
+                            <p class="text-sm text-slate-300 leading-relaxed mb-5">
+                                Web'in beyni! 9. sınıf Python ve 10. sınıf C# köprüsüyle desteklenmiş, değişkenlerden DOM ve Olay yönetimine dev portal.
+                            </p>
+
+                            <div class="space-y-1.5 border-t border-slate-800 pt-4 mb-6">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Önemli Konu Başlıkları:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <a href="javascript_full.html#degiskenler" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Değişkenler</a>
+                                    <a href="javascript_full.html#kosullar" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Koşullar</a>
+                                    <a href="javascript_full.html#donguler" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Döngüler</a>
+                                    <a href="javascript_full.html#fonksiyonlar" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Fonksiyonlar</a>
+                                    <a href="javascript_full.html#diziler" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Diziler</a>
+                                    <a href="javascript_full.html#dom-manipulasyon" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">DOM Yönetimi</a>
+                                    <a href="javascript_full.html#olaylar" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded transition">Eventler</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <span class="text-xs text-slate-500 font-mono">javascript_full.html</span>
+                            <a href="javascript_full.html" class="inline-flex items-center gap-1.5 bg-yellow-500 hover:bg-yellow-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-sm transition shadow-lg shadow-yellow-500/20">
+                                <span>Portalı Aç</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 2. BÖLÜM: ÖZEL İNTERAKTİF ATÖLYELER VE LABORATUVARLAR -->
+            <section id="atolye" class="scroll-mt-24">
+                <div class="flex items-center justify-between mb-8 border-b border-slate-800 pb-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="p-1.5 rounded-lg bg-sky-500/10 text-sky-400 font-bold text-sm">BÖLÜM 2</span>
+                            <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">İnteraktif Atölyeler ve Canlı Laboratuvarlar</h2>
+                        </div>
+                        <p class="text-sm text-slate-400 mt-1">Belirli konulara derinlemesine odaklanan, canlı denetimler ve görsel simülatörler içeren özel uygulama sayfaları.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- ATÖLYE 1: Multimedya & Semantik -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-sky-500/40 flex flex-col justify-between" data-searchable="multimedya audio video ses responsive gorsel srcset sizes semantik yapi figure figcaption metin etiketleri abbr bdo cite kbd code playground canli editor pekiştirme testi akilli tahta sunum modu">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">🎬</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-sky-500/10 text-sky-300 border border-sky-500/20">Canlı Editör & Test</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-sky-400 transition mb-2">
+                                Multimedya & Semantik Web
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                Web sayfalarına ses (<code class="text-sky-300">&lt;audio&gt;</code>), video (<code class="text-sky-300">&lt;video&gt;</code>), duyarlı görseller (<code class="text-sky-300">srcset</code>), semantik mimari ve canlı HTML playground.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Audio/Video</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">srcset & sizes</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Sunum Modu</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">html5_multimedya_semantik.html</span>
+                            <a href="html5_multimedya_semantik.html" class="text-xs font-semibold text-sky-400 hover:text-sky-300 inline-flex items-center gap-1">
+                                Laboratuvara Git →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ATÖLYE 2: HTML Form Kılavuzu -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-amber-500/40 flex flex-col justify-between" data-searchable="formlar html form kilavuzu input text password email number date file color radio checkbox select textarea fieldset buton canli onizleme">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">📝</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Canlı Form Testi</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-amber-400 transition mb-2">
+                                İnteraktif HTML Form Kılavuzu
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                Kullanıcı verisi toplamanın temeli! Tüm <code class="text-amber-300">&lt;input&gt;</code> tipleri, radyo butonları, onay kutuları ve seçim elemanlarını anında deneyin.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">&lt;form&gt; action/method</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">&lt;fieldset&gt;</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Çözümlü Sorular</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">html_form_dokuman.html</span>
+                            <a href="html_form_dokuman.html" class="text-xs font-semibold text-amber-400 hover:text-amber-300 inline-flex items-center gap-1">
+                                Kılavuza Git →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ATÖLYE 3: CSS Ölçü Birimleri -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-rose-500/40 flex flex-col justify-between" data-searchable="css olcu birimleri px piksel yuzde em rem root em vw vh viewport width height sabit goreceli birimler responsive boyutlandirma">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">📐</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20">Ölçü Simülatörü</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-rose-400 transition mb-2">
+                                CSS Ölçü Birimleri Laboratuvarı
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                <code class="text-rose-300">px, %, em, rem, vw, vh</code> birimlerinin farkını canlı renkli kutular ve tarayıcı boyutu testleriyle keşfedin.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Sabit vs Göreceli</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">em vs rem</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Fluid Viewport</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">css_olcu_birimleri.html</span>
+                            <a href="css_olcu_birimleri.html" class="text-xs font-semibold text-rose-400 hover:text-rose-300 inline-flex items-center gap-1">
+                                Simülatörü Aç →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ATÖLYE 4: CSS Grid -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/40 flex flex-col justify-between" data-searchable="css grid grid-template-areas grid-template-columns fr kesirli birim responsive duyarli tasarim masaustu mobil media query 768px">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">🔲</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Duyarlı Izgara</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-emerald-400 transition mb-2">
+                                CSS Grid Duyarlı Düzen Atölyesi
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                <code class="text-emerald-300">grid-template-areas</code> ve <code class="text-emerald-300">fr</code> birimiyle masaüstünden mobile tek kural ile sayfa haritası çıkarma.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Masaüstü Görünüm</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Mobil Dönüşüm</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">4 Çözümlü Soru</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">css_grid.html</span>
+                            <a href="css_grid.html" class="text-xs font-semibold text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1">
+                                Atölyeyi Aç →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ATÖLYE 5: CSS Position -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-indigo-500/40 flex flex-col justify-between" data-searchable="css position static goreli relative mutlak absolute sabit fixed yapiskan sticky z-index overlay kaplama avatar bildirim sayaci sticky footer">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">📌</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">Konumlandırma Haritası</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-indigo-400 transition mb-2">
+                                CSS Position Canlı Laboratuvarı
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                <code class="text-indigo-300">static, relative, absolute, fixed, sticky</code> değerlerini canlı kaydırma ve katman (<code class="text-indigo-300">z-index</code>) testleriyle öğrenin.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Sticky Header</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Fixed Bildirim</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Absolute Ortalama</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">css_position.html</span>
+                            <a href="css_position.html" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 inline-flex items-center gap-1">
+                                Laboratuvara Git →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ATÖLYE 6: CSS Başlangıç / Mini Ödevler -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-blue-500/40 flex flex-col justify-between" data-searchable="css ogreniyorum mini odevler renk karti baslik afisi kutu ustasi baslangic alistirmalari">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">🎨</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20">Pratik Alıştırmalar</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-blue-400 transition mb-2">
+                                CSS Temel Alıştırmalar & Mini Ödevler
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                Favori Renk Kartı, Başlık Afişi ve Kutu Modeli Ustası gibi interaktif butonlu mini görevlerle hızlı pratik.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Dinamik Renkler</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Metin Gölgeleri</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">3 Mini Görev</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">css_ogreniyorum.html</span>
+                            <a href="css_ogreniyorum.html" class="text-xs font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1">
+                                Sayfayı Aç →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ATÖLYE 7: JS Aritmetik Operatörler & Canlı Hesaplama -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-cyan-500/40 flex flex-col justify-between" data-searchable="javascript js operatorler aritmetik toplama cikarma carpma bolme kalan mod sayisal donusum number parsefloat canli hesap makinesi dom c# python karsilastirma">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">🧮</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">Canlı JS Laboratuvarı</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-cyan-400 transition mb-2">
+                                JS Aritmetik Operatörler & Hesaplama Atölyesi
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                <code class="text-cyan-300">+ - * / %</code> operatörleri, Number() tip dönüşümü ve C#/Python bilgisiyle DOM üzerinden form verisi işleme.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Toplama / Çıkarma</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">Çarpma / Bölme / Mod</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">C# & Python Kıyaslama</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">js_operatorler_lab.html</span>
+                            <a href="js_operatorler_lab.html" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1">
+                                Laboratuvara Git →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- ATÖLYE 8: C# Döngüler & Tek Boyutlu Diziler Genel Tekrar -->
+                    <div class="glow-card group bg-slate-900/60 border border-slate-800 rounded-2xl p-6 hover:border-purple-500/40 flex flex-col justify-between" data-searchable="c# csharp donguler loops for while do-while foreach tek boyutlu diziler 1d arrays length indexoutofboundsexception array sort reverse indexof clear algoritmalar sinav genel tekrar canli simulator">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-2xl">🌀</span>
+                                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Canlı C# Simülatörü</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-white group-hover:text-purple-400 transition mb-2">
+                                C# Döngüler & Tek Boyutlu Diziler
+                            </h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                                <code class="text-purple-300">for, while, do-while, foreach</code> döngüleri, tek boyutlu dizilerin bellek anatomisi, 3 interaktif laboratuvar ve 10 çözümlü soruyla eksiksiz genel tekrar.
+                            </p>
+                            <div class="flex flex-wrap gap-1 mb-4">
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">for • while • foreach</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">1D Dizi Bellek Lab</span>
+                                <span class="text-[11px] bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded">10 Çözümlü Sınav Sorusu</span>
+                            </div>
+                        </div>
+                        <div class="pt-3 border-t border-slate-800 flex justify-between items-center">
+                            <span class="text-xs text-slate-500 font-mono">csharp_donguler_diziler.html</span>
+                            <a href="csharp_donguler_diziler.html" class="text-xs font-semibold text-purple-400 hover:text-purple-300 inline-flex items-center gap-1">
+                                Rehbere Git →
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ALT BİLGİ (FOOTER) -->
+        <footer class="border-t border-slate-800 bg-slate-900/60 backdrop-blur-sm mt-16 py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-400 space-y-2">
+                <p class="font-semibold text-slate-300 text-sm">
+                    2026-2027 11 ATP Sınıfı Web Tabanlı Uygulama Geliştirme Dersi Dokümanları
+                </p>
+                <p>
+                    Hazırlayan Eğitimci Dokümantasyon Portalı • GitHub Pages ve Web Sunucuları için Optimize Edilmiştir.
+                </p>
+                <div class="flex justify-center items-center gap-4 pt-3 text-slate-400 text-xs">
+                    <a href="html_full_cozumlu.html" class="hover:text-teal-400 transition">HTML5</a>
+                    <span>•</span>
+                    <a href="CSS_FULL.html" class="hover:text-teal-400 transition">CSS3</a>
+                    <span>•</span>
+                    <a href="javascript_full.html" class="hover:text-teal-400 transition">JavaScript</a>
+                    <span>•</span>
+                    <a href="js_operatorler_lab.html" class="hover:text-teal-400 transition">Operatörler Lab</a>
+                    <span>•</span>
+                    <a href="html5_multimedya_semantik.html" class="hover:text-teal-400 transition">Multimedya Lab</a>
+                    <span>•</span>
+                    <a href="html_form_dokuman.html" class="hover:text-teal-400 transition">Form Lab</a>
+                    <span>•</span>
+                    <a href="css_grid.html" class="hover:text-teal-400 transition">Grid Lab</a>
+                    <span>•</span>
+                    <a href="css_position.html" class="hover:text-teal-400 transition">Position Lab</a>
+                    <span>•</span>
+                    <a href="csharp_donguler_diziler.html" class="hover:text-purple-400 transition">C# Döngüler & Diziler</a>
+                </div>
             </div>
-            <div class="grid">
-                <!-- csharp_oop_proje.html -->
-                <a href="csharp_oop_proje.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        C# OOP Proje Rehberi
-                    </h3>
-                    <p>Nesne tabanlı mimari, sınıflar, arayüzler ve katmanlı proje geliştirme standartları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+        </footer>
 
-                <!-- diziler_koleksionlar.html -->
-                <a href="diziler_koleksionlar.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
-                        </svg>
-                        C# Koleksiyonlar & LINQ Rehberi
-                    </h3>
-                    <p>Diziler (Array), List&lt;T&gt;, ArrayList, Dictionary, HashSet ve LINQ sorgulama rehberi.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+    </div>
 
-                <!-- nesne.html -->
-                <a href="nesne.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                        C# Etkileşimli OOP Dokümantasyonu
-                    </h3>
-                    <p>C# ile nesne yönelimli programlama temelleri, sınıflar, yapıcı metotlar ve örnekler.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+    <!-- ARAMA FİLTRELEME SCRİPTİ -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('global-search');
+            const clearBtn = document.getElementById('clear-search');
+            const feedback = document.getElementById('search-feedback');
+            const cards = document.querySelectorAll('[data-searchable]');
 
-                <!-- web_mobil_nesne/winforms_dersleri/index.html -->
-                <a href="web_mobil_nesne/winforms_dersleri/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                        </svg>
-                        C# Windows Forms 15 Derslik Eğitim
-                    </h3>
-                    <p>Temel kontrollerden DataGridView ve Restoran/Otel otomasyon projelerine tam eğitim serisi.</p>
-                    <div class="card-footer">
-                        <span>Eğitime Git <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+            function filterCards() {
+                const query = searchInput.value.toLowerCase().trim();
 
-                <!-- WinFormsDocsTemel/controls.html -->
-                <a href="WinFormsDocsTemel/controls.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
-                        </svg>
-                        WinForms Kontrolleri Rehberi
-                    </h3>
-                    <p>Label, TextBox, Button, ComboBox, ListBox ve CheckBox kontrolleri anlatımı.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+                if (query.length > 0) {
+                    clearBtn.classList.remove('hidden');
+                } else {
+                    clearBtn.classList.add('hidden');
+                    feedback.textContent = '';
+                }
 
-                <!-- WinFormsDocsTemel/dialogs.html -->
-                <a href="WinFormsDocsTemel/dialogs.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-                        </svg>
-                        WinForms Dialog Kutuları
-                    </h3>
-                    <p>MessageBox, ColorDialog, FontDialog, OpenFileDialog ve SaveFileDialog kullanımları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+                let matchCount = 0;
+                cards.forEach(card => {
+                    const searchData = card.getAttribute('data-searchable').toLowerCase();
+                    const titleText = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
+                    const fullText = searchData + ' ' + titleText;
 
-                <!-- WinFormsDocsTemel/projects_unsolved.html -->
-                <a href="WinFormsDocsTemel/projects_unsolved.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
-                        WinForms Proje Soruları
-                    </h3>
-                    <p>Öğrencilerin uygulama geliştirmesi için hazırlanmış pratik WinForms proje isterleri.</p>
-                    <div class="card-footer">
-                        <span>Soruları Gör <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
+                    if (!query || fullText.includes(query)) {
+                        card.style.display = '';
+                        matchCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
 
-                <!-- WinFormsDocsTemel/projects_solved.html -->
-                <a href="WinFormsDocsTemel/projects_solved.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        WinForms Çözümlü Projeler
-                    </h3>
-                    <p>Tam kodları ve form tasarımlarıyla çözümlenmiş örnek Windows Forms projeleri.</p>
-                    <div class="card-footer">
-                        <span>Çözümleri Gör <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-            </div>
-        </section>
+                if (query.length > 0) {
+                    feedback.textContent = `"${query}" ile eşleşen ${matchCount} modül/atölye bulundu.`;
+                }
+            }
 
+            searchInput.addEventListener('input', filterCards);
 
-        <!-- 3. BÖLÜM: VERİTABANI & BACKEND -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">Veritabanı & Backend (MySQL, Dapper, MVC)</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="grid">
-                <!-- mysql_veritabani/veritabani_egitimi.html -->
-                <a href="mysql_veritabani/veritabani_egitimi.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4"/>
-                        </svg>
-                        MySQL Veritabanı Eğitimi
-                    </h3>
-                    <p>Temel SQL sorguları, SELECT, INSERT, UPDATE, DELETE, JOIN ve ilişkisel tablo yapıları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mysql_veritabani/dapper_modern_rehber.html -->
-                <a href="mysql_veritabani/dapper_modern_rehber.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        Modern Dapper ORM Rehberi
-                    </h3>
-                    <p>C# ile yüksek performanslı micro-ORM Dapper kullanımı ve asenkron CRUD işlemleri.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mysql_veritabani/dapper_moduler_rehber.html -->
-                <a href="mysql_veritabani/dapper_moduler_rehber.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-                        </svg>
-                        Modüler Dapper Mimarisi
-                    </h3>
-                    <p>Repository Pattern, katmanlı mimari ve modüler veritabanı servisleri rehberi.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mysql_veritabani/filmotomasyonu/netflix_db_rehberi.html -->
-                <a href="mysql_veritabani/filmotomasyonu/netflix_db_rehberi.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/>
-                        </svg>
-                        Film Otomasyonu: DB Rehberi
-                    </h3>
-                    <p>Netflix benzeri film otomasyonu için ilişkisel veritabanı tasarımı ve SQL tabloları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mysql_veritabani/filmotomasyonu/netflix_arayuz_rehberi.html -->
-                <a href="mysql_veritabani/filmotomasyonu/netflix_arayuz_rehberi.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z"/>
-                        </svg>
-                        Film Otomasyonu: Arayüz Tasarımı
-                    </h3>
-                    <p>Modern koyu tema, afiş düzeni ve kullanıcı arayüzü (UI) tasarım adımları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mysql_veritabani/filmotomasyonu/netflix_kod_rehberi.html -->
-                <a href="mysql_veritabani/filmotomasyonu/netflix_kod_rehberi.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                        </svg>
-                        Film Otomasyonu: Kod Rehberi
-                    </h3>
-                    <p>Dapper ile MySQL bağlantısı, CRUD kodları ve form arka plan yazılımı.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mysql_veritabani/ogrenci_sinav_projesi/sinav_hazirlik_rehberi.html -->
-                <a href="mysql_veritabani/ogrenci_sinav_projesi/sinav_hazirlik_rehberi.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zM12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-                        </svg>
-                        Öğrenci Sınav Takip Projesi
-                    </h3>
-                    <p>MySQL veritabanlı öğrenci ve not yönetim projesi hazırlık rehberi.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- web_mobil_nesne/mvc_dersleri/index.html -->
-                <a href="web_mobil_nesne/mvc_dersleri/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
-                        </svg>
-                        ASP.NET Core MVC 14 Derslik Eğitim
-                    </h3>
-                    <p>Model, View, Controller mimarisi, Razor, Entity Framework ve okul yönetim projesi.</p>
-                    <div class="card-footer">
-                        <span>Eğitime Git <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-
-        <!-- 4. BÖLÜM: WEB GELİŞTİRME -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">Web Geliştirme (HTML5, CSS3, JS)</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="grid">
-                <!-- html_full.html -->
-                <a href="html_full.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                        </svg>
-                        Kapsamlı HTML5 Dokümantasyonu
-                    </h3>
-                    <p>HTML5 temel etiketleri, belge yapısı, listeler, tablolar ve canlı önizleme örnekleri.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- html_form_dokuman.html -->
-                <a href="html_form_dokuman.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        İnteraktif HTML Form Kılavuzu
-                    </h3>
-                    <p>Modern form kontrolleri, input türleri, doğrulama kuralları ve interaktif demolar.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- CSS_FULL.html -->
-                <a href="CSS_FULL.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
-                        </svg>
-                        Kapsamlı CSS Dokümantasyonu
-                    </h3>
-                    <p>CSS seçiciler, Kutu Modeli (Box Model), Flexbox, renkler, tipografi ve animasyonlar.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- Web_2027_Github/css_grid.html -->
-                <a href="Web_2027_Github/css_grid.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
-                        </svg>
-                        CSS Grid Tasarım Sistemi
-                    </h3>
-                    <p>Grid-template-columns, repeat, fr birimleri ve modern ızgara düzeni laboratuvarı.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- Web_2027_Github/css_position.html -->
-                <a href="Web_2027_Github/css_position.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
-                        </svg>
-                        CSS Position Özelliği
-                    </h3>
-                    <p>Relative, absolute, fixed, sticky ve z-index mantığının canlı görsel uygulamaları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- Web_2027_Github/css_olcu_birimleri.html -->
-                <a href="Web_2027_Github/css_olcu_birimleri.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 18h12l3-18H3z"/>
-                        </svg>
-                        CSS Ölçü Birimleri
-                    </h3>
-                    <p>Responsive tasarımlarda rem, em, px, %, vh ve vw ölçü birimlerinin kıyaslanması.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- Web_2027_Github/html5_multimedya_semantik.html -->
-                <a href="Web_2027_Github/html5_multimedya_semantik.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                        </svg>
-                        HTML5 Multimedya & Semantik
-                    </h3>
-                    <p>Video, ses, responsive görsel (picture, srcset) ve semantik sayfa yapısı rehberi.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- Web_2027_Github/javascript_full.html -->
-                <a href="Web_2027_Github/javascript_full.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        Kapsamlı JavaScript (ES6+) Eğitimi
-                    </h3>
-                    <p>Değişkenler, fonksiyonlar, DOM manipülasyonu, olaylar ve modern JavaScript yapıları.</p>
-                    <div class="card-footer">
-                        <span>Eğitime Git <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- Web_2027_Github/js_operatorler_lab.html -->
-                <a href="Web_2027_Github/js_operatorler_lab.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                        JS Operatörler Laboratuvarı
-                    </h3>
-                    <p>Aritmetik, karşılaştırma ve mantıksal operatörlerin canlı deneme laboratuvarı.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- Web_2027_Github/css_ogreniyorum.html -->
-                <a href="Web_2027_Github/css_ogreniyorum.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                        CSS Öğreniyorum Rehberi
-                    </h3>
-                    <p>Temel CSS sözdizimi, metin stilleri ve arka plan düzenlemeleri kılavuzu.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-
-        <!-- 5. BÖLÜM: MOBİL UYGULAMA GELİŞTİRME -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">Mobil Uygulama Geliştirme (Kotlin & Compose)</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="grid">
-                <!-- kotlin_ders.html -->
-                <a href="kotlin_ders.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                        </svg>
-                        Kotlin Etkileşimli Dokümantasyonu
-                    </h3>
-                    <p>Kotlin sözdizimi, null safety, veri tipleri, döngüler ve Android temel hazırlığı.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- web_mobil_nesne/compose_dersleri/index.html -->
-                <a href="web_mobil_nesne/compose_dersleri/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                        Jetpack Compose 14 Derslik Eğitim
-                    </h3>
-                    <p>Modern deklaratif arayüz mimarisi, Composable bileşenler, State ve ViewModel.</p>
-                    <div class="card-footer">
-                        <span>Eğitime Git <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- web_mobil_nesne/compose_dersleri/compose_navigation/index.html -->
-                <a href="web_mobil_nesne/compose_dersleri/compose_navigation/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                        </svg>
-                        Compose Navigation Rehberi
-                    </h3>
-                    <p>Sayfalar arası geçiş, parametre aktarımı, Bottom Navigation ve animasyonlar.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- web_mobil_nesne/compose_dersleri/scaffold/material_bilesenler.html -->
-                <a href="web_mobil_nesne/compose_dersleri/scaffold/material_bilesenler.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6z"/>
-                        </svg>
-                        Material Bileşenler & Scaffold
-                    </h3>
-                    <p>TopAppBar, FloatingActionButton, ModalDrawer ve Material Design 3 bileşenleri.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- web_mobil_nesne/compose_dersleri/scaffold/ogrenci_not_defteri.html -->
-                <a href="web_mobil_nesne/compose_dersleri/scaffold/ogrenci_not_defteri.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                        </svg>
-                        Öğrenci Not Defteri Projesi
-                    </h3>
-                    <p>Jetpack Compose ile sıfırdan geliştirilen tam kapsamlı Android not defteri projesi.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-
-        <!-- 6. BÖLÜM: SINAVLARA HAZIRLIK & ÇALIŞMA DOKÜMANLARI -->
-        <section>
-            <div class="section-header">
-                <h2 class="section-title">Sınavlara Hazırlık & Çalışma Dokümanları</h2>
-                <div class="section-line"></div>
-            </div>
-            <div class="grid">
-                <!-- ntp_2_d_2_sinav/index.html -->
-                <a href="ntp_2_d_2_sinav/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                        </svg>
-                        NTP 2. Dönem 2. Sınav & Çözümler
-                    </h3>
-                    <p>Nesne Tabanlı Programlama 2. Dönem 2. Sınav soruları ve video anlatımlı çözümleri.</p>
-                    <div class="card-footer">
-                        <span>Sınav Portalı <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- web_1_Dönem_2_Sinav/index.html -->
-                <a href="web_1_Dönem_2_Sinav/index.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-                        </svg>
-                        Web Tasarımı 1. Dönem 2. Sınavı
-                    </h3>
-                    <p>Sınav proje adımları, çözümlü cevaplar, yönergeler ve başlangıç şablonları.</p>
-                    <div class="card-footer">
-                        <span>Sınav Portalı <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- nesne1_D_1_Y_calisma.html -->
-                <a href="nesne1_D_1_Y_calisma.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        NTP 1. Dönem 1. Yazılı Soruları
-                    </h3>
-                    <p>C# sınıflar, nesne oluşturma ve metotlar üzerine sınav hazırlık soru ve cevapları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- web1_D_1_Y_calisma.html -->
-                <a href="web1_D_1_Y_calisma.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        Web Geliştirme 1. Yazılı Çalışması
-                    </h3>
-                    <p>HTML5 ve CSS temel bilgileri üzerine sınav öncesi soru & cevap hazırlığı.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mobil1_1_calisma.html -->
-                <a href="mobil1_1_calisma.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                        Mobil Uygulama 1. Sınav Soruları
-                    </h3>
-                    <p>Mobil programlama ve Kotlin temel kavramları 1. sınav çalışma soruları.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- mobil_1d_2y.html -->
-                <a href="mobil_1d_2y.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        Mobil Uygulama 2. Yazılı Soruları
-                    </h3>
-                    <p>Mobil uygulama geliştirme dersi 2. sınav hazırlık soruları ve çözümleri.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-
-                <!-- odevler.html -->
-                <a href="odevler.html" class="card" target="_blank">
-                    <h3>
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-                        </svg>
-                        Dönem Ödevleri Listesi
-                    </h3>
-                    <p>HTML, CSS ve Yazılım Geliştirme dersleri dönem ödev konuları ve yönergeleri.</p>
-                    <div class="card-footer">
-                        <span>İncele <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M13 7l5 5-5 5M6 7l5 5-5 5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-                    </div>
-                </a>
-            </div>
-        </section>
-
-    </main>
-
-    <footer>
-        <p>&copy; Şahin Mansuroğlu - Eğitim Portalı</p>
-    </footer>
-
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                filterCards();
+                searchInput.focus();
+            });
+        });
+    </script>
 </body>
-
 </html>
